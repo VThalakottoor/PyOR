@@ -1,8 +1,10 @@
-# PyOR (Python on Resonance)  beta
-version: Jeener-B-24.08.24
+# PyOR (Python on Resonance)
+version: Jeener.0.9.0
 ## Everybody can simulate NMR Spin Physics
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
-![PyOR logo](https://github.com/VThalakottoor/PyOR_vJeener.0.9.0/blob/main/logo/PyOR_logo.png)
+<img src="https://github.com/VThalakottoor/PyOR_vJeener.0.9.0/blob/main/logo/PyOR_logo.png" alt="PyOR logo" width="300" height="150">
+
+## 
 
 ## Why develop PyOR when many NMR simulation packages are available? Why reinvent the wheel?
 The short answer: **"The Pleasure of Finding Things Out"**.
