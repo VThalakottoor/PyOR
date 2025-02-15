@@ -3,7 +3,7 @@ version: Jeener.0.9.0
 ## Everybody can simulate NMR Spin Physics
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
 
-<img src="https://github.com/VThalakottoor/PyOR_vJeener.0.9.0/blob/main/logo/PyOR_logo.png" alt="PyOR logo" width="300" height="150">
+<img src="https://github.com/VThalakottoor/PyOR_vJeener.0.9.0/blob/main/logo/PyOR_logo.png" alt="PyOR logo" width="300">
 
 ## 
 
