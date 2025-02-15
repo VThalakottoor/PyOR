@@ -25,5 +25,5 @@ Finally, beware of numerical errors!
 ## Prerequisite
 1. Basic knowledge of Python programming
 
-2. Basic knowledge of Spin Operators
+2. Basic, knowledge of Spin Operators
 	- Read Protein NMR Spectroscopy: Principles and Practice, John Cavanagh et. al.
