@@ -2,7 +2,7 @@
 version: Jeener-B-24.08.24
 ## Everybody can simulate NMR Spin Physics
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
-![PyOR logo](https://github.com/VThalakottoor/PyOR_beta/blob/main/Images/PyOR_logo.png)
+![PyOR logo](https://github.com/VThalakottoor/PyOR_vJeener.0.9.0/blob/main/logo/PyOR_logo.png)
 
 ## Why develop PyOR when many NMR simulation packages are available? Why reinvent the wheel?
 The short answer: **"The Pleasure of Finding Things Out"**.
