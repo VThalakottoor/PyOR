@@ -22,4 +22,8 @@ Finally, beware of numerical errors!
 3. Ipympl (Enables using the interactive features of matplotlib)
 	pip install ipympl 
 
+## Prerequisite
+1. Basic knowledge of Python programming
 
+2. Basic knowledge of Spin Operators
+	Read Protein NMR Spectroscopy: Principles and Practice, John Cavanagh et. al.
