@@ -26,4 +26,4 @@ Finally, beware of numerical errors!
 1. Basic knowledge of Python programming
 
 2. Basic knowledge of Spin Operators
-	Read Protein NMR Spectroscopy: Principles and Practice, John Cavanagh et. al.
+- Read Protein NMR Spectroscopy: Principles and Practice, John Cavanagh et. al.
