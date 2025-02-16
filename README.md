@@ -6,7 +6,7 @@ Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.c
 <img src="https://github.com/VThalakottoor/PyOR_vJeener.0.9.0/blob/main/logo/PyOR_logo.png" alt="PyOR logo" width="300">
 
 ## About PyOR
-I developed PyOR during the early stage of my postdoc at École Normale Supérieure, Paris, purely for pleasure—to simulate NMR masers/rasers and assist individuals from physics, chemistry, and biology backgrounds in learning and simulating NMR experiments. PyOR is written in Python because it is free and widely accessible.
+I developed PyOR during the early stage of my postdoc at École Normale Supérieure, Paris, purely for pleasure, to simulate NMR masers/rasers and assist individuals from physics, chemistry, and biology backgrounds in learning and simulating NMR experiments. PyOR is written in Python because it is free and widely accessible.
 
 PyOR is particularly useful for beginners with a basic understanding of matrices, spin operators, and Python programming who are interested in coding magnetic resonance pulse sequences and relaxation mechanics. It can also serve as an educational tool for teaching NMR to undergraduate and graduate students.
 
