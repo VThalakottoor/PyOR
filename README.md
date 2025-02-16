@@ -3,6 +3,13 @@ Current Version: Jeener-0.9.0
 
 Motto: "Everybody can simulate NMR"
 
+## For users
+1. I am still working on documentation
+2. Radiation damping is removed and will be back in the version Jeener-1.0.0
+3. Beware of numerical error
+4. There can be mistakes in the equations, especially in the relaxation part. If you see any errors please write to me.
+5. More example files will be uploaded in future.
+
 ## Everybody can simulate NMR Spin Physics
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
 
