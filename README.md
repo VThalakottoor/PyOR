@@ -1,5 +1,8 @@
 # PyOR (Python on Resonance)
 Current Version: Jeener-0.9.0
+
+Motto: "Everybody can simulate NMR"
+
 ## Everybody can simulate NMR Spin Physics
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
 
