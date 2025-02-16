@@ -1,1 +1,1 @@
-Example simulations with PyOR
+Simulation examples with PyOR
