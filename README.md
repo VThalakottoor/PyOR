@@ -39,7 +39,7 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 	pip install ipympl 
 
 ## Prerequisite
-1. Basic knowledge of Python Object-oriented programming
+1. Basic knowledge of Python (Scipy, Numpy) and Object-oriented programming
 
 2. Basic knowledge of Spin Operators
 	- Read, Protein NMR Spectroscopy: Principles and Practice, John Cavanagh et. al.
