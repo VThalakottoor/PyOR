@@ -1,6 +1,6 @@
-# Warning: Under maintenance, will be back soon
+# Warning: I am modifying the source code, will upload later
 
-# Till then visit: https://github.com/VThalakottoor/PyOR-Jeener-Beta
+# Till then, visit: https://github.com/VThalakottoor/PyOR-Jeener-Beta
 
 # PyOR (Python on Resonance)
 Current Version: Jeener-0.9.0
