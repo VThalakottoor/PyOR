@@ -3,6 +3,9 @@ Current Version: Jeener-1.0.0
 
 Motto: "Everybody can simulate NMR"
 
+## Cite PyOR
+https://doi.org/10.5281/zenodo.15241169
+
 ## Everybody can simulate NMR Spin Physics
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
 
