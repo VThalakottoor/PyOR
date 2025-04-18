@@ -1,0 +1,680 @@
+"""
+PyOR Python On Resonance
+Author: Vineeth Francis Thalakottoor Jose Chacko
+email: vineethfrancis.physics@gmail.com
+
+This file contains class Basis
+
+Documentation is done.
+"""
+
+import numpy as np
+from numpy import linalg as lina
+import re
+from IPython.display import display, Latex, Math
+from sympy.physics.quantum.cg import CG
+from fractions import Fraction
+
+from PyOR_QuantumObject import QunObj
+
+class Basis:    
+    def __init__(self, class_QS):
+        """
+        Initialize the Basis class with a quantum system.
+
+        Parameters
+        ----------
+        class_QS : object
+            An instance of a quantum system (expected to contain spin information and operators).
+        """
+        self.class_QS = class_QS
+
+    def BasisChange_TransformationMatrix(self, old, new):
+        """
+        Compute the transformation matrix between two basis sets.
+
+        The transformation matrix `U` satisfies:
+        |new⟩ = U |old⟩ and O_new = U O_old U†
+
+        Parameters
+        ----------
+        old : list of QunObj
+            Old basis vectors.
+        new : list of QunObj
+            New basis vectors.
+
+        Returns
+        -------
+        QunObj
+            Transformation matrix as a QunObj.
+        """
+        if not (isinstance(old, list) and isinstance(new, list)):
+            raise TypeError("Both inputs must be lists.")
+
+        if not all(isinstance(item, QunObj) for item in old) or not all(isinstance(item, QunObj) for item in new):
+            raise TypeError("All elements in both lists must be instances of QunObj.")
+
+        dim = len(old)
+        U = np.zeros((dim,dim),dtype=np.cdouble)
+        for i in range(dim):
+            for j in range(dim):
+                U[i][j] = self.Adjoint((old[i].data)) @ (new[j].data)
+        return QunObj(U) 
+
+    def BasisChange_State(self, state, U):
+        """
+        Transform a state vector using the given transformation matrix.
+
+        Parameters
+        ----------
+        state : QunObj
+            State in the original basis.
+        U : QunObj
+            Transformation matrix.
+
+        Returns
+        -------
+        QunObj
+            State in the new basis.
+        """
+        if not isinstance(state, QunObj) or not isinstance(U, QunObj):
+            raise TypeError("Both inputs must be instances of QunObj.")
+
+        return QunObj(U.data @ state.data)
+
+    def BasisChange_Operator(self, O, U):
+        """
+        Transform an operator using the given transformation matrix.
+
+        Parameters
+        ----------
+        O : QunObj
+            Operator in the original basis.
+        U : QunObj
+            Transformation matrix.
+
+        Returns
+        -------
+        QunObj
+            Operator in the new basis.
+        """
+        if not isinstance(O, QunObj) or not isinstance(U, QunObj):
+            raise TypeError("Both inputs must be instances of QunObj.")
+
+        return QunObj(self.Adjoint(U.data) @ O.data @ U.data) 
+
+    def BasisChange_SpinOperators(self, Sop, U):
+        """
+        Transform a list of spin operators using a transformation matrix.
+
+        Parameters
+        ----------
+        Sop : list of QunObj
+            Spin operators in the original basis.
+        U : QunObj
+            Transformation matrix.
+
+        Returns
+        -------
+        np.ndarray
+            Transformed spin operators.
+        """
+        if not isinstance(Sop, list):
+            raise TypeError("input must be lists.")
+
+        if not all(isinstance(item, QunObj) for item in Sop):
+            raise TypeError("All elements in the list must be instances of QunObj.")
+
+        if not isinstance(U, QunObj):
+            raise TypeError("Input must be instances of QunObj.")
+
+        dim = len(Sop)
+        Sop_N = np.zeros(len(Sop), dtype=object)
+        for i in range(dim):
+            Sop_N[i] = QunObj(U.data @ Sop[i].data @ self.Adjoint(U.data)) 
+        return Sop_N 
+
+    def CG_Coefficient(self, j1, m1, j2, m2, J, M):
+        """
+        Compute the Clebsch-Gordan coefficient ⟨j1 m1 j2 m2 | J M⟩.
+
+        Parameters
+        ----------
+        j1, m1, j2, m2, J, M : float or int
+            Quantum numbers for the Clebsch-Gordan coefficient.
+
+        Returns
+        -------
+        float
+            Value of the Clebsch-Gordan coefficient.
+        """
+        return float(CG(j1, m1, j2, m2, J, M).doit())
+
+    def Spherical_OpBasis(self, S):
+        """
+        Generate spherical tensor operator basis for a single spin.
+
+        Parameters
+        ----------
+        S : float
+            Spin quantum number.
+
+        Returns
+        -------
+        list of QunObj
+            Spherical tensor operators.
+        list of int
+            Corresponding coherence orders.
+        list of tuple
+            List of (L, M) values.
+
+        Reference:
+        ----------
+        1. Quantum Theory of Angular Momentum, D. A. Varshalovich, A. N. Moskalev and V. K. Khersonskii
+        """
+        states = int(2 * S + 1)
+        EYE = np.eye(states)
+        std_basis = np.zeros((states,states,1))
+        for i in range(states): 
+            std_basis[i] = EYE[:,i].reshape(-1,1)
+        L = np.arange(0,2*S+1,1,dtype=np.int16)
+        m = -1*np.arange(-S,S+1,1,dtype=np.double)
+        Pol_Basis = []
+        Coherence_order = []
+        LM_state = []
+
+        for i in L:
+            M = np.arange(-i,i+1,1,dtype=np.int16)
+            for j in M:  
+                Sum = 0
+                for k in range(states):
+                    for l in range(states):
+                        cg_coeff = float(CG(S, m[l], i, j, S, m[k]).doit())
+                        Sum = Sum + cg_coeff * np.outer(std_basis[k],std_basis[l].T.conj())
+                Pol_Basis.append(QunObj(np.sqrt((2*i + 1)/(2*S+1)) * Sum))
+                Coherence_order.append(j) 
+                LM_state.append(tuple([i,j]))
+        
+        return Pol_Basis,Coherence_order,LM_state                 
+
+    def ProductOperators_SphericalTensor(self, sort='negative to positive', Index=False):
+        """
+        Generate spherical tensor basis for a multi-spin system.
+
+        Parameters
+        ----------
+        sort : str, optional
+            Sorting option for coherence order ('normal', 'negative to positive', 'zero to high').
+        Index : bool, optional
+            Whether to append index to labels.
+
+        Returns
+        -------
+        list of QunObj
+            List of spherical tensor operators for the multi-spin system.
+        list of int
+            Corresponding coherence orders.
+        list of str
+            Labels of each basis operator in the form T(L,M).
+        """
+        spin_list = self.class_QS.slist.tolist()
+
+        OP, CO, LM = self.Spherical_OpBasis(spin_list[0])
+        DIC = [f"T({L},{M})" for (L, M) in LM]
+
+        for idx in range(1, len(spin_list)):
+            OP_next, CO_next, LM_next = self.Spherical_OpBasis(spin_list[idx])
+            DIC_next = [f"T({L},{M})" for (L, M) in LM_next]
+
+            OP, CO, DIC = self.ProductOperator(OP, CO, DIC, OP_next, CO_next, DIC_next, sort=sort, indexing=Index)
+
+        return OP, CO, DIC
+
+    def ProductOperator(self, OP1, CO1, DIC1, OP2, CO2, DIC2, sort, indexing):
+        """
+        Perform the Kronecker product of two sets of spherical basis operators.
+
+        Parameters
+        ----------
+        OP1, OP2 : list of QunObj
+            Basis operators of each subsystem.
+        CO1, CO2 : list of int
+            Coherence orders for each subsystem.
+        DIC1, DIC2 : list of str
+            Labels for each subsystem.
+        sort : str
+            Sorting method for coherence order.
+        indexing : bool
+            Whether to append indices to the labels.
+
+        Returns
+        -------
+        list of QunObj
+            Combined operator basis.
+        list of int
+            Combined coherence orders.
+        list of str
+            Combined operator labels.
+        """
+        if not (isinstance(OP1, list) and isinstance(OP2, list)):
+            raise TypeError("Both inputs must be lists.")
+
+        if not all(isinstance(item, QunObj) for item in OP1) or not all(isinstance(item, QunObj) for item in OP2):
+            raise TypeError("All elements in both lists must be instances of QunObj.")
+
+        CO = []
+        OP = []
+        DIC = []
+        index = 0
+        for i,j,k in zip(OP1,CO1,DIC1):
+            for m,n,o in zip(OP2,CO2,DIC2):
+                OP.append(QunObj(np.kron(i.data,m.data)))
+                CO.append(j+n)
+                DIC.append(k+o)
+                
+        if sort == 'negative to positive':        
+            combine = list(zip(CO,OP,DIC))
+            combine_sort = sorted(combine, key=lambda x: x[0])
+            Sort_CO,Sort_OP,Sort_DIC = zip(*combine_sort)  
+            CO = list(Sort_CO)
+            OP = list(Sort_OP)
+            DIC = list(Sort_DIC)      
+            
+        if sort == 'zero to high':        
+            combine = list(zip(list(map(abs, CO)),CO,OP,DIC))
+            combine_sort = sorted(combine, key=lambda x: x[0])
+            Sort_CO_dumy,Sort_CO,Sort_OP,Sort_DIC = zip(*combine_sort)  
+            CO = list(Sort_CO)
+            OP = list(Sort_OP)
+            DIC = list(Sort_DIC)      
+            
+        if indexing:                        
+            for p in range(len(DIC)):
+                DIC[p] = DIC[p] + "[" + str(index) + "]"      
+                index = index + 1  
+                
+        return OP, CO, DIC                                 
+
+    def ProductOperators_SpinHalf_Cartesian(self, Index=False, Normal=True):
+        """
+        Generate product operator basis in the Cartesian basis for spin-1/2 systems.
+
+        Parameters
+        ----------
+        Index : bool, optional
+            Whether to include index in labels.
+        Normal : bool, optional
+            Whether to normalize the operators.
+
+        Returns
+        -------
+        list of QunObj
+            Product operators.
+        list of str
+            Corresponding labels.
+        """ 
+        Dic = ["Id ","Ix ","Iy ","Iz "]
+        Single_OP = self.class_QS.SpinOperatorsSingleSpin(1/2).astype(np.complex64)
+        Basis_SpinHalf = [QunObj(np.eye(2)),QunObj(Single_OP[0]),QunObj(Single_OP[1]),QunObj(Single_OP[2])]
+        
+        Coherence_order_SpinHalf = list(range(len(Dic)))
+        
+        Basis_SpinHalf_out = []
+        Dic_out = []
+        Coherence_order_SpinHalf_out = []
+                
+        if self.class_QS.Nspins == 1:
+            Basis_SpinHalf_out = Basis_SpinHalf
+            Dic_out = Dic
+        else:
+            Basis_SpinHalf_out = Basis_SpinHalf
+            Coherence_order_SpinHalf_out = Coherence_order_SpinHalf
+            Dic_out = Dic
+            Dic_out = [s.replace(" ", "1 ") for s in Dic_out]
+            indexing = False
+            sort = 'normal'
+            for i in range(self.class_QS.Nspins-1):
+                if i == self.class_QS.Nspins-2:
+                    indexing = Index
+                if i == 0:    
+                    Dic = [s.replace(" ", str(i+2) + " ") for s in Dic] 
+                Dic = [s.replace(str(i+1), str(i+2) + " ") for s in Dic]     
+                Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out = self.ProductOperator(
+                    Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out,
+                    Basis_SpinHalf, Coherence_order_SpinHalf, Dic, sort, indexing)                
+        
+        if Normal:
+            for j in range(self.class_QS.Ldim):
+                Basis_SpinHalf_out[j] = QunObj(self.Normalize(Basis_SpinHalf_out[j].data))
+        
+        return Basis_SpinHalf_out, Dic_out 
+
+    def ProductOperators_SpinHalf_PMZ(self, sort='negative to positive', Index=False, Normal=True):
+        """
+        Generate product operators for spin-1/2 systems in the PMZ basis.
+
+        Parameters
+        ----------
+        sort : str, optional
+            Sorting method for coherence order.
+        Index : bool, optional
+            Whether to include index in labels.
+        Normal : bool, optional
+            Whether to normalize the operators.
+
+        Returns
+        -------
+        list of QunObj
+            Product operators.
+        list of int
+            Coherence orders.
+        list of str
+            Operator labels.
+        """ 
+        Dic = ["Im ","Iz ","Id ","Ip "]
+        Single_OP = self.class_QS.SpinOperatorsSingleSpin(1/2).astype(np.complex64)
+        Basis_SpinHalf = [
+            QunObj(Single_OP[0] - 1j * Single_OP[1]),
+            QunObj(Single_OP[2]),
+            QunObj(np.eye(2)),
+            QunObj(-1 * (Single_OP[0] + 1j * Single_OP[1]))
+        ]
+        
+        Coherence_order_SpinHalf = [-1, 0, 0, 1]
+        
+        Basis_SpinHalf_out = []
+        Dic_out = []
+        Coherence_order_SpinHalf_out = []
+                
+        if self.class_QS.Nspins == 1:
+            Basis_SpinHalf_out = Basis_SpinHalf
+            Dic_out = Dic
+            Coherence_order_SpinHalf_out = Coherence_order_SpinHalf
+        else:
+            Basis_SpinHalf_out = Basis_SpinHalf
+            Coherence_order_SpinHalf_out = Coherence_order_SpinHalf
+            Dic_out = Dic
+            Dic_out = [s.replace(" ", "1 ") for s in Dic_out]
+            indexing = False
+            for i in range(self.class_QS.Nspins - 1):
+                if i == self.class_QS.Nspins - 2:
+                    indexing = Index
+                if i == 0:
+                    Dic = [s.replace(" ", str(i+2) + " ") for s in Dic]
+                Dic = [s.replace(str(i+1), str(i+2) + " ") for s in Dic]
+                Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out = self.ProductOperator(
+                    Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out,
+                    Basis_SpinHalf, Coherence_order_SpinHalf, Dic, sort, indexing)
+
+        if Normal:
+            for j in range(self.class_QS.Ldim):
+                Basis_SpinHalf_out[j] = QunObj(self.Normalize(Basis_SpinHalf_out[j].data))
+
+        return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out 
+
+    def ProductOperators_SpinHalf_SphericalTensor(self, sort='negative to positive', Index=False):
+        """
+        Generate product operators for spin-1/2 systems in the spherical tensor basis.
+
+        Parameters
+        ----------
+        sort : str, optional
+            Sorting method for coherence order.
+        Index : bool, optional
+            Whether to include index in labels.
+
+        Returns
+        -------
+        list of QunObj
+            Product operators.
+        list of int
+            Coherence orders.
+        list of str
+            Operator labels.
+        """        
+        Dic = ["Id ","Im ","Iz ","Ip "]
+        Basis_SpinHalf, Coherence_order_SpinHalf, LM_state_SpinHalf = self.Spherical_OpBasis(1/2)
+        Basis_SpinHalf_out = []
+        Coherence_order_SpinHalf_out = []
+        Dic_out = []
+        
+        if self.class_QS.Nspins == 1:
+            Basis_SpinHalf_out = Basis_SpinHalf
+            Coherence_order_SpinHalf_out = Coherence_order_SpinHalf
+            Dic_out = Dic
+        else:
+            Basis_SpinHalf_out = Basis_SpinHalf
+            Coherence_order_SpinHalf_out = Coherence_order_SpinHalf
+            Dic_out = Dic
+            Dic_out = [s.replace(" ", "1 ") for s in Dic_out]
+            indexing = False
+            
+            for i in range(self.class_QS.Nspins-1):    
+                if i == self.class_QS.Nspins-2:
+                    indexing = Index
+                if i == 0:    
+                    Dic = [s.replace(" ", str(i+2) + " ") for s in Dic] 
+                Dic = [s.replace(str(i+1), str(i+2) + " ") for s in Dic]      
+                Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out = self.ProductOperator(
+                    Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out,
+                    Basis_SpinHalf, Coherence_order_SpinHalf, Dic, sort, indexing)
+                
+        return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out 
+
+    def String_to_Matrix(self, dic, Basis):
+        """
+        Convert a dictionary of labels to a dictionary mapping labels to matrices.
+
+        Parameters
+        ----------
+        dic : list of str
+            Dictionary labels for operator basis.
+        Basis : list of QunObj
+            Corresponding list of operators.
+
+        Returns
+        -------
+        dict
+            Dictionary mapping cleaned labels to QunObj instances.
+        """    
+        char_to_remove = "Id"
+        dic = [re.sub(f"{re.escape(char_to_remove)}.", " ", s) for s in dic]               
+        dic = [s.replace(" ", "") for s in dic]
+
+        print(dic)
+        return dict(zip(dic, Basis))
+
+    def ProductOperators_Zeeman(self):
+        """
+        Generate product operators in the Zeeman basis.
+
+        Returns
+        -------
+        list of QunObj
+            Product operators in Zeeman basis.
+        list of str
+            Operator labels.
+        list of float
+            Coherence orders.
+        QunObj
+            Coherence order as a 2D matrix.
+        """
+        B_Z, dic_dummy = self.Zeeman_Basis()
+        Kets = self.class_QS.ZeemanBasis_Ket()
+        Bras = self.class_QS.ZeemanBasis_Bra()
+        dic = []
+        coh = []
+        State_Momentum = self.Basis_Ket_AngularMomentum_Array()
+        
+        B = []
+        for i in range(self.class_QS.Vdim):
+            for j in range(self.class_QS.Vdim):
+                B.append(QunObj(np.outer(B_Z[i].data, self.Adjoint(B_Z[j].data))))
+                dic.append(Kets[i] + Bras[j])
+                coh.append(State_Momentum[i] - State_Momentum[j])
+   
+        return B, dic, coh, QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim)))   
+    
+    def Zeeman_Basis(self):
+        """
+        Compute eigenbasis of the total Sz operator (Zeeman basis).
+
+        Returns
+        -------
+        list of QunObj
+            Zeeman basis vectors.
+        list of str
+            Corresponding basis labels.
+        """
+        Sz = np.sum(self.class_QS.Sz_, axis=0)
+        Dic = self.class_QS.ZeemanBasis_Ket()
+
+        B_Zeeman = []
+        eigenvalues, eigenvectors = lina.eig(Sz) 
+        for i in range(self.class_QS.Vdim):
+            B_Zeeman.append(QunObj((eigenvectors[:, i].reshape(-1, 1)).real))         
+        return B_Zeeman, Dic  
+
+    def SingletTriplet_Basis(self): 
+        """
+        Generate singlet-triplet basis for two spin-1/2 particles.
+
+        Returns
+        -------
+        list of QunObj
+            Singlet-triplet basis vectors.
+        list of str
+            Basis labels.
+
+        Notes
+        -----
+        Only works for two spin-1/2 systems.
+        """
+        Dic = ["Tm ", "T0 ", "Tp ", "S0 "]
+
+        if ((self.class_QS.Nspins == 2) and 
+            (self.class_QS.slist[0] == 1/2) and 
+            (self.class_QS.slist[1] == 1/2)):
+            B_Zeeman, _ = self.Zeeman_Basis()
+            B_ST = [
+                B_Zeeman[0],
+                (1/np.sqrt(2)) * (B_Zeeman[1] + B_Zeeman[2]),
+                B_Zeeman[3],
+                (1/np.sqrt(2)) * (B_Zeeman[1] - B_Zeeman[2])
+            ]
+            return B_ST, Dic
+        else:
+            print("Two spin half system only")
+
+    def Basis_Ket_AngularMomentum_Array(self):
+        """
+        Compute magnetic quantum numbers for each Zeeman state.
+
+        Returns
+        -------
+        np.ndarray
+            Array of magnetic quantum numbers (diagonal of total Sz).
+        """
+        Sz = self.class_QS.Sz_
+        return (np.sum(Sz, axis=0).real).diagonal()
+
+    def Basis_Ket_AngularMomentum_List(self):
+        """
+        Compute magnetic quantum numbers for each Zeeman state as strings.
+
+        Returns
+        -------
+        list of str
+            List of magnetic quantum numbers as fractions.
+        """
+        Sz = self.class_QS.Sz_
+        array = (np.sum(Sz, axis=0).real).diagonal()
+        List = []
+        for i in array:
+            List.append(str(Fraction(float(i))))
+        return List
+
+    def Normalize(self, A):
+        """
+        Normalize an operator so its inner product with itself is 1.
+
+        Parameters
+        ----------
+        A : ndarray
+            Operator to normalize.
+
+        Returns
+        -------
+        ndarray
+            Normalized operator.
+        """
+        return A / np.sqrt(self.InnerProduct(A, A))
+
+    def InnerProduct(self, A, B):
+        """
+        Compute inner product of two operators.
+
+        Parameters
+        ----------
+        A : ndarray
+        B : ndarray
+
+        Returns
+        -------
+        complex
+            Inner product Tr(A† B)
+        """
+        return np.trace(np.matmul(A.T.conj(), B))
+
+    def Adjoint(self, A):
+        """
+        Compute the adjoint (Hermitian conjugate) of an operator.
+
+        Parameters
+        ----------
+        A : ndarray
+            Operator or state vector.
+
+        Returns
+        -------
+        ndarray
+            Hermitian conjugate of the input.
+        """
+        return A.T.conj()
+
+    def ProductOperators_ConvertToLiouville(self, Basis_X):
+        """
+        Convert product operator basis to Liouville space.
+
+        Parameters
+        ----------
+        Basis_X : list of QunObj
+            Basis in Hilbert space.
+
+        Returns
+        -------
+        list of QunObj
+            Basis in Liouville space.
+        """
+        dim = len(Basis_X)  
+        Basis_out = []
+        for i in range(dim): 
+            Basis_out.append(QunObj(self.Vector_L(np.asarray(Basis_X[i].data))))
+        return Basis_out           
+
+    def Vector_L(self, X):
+        """
+        Vectorize an operator into Liouville space form.
+
+        Parameters
+        ----------
+        X : ndarray
+            Operator to vectorize.
+
+        Returns
+        -------
+        ndarray
+            Vectorized operator.
+        """
+        dim = self.class_QS.Vdim
+        return np.reshape(X, (dim**2, -1))
