@@ -3,7 +3,7 @@ Current Version: Jeener-1.0.0
 
 Motto: "Everybody can simulate NMR"
 
-## Cite and download PyOR
+## How to cite and download PyOR
 Go to https://doi.org/10.5281/zenodo.15241169 and download any version, which will be stable. Do not download from GitHub, since I will be updating the examples and code.
 
 ## Everybody can simulate NMR Spin Physics
