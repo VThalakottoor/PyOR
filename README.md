@@ -1,20 +1,7 @@
-# Warning: I am modifying the source code, will upload later
-
-# Till then, visit: https://github.com/VThalakottoor/PyOR-Jeener-Beta
-
 # PyOR (Python on Resonance)
-Current Version: Jeener-0.9.0
+Current Version: Jeener-1.0.0
 
 Motto: "Everybody can simulate NMR"
-
-## For users
-1. I am still working on documentation
-2. Look at the default parameters (which will be printed on calling the PyOR module) and choose the "MatrixTolarence" parameter before starting the simulation.
-4. Radiation damping is removed and will be back in the version Jeener-1.0.0
-5. Beware of numerical error
-6. There can be mistakes in the equations, especially in the relaxation part. If you see any errors please write to me.
-7. More example files will be uploaded in the future.
-8. For any questions and suggestions email me.
 
 ## Everybody can simulate NMR Spin Physics
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
