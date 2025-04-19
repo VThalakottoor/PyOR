@@ -208,7 +208,7 @@ class Evolutions:
                     rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
                     rhodot = np.zeros((rhoi.shape[-1]))
                     if self.Maser_TempGradient:
-                        TempTemp = round(self.class_Relax.Lindblad_TemperatureGradient(t),4)
+                        TempTemp = round(self.class_Relax.Lindblad_TemperatureGradient(t),6)
                         if self.Lindblad_InitialInverseTemp < 0:
                             if TempTemp <= self.Lindblad_FinalInverseTemp:
                                 self.class_QS.Lindblad_Temp = TempTemp
@@ -220,7 +220,7 @@ class Evolutions:
                             else:
                                 self.class_QS.Lindblad_Temp = self.Lindblad_FinalInverseTemp
                         print(f"\rt = {t:0.3f}  Temp = {TempTemp:0.3f}  Lindblad_Temp = {self.class_QS.Lindblad_Temp:0.3f}", end='')                        
-                    Rso_temp = self.class_Relax.Relaxation(rho_temp-rhoeq)
+                    Rso_temp = self.class_Relax.Relaxation(rho_temp)
                     Brd = self.class_NonL.Radiation_Damping(rho_temp)
                     Bdipole = self.class_NonL.DipoleShift(rho_temp)
                     H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     

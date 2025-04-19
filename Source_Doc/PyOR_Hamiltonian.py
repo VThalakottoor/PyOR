@@ -14,11 +14,13 @@ from numpy import linalg as lina
 from scipy.interpolate import interp1d
 from scipy.linalg import expm
 from io import StringIO
+from joblib import Parallel, delayed
 
 import PyOR_PhysicalConstants
 import PyOR_Rotation
 import PyOR_SphericalTensors as ST
 from PyOR_QuantumObject import QunObj
+import PyOR_SignalProcessing as Spro
 
 class Hamiltonian:
     def __init__(self, class_QS):
@@ -40,9 +42,14 @@ class Hamiltonian:
         self.B0 = self.class_QS.B0
         self.Offset = self.class_QS.Offset         
         self.LarmorF = self.LarmorFrequency()
+        self.LARMOR_F = self.class_QS.LARMOR_F
+        for i, key in enumerate(self.class_QS.SpinDic):
+            self.LARMOR_F[key] = self.LarmorF[i]
 
         # Inverse of 2 Pi – often used to convert between angular frequency and Hz
         self.Inverse2PI = 1.0 / (2.0 * np.pi)
+
+        self.InteractioTensor_AngularFrequency = True
 
     def Update(self):
         """
@@ -416,12 +423,19 @@ class Hamiltonian:
         X = [getattr(self.class_QS, XQ + "x").data, getattr(self.class_QS, XQ + "y").data, getattr(self.class_QS, XQ + "z").data]
 
         if YQ == "":
-            # Interaction with magnetic field
-            Y = [
-                0.0 * np.eye(self.class_QS.Vdim),
-                0.0 * np.eye(self.class_QS.Vdim),
-                getattr(self.class_QS, XQ).gamma * self.class_QS.B0 * np.eye(self.class_QS.Vdim)
-            ]
+            if self.InteractioTensor_AngularFrequency: # Isotropic and Anisotropy are in angular frequency units
+                Y = [
+                    0.0 * np.eye(self.class_QS.Vdim),
+                    0.0 * np.eye(self.class_QS.Vdim),
+                    np.eye(self.class_QS.Vdim)
+                ]
+            else:
+                Y = [
+                    0.0 * np.eye(self.class_QS.Vdim),
+                    0.0 * np.eye(self.class_QS.Vdim),
+                    getattr(self.class_QS, XQ).gamma * self.class_QS.B0 * np.eye(self.class_QS.Vdim)
+                ]
+
         else:
             Y = [getattr(self.class_QS, YQ + "x").data, getattr(self.class_QS, YQ + "y").data, getattr(self.class_QS, YQ + "z").data]
 
@@ -477,11 +491,19 @@ class Hamiltonian:
         X = [getattr(self.class_QS, XQ + "x").data, getattr(self.class_QS, XQ + "y").data, getattr(self.class_QS, XQ + "z").data]
 
         if YQ == "":
-            Y = [
-                0.0 * np.eye(self.class_QS.Vdim),
-                0.0 * np.eye(self.class_QS.Vdim),
-                getattr(self.class_QS, XQ).gamma * self.class_QS.B0 * np.eye(self.class_QS.Vdim)
-            ]
+            if self.InteractioTensor_AngularFrequency: # Isotropic and Anisotropy are in angular frequency units
+                Y = [
+                    0.0 * np.eye(self.class_QS.Vdim),
+                    0.0 * np.eye(self.class_QS.Vdim),
+                    np.eye(self.class_QS.Vdim)
+                ]
+            else:
+                Y = [
+                    0.0 * np.eye(self.class_QS.Vdim),
+                    0.0 * np.eye(self.class_QS.Vdim),
+                    getattr(self.class_QS, XQ).gamma * self.class_QS.B0 * np.eye(self.class_QS.Vdim)
+                ]
+                                
         else:
             Y = [getattr(self.class_QS, YQ + "x").data, getattr(self.class_QS, YQ + "y").data, getattr(self.class_QS, YQ + "z").data]
 
@@ -534,7 +556,7 @@ class Hamiltonian:
         AA11, AA10, AA1m1 = Sptensor["rank1"]
         AA22, AA21, AA20, AA2m1, AA2m2 = Sptensor["rank2"]
 
-        Wigner_rank1 = PyOR_Rotation.Wigner_D_Matrix(1, -alpha, beta, gamma)
+        Wigner_rank1 = PyOR_Rotation.Wigner_D_Matrix(1, -alpha, beta, gamma) # Note the negative sign !!!
         Wigner_rank2 = PyOR_Rotation.Wigner_D_Matrix(2, -alpha, beta, gamma)
 
         Rot_rank1 = Wigner_rank1.data @ np.array([[AA11], [AA10], [AA1m1]])
@@ -542,24 +564,42 @@ class Hamiltonian:
 
         # Apply gyromagnetic ratio scaling for spin-field
         if string == "spin-field":
-            γ = getattr(self.class_QS, X).gamma
-            A0 = γ * AA0
-            A11, A10, A1m1 = γ * Rot_rank1[0], γ * Rot_rank1[1], γ * Rot_rank1[2]
-            A22, A21, A20, A2m1, A2m2 = [γ * x for x in Rot_rank2]
+            if self.InteractioTensor_AngularFrequency: # Isotropic and Anisotropy are in angular frequency units
+                A0 = AA0
+                A11, A10, A1m1 = Rot_rank1[0], Rot_rank1[1], Rot_rank1[2]
+                A22, A21, A20, A2m1, A2m2 = [x for x in Rot_rank2]
 
-            Im, Ip, Iz = getattr(self.class_QS, X + "m").data, getattr(self.class_QS, X + "p").data, getattr(self.class_QS, X + "z").data
-            B0 = self.class_QS.B0
+                Im, Ip, Iz = getattr(self.class_QS, X + "m").data, getattr(self.class_QS, X + "p").data, getattr(self.class_QS, X + "z").data
 
-            # Tensor operators for spin-field
-            T0 = (-1.0/np.sqrt(3)) * Iz * B0
-            T10 = 0.0 * Iz
-            T11 = -0.5 * Ip * B0
-            T1m1 = -0.5 * Im * B0
-            T20 = (2.0/np.sqrt(6)) * Iz * B0
-            T21 = -0.5 * Ip * B0
-            T2m1 = 0.5 * Im * B0
-            T22 = 0.0 * Iz
-            T2m2 = 0.0 * Iz
+                # Tensor operators for spin-field
+                T0 = (-1.0/np.sqrt(3)) * Iz
+                T10 = 0.0 * Iz
+                T11 = -0.5 * Ip
+                T1m1 = -0.5 * Im
+                T20 = (2.0/np.sqrt(6)) * Iz
+                T21 = -0.5 * Ip
+                T2m1 = 0.5 * Im
+                T22 = 0.0 * Iz
+                T2m2 = 0.0 * Iz
+            else:
+                gamma = getattr(self.class_QS, X).gamma
+                A0 = gamma * AA0
+                A11, A10, A1m1 = gamma * Rot_rank1[0], gamma * Rot_rank1[1], gamma * Rot_rank1[2]
+                A22, A21, A20, A2m1, A2m2 = [gamma * x for x in Rot_rank2]
+
+                Im, Ip, Iz = getattr(self.class_QS, X + "m").data, getattr(self.class_QS, X + "p").data, getattr(self.class_QS, X + "z").data
+                B0 = self.class_QS.B0
+
+                # Tensor operators for spin-field
+                T0 = (-1.0/np.sqrt(3)) * Iz * B0
+                T10 = 0.0 * Iz
+                T11 = -0.5 * Ip * B0
+                T1m1 = -0.5 * Im * B0
+                T20 = (2.0/np.sqrt(6)) * Iz * B0
+                T21 = -0.5 * Ip * B0
+                T2m1 = 0.5 * Im * B0
+                T22 = 0.0 * Iz
+                T2m2 = 0.0 * Iz
 
         elif string == "spin-spin":
             A0 = AA0
@@ -633,9 +673,12 @@ class Hamiltonian:
             3.0 * (np.cos(theta))**2 - 1 - Asymmetry * ((np.sin(theta))**2 * np.cos(2.0 * phi))
         )
 
-        return QunObj(gamma * rho_lab_zz * self.class_QS.B0 * SZ)
+        if self.InteractioTensor_AngularFrequency: # Isotropic and Anisotropy are in angular frequency units
+            return QunObj(rho_lab_zz  * SZ)
+        else:
+            return QunObj(gamma * rho_lab_zz * self.class_QS.B0 * SZ)
 
-    def Interaction_Hamiltonian_PAF_Quadrupole_Secular(self, X, eq, etaQ, theta, phi):
+    def Interaction_Hamiltonian_LAB_Quadrupole_Secular(self, X, eq, etaQ, theta, phi):
         """
         Constructs the secular quadrupole Hamiltonian.
 
@@ -720,13 +763,18 @@ class Hamiltonian:
         Aniso : float
             Anisotropy (Azz - Iso)
         Asymmetry : float
-            Asymmetry parameter (eta = (Ayy - Axx) / Aniso)
+            Asymmetry parameter (eta = (Ayy - Axx) / Aniso),  range from 0 <= eta <= 1
 
         Returns:
         --------
         QunObj
             3x3 CSA tensor in PAF
         """
+
+        if self.InteractioTensor_AngularFrequency: # Isotropic and Anisotropy are in angular frequency units
+            Iso = 2.0 * np.pi * Iso
+            Aniso = 2.0 * np.pi * Aniso
+
         I1 = Iso * np.eye(3)
         I2 = np.eye(3)
         I2[0][0] = -0.5 * (1 + Asymmetry)
@@ -852,6 +900,62 @@ class Hamiltonian:
         output["Antisymmetric"] = QunObj(A_asym)
 
         return output
+
+    def PowderSpectrum(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx, alpha, beta, gamma, weighted=True):
+        """
+        Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.
+
+        Parameters:
+        -----------
+        weighted : bool
+            Whether to use sin(beta) weighting for correct powder averaging.
+
+        Returns:
+        --------
+        freq : ndarray
+            Frequency axis.
+        spectrum : ndarray
+            Powder-averaged spectrum (absolute value).
+        """
+
+        alpha_beta_gamma_pairs = list(zip(alpha, beta, gamma))
+
+        def compute_single(alpha_i, beta_i, gamma_i):
+            Hcsa = self.Interaction_Hamiltonian_SphericalTensor(
+                X, IT_PAF, Y,
+                string, approx,
+                alpha_i, beta_i, gamma_i
+            )
+            t, rho_t = EVol.Evolution(rhoI, rhoeq, Hcsa)
+            if Y == "":
+                det_Mt = getattr(self.class_QS, X + "p").data
+            else:
+                det_Mt = getattr(self.class_QS, X + "p").data + getattr(self.class_QS, Y + "p").data
+            t, Mt = EVol.Expectation(rho_t, det_Mt)
+            Mt = Spro.WindowFunction(t, Mt, 0.5)
+            freq, spectrum_single = Spro.FourierTransform(Mt, self.class_QS.AcqFS, 5)
+            return freq, np.abs(spectrum_single)
+
+        # Run all computations in parallel
+        results = Parallel(n_jobs=-1)(
+            delayed(compute_single)(alpha_i, beta_i, gamma_i)
+            for alpha_i, beta_i, gamma_i in alpha_beta_gamma_pairs
+        )
+
+        freq_list, spectra = zip(*results)
+        freq = freq_list[0]  # all same
+
+        if weighted:
+            # Use sin(beta) as weights (beta is in degrees)
+            weights = np.sin(np.radians(beta))
+            weighted_spectra = [w * s for w, s in zip(weights, spectra)]
+            spectrum = np.sum(weighted_spectra, axis=0) / np.sum(weights)
+        else:
+            # Uniform (incorrect) averaging
+            spectrum = np.mean(spectra, axis=0)
+
+        return freq, spectrum
+
 
     def ShapedPulse_Bruker(self, file_path, pulseLength, RotationAngle):
         """

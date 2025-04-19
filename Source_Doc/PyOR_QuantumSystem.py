@@ -111,6 +111,21 @@ class QuantumSystem:
         self.Ldim = self.Vdim ** 2
         self.Inverse2PI = 1.0 / (2.0 * np.pi)
 
+        # Proton Larmor Frequency
+        self.L100 = 2.349495 # T        
+        self.L285 = 6.7 # T
+        self.L300 = 7.04925 # T
+        self.L400 = 9.39798 # T
+        self.L500 = 11.7467 # T
+        self.L600 = 14.0954 # T
+        self.L700 = 16.4442 # T
+        self.L750 = 17.6185 # T
+        self.L800 = 18.7929 # T
+        self.L850 = 19.9673 # T
+        self.L900 = 21.1416 # T
+        self.L950 = 22.3160 # T
+        self.L1000 = 23.4904 # T
+
         # Default configuration messages
         if PrintDefault:
             print("\nPyOR default parameters/settings")
@@ -123,6 +138,7 @@ class QuantumSystem:
         self.B0 = None
         self.OMEGA_RF = {key: 0 for key in self.SpinList}
         self.OFFSET = {key: 0 for key in self.SpinList}
+        self.LARMOR_F = {key: 0 for key in self.SpinList}
         self.print_Larmor = True
         self.Jlist = np.zeros((self.Nspins, self.Nspins))
         self.Dipole_Pairs = []
@@ -420,6 +436,8 @@ class QuantumSystem:
         for spin_pair in self.Dipole_Pairs:
             index_pair = (self.SpinIndex[spin_pair[0]], self.SpinIndex[spin_pair[1]])
             self.DipolePairs.append(index_pair)
+
+        self.AcqFS = 1.0 / self.AcqDT
 
         print("Rotating frame frequencies:", self.OMEGA_RF)
         print("Offset frequencies:", self.OFFSET)

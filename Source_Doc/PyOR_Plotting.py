@@ -34,15 +34,14 @@ class Plotting:
         self.PlotYlimt = class_QS.PlotYlimt
         self.PlotArrowlength = class_QS.PlotArrowlength
         self.PlotLinwidth = class_QS.PlotLinwidth
+        self.fig_counter = 1
 
-    def MatrixPlot(self, fig_no, M, xlabel, ylabel):
+    def MatrixPlot(self, M, xlabel, ylabel):
         """
         Plot a 2D color map of a matrix with labels.
 
         Parameters
         ----------
-        fig_no : int
-            Figure number to plot on.
         M : ndarray
             Matrix to be plotted.
         xlabel : list of str
@@ -55,7 +54,8 @@ class Plotting:
         plt.rcParams['figure.figsize'] = self.PlotFigureSize
         plt.rcParams['font.size'] = self.PlotFontSize
 
-        fig = plt.figure(fig_no)
+        fig = plt.figure(self.fig_counter)
+        self.fig_counter += 1
         ax = fig.add_subplot(111)
         cax = ax.matshow(M, interpolation='nearest', cmap=cmap, vmax=abs(M).max(), vmin=-abs(M).max())
         fig.colorbar(cax)
@@ -68,14 +68,12 @@ class Plotting:
         plt.tight_layout()
         plt.show()
 
-    def MatrixPlot_slider(self, fig_no, t, rho_t, xlabel, ylabel):
+    def MatrixPlot_slider(self, t, rho_t, xlabel, ylabel):
         """
         Plot a time-dependent matrix with a slider to change time steps.
 
         Parameters
         ----------
-        fig_no : int
-            Figure number to plot on.
         t : ndarray
             Array of time points.
         rho_t : ndarray
@@ -90,7 +88,8 @@ class Plotting:
         plt.rcParams['font.size'] = self.PlotFontSize
         plt.rcParams["figure.autolayout"] = True
 
-        fig = plt.figure(fig_no)
+        fig = plt.figure(self.fig_counter)
+        self.fig_counter += 1
         ax = fig.add_subplot(111)
         im = ax.matshow(rho_t[0].real, cmap=cmap)
         cbaxes = fig.add_axes([0.85, 0.1, 0.03, 0.65])
@@ -114,14 +113,12 @@ class Plotting:
         index_slider.on_changed(update)
         plt.show()
 
-    def MatrixPlot3D(self, fig_no, rho, xlabel, ylabel):
+    def MatrixPlot3D(self, rho, xlabel, ylabel):
         """
         Create a 3D bar plot of matrix values.
 
         Parameters
         ----------
-        fig_no : int
-            Figure number to plot on.
         rho : ndarray
             Matrix to be plotted (2D).
         xlabel : list of str
@@ -133,7 +130,8 @@ class Plotting:
         plt.rcParams['font.size'] = self.PlotFontSize
         rc('font', weight='bold')
 
-        fig = plt.figure(fig_no, constrained_layout=True)
+        fig = plt.figure(self.fig_counter, constrained_layout=True)
+        self.fig_counter += 1
         ax = fig.add_subplot(111, projection='3d')
 
         num_rows, num_cols = rho.shape
@@ -153,14 +151,12 @@ class Plotting:
         ax.grid(False)
         plt.show()
 
-    def Plotting(self, fig_no, x, y, xlab, ylab, col):
+    def Plotting(self, x, y, xlab, ylab, col):
         """
         Plot a simple 2D line graph.
 
         Parameters
         ----------
-        fig_no : int
-            The figure number for the plot window.
         x : array_like
             Array containing data for the x-axis.
         y : array_like
@@ -177,7 +173,8 @@ class Plotting:
         None
         """
         rc('font', weight='bold')
-        fig = plt.figure(fig_no, constrained_layout=True, figsize=self.PlotFigureSize)
+        fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=self.PlotFigureSize)
+        self.fig_counter += 1
         ax1 = fig.add_subplot(111)
 
         ax1.plot(x, y, linewidth=3.0, color=col)
@@ -189,7 +186,7 @@ class Plotting:
         ax1.set_ylim(*self.PlotYlimt)
         plt.show()
 
-    def Plotting_SpanSelector(self, fig_no, x, y, xlab, ylab, col):
+    def Plotting_SpanSelector(self, x, y, xlab, ylab, col):
         """
         Plot signal with span selector for interactive region selection.
 
@@ -199,8 +196,6 @@ class Plotting:
 
         Parameters
         ----------
-        fig_no : int
-            Figure number to be used for the plot.
         x : array_like
             1D array representing the X-axis data.
         y : array_like
@@ -220,7 +215,8 @@ class Plotting:
             The span selector widget object for interaction.
         """
         rc('font', weight='bold')
-        fig = plt.figure(fig_no, constrained_layout=True, figsize=self.PlotFigureSize)
+        fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=self.PlotFigureSize)
+        self.fig_counter += 1
         spec = fig.add_gridspec(1, 1)
         ax1 = fig.add_subplot(spec[0, 0])
 
@@ -258,7 +254,7 @@ class Plotting:
         
         return fig, span_selector
 
-    def PlottingTwin(self, fig_no, x, y1, y2, xlab, ylab1, ylab2, col1, col2):
+    def PlottingTwin(self, x, y1, y2, xlab, ylab1, ylab2, col1, col2):
         """
         Plot two signals with twin Y-axes.
 
@@ -268,8 +264,6 @@ class Plotting:
 
         Parameters
         ----------
-        fig_no : int
-            The figure number to create or use.
         x : array_like
             1D array for the X-axis data.
         y1 : array_like
@@ -293,7 +287,8 @@ class Plotting:
             The function displays the plot and does not return anything.
         """
         rc('font', weight='bold')
-        fig = plt.figure(fig_no, constrained_layout=True, figsize=self.PlotFigureSize)
+        fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=self.PlotFigureSize)
+        self.fig_counter += 1
         spec = fig.add_gridspec(1, 1)
 
         ax1 = fig.add_subplot(spec[0, 0])
@@ -314,7 +309,7 @@ class Plotting:
 
         plt.show()
 
-    def PlottingTwin_SpanSelector(self, fig_no, x, y1, y2, xlab, ylab1, ylab2, col1, col2):
+    def PlottingTwin_SpanSelector(self, x, y1, y2, xlab, ylab1, ylab2, col1, col2):
         """
         Plot two signals with twin Y-axes and a horizontal span selector.
 
@@ -324,8 +319,6 @@ class Plotting:
 
         Parameters
         ----------
-        fig_no : int
-            The figure number to create or use.
         x : array_like
             1D array representing the X-axis data.
         y1 : array_like
@@ -350,7 +343,8 @@ class Plotting:
             `span_selector` is the interactive selector used to highlight a region on the plot.
         """
         rc('font', weight='bold')
-        fig = plt.figure(fig_no, constrained_layout=True, figsize=self.PlotFigureSize)
+        fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=self.PlotFigureSize)
+        self.fig_counter += 1
         spec = fig.add_gridspec(1, 1)
 
         ax1 = fig.add_subplot(spec[0, 0])
@@ -388,14 +382,12 @@ class Plotting:
 
         return fig, span_selector
 
-    def PlottingMulti(self, fig_no, x, y, xlab, ylab, col):
+    def PlottingMulti(self, x, y, xlab, ylab, col):
         """
         Plot multiple signals on a single set of axes.
 
         Parameters
         ----------
-        fig_no : int
-            Figure number to identify the plot window.
         x : list of array_like
             List of X-axis data arrays, each corresponding to one line.
         y : list of array_like
@@ -413,7 +405,8 @@ class Plotting:
             Displays the plot with multiple signals.
         """
         rc('font', weight='bold')
-        fig = plt.figure(fig_no, constrained_layout=True, figsize=self.PlotFigureSize)
+        fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=self.PlotFigureSize)
+        self.fig_counter += 1
         spec = fig.add_gridspec(1, 1)
 
         ax1 = fig.add_subplot(spec[0, 0])
@@ -427,14 +420,12 @@ class Plotting:
         ax1.grid(True, linestyle='-.')
         plt.show()
 
-    def PlottingMulti_SpanSelector(self, fig_no, x, y, xlab, ylab, col):
+    def PlottingMulti_SpanSelector(self, x, y, xlab, ylab, col):
         """
         Plot multiple signals with a horizontal span selector for interactive range selection.
 
         Parameters
         ----------
-        fig_no : int
-            Figure number to identify the plot window.
         x : list of array_like
             List of X-axis data arrays for each plotted line.
         y : list of array_like
@@ -455,7 +446,8 @@ class Plotting:
                 The interactive span selector widget.
         """
         rc('font', weight='bold')
-        fig = plt.figure(fig_no, constrained_layout=True, figsize=self.PlotFigureSize)
+        fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=self.PlotFigureSize)
+        self.fig_counter += 1
         spec = fig.add_gridspec(1, 1)
 
         ax1 = fig.add_subplot(spec[0, 0])
@@ -486,14 +478,12 @@ class Plotting:
 
         return fig, span_selector
 
-    def Plotting3DWire(self, fig_no, x, y, z, xlab, ylab, title, upL, loL):
+    def Plotting3DWire(self, x, y, z, xlab, ylab, title, upL, loL):
         """
         Plot a 3D wireframe surface using meshgrid data.
 
         Parameters
         ----------
-        fig_no : int
-            Figure number for the plot.
         x : ndarray
             1D array for x-axis values.
         y : ndarray
@@ -516,7 +506,8 @@ class Plotting:
         None
         """
         rc('font', weight='bold')
-        fig = plt.figure(fig_no, constrained_layout=True, figsize=self.PlotFigureSize)
+        fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=self.PlotFigureSize)
+        self.fig_counter += 1
         ax1 = fig.add_subplot(111, projection='3d')
 
         x1 = x.copy()
@@ -533,14 +524,12 @@ class Plotting:
         ax1.set_ylim3d(loL, upL)
         plt.show()
 
-    def PlottingContour(self, fig_no, x, y, z, xlab, ylab, title):
+    def PlottingContour(self, x, y, z, xlab, ylab, title):
         """
         Generate a contour plot of a 2D scalar field.
 
         Parameters
         ----------
-        fig_no : int
-            The figure number for the plot window.
         x : ndarray
             1D array of x-axis values.
         y : ndarray
@@ -560,7 +549,8 @@ class Plotting:
         """
         cmap = [cm.RdBu, cm.seismic, cm.bwr, cm.RdGy]
         rc('font', weight='bold')
-        fig = plt.figure(fig_no, constrained_layout=True, figsize=self.PlotFigureSize)
+        fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=self.PlotFigureSize)
+        self.fig_counter += 1
         ax1 = fig.add_subplot(111)
         
         plotC = ax1.contour(z, 10, extent=[x.min(), x.max(), y.min(), y.max()],
@@ -591,14 +581,12 @@ class Plotting:
         """
         return np.trace(np.matmul(A.T.conj(), B))
     
-    def PlottingSphere(self, fig_no, Mx, My, Mz, rho_eqQ, plot_vector, scale_datapoints):
+    def PlottingSphere(self, Mx, My, Mz, rho_eqQ, plot_vector, scale_datapoints):
         """
         Plot the evolution of magnetization on a Bloch sphere.
 
         Parameters
         ----------
-        fig_no : int
-            Figure number for the plot.
         Mx : array_like
             Array of Mx components over time.
         My : array_like
@@ -625,7 +613,8 @@ class Plotting:
         y = sphera_radius * np.sin(theta) * np.sin(phi)
         z = sphera_radius * np.cos(theta)
 
-        fig = plt.figure(fig_no, figsize=self.PlotFigureSize)
+        fig = plt.figure(self.fig_counter, figsize=self.PlotFigureSize)
+        self.fig_counter += 1
         ax = fig.add_subplot(111, projection='3d')
         ax.plot_surface(x, y, z, color='c', alpha=0.3, rstride=5, cstride=5,
                         linewidth=0.5, edgecolor='k')

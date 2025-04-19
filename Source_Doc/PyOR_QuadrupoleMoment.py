@@ -3,20 +3,18 @@ PyOR Python On Resonance
 Author: Vineeth Francis Thalakottoor Jose Chacko
 email: vineethfrancis.physics@gmail.com
 
-This file contain quadrapole value of electron and other nuclei
-
-Documentation is done.
+This file contain quadrapole moment (Q) values of electron and other nuclei
 """
 
-QUADRUPOLE = {}
+QUADRUPOLE = {} # Unit: fm^2, values from ref 2
 
 QUADRUPOLE["E"] = 0 # Electron; 
 QUADRUPOLE["H1"] = 0 # Proton; 
-QUADRUPOLE["H2"] = 0.2860e-28 # Deuterium;
+QUADRUPOLE["H2"] = 0.285783 # Deuterium;
 QUADRUPOLE["C13"] = 0 # Carbon; 
-QUADRUPOLE["N14"] = 2.044e-28 # Nitrogen 14; 
+QUADRUPOLE["N14"] = 2.044 # Nitrogen 14; 
 QUADRUPOLE["N15"] = 0 # Nitrogen 15; 
-QUADRUPOLE["O17"] = -2.558e-28 # Oxygen 17; 
+QUADRUPOLE["O17"] = -2.558 # Oxygen 17; 
 QUADRUPOLE["F19"] = 0 # Flurine 19;  
 
 def quadrupole(value):
@@ -44,8 +42,7 @@ def quadrupole(value):
     Returns:
     --------
     float
-        Nuclear electric quadrupole moment in units of square meters (m²), 
-        specifically in the order of 10⁻²⁸ m².
+        Nuclear electric quadrupole moment (fm²).
 
     Raises:
     -------
@@ -56,17 +53,19 @@ def quadrupole(value):
     Example:
     --------
     quadrupole("H2")
-    2.86e-29
+    0.285783
 
     quadrupole("N14")
-    2.044e-28
+    2.044
 
     Reference:
     ----------
-    Harris, R. K., Becker, E. D., de Menezes, S. M. C., Goodfellow, R., & Granger, P. (2001).  
+    1. Harris, R. K., Becker, E. D., de Menezes, S. M. C., Goodfellow, R., & Granger, P. (2001).  
     NMR nomenclature. Nuclear spin properties and conventions for chemical shifts (IUPAC Recommendations 2001).  
     *Pure and Applied Chemistry*, 73(11), 1795–1818.  
     DOI: https://doi.org/10.1351/pac200173111795
+
+    2. Solid State NMR, Principles, Methods, and Applications,  Klaus Müller and Marco Geppi
     """
 
     assert value in QUADRUPOLE.keys(), "particle not defined, add the quadrupole value yourself"
