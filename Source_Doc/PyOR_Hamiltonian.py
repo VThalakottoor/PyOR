@@ -517,30 +517,6 @@ class Hamiltonian:
             A[0, 2] * X[0] @ Y[2] + A[1, 2] * X[1] @ Y[2] + A[2, 2] * X[2] @ Y[2]
         )
 
-    def Interaction_Hamiltonian_Catesian_SphericalAngles(self, XQ, AQ, YQ, theta=0, phi=0):
-        """
-        Construct the interaction Hamiltonian using spherical coordinates.
-
-        Parameters:
-        -----------
-        XQ : str
-            First operator prefix (e.g., "I")
-        AQ : QunObj
-            Tensor (e.g., CSA or dipolar) in PAF
-        YQ : str
-            Second operator prefix or "" for external field
-        theta : float
-            Polar angle (in radians)
-        phi : float
-            Azimuthal angle (in radians)
-
-        Returns:
-        --------
-        QunObj
-            Rotated Hamiltonian in lab frame
-        """
-        return self.Interaction_Hamiltonian_Catesian_Euler(XQ, AQ, YQ, alpha=phi, beta=theta, gamma=0.0)
-
     def Interaction_Hamiltonian_SphericalTensor(self, X, ApafQ, Y, string, approx, alpha=0.0, beta=0.0, gamma=0.0):
         """
         General Hamiltonian using spherical tensor formalism.
@@ -665,8 +641,8 @@ class Hamiltonian:
         phi = (np.pi / 180.0) * phi
 
         values = self.InteractionTensor_PAF_Decomposition(ApasQ)
-        Isotropic = values["Isotropic"]
-        Anisotropy = values["Anisotropy"]
+        Isotropic = values["Isotropic"] * 2.0 * np.pi
+        Anisotropy = values["Anisotropy"] * 2.0 * np.pi
         Asymmetry = values["Asymmetry"]
 
         rho_lab_zz = Isotropic + 0.5 * Anisotropy * (
@@ -678,7 +654,7 @@ class Hamiltonian:
         else:
             return QunObj(gamma * rho_lab_zz * self.class_QS.B0 * SZ)
 
-    def Interaction_Hamiltonian_LAB_Quadrupole_Secular(self, X, eq, etaQ, theta, phi):
+    def Interaction_Hamiltonian_LAB_Quadrupole_Secular(self, X, Coupling, etaQ, theta, phi):
         """
         Constructs the secular quadrupole Hamiltonian.
 
@@ -698,11 +674,11 @@ class Hamiltonian:
         QunObj
             The quadrupole Hamiltonian
         """
-        hbar = 1.05457182e-34
-        Q = getattr(self.class_QS, X).quadrupole
+        
+        Coupling = 2 * np.pi * Coupling
         spin = getattr(self.class_QS, X).spin
 
-        constant = Q * eq / (4.0 * hbar * spin * (2.0 * spin - 1))
+        constant = Coupling / (4.0 * spin * (2.0 * spin - 1))
 
         Sx = getattr(self.class_QS, X + "x").data
         Sy = getattr(self.class_QS, X + "y").data
@@ -782,7 +758,7 @@ class Hamiltonian:
 
         return QunObj(I1 + Aniso * I2)
 
-    def InteractionTensor_PAF_Quadrupole(self, X, eq, etaQ):
+    def InteractionTensor_PAF_Quadrupole(self, X, Coupling, etaQ):
         """
         Constructs the quadrupolar tensor in the PAF.
 
@@ -800,18 +776,18 @@ class Hamiltonian:
         QunObj
             Quadrupolar tensor in the PAF
         """
-        hbar = 1.05457182e-34
-        Q = getattr(self.class_QS, X).quadrupole
+        
+        Coupling = 2.0 * np.pi * Coupling
         spin = getattr(self.class_QS, X).spin
 
-        constant = Q / (2.0 * hbar * spin * (2.0 * spin - 1))
+        constant = Coupling / (2.0 * spin * (2.0 * spin - 1))
 
         I = np.eye(3)
-        I[0][0] = -0.5 * (1 + etaQ) * eq
-        I[1][1] = -0.5 * (1 - etaQ) * eq
-        I[2][2] = eq
+        I[0][0] = -0.5 * (1 + etaQ) * constant
+        I[1][1] = -0.5 * (1 - etaQ) * constant
+        I[2][2] = constant
 
-        return QunObj(constant * I)
+        return QunObj(I)
 
     def InteractionTensor_PAF_Dipole(self, d):
         """
@@ -858,13 +834,13 @@ class Hamiltonian:
 
         trace_A = np.trace(A)
         A_iso = trace_A / 3
-        output["Isotropic"] = A_iso
+        output["Isotropic"] = np.real(A_iso / (2.0 * np.pi))
 
         aniso = A[2][2] - A_iso
-        output["Anisotropy"] = aniso
+        output["Anisotropy"] = np.real(aniso / (2.0 * np.pi))
 
         asymm = (A[1][1] - A[0][0]) / (A[2][2] - A_iso)
-        output["Asymmetry"] = asymm
+        output["Asymmetry"] = np.real(asymm)
 
         return output
 
@@ -901,14 +877,19 @@ class Hamiltonian:
 
         return output
 
-    def PowderSpectrum(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx, alpha, beta, gamma, weighted=True):
+    def PowderSpectrum(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx,
+                    alpha, beta, gamma, weighted=True, weight=None,
+                    SecularEquation="spherical"):
         """
         Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.
 
         Parameters:
         -----------
         weighted : bool
-            Whether to use sin(beta) weighting for correct powder averaging.
+            Whether to use weighted averaging.
+        weight : ndarray or None
+            Optional crystallite weights. If None and weighted=True,
+            defaults to sin(beta) weighting.
 
         Returns:
         --------
@@ -921,16 +902,24 @@ class Hamiltonian:
         alpha_beta_gamma_pairs = list(zip(alpha, beta, gamma))
 
         def compute_single(alpha_i, beta_i, gamma_i):
-            Hcsa = self.Interaction_Hamiltonian_SphericalTensor(
-                X, IT_PAF, Y,
-                string, approx,
-                alpha_i, beta_i, gamma_i
-            )
-            t, rho_t = EVol.Evolution(rhoI, rhoeq, Hcsa)
+            if SecularEquation == "spherical":
+                HAM = self.Interaction_Hamiltonian_SphericalTensor(
+                    X, IT_PAF, Y, string, approx, alpha_i, beta_i, gamma_i
+                )
+            elif SecularEquation == "csa":
+                HAM = self.Interaction_Hamiltonian_LAB_CSA_Secular(
+                    X, IT_PAF, beta_i, alpha_i
+                )
+            else:
+                raise ValueError(f"Unknown SecularEquation: {SecularEquation}")
+
+            t, rho_t = EVol.Evolution(rhoI, rhoeq, HAM)
+
             if Y == "":
                 det_Mt = getattr(self.class_QS, X + "p").data
             else:
                 det_Mt = getattr(self.class_QS, X + "p").data + getattr(self.class_QS, Y + "p").data
+
             t, Mt = EVol.Expectation(rho_t, det_Mt)
             Mt = Spro.WindowFunction(t, Mt, 0.5)
             freq, spectrum_single = Spro.FourierTransform(Mt, self.class_QS.AcqFS, 5)
@@ -943,19 +932,22 @@ class Hamiltonian:
         )
 
         freq_list, spectra = zip(*results)
-        freq = freq_list[0]  # all same
+        freq = freq_list[0]  # assume all same
 
         if weighted:
-            # Use sin(beta) as weights (beta is in degrees)
-            weights = np.sin(np.radians(beta))
-            weighted_spectra = [w * s for w, s in zip(weights, spectra)]
-            spectrum = np.sum(weighted_spectra, axis=0) / np.sum(weights)
+            if weight is not None:
+                # Use external crystallite weight array
+                weights = np.asarray(weight)
+            else:
+                # Use sin(beta) weighting
+                weights = np.sin(np.radians(beta))
+            weights = weights / np.sum(weights)  # Normalize
+            spectrum = np.sum([w * s for w, s in zip(weights, spectra)], axis=0)
         else:
-            # Uniform (incorrect) averaging
-            spectrum = np.mean(spectra, axis=0)
+            # Uniform averaging (not normalized)
+            spectrum = np.sum(spectra, axis=0)
 
         return freq, spectrum
-
 
     def ShapedPulse_Bruker(self, file_path, pulseLength, RotationAngle):
         """
