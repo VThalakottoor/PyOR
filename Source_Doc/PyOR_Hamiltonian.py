@@ -879,7 +879,7 @@ class Hamiltonian:
 
     def PowderSpectrum(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx,
                     alpha, beta, gamma, weighted=True, weight=None,
-                    SecularEquation="spherical"):
+                    SecularEquation="spherical", ncores = -1):
         """
         Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.
 
@@ -926,7 +926,7 @@ class Hamiltonian:
             return freq, np.abs(spectrum_single)
 
         # Run all computations in parallel
-        results = Parallel(n_jobs=-1)(
+        results = Parallel(n_jobs=ncores)(
             delayed(compute_single)(alpha_i, beta_i, gamma_i)
             for alpha_i, beta_i, gamma_i in alpha_beta_gamma_pairs
         )
