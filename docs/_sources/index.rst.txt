@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to PyOR Documentation's documentation!
-==============================================
+Welcome to PyOR's documentation!
+================================
+
+This is the PyOR simulation toolkit for quantum and NMR simulations.
 
 .. toctree::
    :maxdepth: 2

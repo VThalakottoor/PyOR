@@ -11,7 +11,7 @@ import sys
 
 sys.path.insert(0,os.path.abspath(".."))
 
-project = 'PyOR Documentation'
+project = 'PyOR'
 copyright = '2025, Vineeth Francis Thalakottoor Jose Chacko'
 author = 'Vineeth Francis Thalakottoor Jose Chacko'
 release = '1.0.0'
@@ -31,6 +31,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
-
+html_logo = "_static/logo.png"
 
 html_baseurl = "https://vthalakottoor.github.io/PyOR/"
