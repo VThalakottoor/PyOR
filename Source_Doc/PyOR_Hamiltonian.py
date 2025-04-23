@@ -105,18 +105,24 @@ class Hamiltonian:
         return W0
 
     def Zeeman(self):
-        """
+        r"""
         Constructs the Zeeman Hamiltonian in the laboratory frame.
 
-        H_Z = Σ_i ω₀ᵢ * S_zᵢ
-        where ω₀ᵢ is the Larmor frequency of the i-th spin,
-        and S_zᵢ is the z-component spin operator.
+        The Zeeman Hamiltonian is defined as:
 
-        Returns:
-        --------
+        .. math::
+
+            H_Z = \sum_i \omega_{0i} \cdot S_{zi}
+
+        where :math:`\omega_{0i}` is the Larmor frequency of the *i*-th spin,  
+        and :math:`S_{zi}` is the z-component spin operator.
+
+        Returns
+        -------
         QunObj
             The Zeeman Hamiltonian represented as a quantum object.
         """
+
         LarmorF = self.LarmorF
         Sz = self.class_QS.Sz_
 
@@ -127,19 +133,25 @@ class Hamiltonian:
         return QunObj(Hz)
 
     def Zeeman_RotFrame(self):
-        """
+        r"""
         Constructs the Zeeman Hamiltonian in the rotating frame.
 
-        H_Z_RF = Σ_i (ω₀ᵢ - ω_RFᵢ) * S_zᵢ
-        where:
-            - ω₀ᵢ is the Larmor frequency of the i-th spin,
-            - ω_RFᵢ is the rotating frame reference frequency.
+        The Hamiltonian is defined as:
 
-        Returns:
-        --------
+        .. math::
+
+            H_Z^{\mathrm{RF}} = \sum_i \left( \omega_{0i} - \omega_{\mathrm{RF}i} \right) S_{zi}
+
+        where:
+        - :math:`\omega_{0i}` is the Larmor frequency of the *i*-th spin
+        - :math:`\omega_{\mathrm{RF}i}` is the rotating frame reference frequency
+
+        Returns
+        -------
         QunObj
             The Zeeman Hamiltonian in the rotating frame.
         """
+
         LarmorF = self.LarmorF
         OmegaRF = self.class_QS.OmegaRF
         Sz = self.class_QS.Sz_
@@ -530,7 +542,7 @@ class Hamiltonian:
         General Hamiltonian using spherical tensor formalism.
 
         Reference:
-        ---------
+        ----------
         Michael Mehring, Internal Spin Interactions and Rotations in Solids.
         """
 
@@ -626,7 +638,7 @@ class Hamiltonian:
         General Hamiltonian using spherical tensor formalism for Magical Angle Spinning (MAS).
 
         Reference:
-        ---------
+        ----------
         Michael Mehring, Internal Spin Interactions and Rotations in Solids.
         """
 

@@ -434,7 +434,7 @@ class QunObj():
 
     def OuterProduct(self, other):
         """
-        Outer product: |ψ⟩⟨φ|.
+        Outer product: `|ψ⟩⟨φ|`.
 
         Parameters
         ----------
@@ -477,14 +477,14 @@ class QunObj():
         return self if norm == 0 else QunObj(self.data / np.sqrt(norm))
 
     def Rotate(self, theta_rad, operator):
-        """
+        r"""
         Apply a unitary rotation to the quantum object.
 
         For operators:
-            ρ → U ρ U† where U = exp(-i θ A)
+        :math:`\rho \rightarrow U \rho U^\dagger` where :math:`U = \exp(-i \theta A)`
 
         For states:
-            |ψ⟩ → U |ψ⟩ where U = exp(-i θ A)
+        :math:`|\psi\rangle \rightarrow U |\psi\rangle` where :math:`U = \exp(-i \theta A)`
 
         Parameters
         ----------
@@ -503,6 +503,7 @@ class QunObj():
         TypeError
             If `operator` is not a QunObj.
         """
+
         if not isinstance(operator, QunObj):
             raise TypeError("Rotate only supports QunObj as the operator.")
 
@@ -517,15 +518,16 @@ class QunObj():
             raise ValueError("Rotation only supported for 'ket' and 'operator' types.")
 
     def Expectation(self, operator):
-        """
+        r"""
         Compute the expectation value of an operator.
 
-        For a state |ψ⟩:     ⟨ψ|A|ψ⟩
-        For a density ρ:     Tr(ρ A)
+        For a state :math:`|\psi\rangle`: :math:`\langle \psi | A | \psi \rangle`  
+        For a density matrix :math:`\rho`: :math:`\mathrm{Tr}(\rho A)`
 
         Parameters
         ----------
         operator : QunObj
+            Operator for which to compute the expectation value.
 
         Returns
         -------
@@ -537,6 +539,7 @@ class QunObj():
         TypeError
             If input is not a QunObj.
         """
+
         if not isinstance(operator, QunObj):
             raise TypeError("Expectation only supports QunObj as the operator.")
 

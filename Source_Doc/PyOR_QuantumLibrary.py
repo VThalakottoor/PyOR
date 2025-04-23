@@ -48,7 +48,7 @@ class QuantumLibrary:
 
     def Basis_Ket(self, dim, index, PrintDefault=False):
         """
-        Generate a ket basis vector |i⟩ of dimension `dim`.
+        Generate a ket basis vector `|i⟩` of dimension `dim`.
 
         Parameters
         ----------
@@ -96,7 +96,7 @@ class QuantumLibrary:
 
     def Bloch_Vector(self, theta, phi):
         """
-        Generate a qubit state vector |ψ⟩ on the Bloch sphere.
+        Generate a qubit state vector `|ψ⟩` on the Bloch sphere.
 
         Parameters
         ----------
@@ -208,12 +208,12 @@ class QuantumLibrary:
         return QunObj(np.kron(A.data, B.data))
 
     def TensorProductMultiple(self, *matrices: QunObj) -> QunObj:
-        """
+        r"""
         Compute tensor product of multiple QunObj instances.
 
         Parameters
         ----------
-        *matrices : QunObj
+        \*matrices : QunObj
             Arbitrary number of quantum operators or states.
 
         Returns
@@ -259,12 +259,12 @@ class QuantumLibrary:
         raise ValueError("Direct sum supports either two operators or two kets.")
 
     def DirectSumMultiple(self, *matrices: QunObj) -> QunObj:
-        """
+        r"""
         Compute direct sum of multiple quantum operators or kets.
 
         Parameters
         ----------
-        *matrices : QunObj
+        \*matrices : QunObj
             Arbitrary number of QunObj instances.
 
         Returns

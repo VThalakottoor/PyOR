@@ -64,7 +64,7 @@ def spin(value):
     The `SPIN` dictionary can be extended to include other nuclei or particles as needed.
 
     References:
-    ----------
+    -----------
 
     Title: NMR nomenclature. Nuclear spin properties and conventions for chemical shifts(IUPAC Recommendations 2001)
     Authors: Robin K. Harris , Edwin D. Becker , Sonia M. Cabral de Menezes , Robin Goodfellow and Pierre Granger

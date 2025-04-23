@@ -545,7 +545,7 @@ class QuantumSystem:
         Generate spin operators Sx, Sy, Sz, Sp, Sm for all spins in the system.
 
         Also assigns:
-        - self.Sx_, self.Sy_, self.Sz_, self.Sp_, self.Sm_ : ndarray
+        - `self.Sx_`, `self.Sy_`, `self.Sz_`, `self.Sp_`, `self.Sm_` : ndarray
         - self.Jsquared (total angular momentum operator): QunObj
         - Individual spin operators as class attributes (e.g., Ix, Iy, Iz, etc.)
         """
@@ -904,7 +904,7 @@ class QuantumSystem:
         Returns
         -------
         list of str
-            Zeeman basis state labels like |1/2,-1/2⟩.
+            Zeeman basis state labels like `|1/2,-1/2⟩`.
         """
         LABEL = []
         LABEL_temp = []

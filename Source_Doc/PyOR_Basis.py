@@ -34,11 +34,11 @@ class Basis:
         self.class_QS = class_QS
 
     def BasisChange_TransformationMatrix(self, old, new):
-        """
+        r"""
         Compute the transformation matrix between two basis sets.
 
-        The transformation matrix `U` satisfies:
-        |new⟩ = U |old⟩ and O_new = U O_old U†
+        The transformation matrix :math:`U` satisfies:
+        :math:`| \text{new} \rangle = U | \text{old} \rangle` and :math:`O_{\text{new}} = U O_{\text{old}} U^\dagger`
 
         Parameters
         ----------
@@ -52,6 +52,7 @@ class Basis:
         QunObj
             Transformation matrix as a QunObj.
         """
+
         if not (isinstance(old, list) and isinstance(new, list)):
             raise TypeError("Both inputs must be lists.")
 
