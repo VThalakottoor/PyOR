@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Source_Doc.PyOR_Rotation &mdash; PyOR 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://vthalakottoor.github.io/PyOR/_modules/Source_Doc/PyOR_Rotation.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyOR
+              <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyOR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">Source_Doc.PyOR_Rotation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Source_Doc.PyOR_Rotation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PyOR Python On Resonance</span>
+<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
+<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">This file contain functions related to Rotation</span>
+
+<span class="sd">Documentation is done.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">expm</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.PyOR_QuantumObject</span> <span class="kn">import</span> <span class="n">QunObj</span>
+    <span class="kn">from</span> <span class="nn">.PyOR_QuantumLibrary</span> <span class="kn">import</span> <span class="n">QuantumLibrary</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyOR_QuantumObject</span> <span class="kn">import</span> <span class="n">QunObj</span>
+    <span class="kn">from</span> <span class="nn">PyOR_QuantumLibrary</span> <span class="kn">import</span> <span class="n">QuantumLibrary</span>
+
+<span class="n">QLib</span> <span class="o">=</span> <span class="n">QuantumLibrary</span><span class="p">()</span>
+
+<div class="viewcode-block" id="RotateX">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Rotation.RotateX">[docs]</a>
+<span class="k">def</span> <span class="nf">RotateX</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rotates a vector or tensor about the X-axis by a given angle.</span>
+
+<span class="sd">    This function returns a 3x3 rotation matrix that can be applied to a vector or tensor</span>
+<span class="sd">    to perform a rotation about the X-axis in three-dimensional space. The angle </span>
+<span class="sd">    :math:`\theta` is provided in degrees and is internally converted to radians.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    theta : float</span>
+<span class="sd">        The angle of rotation in degrees. The function converts this to radians </span>
+<span class="sd">        for the rotation calculation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        A 3x3 NumPy array representing the rotation matrix for a counterclockwise </span>
+<span class="sd">        rotation about the X-axis by the angle :math:`\theta`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The rotation matrix for a counterclockwise rotation about the X-axis is:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \begin{bmatrix}</span>
+<span class="sd">        1 &amp; 0          &amp; 0 \\</span>
+<span class="sd">        0 &amp; \cos\theta &amp; -\sin\theta \\</span>
+<span class="sd">        0 &amp; \sin\theta &amp; \cos\theta</span>
+<span class="sd">        \end{bmatrix}</span>
+
+<span class="sd">    where :math:`\theta` is the angle of rotation in radians.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)],[</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)]])</span></div>
+
+
+<div class="viewcode-block" id="RotateY">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Rotation.RotateY">[docs]</a>
+<span class="k">def</span> <span class="nf">RotateY</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rotates a vector or tensor about the Y-axis by a given angle.</span>
+
+<span class="sd">    This function returns a 3x3 rotation matrix that can be applied to a vector or tensor</span>
+<span class="sd">    to perform a rotation about the Y-axis in three-dimensional space. The angle </span>
+<span class="sd">    :math:`\theta` is provided in degrees and is internally converted to radians.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    theta : float</span>
+<span class="sd">        The angle of rotation in degrees. The function converts this to radians </span>
+<span class="sd">        for the rotation calculation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        A 3x3 NumPy array representing the rotation matrix for a counterclockwise </span>
+<span class="sd">        rotation about the Y-axis by the angle :math:`\theta`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The rotation matrix for a counterclockwise rotation about the Y-axis is:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \begin{bmatrix}</span>
+<span class="sd">        \cos\theta &amp; 0 &amp; \sin\theta \\</span>
+<span class="sd">        0          &amp; 1 &amp; 0 \\</span>
+<span class="sd">        -\sin\theta &amp; 0 &amp; \cos\theta</span>
+<span class="sd">        \end{bmatrix}</span>
+
+<span class="sd">    where :math:`\theta` is the angle of rotation in radians.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)]])</span></div>
+
+    
+<div class="viewcode-block" id="RotateZ">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Rotation.RotateZ">[docs]</a>
+<span class="k">def</span> <span class="nf">RotateZ</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rotates a vector or tensor about the Z-axis by a given angle.</span>
+
+<span class="sd">    This function returns a 3x3 rotation matrix that can be applied to a vector or tensor</span>
+<span class="sd">    to perform a rotation about the Z-axis in three-dimensional space. The angle :math:`\theta` is</span>
+<span class="sd">    provided in degrees and is internally converted to radians.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    theta : float</span>
+<span class="sd">        The angle of rotation in degrees. The function converts this to radians </span>
+<span class="sd">        for the rotation calculation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        A 3x3 NumPy array representing the rotation matrix for a counterclockwise rotation </span>
+<span class="sd">        about the Z-axis by the angle :math:`\theta`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The rotation matrix for a counterclockwise rotation about the Z-axis is:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \begin{bmatrix}</span>
+<span class="sd">        \cos\theta &amp; -\sin\theta &amp; 0 \\</span>
+<span class="sd">        \sin\theta &amp;  \cos\theta &amp; 0 \\</span>
+<span class="sd">        0          &amp;  0          &amp; 1</span>
+<span class="sd">        \end{bmatrix}</span>
+
+<span class="sd">    where :math:`\theta` is the angle of rotation in radians.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="mi">0</span><span class="p">],[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span></div>
+
+
+<div class="viewcode-block" id="RotateEuler">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Rotation.RotateEuler">[docs]</a>
+<span class="k">def</span> <span class="nf">RotateEuler</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">,</span><span class="n">gamma</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Performs a rotation using Euler angles (α, β, γ) in three-dimensional space.</span>
+
+<span class="sd">    This function computes the overall rotation matrix by applying a series of three</span>
+<span class="sd">    rotations around the Z-axis, Y-axis, and Z-axis again, using the provided Euler angles:</span>
+<span class="sd">    - alpha (α) : rotation about the Z-axis</span>
+<span class="sd">    - beta (β)  : rotation about the Y-axis</span>
+<span class="sd">    - gamma (γ) : rotation about the Z-axis</span>
+
+<span class="sd">    The rotation order follows the intrinsic Tait-Bryan angle convention (Z-Y-Z), meaning:</span>
+<span class="sd">    1. Rotate by α around the Z-axis.</span>
+<span class="sd">    2. Rotate by β around the Y-axis.</span>
+<span class="sd">    3. Rotate by γ around the Z-axis again.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    alpha : float</span>
+<span class="sd">        The angle of rotation about the Z-axis (α) in degrees.</span>
+<span class="sd">    beta : float</span>
+<span class="sd">        The angle of rotation about the Y-axis (β) in degrees.</span>
+<span class="sd">    gamma : float</span>
+<span class="sd">        The angle of rotation about the Z-axis (γ) in degrees.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        A 3x3 numpy array representing the resulting rotation matrix for the combined Euler rotations.</span>
+<span class="sd">    </span>
+<span class="sd">    Notes:</span>
+<span class="sd">    ------</span>
+<span class="sd">    The combined rotation is calculated as:</span>
+
+<span class="sd">        R = RotateZ(α) * RotateY(β) * RotateZ(γ)</span>
+
+<span class="sd">    where:</span>
+<span class="sd">        - RotateZ(α) applies a counterclockwise rotation by α around the Z-axis.</span>
+<span class="sd">        - RotateY(β) applies a counterclockwise rotation by β around the Y-axis.</span>
+<span class="sd">        - RotateZ(γ) applies a counterclockwise rotation by γ around the Z-axis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">RotateZ</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">@</span> <span class="n">RotateY</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">@</span> <span class="n">RotateZ</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Wigner_d_Matrix">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Rotation.Wigner_d_Matrix">[docs]</a>
+<span class="k">def</span> <span class="nf">Wigner_d_Matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the Wigner d-matrix for a given rank and angle.</span>
+
+<span class="sd">    The Wigner d-matrix is used to represent the rotation of spherical harmonics</span>
+<span class="sd">    or quantum states under rotations in quantum mechanics. It is often used in </span>
+<span class="sd">    various fields, including nuclear magnetic resonance (NMR) and quantum chemistry.</span>
+<span class="sd">    This function computes the Wigner d-matrix for a given rank (angular momentum quantum number)</span>
+<span class="sd">    and a rotation angle :math:`\beta` (in degrees).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rank : int</span>
+<span class="sd">        The rank (or angular momentum quantum number) for which the Wigner d-matrix is computed.</span>
+<span class="sd">        This corresponds to the quantum number :math:`l` in the Wigner d-matrix formulation.</span>
+
+<span class="sd">    beta : float</span>
+<span class="sd">        The rotation angle :math:`\beta` in degrees. The function converts this to radians </span>
+<span class="sd">        for the computation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    QunObj</span>
+<span class="sd">        A quantum object wrapping the computed Wigner d-matrix. The matrix is unitary </span>
+<span class="sd">        and has shape :math:`(2l + 1) \times (2l + 1)`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The Wigner d-matrix :math:`d^l_{m,m&#39;}(\beta)` describes how spherical harmonics or </span>
+<span class="sd">    spin states transform under rotations. In this function:</span>
+
+<span class="sd">    - :math:`l` is the angular momentum quantum number (rank)</span>
+<span class="sd">    - :math:`\beta` is the rotation angle around the Y-axis, in degrees</span>
+<span class="sd">    - The function uses the spin operator :math:`S_y` and applies the exponential:  </span>
+
+<span class="sd">    :math:`\exp(-i \, \beta \, S_y)`</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    expm : Matrix exponential function.  </span>
+<span class="sd">    QLib.SSpinOp : Function to generate spin operators.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    1. Nouredine Zettili, *Quantum Mechanics: Concepts and Applications*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="n">SyQ</span> <span class="o">=</span> <span class="n">QLib</span><span class="o">.</span><span class="n">SSpinOp</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span><span class="s2">&quot;y&quot;</span><span class="p">,</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">Sy</span> <span class="o">=</span> <span class="n">SyQ</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">Sy</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Wigner_D_Matrix">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Rotation.Wigner_D_Matrix">[docs]</a>
+<span class="k">def</span> <span class="nf">Wigner_D_Matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">,</span><span class="n">gamma</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the Wigner D-matrix for a given rank and three Euler angles (alpha, beta, gamma).</span>
+
+<span class="sd">    The Wigner D-matrix is used to describe rotations in quantum mechanics and is particularly</span>
+<span class="sd">    useful in representing the rotation of angular momentum eigenstates. The matrix is constructed</span>
+<span class="sd">    using the three Euler angles: alpha (:math:`\alpha`), beta (:math:`\beta`), and gamma (:math:`\gamma`), </span>
+<span class="sd">    which correspond to rotations around the Z-axis, Y-axis, and Z-axis again, respectively.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rank : int</span>
+<span class="sd">        The angular momentum quantum number :math:`l` for which the Wigner D-matrix is computed.</span>
+<span class="sd">        The resulting matrix is of size :math:`(2l + 1) \times (2l + 1)`.</span>
+
+<span class="sd">    alpha : float</span>
+<span class="sd">        Rotation angle around the first Z-axis (:math:`\alpha`) in degrees.</span>
+
+<span class="sd">    beta : float</span>
+<span class="sd">        Rotation angle around the Y-axis (:math:`\beta`) in degrees.</span>
+
+<span class="sd">    gamma : float</span>
+<span class="sd">        Rotation angle around the second Z-axis (:math:`\gamma`) in degrees.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    QunObj</span>
+<span class="sd">        A quantum object wrapping the computed Wigner D-matrix, which is a unitary matrix </span>
+<span class="sd">        of size :math:`(2l + 1) \times (2l + 1)`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The Wigner D-matrix for the given Euler angles is computed using the following expression:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        D^l_{m,m&#39;}(\alpha, \beta, \gamma) = </span>
+<span class="sd">        \exp(-i \alpha S_z) \cdot \exp(-i \beta S_y) \cdot \exp(-i \gamma S_z)</span>
+
+<span class="sd">    where:</span>
+
+<span class="sd">    - :math:`S_z` is the spin operator along the Z-axis.  </span>
+<span class="sd">    - :math:`S_y` is the spin operator along the Y-axis.  </span>
+<span class="sd">    - The angles :math:`\alpha`, :math:`\beta`, and :math:`\gamma` are the Euler angles in **radians**.</span>
+
+<span class="sd">    The Wigner D-matrix represents the rotation of quantum states under the specified Euler angles.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    expm : Matrix exponential function  </span>
+<span class="sd">    QLib.SSpinOp : Generates spin operators for a given rank</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    1. Nouredine Zettili, *Quantum Mechanics: Concepts and Applications*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SyQ</span> <span class="o">=</span> <span class="n">QLib</span><span class="o">.</span><span class="n">SSpinOp</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span><span class="s2">&quot;y&quot;</span><span class="p">,</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">SzQ</span> <span class="o">=</span> <span class="n">QLib</span><span class="o">.</span><span class="n">SSpinOp</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">Sy</span> <span class="o">=</span> <span class="n">SyQ</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">Sz</span> <span class="o">=</span> <span class="n">SzQ</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+
+    <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">Sz</span><span class="p">)</span> <span class="o">@</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">Sy</span><span class="p">)</span> <span class="o">@</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">Sz</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Vineeth Francis Thalakottoor Jose Chacko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,775 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyOR Quantum &mdash; PyOR 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="canonical" href="https://vthalakottoor.github.io/PyOR/Examples/Hamiltonians/DipolarHamiltonian.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyOR
+              <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyOR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PyOR Quantum</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/Examples/Hamiltonians/DipolarHamiltonian.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="PyOR-Quantum">
+<h1>PyOR Quantum<a class="headerlink" href="#PyOR-Quantum" title="Link to this heading"></a></h1>
+<section id="Author:-Vineeth-Thalakottoor">
+<h2>Author: Vineeth Thalakottoor<a class="headerlink" href="#Author:-Vineeth-Thalakottoor" title="Link to this heading"></a></h2>
+</section>
+<section id="Introduction-to-Dipolar-Hamiltonians">
+<h2>Introduction to Dipolar Hamiltonians<a class="headerlink" href="#Introduction-to-Dipolar-Hamiltonians" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the source path</span>
+<span class="n">SourcePath</span> <span class="o">=</span> <span class="s1">&#39;/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/Source_Doc&#39;</span>
+
+<span class="c1"># Add source path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SourcePath</span><span class="p">)</span>
+
+<span class="c1"># Import PyOR package</span>
+<span class="kn">from</span> <span class="nn">PyOR_QuantumSystem</span> <span class="kn">import</span> <span class="n">QuantumSystem</span> <span class="k">as</span> <span class="n">QunS</span>
+<span class="kn">from</span> <span class="nn">PyOR_Hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
+<span class="kn">from</span> <span class="nn">PyOR_QuantumLibrary</span> <span class="kn">import</span> <span class="n">QuantumLibrary</span>
+<span class="kn">import</span> <span class="nn">PyOR_SphericalTensors</span> <span class="k">as</span> <span class="nn">ST</span>
+<span class="kn">import</span> <span class="nn">PyOR_Rotation</span> <span class="k">as</span> <span class="nn">Rot</span>
+<span class="n">QLib</span> <span class="o">=</span> <span class="n">QuantumLibrary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the spin system</span>
+<span class="n">Spin_list</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span> <span class="p">:</span> <span class="s2">&quot;H1&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span> <span class="p">:</span> <span class="s2">&quot;H1&quot;</span><span class="p">}</span>
+<span class="n">QS</span> <span class="o">=</span> <span class="n">QunS</span><span class="p">(</span><span class="n">Spin_list</span><span class="p">,</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># initialize the system</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<section id="Set-parameters">
+<h3>Set parameters<a class="headerlink" href="#Set-parameters" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Master Equation</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">=</span> <span class="s2">&quot;Hilbert&quot;</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">MasterEquation</span> <span class="o">=</span> <span class="s2">&quot;Redfield&quot;</span>
+
+<span class="c1"># B0 Field in Tesla, Static Magnetic field (B0) along Z</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">B0</span> <span class="o">=</span> <span class="mf">9.4</span>
+
+<span class="c1"># Offset Frequency in rotating frame (Hz)</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">10.0</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">50.0</span>
+
+<span class="c1"># Define paris of spins coupled by dipolar interaction</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">DipoleAngle</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">45</span><span class="p">,</span><span class="mi">45</span><span class="p">)]</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">Dipole_Pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">)]</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;All&quot;</span><span class="p">]</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">DipolebIS</span> <span class="o">=</span> <span class="p">[</span><span class="mf">25.0e3</span><span class="p">]</span>
+
+<span class="c1"># Define initial and final Spin Temperature</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">I_spintemp</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">300.0</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">I_spintemp</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">300.0</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">F_spintemp</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">300.0</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">F_spintemp</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">300.0</span>
+
+<span class="c1"># Relaxation Process</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">Rprocess</span> <span class="o">=</span> <span class="s2">&quot;Phenomenological&quot;</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">R1</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">R2</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">QS</span><span class="o">.</span><span class="n">Update</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Rotating frame frequencies: {&#39;A&#39;: -2514706800.0, &#39;B&#39;: -2514706800.0}
+Offset frequencies: {&#39;A&#39;: 10.0, &#39;B&#39;: 50.0}
+Initial spin temperatures: {&#39;A&#39;: 300.0, &#39;B&#39;: 300.0}
+Final spin temperatures: {&#39;A&#39;: 300.0, &#39;B&#39;: 300.0}
+Radiation damping gain: {&#39;A&#39;: 0, &#39;B&#39;: 0}
+Radiation damping phase: {&#39;A&#39;: 0, &#39;B&#39;: 0}
+
+Rprocess = Phenomenological
+RelaxParDipole_tau = 0.0
+DipolePairs = [(&#39;A&#39;, &#39;B&#39;)]
+RelaxParDipole_bIS = []
+</pre></div></div>
+</div>
+</section>
+<section id="Zeeman-Hamiltonians">
+<h3>Zeeman Hamiltonians<a class="headerlink" href="#Zeeman-Hamiltonians" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate Larmor Frequencies</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">print_Larmor</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">Ham</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="n">QS</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lab Frame Hamiltonian</span>
+<span class="n">Hz_lab</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">Zeeman</span><span class="p">()</span>
+<span class="n">Hz_lab</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-400228040.565114 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 20.3718327157626 &amp; 0 &amp; 0\\0 &amp; 0 &amp; -20.3718327157626 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 400228040.565114\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rotating Frame Hamiltonian</span>
+<span class="n">Hz</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">Zeeman_RotFrame</span><span class="p">()</span>
+<span class="n">Hz</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-30.0000000759161 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 20.0000008601147 &amp; 0 &amp; 0\\0 &amp; 0 &amp; -20.0000008601147 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 30.0000000759161\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Dipolar-Hamiltonian-with-Dipolar-alphabets">
+<h3>Dipolar Hamiltonian with Dipolar alphabets<a class="headerlink" href="#Dipolar-Hamiltonian-with-Dipolar-alphabets" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;secular Homonuclear&quot;</span><span class="p">]</span>
+<span class="n">Hd</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">DDcoupling</span><span class="p">()</span>
+<span class="n">Hd</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}3125.0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; -3125.0 &amp; 3125.0 &amp; 0\\0 &amp; 3125.0 &amp; -3125.0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 3125.0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;secular Hetronuclear&quot;</span><span class="p">]</span>
+<span class="n">Hd</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">DDcoupling</span><span class="p">()</span>
+<span class="n">Hd</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-3125.0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 3125.0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 3125.0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; -3125.0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">]</span>
+<span class="n">Hd</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">DDcoupling</span><span class="p">()</span>
+<span class="n">Hd</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-3125.0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 3125.0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 3125.0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; -3125.0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">]</span>
+<span class="n">Hd</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">DDcoupling</span><span class="p">()</span>
+<span class="n">Hd</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 3125.0 &amp; 0\\0 &amp; 3125.0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+<span class="n">Hd</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">DDcoupling</span><span class="p">()</span>
+<span class="n">Hd</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; -6629.0 + 6629.0 i &amp; -6629.0 + 6629.0 i &amp; 0\\0 &amp; 0 &amp; 0 &amp; 6629.0 - 6629.0 i\\0 &amp; 0 &amp; 0 &amp; 6629.0 - 6629.0 i\\0 &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">]</span>
+<span class="n">Hd</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">DDcoupling</span><span class="p">()</span>
+<span class="n">Hd</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 0\\-6629.0 - 6629.0 i &amp; 0 &amp; 0 &amp; 0\\-6629.0 - 6629.0 i &amp; 0 &amp; 0 &amp; 0\\0 &amp; 6629.0 + 6629.0 i &amp; 6629.0 + 6629.0 i &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span>
+<span class="n">Hd</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">DDcoupling</span><span class="p">()</span>
+<span class="n">Hd</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 9375.0 i\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">]</span>
+<span class="n">Hd</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">DDcoupling</span><span class="p">()</span>
+<span class="n">Hd</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\\- 9375.0 i &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;All&quot;</span><span class="p">]</span>
+
+<span class="n">theta</span> <span class="o">=</span> <span class="mi">45</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="mi">45</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">DipoleAngle</span> <span class="o">=</span> <span class="p">[(</span><span class="n">theta</span><span class="p">,</span><span class="n">phi</span><span class="p">)]</span>
+
+<span class="n">Hd</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">DDcoupling</span><span class="p">()</span>
+<span class="n">Hd</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-3125.0 &amp; -6629.0 + 6629.0 i &amp; -6629.0 + 6629.0 i &amp; 9375.0 i\\-6629.0 - 6629.0 i &amp; 3125.0 &amp; 3125.0 &amp; 6629.0 - 6629.0 i\\-6629.0 - 6629.0 i &amp; 3125.0 &amp; 3125.0 &amp; 6629.0 - 6629.0 i\\- 9375.0 i &amp; 6629.0 + 6629.0 i &amp; 6629.0 + 6629.0 i &amp; -3125.0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hd</span><span class="o">.</span><span class="n">Hermitian</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+</section>
+<section id="Dipole-tensor-PAF">
+<h3>Dipole tensor PAF<a class="headerlink" href="#Dipole-tensor-PAF" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">IT_PAF</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">InteractionTensor_PAF_Dipole</span><span class="p">(</span><span class="mf">25.0e3</span><span class="p">)</span>
+<span class="n">IT_PAF</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}25000.0 &amp; 0 &amp; 0\\0 &amp; 25000.0 &amp; 0\\0 &amp; 0 &amp; -50000.0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">PAF_Decom</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">InteractionTensor_PAF_Decomposition</span><span class="p">(</span><span class="n">IT_PAF</span><span class="p">)</span>
+<span class="n">PAF_Decom</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;Isotropic&#39;: 0.0, &#39;Anisotropy&#39;: -50000.0, &#39;Asymmetry&#39;: -0.0}
+</pre></div></div>
+</div>
+</section>
+<section id="Dipole-tensor-LAB">
+<h3>Dipole tensor LAB<a class="headerlink" href="#Dipole-tensor-LAB" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">IT_LAB</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">InteractionTensor_LAB</span><span class="p">(</span><span class="n">IT_PAF</span><span class="p">,</span><span class="n">phi</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">IT_LAB</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}6250.0 &amp; -18750.0 &amp; -26517.0\\-18750.0 &amp; 6250.0 &amp; -26517.0\\-26517.0 &amp; -26517.0 &amp; -12500.0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">LAB_Decom</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">InteractionTensor_LAB_Decomposition</span><span class="p">(</span><span class="n">IT_LAB</span><span class="p">)</span>
+<span class="n">LAB_Decom</span><span class="p">[</span><span class="s1">&#39;Isotropic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">LAB_Decom</span><span class="p">[</span><span class="s2">&quot;Symmetric&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}6250.0 &amp; -18750.0 &amp; -26517.0\\-18750.0 &amp; 6250.0 &amp; -26517.0\\-26517.0 &amp; -26517.0 &amp; -12500.0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">LAB_Decom</span><span class="p">[</span><span class="s2">&quot;Antisymmetric&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Dipolar-Hamiltonian-in-Lab-frame-(Cartesian,-Euler-rotation)">
+<h3>Dipolar Hamiltonian in Lab frame (Cartesian, Euler rotation)<a class="headerlink" href="#Dipolar-Hamiltonian-in-Lab-frame-(Cartesian,-Euler-rotation)" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+<span class="n">B</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+<span class="n">Hdd_LAB_Euler</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">Interaction_Hamiltonian_Catesian_Wigner</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">IT_PAF</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">phi</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Hdd_LAB_Euler</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-3125.0 &amp; -6629.0 + 6629.0 i &amp; -6629.0 + 6629.0 i &amp; 9375.0 i\\-6629.0 - 6629.0 i &amp; 3125.0 &amp; 3125.0 &amp; 6629.0 - 6629.0 i\\-6629.0 - 6629.0 i &amp; 3125.0 &amp; 3125.0 &amp; 6629.0 - 6629.0 i\\- 9375.0 i &amp; 6629.0 + 6629.0 i &amp; 6629.0 + 6629.0 i &amp; -3125.0\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Dipolar-Hamiltonian-in-Lab-frame-(Cartesian,-Wigner-rotation)">
+<h3>Dipolar Hamiltonian in Lab frame (Cartesian, Wigner rotation)<a class="headerlink" href="#Dipolar-Hamiltonian-in-Lab-frame-(Cartesian,-Wigner-rotation)" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hdd_LAB_Wig</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">Interaction_Hamiltonian_Catesian_Wigner</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">IT_PAF</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">phi</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Hdd_LAB_Wig</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-3125.0 &amp; -6629.0 + 6629.0 i &amp; -6629.0 + 6629.0 i &amp; 9375.0 i\\-6629.0 - 6629.0 i &amp; 3125.0 &amp; 3125.0 &amp; 6629.0 - 6629.0 i\\-6629.0 - 6629.0 i &amp; 3125.0 &amp; 3125.0 &amp; 6629.0 - 6629.0 i\\- 9375.0 i &amp; 6629.0 + 6629.0 i &amp; 6629.0 + 6629.0 i &amp; -3125.0\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Dipolar-Hamiltonian-in-Lab-frame-(Spherical-Tensors,-Wigner-Rotation)">
+<h3>Dipolar Hamiltonian in Lab frame (Spherical Tensors, Wigner Rotation)<a class="headerlink" href="#Dipolar-Hamiltonian-in-Lab-frame-(Spherical-Tensors,-Wigner-Rotation)" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hdd_LAB_ST</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">Interaction_Hamiltonian_SphericalTensor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">IT_PAF</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="s2">&quot;spin-spin&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Hdd_LAB_ST</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-3125.0 &amp; -6629.0 + 6629.0 i &amp; -6629.0 + 6629.0 i &amp; 9375.0 i\\-6629.0 - 6629.0 i &amp; 3125.0 &amp; 3125.0 &amp; 6629.0 - 6629.0 i\\-6629.0 - 6629.0 i &amp; 3125.0 &amp; 3125.0 &amp; 6629.0 - 6629.0 i\\- 9375.0 i &amp; 6629.0 + 6629.0 i &amp; 6629.0 + 6629.0 i &amp; -3125.0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hdd_LAB_ST</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">Interaction_Hamiltonian_SphericalTensor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">IT_PAF</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="s2">&quot;spin-spin&quot;</span><span class="p">,</span><span class="s2">&quot;secular&quot;</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Hdd_LAB_ST</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-3125.0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 3125.0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 3125.0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; -3125.0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hdd_LAB_ST</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">Interaction_Hamiltonian_SphericalTensor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">IT_PAF</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="s2">&quot;spin-spin&quot;</span><span class="p">,</span><span class="s2">&quot;secular + pseudosecular&quot;</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Hdd_LAB_ST</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-3125.0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 3125.0 &amp; 3125.0 &amp; 0\\0 &amp; 3125.0 &amp; 3125.0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; -3125.0\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Cartesian-tensor-to-Spherical-tensors-and-back">
+<h3>Cartesian tensor to Spherical tensors and back<a class="headerlink" href="#Cartesian-tensor-to-Spherical-tensors-and-back" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">carTOst</span> <span class="o">=</span> <span class="n">ST</span><span class="o">.</span><span class="n">MatrixToSphericalTensors</span><span class="p">(</span><span class="n">IT_PAF</span> <span class="p">)</span>
+<span class="n">carTOst</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;rank0&#39;: (-0+0j),
+ &#39;rank1&#39;: [(-0+0j), -0j, (-0+0j)],
+ &#39;rank2&#39;: [0j, (-0+0j), (-384764.94904855924+0j), 0j, 0j]}
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T0</span> <span class="o">=</span> <span class="n">carTOst</span><span class="p">[</span><span class="s2">&quot;rank0&quot;</span><span class="p">]</span>
+<span class="n">T11</span><span class="p">,</span> <span class="n">T10</span><span class="p">,</span> <span class="n">T1m1</span> <span class="o">=</span> <span class="n">carTOst</span><span class="p">[</span><span class="s2">&quot;rank1&quot;</span><span class="p">]</span>
+<span class="n">T22</span><span class="p">,</span> <span class="n">T21</span><span class="p">,</span> <span class="n">T20</span><span class="p">,</span> <span class="n">T2m1</span><span class="p">,</span> <span class="n">T2m2</span> <span class="o">=</span> <span class="n">carTOst</span><span class="p">[</span><span class="s2">&quot;rank2&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spTOcar</span> <span class="o">=</span> <span class="n">ST</span><span class="o">.</span><span class="n">SphericalTensorsToMatrix</span><span class="p">(</span><span class="n">carTOst</span><span class="p">)</span>
+<span class="n">spTOcar</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}25000.0 &amp; 0 &amp; 0\\0 &amp; 25000.0 &amp; 0\\0 &amp; 0 &amp; -50000.0\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Wigner-d-matrix">
+<h3>Wigner d matrix<a class="headerlink" href="#Wigner-d-matrix" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Rot</span><span class="o">.</span><span class="n">Wigner_d_Matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">beta</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0.854 &amp; -0.5 &amp; 0.146\\0.5 &amp; 0.707 &amp; -0.5\\0.146 &amp; 0.5 &amp; 0.854\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Rot</span><span class="o">.</span><span class="n">Wigner_d_Matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">beta</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0.729 &amp; -0.604 &amp; 0.306 &amp; -0.104 &amp; 0.021\\0.604 &amp; 0.354 &amp; -0.612 &amp; 0.354 &amp; -0.104\\0.306 &amp; 0.612 &amp; 0.25 &amp; -0.612 &amp; 0.306\\0.104 &amp; 0.354 &amp; 0.612 &amp; 0.354 &amp; -0.604\\0.021 &amp; 0.104 &amp; 0.306 &amp; 0.604 &amp; 0.729\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Wigner-D-matrix">
+<h3>Wigner D matrix<a class="headerlink" href="#Wigner-D-matrix" title="Link to this heading"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Rot</span><span class="o">.</span><span class="n">Wigner_D_Matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span><span class="n">beta</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span><span class="n">gamma</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}- 0.854 i &amp; -0.354 + 0.354 i &amp; 0.146\\0.354 - 0.354 i &amp; 0.707 &amp; -0.354 - 0.354 i\\0.146 &amp; 0.354 + 0.354 i &amp; 0.854 i\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Rot</span><span class="o">.</span><span class="n">Wigner_D_Matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span><span class="n">beta</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span><span class="n">gamma</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span><span class="o">.</span><span class="n">Round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}-0.729 &amp; 0.427 + 0.427 i &amp; - 0.306 i &amp; -0.073 + 0.073 i &amp; 0.021\\-0.427 - 0.427 i &amp; - 0.354 i &amp; -0.433 + 0.433 i &amp; 0.354 &amp; -0.073 - 0.073 i\\- 0.306 i &amp; 0.433 - 0.433 i &amp; 0.25 &amp; -0.433 - 0.433 i &amp; 0.306 i\\0.073 - 0.073 i &amp; 0.354 &amp; 0.433 + 0.433 i &amp; 0.354 i &amp; 0.427 - 0.427 i\\0.021 &amp; 0.073 + 0.073 i &amp; 0.306 i &amp; -0.427 + 0.427 i &amp; -0.729\end{matrix}\right]$</div></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Vineeth Francis Thalakottoor Jose Chacko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

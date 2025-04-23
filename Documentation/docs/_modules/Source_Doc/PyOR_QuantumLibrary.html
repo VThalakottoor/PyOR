@@ -1,0 +1,973 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Source_Doc.PyOR_QuantumLibrary &mdash; PyOR 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://vthalakottoor.github.io/PyOR/_modules/Source_Doc/PyOR_QuantumLibrary.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyOR
+              <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyOR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">Source_Doc.PyOR_QuantumLibrary</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Source_Doc.PyOR_QuantumLibrary</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PyOR Python On Resonance</span>
+<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
+<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">This file contains class QuantumLibrary.</span>
+
+<span class="sd">This class provides a collection of quantum operations and tools including</span>
+<span class="sd">basis construction, tensor operations, commutators, eigenvalue analysis,</span>
+<span class="sd">partial trace, and more for quantum mechanical systems.</span>
+
+<span class="sd">Documentation is done.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ========== Imports ========== #</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.PyOR_QuantumObject</span> <span class="kn">import</span> <span class="n">QunObj</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyOR_QuantumObject</span> <span class="kn">import</span> <span class="n">QunObj</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">la</span>
+
+<span class="c1"># ========== Class ========== #</span>
+
+<div class="viewcode-block" id="QuantumLibrary">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary">[docs]</a>
+<span class="k">class</span> <span class="nc">QuantumLibrary</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the QuantumLibrary with optional quantum system context.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        class_QS : object, optional</span>
+<span class="sd">            Quantum system containing configuration like Sdim, hbarEQ1, etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">class_QS</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span> <span class="o">=</span> <span class="n">class_QS</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SparseM</span> <span class="o">=</span> <span class="n">class_QS</span><span class="o">.</span><span class="n">SparseM</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">=</span> <span class="n">class_QS</span><span class="o">.</span><span class="n">RowColOrder</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hbarEQ1</span> <span class="o">=</span> <span class="n">class_QS</span><span class="o">.</span><span class="n">hbarEQ1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SparseM</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">=</span> <span class="s1">&#39;C&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hbarEQ1</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="QuantumLibrary.Basis_Ket">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Basis_Ket">[docs]</a>
+    <span class="k">def</span> <span class="nf">Basis_Ket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a ket basis vector `|i⟩` of dimension `dim`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dim : int</span>
+<span class="sd">            Dimension of Hilbert space.</span>
+<span class="sd">        index : int</span>
+<span class="sd">            Index of the basis vector to set to 1.</span>
+<span class="sd">        PrintDefault : bool, optional</span>
+<span class="sd">            Whether to print matrix type info (default is False).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Ket vector as a QunObj.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="n">dim</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Index must be between 0 and </span><span class="si">{</span><span class="n">dim</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+        <span class="n">state</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.Basis_Bra">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Basis_Bra">[docs]</a>
+    <span class="k">def</span> <span class="nf">Basis_Bra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a bra basis vector ⟨i| of dimension `dim`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dim : int</span>
+<span class="sd">            Dimension of Hilbert space.</span>
+<span class="sd">        index : int</span>
+<span class="sd">            Index of the basis vector to set to 1.</span>
+<span class="sd">        PrintDefault : bool, optional</span>
+<span class="sd">            Whether to print matrix type info (default is False).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Bra vector as a QunObj.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="n">dim</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Index must be between 0 and </span><span class="si">{</span><span class="n">dim</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+        <span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.Bloch_Vector">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Bloch_Vector">[docs]</a>
+    <span class="k">def</span> <span class="nf">Bloch_Vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a qubit state vector `|ψ⟩` on the Bloch sphere.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        theta : float</span>
+<span class="sd">            Polar angle in degrees.</span>
+<span class="sd">        phi : float</span>
+<span class="sd">            Azimuthal angle in degrees.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Bloch state vector as a QunObj.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vec1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_Ket</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">vec2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_Ket</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">vec1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">vec2</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.SSpinOp">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.SSpinOp">[docs]</a>
+    <span class="k">def</span> <span class="nf">SSpinOp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct single spin operators (Sx, Sy, Sz, S+, S-) for a given spin S.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : float</span>
+<span class="sd">            Spin quantum number (e.g., 1/2, 1, 3/2).</span>
+<span class="sd">        String : str</span>
+<span class="sd">            Operator type: &#39;x&#39;, &#39;y&#39;, &#39;z&#39;, &#39;p&#39;, or &#39;m&#39;.</span>
+<span class="sd">        PrintDefault : bool, optional</span>
+<span class="sd">            Whether to print matrix type info.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Requested spin operator matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hbar</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hbarEQ1</span> <span class="k">else</span> <span class="mf">1.054e-34</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="n">X</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+
+        <span class="n">Sx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">csingle</span><span class="p">)</span>
+        <span class="n">Sy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">csingle</span><span class="p">)</span>
+        <span class="n">Sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">csingle</span><span class="p">)</span>
+        <span class="n">Sp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">csingle</span><span class="p">)</span>
+        <span class="n">Sm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">csingle</span><span class="p">)</span>
+
+        <span class="n">Id</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">Idp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">Id</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">Idn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">Id</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">Sz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">hbar</span> <span class="o">*</span> <span class="n">ms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">Id</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                <span class="n">Sp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">ms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">ms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">Idp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                <span class="n">Sm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">ms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">ms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">Idn</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+
+        <span class="n">Sx</span> <span class="o">=</span> <span class="n">hbar</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">Sp</span> <span class="o">+</span> <span class="n">Sm</span><span class="p">)</span>
+        <span class="n">Sy</span> <span class="o">=</span> <span class="n">hbar</span> <span class="o">*</span> <span class="o">-</span><span class="mf">0.5</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="n">Sp</span> <span class="o">-</span> <span class="n">Sm</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">String</span> <span class="o">==</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sx</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">String</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sy</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">String</span> <span class="o">==</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">String</span> <span class="o">==</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sp</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">String</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sm</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Operator type must be one of &#39;x&#39;, &#39;y&#39;, &#39;z&#39;, &#39;p&#39;, or &#39;m&#39;.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.Purity">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Purity">[docs]</a>
+    <span class="k">def</span> <span class="nf">Purity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QunObj</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the purity of a quantum state: Tr(ρ²).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">            Density matrix.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Scalar result of the purity calculation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Purity only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.TensorProduct">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.TensorProduct">[docs]</a>
+    <span class="k">def</span> <span class="nf">TensorProduct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QunObj</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the Kronecker product (tensor product) of two QunObj instances.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A, B : QunObj</span>
+<span class="sd">            Quantum operators or states.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Tensor product result.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Tensor product only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.TensorProductMultiple">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.TensorProductMultiple">[docs]</a>
+    <span class="k">def</span> <span class="nf">TensorProductMultiple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">matrices</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QunObj</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute tensor product of multiple QunObj instances.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        \*matrices : QunObj</span>
+<span class="sd">            Arbitrary number of quantum operators or states.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Tensor product of all matrices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">matrices</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one QunObj must be provided.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Tensor product only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.DirectSum">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DirectSum">[docs]</a>
+    <span class="k">def</span> <span class="nf">DirectSum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QunObj</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the direct sum of two QunObj instances.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A, B : QunObj</span>
+<span class="sd">            Quantum operators or states.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Direct sum matrix or ket.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Direct sum only supports QunObj instances.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ket&quot;</span> <span class="ow">and</span> <span class="n">B</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ket&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="p">)),</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;ket&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span> <span class="ow">and</span> <span class="n">B</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
+            <span class="n">rA</span><span class="p">,</span> <span class="n">cA</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">rB</span><span class="p">,</span> <span class="n">cB</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">rA</span> <span class="o">+</span> <span class="n">rB</span><span class="p">,</span> <span class="n">cA</span> <span class="o">+</span> <span class="n">cB</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[:</span><span class="n">rA</span><span class="p">,</span> <span class="p">:</span><span class="n">cA</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">rA</span><span class="p">:,</span> <span class="n">cA</span><span class="p">:]</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">data</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;operator&quot;</span><span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Direct sum supports either two operators or two kets.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.DirectSumMultiple">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DirectSumMultiple">[docs]</a>
+    <span class="k">def</span> <span class="nf">DirectSumMultiple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">matrices</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QunObj</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute direct sum of multiple quantum operators or kets.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        \*matrices : QunObj</span>
+<span class="sd">            Arbitrary number of QunObj instances.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Resulting direct sum.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">matrices</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one QunObj must be provided.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Direct sum only supports QunObj instances.&quot;</span><span class="p">)</span>
+
+        <span class="n">types</span> <span class="o">=</span> <span class="p">{</span><span class="n">mat</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot mix operators and kets.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;ket&quot;</span> <span class="ow">in</span> <span class="n">types</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">mat</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">]),</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;ket&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;operator&quot;</span> <span class="ow">in</span> <span class="n">types</span><span class="p">:</span>
+            <span class="n">total_rows</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">)</span>
+            <span class="n">total_cols</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_rows</span><span class="p">,</span> <span class="n">total_cols</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+            <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">:</span>
+                <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">r</span><span class="p">:</span><span class="n">r</span><span class="o">+</span><span class="n">rows</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span><span class="n">c</span><span class="o">+</span><span class="n">cols</span><span class="p">]</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">data</span>
+                <span class="n">r</span> <span class="o">+=</span> <span class="n">rows</span>
+                <span class="n">c</span> <span class="o">+=</span> <span class="n">cols</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;operator&quot;</span><span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported matrix type for direct sum.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.OuterProduct">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.OuterProduct">[docs]</a>
+    <span class="k">def</span> <span class="nf">OuterProduct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the outer product of two QunObj instances.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">            Ket vector.</span>
+<span class="sd">        B : QunObj</span>
+<span class="sd">            Bra vector.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Outer product A ⊗ B† as operator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Outer product only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="n">outer_product</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">outer_product</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.InnerProduct">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.InnerProduct">[docs]</a>
+    <span class="k">def</span> <span class="nf">InnerProduct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the inner product ⟨A|B⟩.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">        B : QunObj</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Scalar inner product as a QunObj.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Inner product only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.Identity">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Identity">[docs]</a>
+    <span class="k">def</span> <span class="nf">Identity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an identity matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dim : int</span>
+<span class="sd">            Dimension.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Identity matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.Zeros">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Zeros">[docs]</a>
+    <span class="k">def</span> <span class="nf">Zeros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a zero matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dim : int</span>
+<span class="sd">            Dimension.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Zero matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.Commutator">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Commutator">[docs]</a>
+    <span class="k">def</span> <span class="nf">Commutator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the commutator [A, B] = AB - BA.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">        B : QunObj</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Commutator matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Commutator only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.DoubleCommutator">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DoubleCommutator">[docs]</a>
+    <span class="k">def</span> <span class="nf">DoubleCommutator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the double commutator [A, [B, ρ]].</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A, B, rho : QunObj</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Result of [[A, [B, rho]]].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;DoubleCommutator only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="n">dcommut</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">rho</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">rho</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">commut</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">dcommut</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">dcommut</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">commut</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.AntiCommutator">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.AntiCommutator">[docs]</a>
+    <span class="k">def</span> <span class="nf">AntiCommutator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the anticommutator {A, B} = AB + BA.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A, B : QunObj</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Anticommutator matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;AntiCommutator only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span> <span class="nf">DMToVec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Flatten density matrix into a vector (Liouville representation).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rho : QunObj</span>
+<span class="sd">        order : str</span>
+<span class="sd">            &#39;C&#39; (row-major) or &#39;F&#39; (column-major).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Vectorized density matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;rho only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">order</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">VecToDM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reshape vector back into a matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vec : QunObj</span>
+<span class="sd">        shape : tuple</span>
+<span class="sd">            Target matrix shape.</span>
+<span class="sd">        order : str</span>
+<span class="sd">            &#39;C&#39; (row-major) or &#39;F&#39; (column-major).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Reshaped density matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;vec only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">Eigen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute eigenvalues and eigenvectors of an operator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj, QunObj</span>
+<span class="sd">            Eigenvalues and eigenvectors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Eigen only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">eigenvalues</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">),</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Eigen_Split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute eigenvalues and return each eigenvector as a separate QunObj.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj, list of QunObj</span>
+<span class="sd">            Eigenvalues, list of eigenvectors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Eigen_Split only supports QunObj instances.&quot;</span><span class="p">)</span>
+        <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">eigenvalue_obj</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">eigenvalues</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+        <span class="n">eigenvector_objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">QunObj</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">vec</span> <span class="ow">in</span> <span class="n">eigenvectors</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">eigenvalue_obj</span><span class="p">,</span> <span class="n">eigenvector_objs</span>
+
+<div class="viewcode-block" id="QuantumLibrary.PartialTrace">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.PartialTrace">[docs]</a>
+    <span class="k">def</span> <span class="nf">PartialTrace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">keep</span><span class="p">,</span> <span class="n">Sdim</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the partial trace over specified subsystems of a density matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rho : QunObj</span>
+<span class="sd">            Density matrix.</span>
+<span class="sd">        keep : list of int</span>
+<span class="sd">            Indices of subsystems to retain.</span>
+<span class="sd">        Sdim : list of int, optional</span>
+<span class="sd">            Dimensions of subsystems (defaults to class_QS.Sdim).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Reduced density matrix after tracing out unlisted subsystems.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;rho must be a QunObj instance.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">Sdim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Sdim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Sdim</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="n">SysInx</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Sdim</span><span class="p">))</span>
+        <span class="n">TraceInx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">SysInx</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">keep</span><span class="p">))</span>
+
+        <span class="n">new_shape</span> <span class="o">=</span> <span class="n">Sdim</span> <span class="o">+</span> <span class="n">Sdim</span>
+        <span class="n">rho_new</span> <span class="o">=</span> <span class="n">rho</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">new_shape</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">TraceInx</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">rho_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho_new</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="n">idx</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="n">idx</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">Sdim</span><span class="p">))</span>
+
+        <span class="n">Sdim_new</span> <span class="o">=</span> <span class="p">[</span><span class="n">Sdim</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">keep</span><span class="p">]</span>
+        <span class="n">final_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">Sdim_new</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">Sdim_new</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_new</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">final_shape</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.BlockExtract">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.BlockExtract">[docs]</a>
+    <span class="k">def</span> <span class="nf">BlockExtract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">block_index</span><span class="p">,</span> <span class="n">block_sizes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract a specific block from a block-diagonal matrix or ket.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Matrix : QunObj</span>
+<span class="sd">            Input QunObj instance (operator or ket).</span>
+<span class="sd">        block_index : int</span>
+<span class="sd">            Index of the block to extract.</span>
+<span class="sd">        block_sizes : list of tuple</span>
+<span class="sd">            List of (row, col) sizes of each block.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Extracted block as operator or ket.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Matrix</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Matrix must be a QunObj instance.&quot;</span><span class="p">)</span>
+
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
+            <span class="n">start_row</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">block_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">block_index</span><span class="p">))</span>
+            <span class="n">end_row</span> <span class="o">=</span> <span class="n">start_row</span> <span class="o">+</span> <span class="n">block_sizes</span><span class="p">[</span><span class="n">block_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">start_col</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">block_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">block_index</span><span class="p">))</span>
+            <span class="n">end_col</span> <span class="o">=</span> <span class="n">start_col</span> <span class="o">+</span> <span class="n">block_sizes</span><span class="p">[</span><span class="n">block_index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">start_row</span><span class="p">:</span><span class="n">end_row</span><span class="p">,</span> <span class="n">start_col</span><span class="p">:</span><span class="n">end_col</span><span class="p">],</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;operator&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">Matrix</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ket&quot;</span><span class="p">:</span>
+            <span class="n">flat_matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="n">start_index</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">block_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">block_index</span><span class="p">))</span>
+            <span class="n">end_index</span> <span class="o">=</span> <span class="n">start_index</span> <span class="o">+</span> <span class="n">block_sizes</span><span class="p">[</span><span class="n">block_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">reshaped_block</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">flat_matrix</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">end_index</span><span class="p">],</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">reshaped_block</span><span class="p">,</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;ket&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported matrix type: </span><span class="si">{</span><span class="n">Matrix</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+        
+
+<div class="viewcode-block" id="QuantumLibrary.DMToVec">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DMToVec">[docs]</a>
+    <span class="k">def</span> <span class="nf">DMToVec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a density matrix to a column vector (vectorization) in Liouville space.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rho : QunObj</span>
+<span class="sd">            Density matrix.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Vectorized form of the density matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;rho must be a QunObj instance.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># Row-major order</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># Column-major order</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;RowColOrder must be &#39;C&#39; or &#39;F&#39;.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.VecToDM">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.VecToDM">[docs]</a>
+    <span class="k">def</span> <span class="nf">VecToDM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a vectorized density matrix back into matrix form.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vec : QunObj</span>
+<span class="sd">            Vectorized density matrix.</span>
+<span class="sd">        shape : tuple</span>
+<span class="sd">            Shape (rows, cols) of the original density matrix.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Reshaped density matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;vec must be a QunObj instance.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;shape must be a tuple of length 2.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;RowColOrder must be &#39;C&#39; or &#39;F&#39;.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.CommutationSuperoperator">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.CommutationSuperoperator">[docs]</a>
+    <span class="k">def</span> <span class="nf">CommutationSuperoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the commutation superoperator [X, ⋅] as a matrix acting on vectorized density matrices.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : QunObj</span>
+<span class="sd">            Operator to construct commutator superoperator from.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Commutation superoperator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;X must be a QunObj instance.&quot;</span><span class="p">)</span>
+
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">L</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.AntiCommutationSuperoperator">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.AntiCommutationSuperoperator">[docs]</a>
+    <span class="k">def</span> <span class="nf">AntiCommutationSuperoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the anti-commutation superoperator {X, ⋅} as a matrix acting on vectorized density matrices.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : QunObj</span>
+<span class="sd">            Operator to construct anti-commutator superoperator from.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Anti-commutation superoperator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;X must be a QunObj instance.&quot;</span><span class="p">)</span>
+
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">L</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.DoubleCommutationSuperoperator">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DoubleCommutationSuperoperator">[docs]</a>
+    <span class="k">def</span> <span class="nf">DoubleCommutationSuperoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct the double commutator superoperator [[X, ⋅], Y].</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : QunObj</span>
+<span class="sd">            First operator.</span>
+<span class="sd">        Y : QunObj</span>
+<span class="sd">            Second operator.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Superoperator representing [[X, ⋅], Y].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Inputs must be QunObj instances.&quot;</span><span class="p">)</span>
+
+        <span class="n">I_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">I_Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+            <span class="n">L_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">I_X</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">I_X</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">L_Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">I_Y</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">I_Y</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">L_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">I_X</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">I_X</span><span class="p">)</span>
+            <span class="n">L_Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">I_Y</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">I_Y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">L_X</span><span class="p">,</span> <span class="n">L_Y</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.Bracket">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Bracket">[docs]</a>
+    <span class="k">def</span> <span class="nf">Bracket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the scalar bracket ⟨X|A|Y⟩ = Tr(X† A Y)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : QunObj</span>
+<span class="sd">            First operator or state (conjugated from the left).</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">            Middle operator.</span>
+<span class="sd">        Y : QunObj</span>
+<span class="sd">            Final operator or state.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        complex</span>
+<span class="sd">            Scalar result of the bracket expression.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All inputs must be instances of QunObj.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.Eigen">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Eigen">[docs]</a>
+    <span class="k">def</span> <span class="nf">Eigen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute eigenvalues and eigenvectors of a quantum operator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">            Operator to decompose.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            (eigenvalues, eigenvectors) where:</span>
+<span class="sd">            - eigenvalues: QunObj with shape (1, N) as a row of real parts.</span>
+<span class="sd">            - eigenvectors: QunObj with shape (N, N) containing eigenvectors column-wise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a QunObj instance.&quot;</span><span class="p">)</span>
+
+        <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">la</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">eigenvalues</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">),</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumLibrary.Eigen_Split">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Eigen_Split">[docs]</a>
+    <span class="k">def</span> <span class="nf">Eigen_Split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute eigenvalues and eigenvectors of a quantum operator.</span>
+<span class="sd">        Eigenvectors are returned as separate QunObj columns.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">            Operator to decompose.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            (eigenvalues, eigenvector_list)</span>
+<span class="sd">            - eigenvalues: QunObj with shape (1, N)</span>
+<span class="sd">            - eigenvector_list: list of QunObj, each column vector (N x 1)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a QunObj instance.&quot;</span><span class="p">)</span>
+
+        <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">la</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">eigenvalue_obj</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">eigenvalues</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+        <span class="n">eigenvector_objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">QunObj</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">vec</span> <span class="ow">in</span> <span class="n">eigenvectors</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">eigenvalue_obj</span><span class="p">,</span> <span class="n">eigenvector_objs</span></div>
+</div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Vineeth Francis Thalakottoor Jose Chacko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1158 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Source_Doc.PyOR_QuantumSystem &mdash; PyOR 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://vthalakottoor.github.io/PyOR/_modules/Source_Doc/PyOR_QuantumSystem.html" />
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyOR
+              <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyOR</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">Source_Doc.PyOR_QuantumSystem</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Source_Doc.PyOR_QuantumSystem</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PyOR Python On Resonance</span>
+<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
+<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">This file contains class QuantumSystem</span>
+
+<span class="sd">Documentation is done.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># -------------- Package Imports --------------</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.PyOR_QuantumObject</span> <span class="kn">import</span> <span class="n">QunObj</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PyOR_PhysicalConstants</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PyOR_SpinQuantumNumber</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PyOR_Gamma</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PyOR_QuadrupoleMoment</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PyOR_Particle</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyOR_QuantumObject</span> <span class="kn">import</span> <span class="n">QunObj</span>
+    <span class="kn">import</span> <span class="nn">PyOR_PhysicalConstants</span>
+    <span class="kn">import</span> <span class="nn">PyOR_SpinQuantumNumber</span>
+    <span class="kn">import</span> <span class="nn">PyOR_Gamma</span>
+    <span class="kn">import</span> <span class="nn">PyOR_QuadrupoleMoment</span>
+    <span class="kn">import</span> <span class="nn">PyOR_Particle</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">lina</span>
+<span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">from</span> <span class="nn">sympy.physics.quantum.cg</span> <span class="kn">import</span> <span class="n">CG</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">solve_ivp</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">expm</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">la</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">fractions</span> <span class="kn">import</span> <span class="n">Fraction</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">numba</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span><span class="p">,</span> <span class="n">cfunc</span>
+
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Latex</span><span class="p">,</span> <span class="n">Math</span>
+
+<span class="c1"># -------------- Main Class --------------</span>
+
+<div class="viewcode-block" id="QuantumSystem">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem">[docs]</a>
+<span class="k">class</span> <span class="nc">QuantumSystem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QuantumSystem: Central class in PyOR for defining and manipulating multi-spin quantum systems.</span>
+
+<span class="sd">    This class sets up the quantum system based on a list of spins, initializes physical and</span>
+<span class="sd">    numerical parameters, manages spin operators, relaxation mechanisms, acquisition settings,</span>
+<span class="sd">    plotting preferences, and state evolution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    SpinList : dict</span>
+<span class="sd">        Dictionary mapping spin labels to spin types (e.g., {&#39;I&#39;: &#39;1H&#39;, &#39;S&#39;: &#39;13C&#39;})</span>
+<span class="sd">    PrintDefault : bool, optional</span>
+<span class="sd">        If True, prints all default system settings and parameters.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    SpinList : dict</span>
+<span class="sd">        User-defined spin system.</span>
+<span class="sd">    SpinDic : list</span>
+<span class="sd">        List of spin keys from the dictionary.</span>
+<span class="sd">    SpinName : np.array</span>
+<span class="sd">        List of spin names (e.g., [&#39;1H&#39;, &#39;13C&#39;]).</span>
+<span class="sd">    SpinIndex : dict</span>
+<span class="sd">        Dictionary mapping spin label to index.</span>
+<span class="sd">    slist : np.array</span>
+<span class="sd">        List of spin quantum numbers.</span>
+<span class="sd">    Sdim : np.array</span>
+<span class="sd">        Dimensions of each individual spin Hilbert space.</span>
+<span class="sd">    Vdim : int</span>
+<span class="sd">        Dimension of the total Hilbert space.</span>
+<span class="sd">    Ldim : int</span>
+<span class="sd">        Dimension of the Liouville space (Vdim^2).</span>
+<span class="sd">    hbarEQ1 : bool</span>
+<span class="sd">        Toggle to treat ℏ = 1 in Hamiltonians.</span>
+<span class="sd">    MatrixTolarence : float</span>
+<span class="sd">        Elements smaller than this are considered zero in matrices.</span>
+<span class="sd">    Gamma : list</span>
+<span class="sd">        Gyromagnetic ratios of spins.</span>
+<span class="sd">    B0 : float</span>
+<span class="sd">        Static magnetic field (Tesla).</span>
+<span class="sd">    OFFSET, OMEGA_RF : dict</span>
+<span class="sd">        Offset and rotating frame frequencies.</span>
+<span class="sd">    Jlist : np.ndarray</span>
+<span class="sd">        J-coupling matrix.</span>
+<span class="sd">    Dipole_Pairs : list</span>
+<span class="sd">        List of dipolar-coupled spin index pairs.</span>
+<span class="sd">    Various attributes...</span>
+<span class="sd">        Many more attributes initialized for relaxation, plotting, acquisition, etc.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SpinList</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># Spin system definition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span> <span class="o">=</span> <span class="n">SpinList</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SpinDic</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">SpinList</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SpinIndex</span> <span class="o">=</span> <span class="p">{</span><span class="n">value</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinDic</span><span class="p">)}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SpinName</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">SpinList</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+        <span class="c1"># Extract spin quantum numbers from names (e.g., &#39;1H&#39; -&gt; 1/2)</span>
+        <span class="n">SPINLIST</span> <span class="o">=</span> <span class="p">[</span><span class="n">PyOR_SpinQuantumNumber</span><span class="o">.</span><span class="n">spin</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinName</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">SPINLIST</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slist</span><span class="p">)</span>
+
+        <span class="c1"># Hilbert space dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sdim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">slist</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sdim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ldim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Inverse2PI</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+        <span class="c1"># Proton Larmor Frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L100</span> <span class="o">=</span> <span class="mf">2.349495</span> <span class="c1"># T        </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L285</span> <span class="o">=</span> <span class="mf">6.7</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L300</span> <span class="o">=</span> <span class="mf">7.04925</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L400</span> <span class="o">=</span> <span class="mf">9.39798</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L500</span> <span class="o">=</span> <span class="mf">11.7467</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L600</span> <span class="o">=</span> <span class="mf">14.0954</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L700</span> <span class="o">=</span> <span class="mf">16.4442</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L750</span> <span class="o">=</span> <span class="mf">17.6185</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L800</span> <span class="o">=</span> <span class="mf">18.7929</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L850</span> <span class="o">=</span> <span class="mf">19.9673</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L900</span> <span class="o">=</span> <span class="mf">21.1416</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L950</span> <span class="o">=</span> <span class="mf">22.3160</span> <span class="c1"># T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L1000</span> <span class="o">=</span> <span class="mf">23.4904</span> <span class="c1"># T</span>
+
+        <span class="c1"># Default configuration messages</span>
+        <span class="k">if</span> <span class="n">PrintDefault</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">PyOR default parameters/settings&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--------------------------------&quot;</span><span class="p">)</span>
+
+        <span class="c1"># ----------------- Constants &amp; Defaults -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hbarEQ1</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span> <span class="o">=</span> <span class="mf">1.0e-10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gamma</span> <span class="o">=</span> <span class="p">[</span><span class="n">PyOR_Gamma</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinName</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">B0</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OMEGA_RF</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OFFSET</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LARMOR_F</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_Larmor</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Jlist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Dipole_Pairs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DipoleAngle</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DipolebIS</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># ----------------- Temperature -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I_spintemp</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">F_spintemp</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">}</span>
+
+        <span class="c1"># ----------------- Propagation -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">=</span> <span class="s2">&quot;Hilbert&quot;</span>
+
+        <span class="c1"># ----------------- Acquisition -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AcqDT</span> <span class="o">=</span> <span class="mf">0.0001</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AcqFS</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">AcqDT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AcqAQ</span> <span class="o">=</span> <span class="mf">5.0</span>
+
+        <span class="c1"># ----------------- Relaxation -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MasterEquation</span> <span class="o">=</span> <span class="s2">&quot;Redfield&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rprocess</span> <span class="o">=</span> <span class="s2">&quot;No Relaxation&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R1</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R2</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R_Matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_tau</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_bIS</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lindblad_Temp</span> <span class="o">=</span> <span class="mi">300</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">InverseSpinTemp</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Maser_TempGradient</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lindblad_TempGradient</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lindblad_InitialInverseTemp</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lindblad_FinalInverseTemp</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c1"># ----------------- ODE Solver -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PropagationMethod</span> <span class="o">=</span> <span class="s2">&quot;ODE Solver&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OdeMethod</span> <span class="o">=</span> <span class="s1">&#39;RK45&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ODE_atol</span> <span class="o">=</span> <span class="mf">1.0e-10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ODE_rtol</span> <span class="o">=</span> <span class="mf">1.0e-10</span>
+
+        <span class="c1"># ----------------- Radiation Damping -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rdamping</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RD_xi</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RD_phase</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">}</span>
+
+        <span class="c1"># ----------------- Noise -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NGaussian</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_mean</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_std</span> <span class="o">=</span> <span class="mf">1.0e-8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_length</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># ----------------- Plotting -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PlotFigureSize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PlotFontSize</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PlotXlimt</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PlotYlimt</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PlotArrowlength</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PlotLinwidth</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="c1"># ----------------- Misc -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Shift_para</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Dipole_Shift</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SparseM</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ShapeFunc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ShapeParOmega</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ShapeParPhase</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ShapeParFreq</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">=</span> <span class="s1">&#39;C&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">csingle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">single</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span>
+
+        <span class="c1"># ------ Optional Printouts ------</span>
+        <span class="k">if</span> <span class="n">PrintDefault</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_PrintSystemDefaults</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_PrintSystemDefaults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal helper method to print default settings for the initialized system.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define energy units: hbarEQ1 =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hbarEQ1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define the matrix tolerance (threshold for zeroing small elements): MatrixTolarence =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define the gyromagnetic ratios: Gamma =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gamma</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define the static field along Z: B0 =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define rotating frame frequency: OMEGA_RF =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OMEGA_RF</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define the offset frequencies of the spins: OFFSET =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Do you want to print the Larmor frequency: print_Larmor =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_Larmor</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define the J coupling: Jlist =</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jlist</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define the spin pairs dipolar coupled: Dipole_Pairs =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Dipole_Pairs</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define the spin pairs Zeeman truncation: Dipole_DipolarAlpabet =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define the spin pairs dipole angle (theta, phi): DipoleAngle =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DipoleAngle</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define the spin pairs coupling constants: DipolebIS =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DipolebIS</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Spin temperatures&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial spin temperature of individual spins: I_spintemp =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">I_spintemp</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final spin temperature of individual spins: F_spintemp =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_spintemp</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Define propagation space &lt;&lt;Hilbert&gt;&gt; or &lt;&lt;Liouville&gt;&gt;: PropagationSpace =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PropagationSpace</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Acquisition parameters&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------------------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dwell time: AcqDT =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">AcqDT</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sampling frequency: AcqFS =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">AcqFS</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Acquisition time: AcqAQ =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">AcqAQ</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Relaxation process&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;------------------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Master equation &lt;&lt;Redfield&gt;&gt; or &lt;&lt;Lindblad&gt;&gt;: MasterEquation =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MasterEquation</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define relaxation process: Rprocess =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rprocess</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Longitudinal relaxation rate R1 =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transverse relaxation rate R2 =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Relaxation matrix (phenomenological): R_Matrix =</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R_Matrix</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dipolar relaxation tau_c: RelaxParDipole_tau =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_tau</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dipolar relaxation couplings: RelaxParDipole_bIS =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_bIS</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lindblad master equation temperature: Lindblad_Temp =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lindblad_Temp</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Lindblad special cases&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------------------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Inverse spin temperature: InverseSpinTemp =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">InverseSpinTemp</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Maser temperature gradient active: Maser_TempGradient =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Maser_TempGradient</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Temperature gradient dT/dt: Lindblad_TempGradient =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lindblad_TempGradient</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial inverse temp: Lindblad_InitialInverseTemp =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lindblad_InitialInverseTemp</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final inverse temp: Lindblad_FinalInverseTemp =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lindblad_FinalInverseTemp</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Propagation&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Propagation method: PropagationMethod =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PropagationMethod</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">ODE Solver&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Method: OdeMethod =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OdeMethod</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Absolute tolerance: ODE_atol =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ODE_atol</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Relative tolerance: ODE_rtol =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ODE_rtol</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Radiation Damping&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----------------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Enable damping: Rdamping =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rdamping</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gain values: RD_xi =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RD_xi</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Phase values: RD_phase =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RD_phase</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Gaussian Noise&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----------------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Enable noise: NGaussian =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NGaussian</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mean: N_mean =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mean</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Standard deviation: N_std =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_std</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Plotting&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Figure size: PlotFigureSize =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PlotFigureSize</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Font size: PlotFontSize =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PlotFontSize</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;X-axis limit: PlotXlimt =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PlotXlimt</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Y-axis limit: PlotYlimt =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PlotYlimt</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Arrow length (Bloch): PlotArrowlength =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PlotArrowlength</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Line width: PlotLinwidth =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PlotLinwidth</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Sparse Matrix usage:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">SparseM</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Shape Pulse&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pulse function: ShapeFunc =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ShapeFunc</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Amplitude: ShapeParOmega =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ShapeParOmega</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Phase: ShapeParPhase =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ShapeParPhase</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Frequency: ShapeParFreq =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ShapeParFreq</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Density Matrix Vectorization: RowColOrder =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RowColOrder</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Data Types: Complex =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="s2">&quot;, Float =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_F</span><span class="p">,</span> <span class="s2">&quot;, Order =&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+
+    <span class="c1"># ---------------------------------------------------------</span>
+
+<div class="viewcode-block" id="QuantumSystem.PyOR_Version">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.PyOR_Version">[docs]</a>
+    <span class="k">def</span> <span class="nf">PyOR_Version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print version info for PyOR and its dependencies.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PyOR Python On Resonance&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Version: Jeener&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Motto: Everybody can simulate NMR&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Author: Vineeth Francis Thalakottoor&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Email: vineethfrancis.physics@gmail.com&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Package Versions&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numpy version:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scipy version:&quot;</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sympy version:&quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numba version:&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span></div>
+
+
+    <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+    <span class="c1"># Unit Conversions</span>
+    <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<div class="viewcode-block" id="QuantumSystem.PPMtoHz">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.PPMtoHz">[docs]</a>
+    <span class="k">def</span> <span class="nf">PPMtoHz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ppm</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert chemical shift from PPM to Hz.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ppm : float</span>
+<span class="sd">            Chemical shift in ppm.</span>
+<span class="sd">        ref : float</span>
+<span class="sd">            Reference frequency in Hz.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Frequency in Hz.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">ref</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ppm</span> <span class="o">*</span> <span class="n">ref</span> <span class="o">*</span> <span class="mf">1.0e-6</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.HztoPPM">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.HztoPPM">[docs]</a>
+    <span class="k">def</span> <span class="nf">HztoPPM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq_sample</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert frequency from Hz to PPM.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        freq_sample : float</span>
+<span class="sd">            Frequency in Hz.</span>
+<span class="sd">        ref : float</span>
+<span class="sd">            Reference frequency in Hz.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Chemical shift in ppm.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">ref</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">freq_sample</span> <span class="o">/</span> <span class="n">ref</span> <span class="o">*</span> <span class="mf">1.0e6</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.Convert_EnergyTOFreqUnits">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Convert_EnergyTOFreqUnits">[docs]</a>
+    <span class="k">def</span> <span class="nf">Convert_EnergyTOFreqUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert Hamiltonian from energy units (Joules) to angular frequency units (rad/s).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        H : float or ndarray</span>
+<span class="sd">            Hamiltonian in energy units.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Hamiltonian in angular frequency units.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hbar</span> <span class="o">=</span> <span class="n">PyOR_PhysicalConstants</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s2">&quot;hbar&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">H</span> <span class="o">/</span> <span class="n">hbar</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.Convert_FreqUnitsTOEnergy">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Convert_FreqUnitsTOEnergy">[docs]</a>
+    <span class="k">def</span> <span class="nf">Convert_FreqUnitsTOEnergy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert Hamiltonian from angular frequency units to energy units (Joules).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        H : float or ndarray</span>
+<span class="sd">            Hamiltonian in angular frequency units.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+<span class="sd">            Hamiltonian in energy units.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hbar</span> <span class="o">=</span> <span class="n">PyOR_PhysicalConstants</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s2">&quot;hbar&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">H</span> <span class="o">*</span> <span class="n">hbar</span></div>
+
+
+    <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+    <span class="c1"># Initialize spin operators and particles</span>
+    <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<div class="viewcode-block" id="QuantumSystem.Initialize">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Initialize">[docs]</a>
+    <span class="k">def</span> <span class="nf">Initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the quantum system:</span>
+<span class="sd">        - Compute spin operators (Sx, Sy, Sz, etc.)</span>
+<span class="sd">        - Populate particle-related properties (gamma, quadrupole, etc.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SpinOperator</span><span class="p">(</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ParticleParameters</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.Update">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Update">[docs]</a>
+    <span class="k">def</span> <span class="nf">Update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update system settings after parameter changes.</span>
+
+<span class="sd">        Useful after modifying B0, OMEGA_RF, OFFSET, etc.</span>
+<span class="sd">        Recomputes internal attributes used in simulation and spin labels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinDic</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OMEGA_RF</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gamma</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OmegaRF</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">OMEGA_RF</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Offset</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ispintemp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">I_spintemp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Fspintemp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">F_spintemp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RDxi</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">RD_xi</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RDphase</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">RD_phase</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">]</span>
+
+        <span class="c1"># Map Dipole_Pairs from label -&gt; index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DipolePairs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spin_pair</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Dipole_Pairs</span><span class="p">:</span>
+            <span class="n">index_pair</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinIndex</span><span class="p">[</span><span class="n">spin_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinIndex</span><span class="p">[</span><span class="n">spin_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">DipolePairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index_pair</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">AcqFS</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">AcqDT</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rotating frame frequencies:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OMEGA_RF</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Offset frequencies:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial spin temperatures:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">I_spintemp</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final spin temperatures:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_spintemp</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Radiation damping gain:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RD_xi</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Radiation damping phase:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RD_phase</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Rprocess = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Rprocess</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RelaxParDipole_tau = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_tau</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DipolePairs = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Dipole_Pairs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RelaxParDipole_bIS = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_bIS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">IndividualThermalDensityMatrix</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.JcoupleValue">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.JcoupleValue">[docs]</a>
+    <span class="k">def</span> <span class="nf">JcoupleValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set scalar J coupling constant between two spins.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : str</span>
+<span class="sd">            Label of spin 1.</span>
+<span class="sd">        y : str</span>
+<span class="sd">            Label of spin 2.</span>
+<span class="sd">        value : float</span>
+<span class="sd">            J coupling constant in Hz.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Jlist</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinIndex</span><span class="p">[</span><span class="n">x</span><span class="p">]][</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinIndex</span><span class="p">[</span><span class="n">y</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.ParticleParameters">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.ParticleParameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">ParticleParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize particle properties for each spin.</span>
+
+<span class="sd">        Automatically retrieves constants from PyOR_Particle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">sdic</span><span class="p">,</span> <span class="n">sname</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinDic</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinName</span><span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sdic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">PyOR_Particle</span><span class="o">.</span><span class="n">particle</span><span class="p">(</span><span class="n">sname</span><span class="p">))</span></div>
+
+
+    <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+    <span class="c1"># Spin Operators</span>
+    <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<div class="viewcode-block" id="QuantumSystem.SpinOperatorsSingleSpin">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperatorsSingleSpin">[docs]</a>
+    <span class="k">def</span> <span class="nf">SpinOperatorsSingleSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate spin operators (Sx, Sy, Sz) for a single spin quantum number.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : float</span>
+<span class="sd">            Spin quantum number (e.g., 1/2, 1, 3/2).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            A 3D array with shape (3, dim, dim) representing [Sx, Sy, Sz] matrices.</span>
+
+<span class="sd">        Reference:</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Quantum Mechanics: Concepts and Applications, Nouredine Zettili.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hbar</span> <span class="o">=</span> <span class="n">PyOR_PhysicalConstants</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s2">&quot;hbar&quot;</span><span class="p">)</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="n">X</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Magnetic quantum numbers: [X, X-1, ..., -X]</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Initialize matrices</span>
+        <span class="n">SingleSpin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+        <span class="n">Sp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+        <span class="n">Sn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+
+        <span class="c1"># Identity and shifted identity matrices</span>
+        <span class="n">Id</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+        <span class="n">Idp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">Id</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Delta(m&#39;, m+1)</span>
+        <span class="n">Idn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">Id</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Delta(m&#39;, m-1)</span>
+
+        <span class="c1"># Populate S+, S-, Sz</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+                <span class="n">SingleSpin</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">hbar</span> <span class="o">*</span> <span class="n">ms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">Id</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">Sp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">ms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">ms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">Idp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">Sn</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">ms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">ms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">Idn</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="c1"># Sx = (S+ + S-) / 2</span>
+        <span class="c1"># Sy = -i(S+ - S-) / 2</span>
+        <span class="n">SingleSpin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">hbar</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">Sp</span> <span class="o">+</span> <span class="n">Sn</span><span class="p">)</span>
+        <span class="n">SingleSpin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">hbar</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Sp</span> <span class="o">-</span> <span class="n">Sn</span><span class="p">)</span>
+
+        <span class="c1"># Set hbar = 1 if specified</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hbarEQ1</span><span class="p">:</span>
+            <span class="n">SingleSpin</span> <span class="o">=</span> <span class="n">SingleSpin</span> <span class="o">/</span> <span class="n">hbar</span>
+
+        <span class="k">return</span> <span class="n">SingleSpin</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.SpinOperator">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperator">[docs]</a>
+    <span class="k">def</span> <span class="nf">SpinOperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate spin operators Sx, Sy, Sz, Sp, Sm for all spins in the system.</span>
+
+<span class="sd">        Also assigns:</span>
+<span class="sd">        - `self.Sx_`, `self.Sy_`, `self.Sz_`, `self.Sp_`, `self.Sm_` : ndarray</span>
+<span class="sd">        - self.Jsquared (total angular momentum operator): QunObj</span>
+<span class="sd">        - Individual spin operators as class attributes (e.g., Ix, Iy, Iz, etc.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Sx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+        <span class="n">Sy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+        <span class="n">Sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+        <span class="n">Sp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+        <span class="n">Sm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+
+        <span class="c1"># Compute spin operators via Kronecker product</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">):</span>
+            <span class="n">VSlist_x</span><span class="p">,</span> <span class="n">VSlist_y</span><span class="p">,</span> <span class="n">VSlist_z</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">):</span>
+                <span class="n">VSlist_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sdim</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+                <span class="n">VSlist_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sdim</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+                <span class="n">VSlist_z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sdim</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+
+            <span class="n">S_single</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinOperatorsSingleSpin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slist</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">VSlist_x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">VSlist_y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">VSlist_z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">S_single</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">S_single</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">S_single</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">Sx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">,</span> <span class="n">VSlist_x</span><span class="p">)</span>
+            <span class="n">Sy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">,</span> <span class="n">VSlist_y</span><span class="p">)</span>
+            <span class="n">Sz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">,</span> <span class="n">VSlist_z</span><span class="p">)</span>
+
+            <span class="n">Sp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Sx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">Sy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">Sm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Sx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">Sy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># Save operators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sx_</span> <span class="o">=</span> <span class="n">Sx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sy_</span> <span class="o">=</span> <span class="n">Sy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sz_</span> <span class="o">=</span> <span class="n">Sz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sp_</span> <span class="o">=</span> <span class="n">Sp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sm_</span> <span class="o">=</span> <span class="n">Sm</span>
+
+        <span class="n">Jsq</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">+</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">+</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Jsq_</span> <span class="o">=</span> <span class="n">Jsq</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Jsq&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Jsq</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+
+        <span class="c1"># Assign individual spin operators as class attributes (e.g., Ix, Iy, Iz...)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">spin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinDic</span><span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">x&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sx</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">y&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sy</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">z&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sz</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">p&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sp</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">m&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sm</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">id&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span><span class="p">),</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">SpinOperator_Sub</span><span class="p">(</span><span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.SpinOperator_Sub">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperator_Sub">[docs]</a>
+    <span class="k">def</span> <span class="nf">SpinOperator_Sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate subsystem spin operators for each individual spin.</span>
+<span class="sd">        </span>
+<span class="sd">        Stores operators with suffix `_sub` for each spin label.</span>
+<span class="sd">        Example: Ix_sub, Iy_sub, Iz_sub, Ip_sub, Im_sub, Iid_sub</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">spin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinDic</span><span class="p">):</span>
+            <span class="n">Sx</span><span class="p">,</span> <span class="n">Sy</span><span class="p">,</span> <span class="n">Sz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinOperatorsSingleSpin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slist</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">Sp</span> <span class="o">=</span> <span class="n">Sx</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">Sy</span>
+            <span class="n">Sm</span> <span class="o">=</span> <span class="n">Sx</span> <span class="o">-</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">Sy</span>
+
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">x_sub&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sx</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">y_sub&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sy</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">z_sub&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">p_sub&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sp</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">m_sub&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Sm</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">id_sub&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">Sx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.SpinOperator_SpinQunatulNumber_List">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperator_SpinQunatulNumber_List">[docs]</a>
+    <span class="k">def</span> <span class="nf">SpinOperator_SpinQunatulNumber_List</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SpinQNlist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate full-system spin operators from a list of spin quantum numbers.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        SpinQNlist : list of float</span>
+<span class="sd">            List of spin quantum numbers [s1, s2, ..., sn].</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of np.ndarray</span>
+<span class="sd">            Arrays of shape (n, dim, dim) for Sx, Sy, and Sz.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">SpinQNlist</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">Nspins</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">Sdim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span>
+        <span class="n">Vdim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">Sdim</span><span class="p">)</span>
+
+        <span class="n">Sx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nspins</span><span class="p">,</span> <span class="n">Vdim</span><span class="p">,</span> <span class="n">Vdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+        <span class="n">Sy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nspins</span><span class="p">,</span> <span class="n">Vdim</span><span class="p">,</span> <span class="n">Vdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+        <span class="n">Sz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nspins</span><span class="p">,</span> <span class="n">Vdim</span><span class="p">,</span> <span class="n">Vdim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ORDER_MEMORY</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nspins</span><span class="p">):</span>
+            <span class="n">VSlist_x</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">Sdim</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nspins</span><span class="p">)]</span>
+            <span class="n">VSlist_y</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">Sdim</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nspins</span><span class="p">)]</span>
+            <span class="n">VSlist_z</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">Sdim</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nspins</span><span class="p">)]</span>
+
+            <span class="n">SingleSpin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinOperatorsSingleSpin</span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">VSlist_x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">VSlist_y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">VSlist_z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">SingleSpin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">SingleSpin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">SingleSpin</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">Sx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">,</span> <span class="n">VSlist_x</span><span class="p">)</span>
+            <span class="n">Sy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">,</span> <span class="n">VSlist_y</span><span class="p">)</span>
+            <span class="n">Sz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">,</span> <span class="n">VSlist_z</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Sx</span><span class="p">,</span> <span class="n">Sy</span><span class="p">,</span> <span class="n">Sz</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.MagQnuSingle">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.MagQnuSingle">[docs]</a>
+    <span class="k">def</span> <span class="nf">MagQnuSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return magnetic quantum number values for an individual spin.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : float</span>
+<span class="sd">            Spin quantum number.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            Array of magnetic quantum numbers: [X, X-1, ..., -X].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="n">X</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.MagQnuSystem">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.MagQnuSystem">[docs]</a>
+    <span class="k">def</span> <span class="nf">MagQnuSystem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return total magnetic quantum numbers (Sz expectation) for each Zeeman state.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            Diagonal values of total Sz.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Sz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sz_</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.StateZeeman">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.StateZeeman">[docs]</a>
+    <span class="k">def</span> <span class="nf">StateZeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MagQunList</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a Zeeman state vector from magnetic quantum numbers of individual spins.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        MagQunList : dict</span>
+<span class="sd">            Dictionary of spin labels to their magnetic quantum numbers.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Tensor product state corresponding to the given Zeeman state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">SpinDic</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">MagQunList</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">magQun</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">MagQunList</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+        <span class="n">eigenvectors</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">SpinDic</span><span class="p">)):</span>
+            <span class="n">spin_label</span> <span class="o">=</span> <span class="n">SpinDic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">attribute_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spin_label</span><span class="si">}</span><span class="s2">z_sub&quot;</span>
+
+            <span class="n">eigval</span><span class="p">,</span> <span class="n">eigvec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Eigen_Split</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">))</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">eigval</span><span class="p">,</span> <span class="n">magQun</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">eigenvectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eigvec</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">eigenvectors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">EV</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">)):</span>
+                <span class="n">EV</span> <span class="o">=</span> <span class="n">EV</span><span class="o">.</span><span class="n">TensorProduct</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">EV</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.States">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.States">[docs]</a>
+    <span class="k">def</span> <span class="nf">States</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DicList</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct tensor product state(s) from a list of Zeeman or coupled spin dictionaries.</span>
+
+<span class="sd">        Supports both simple Zeeman basis and Clebsch-Gordan combined basis (under testing).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        DicList : list</span>
+<span class="sd">            List of spin label dictionaries or nested dictionaries with CG specification.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            Tensor product of eigenstates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">eigenvectors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">eigenvectors_multi</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">DicList</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                <span class="n">new_dict</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;New&quot;</span><span class="p">]</span>
+                <span class="n">old_dict</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;Old&quot;</span><span class="p">]</span>
+                <span class="n">l_value</span> <span class="o">=</span> <span class="n">new_dict</span><span class="p">[</span><span class="s2">&quot;l&quot;</span><span class="p">]</span>
+                <span class="n">m_value</span> <span class="o">=</span> <span class="n">new_dict</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">]</span>
+                <span class="n">select_value</span> <span class="o">=</span> <span class="n">new_dict</span><span class="p">[</span><span class="s2">&quot;Select_l&quot;</span><span class="p">]</span>
+                <span class="n">SpinDic</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">old_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">New_SpinList</span> <span class="o">=</span> <span class="p">[</span><span class="n">PyOR_SpinQuantumNumber</span><span class="o">.</span><span class="n">spin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">old_dict</span><span class="p">]</span>
+
+                <span class="n">Sx</span><span class="p">,</span> <span class="n">Sy</span><span class="p">,</span> <span class="n">Sz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinOperator_SpinQunatulNumber_List</span><span class="p">(</span><span class="n">New_SpinList</span><span class="p">)</span>
+                <span class="n">S_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">+</span> \
+                     <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">+</span> \
+                     <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+                <span class="n">QunObj_S</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">S_</span><span class="p">)</span>
+                <span class="n">QunObj_Sz</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">eigenvector_objs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Eigen_Split</span><span class="p">(</span><span class="n">QunObj_S</span> <span class="o">+</span> <span class="n">QunObj_Sz</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">vec</span> <span class="ow">in</span> <span class="n">eigenvector_objs</span><span class="p">:</span>
+                    <span class="n">ll</span><span class="p">,</span> <span class="n">mm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State_SpinQuantumNumber_SpinOperators</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">QunObj_S</span><span class="p">,</span> <span class="n">QunObj_Sz</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">l_value</span> <span class="o">==</span> <span class="n">ll</span> <span class="ow">and</span> <span class="n">m_value</span> <span class="o">==</span> <span class="n">mm</span><span class="p">:</span>
+                        <span class="n">eigenvectors_multi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+
+                <span class="n">eigenvectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eigenvectors_multi</span><span class="p">[</span><span class="n">select_value</span><span class="p">])</span>
+                <span class="n">eigenvectors_multi</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">eigenvectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">StateZeeman</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+
+        <span class="n">EV</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">)):</span>
+            <span class="n">EV</span> <span class="o">=</span> <span class="n">EV</span><span class="o">.</span><span class="n">TensorProduct</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">EV</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.Bracket">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Bracket">[docs]</a>
+    <span class="k">def</span> <span class="nf">Bracket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the bracket ⟨X|A|Y⟩ / ⟨X|Y⟩.</span>
+
+<span class="sd">        Used for angular momentum evaluation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X, A, Y : QunObj</span>
+<span class="sd">            Operators and state vectors.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Result of ⟨X|A|Y⟩ normalized by ⟨X|Y⟩.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All arguments must be QunObj instances.&quot;</span><span class="p">)</span>
+
+        <span class="n">num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">denom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">num</span> <span class="o">/</span> <span class="n">denom</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.State_SpinQuantumNumber_SpinOperators">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.State_SpinQuantumNumber_SpinOperators">[docs]</a>
+    <span class="k">def</span> <span class="nf">State_SpinQuantumNumber_SpinOperators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Ssq</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Sz</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract spin quantum numbers from a given state and spin operators.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">            State vector.</span>
+<span class="sd">        Ssq : QunObj</span>
+<span class="sd">            Total spin-squared operator.</span>
+<span class="sd">        Sz : QunObj</span>
+<span class="sd">            Total Sz operator.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            (Total spin l, magnetic quantum number m)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">XX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Bracket</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">Ssq</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+        <span class="n">magQunNumber</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Bracket</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">Sz</span><span class="p">,</span> <span class="n">A</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">disc</span> <span class="o">=</span> <span class="n">b</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">a</span><span class="o">*</span><span class="n">c</span>
+
+        <span class="k">if</span> <span class="n">disc</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">roots</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="n">b</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">disc</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">disc</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">)]</span>
+            <span class="n">real_pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">roots</span> <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">real_pos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">real_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">magQunNumber</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.State_SpinQuantumNumber">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.State_SpinQuantumNumber">[docs]</a>
+    <span class="k">def</span> <span class="nf">State_SpinQuantumNumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find total spin and magnetic quantum number for a system state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">            State vector.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            (Total spin l, magnetic quantum number m)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Bracket</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jsq</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+        <span class="n">magQunNumber</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Bracket</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sz_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span> <span class="n">A</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">X</span>
+        <span class="n">disc</span> <span class="o">=</span> <span class="n">b</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">a</span><span class="o">*</span><span class="n">c</span>
+
+        <span class="k">if</span> <span class="n">disc</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">roots</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="n">b</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">disc</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">disc</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">)]</span>
+            <span class="n">real_pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">roots</span> <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">real_pos</span><span class="p">:</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">real_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Spin quantum number = </span><span class="si">{</span><span class="n">l</span><span class="si">}</span><span class="s2">, magnetic quantum number = </span><span class="si">{</span><span class="n">magQunNumber</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">l</span><span class="p">,</span> <span class="n">magQunNumber</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.Eigen">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Eigen">[docs]</a>
+    <span class="k">def</span> <span class="nf">Eigen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute eigenvalues and eigenvectors of a quantum object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">            The quantum object (operator) to decompose.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            (eigenvalues as ndarray, eigenvectors as QunObj)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a QunObj instance.&quot;</span><span class="p">)</span>
+
+        <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">la</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.Eigen_Split">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Eigen_Split">[docs]</a>
+    <span class="k">def</span> <span class="nf">Eigen_Split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute eigenvalues and return eigenvectors as a list of QunObj.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : QunObj</span>
+<span class="sd">            Quantum operator.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            (eigenvalues as ndarray, eigenvectors as list of QunObj column vectors)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a QunObj instance.&quot;</span><span class="p">)</span>
+
+        <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">la</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">eigenvector_objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">QunObj</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">vec</span> <span class="ow">in</span> <span class="n">eigenvectors</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvector_objs</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.ZeemanBasis_Ket">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.ZeemanBasis_Ket">[docs]</a>
+    <span class="k">def</span> <span class="nf">ZeemanBasis_Ket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of basis kets as strings for the full system.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of str</span>
+<span class="sd">            Zeeman basis state labels like `|1/2,-1/2⟩`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LABEL</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">LABEL_temp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">):</span>
+            <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slist</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MagQnuSingle</span><span class="p">(</span><span class="n">j</span><span class="p">):</span>
+                <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;|</span><span class="si">{</span><span class="n">Fraction</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">Fraction</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s2">⟩&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">Combine</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="n">m</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">A</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">B</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">locals</span><span class="p">()[</span><span class="s2">&quot;Spin_List_0&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Combine</span><span class="p">(</span><span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.ZeemanBasis_Bra">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.ZeemanBasis_Bra">[docs]</a>
+    <span class="k">def</span> <span class="nf">ZeemanBasis_Bra</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of basis bras as strings for the full system.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of str</span>
+<span class="sd">            Zeeman basis state labels like ⟨1/2,-1/2|.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LABEL</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">LABEL_temp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="p">):</span>
+            <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slist</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MagQnuSingle</span><span class="p">(</span><span class="n">j</span><span class="p">):</span>
+                <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⟨</span><span class="si">{</span><span class="n">Fraction</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">Fraction</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s2">|&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">Combine</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="n">m</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">A</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">B</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">locals</span><span class="p">()[</span><span class="s2">&quot;Spin_List_0&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Combine</span><span class="p">(</span><span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">locals</span><span class="p">()[</span><span class="sa">f</span><span class="s2">&quot;Spin_List_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Nspins</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.IndividualThermalDensityMatrix">
+<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.IndividualThermalDensityMatrix">[docs]</a>
+    <span class="k">def</span> <span class="nf">IndividualThermalDensityMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize and assign the individual spin thermal density matrices.</span>
+
+<span class="sd">        For each spin, constructs the density matrix using Boltzmann distribution</span>
+<span class="sd">        in the Zeeman basis and stores it as an attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hbar</span> <span class="o">=</span> <span class="mf">1.054e-34</span>
+        <span class="n">kb</span> <span class="o">=</span> <span class="mf">1.380e-23</span>
+
+        <span class="k">for</span> <span class="n">sdic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinDic</span><span class="p">:</span>
+            <span class="n">gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gamma</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinIndex</span><span class="p">[</span><span class="n">sdic</span><span class="p">]]</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Offset</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinIndex</span><span class="p">[</span><span class="n">sdic</span><span class="p">]]</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ispintemp</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinIndex</span><span class="p">[</span><span class="n">sdic</span><span class="p">]]</span>
+            <span class="n">Sz_sub</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sdic</span><span class="si">}</span><span class="s2">z_sub&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+            <span class="n">W</span> <span class="o">=</span> <span class="o">-</span><span class="n">gamma</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">offset</span>
+            <span class="n">H</span> <span class="o">=</span> <span class="n">hbar</span> <span class="o">*</span> <span class="n">W</span> <span class="o">*</span> <span class="n">Sz_sub</span> <span class="o">/</span> <span class="p">(</span><span class="n">kb</span> <span class="o">*</span> <span class="n">temp</span><span class="p">)</span>
+
+            <span class="n">rho</span> <span class="o">=</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="n">H</span><span class="p">)</span>
+            <span class="n">rho_normalized</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sdic</span><span class="si">}</span><span class="s2">rho&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_normalized</span><span class="p">))</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Vineeth Francis Thalakottoor Jose Chacko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
