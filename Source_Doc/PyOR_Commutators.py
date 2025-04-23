@@ -11,7 +11,11 @@ Documentation is done.
 import numpy as np
 from scipy import sparse
 
-from PyOR_QuantumObject import QunObj
+try:
+    from .PyOR_QuantumObject import QunObj  # For Sphinx/package context
+except ImportError:
+    from PyOR_QuantumObject import QunObj   # For direct script or notebook use
+
 
 
 class Commutators:

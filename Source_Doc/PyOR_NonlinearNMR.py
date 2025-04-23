@@ -16,7 +16,11 @@ import re
 from IPython.display import display, Latex, Math
 from sympy.physics.quantum.cg import CG
 
-from PyOR_QuantumObject import QunObj
+try:
+    from .PyOR_QuantumObject import QunObj
+except ImportError:
+    from PyOR_QuantumObject import QunObj
+
 
 class NonLinear:
     def __init__(self, class_QS):

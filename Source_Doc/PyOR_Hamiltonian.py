@@ -16,11 +16,19 @@ from scipy.linalg import expm
 from io import StringIO
 from joblib import Parallel, delayed
 
-import PyOR_PhysicalConstants
-import PyOR_Rotation
-import PyOR_SphericalTensors as ST
-from PyOR_QuantumObject import QunObj
-import PyOR_SignalProcessing as Spro
+try:
+    from . import PyOR_PhysicalConstants
+    from . import PyOR_Rotation
+    from . import PyOR_SphericalTensors as ST
+    from .PyOR_QuantumObject import QunObj
+    from . import PyOR_SignalProcessing as Spro
+except ImportError:
+    import PyOR_PhysicalConstants
+    import PyOR_Rotation
+    import PyOR_SphericalTensors as ST
+    from PyOR_QuantumObject import QunObj
+    import PyOR_SignalProcessing as Spro
+
 
 class Hamiltonian:
     def __init__(self, class_QS):

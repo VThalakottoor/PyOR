@@ -9,12 +9,21 @@ Documentation is done.
 """
 
 # -------------- Package Imports --------------
-from PyOR_QuantumObject import QunObj
-import PyOR_PhysicalConstants 
-import PyOR_SpinQuantumNumber 
-import PyOR_Gamma
-import PyOR_QuadrupoleMoment 
-import PyOR_Particle
+try:
+    from .PyOR_QuantumObject import QunObj
+    from . import PyOR_PhysicalConstants
+    from . import PyOR_SpinQuantumNumber
+    from . import PyOR_Gamma
+    from . import PyOR_QuadrupoleMoment
+    from . import PyOR_Particle
+except ImportError:
+    from PyOR_QuantumObject import QunObj
+    import PyOR_PhysicalConstants
+    import PyOR_SpinQuantumNumber
+    import PyOR_Gamma
+    import PyOR_QuadrupoleMoment
+    import PyOR_Particle
+
 
 import numpy as np
 from numpy import linalg as lina

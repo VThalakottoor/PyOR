@@ -16,11 +16,19 @@ import re
 from io import StringIO
 from scipy import sparse
 
-import PyOR_PhysicalConstants 
-import PyOR_Rotation
-from PyOR_QuantumObject import QunObj
-from PyOR_Hamiltonian import Hamiltonian
-from PyOR_Commutators import Commutators
+try:
+    from . import PyOR_PhysicalConstants
+    from . import PyOR_Rotation
+    from .PyOR_QuantumObject import QunObj
+    from .PyOR_Hamiltonian import Hamiltonian
+    from .PyOR_Commutators import Commutators
+except ImportError:
+    import PyOR_PhysicalConstants
+    import PyOR_Rotation
+    from PyOR_QuantumObject import QunObj
+    from PyOR_Hamiltonian import Hamiltonian
+    from PyOR_Commutators import Commutators
+
 
 class RelaxationProcess:
     def __init__(self, class_QS):

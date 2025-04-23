@@ -10,79 +10,16 @@ basis construction, tensor operations, commutators, eigenvalue analysis,
 partial trace, and more for quantum mechanical systems.
 
 Documentation is done.
-
-Attributes
-----------
-class_QS : object, optional
-    Quantum system instance that provides context like spin configuration.
-SparseM : bool
-    Flag to indicate use of sparse matrices.
-RowColOrder : str
-    Matrix reshaping order ('C' or 'F') for density matrix to vector conversions.
-hbarEQ1 : bool
-    Use ℏ = 1 convention if True.
-
-Methods
--------
-Basis_Ket(dim, index)
-    Generate a basis ket vector of given dimension and index.
-Basis_Bra(dim, index)
-    Generate a basis bra vector of given dimension and index.
-Bloch_Vector(theta, phi)
-    Generate a Bloch vector in spherical coordinates.
-SSpinOp(X, String)
-    Return spin operator (x, y, z, p, m) for spin S = X.
-Purity(A)
-    Compute purity Tr(ρ²) of a quantum object.
-TensorProduct(A, B)
-    Tensor product (Kronecker product) of two quantum objects.
-TensorProductMultiple(*matrices)
-    Tensor product of multiple quantum objects.
-DirectSum(A, B)
-    Direct sum of two quantum operators or kets.
-DirectSumMultiple(*matrices)
-    Direct sum of multiple quantum objects.
-OuterProduct(A, B)
-    Outer product of two quantum states.
-InnerProduct(A, B)
-    Inner product between two quantum states or operators.
-Identity(dim)
-    Return identity matrix of dimension dim.
-Zeros(dim)
-    Return zero matrix of dimension dim.
-Commutator(A, B)
-    Return commutator [A, B] = AB - BA.
-Commutator_Array(A, B)
-    Return commutator of two numpy arrays.
-DoubleCommutator(A, B, rho)
-    Return [[A, [B, ρ]]].
-AntiCommutator(A, B)
-    Return anti-commutator {A, B} = AB + BA.
-PartialTrace(rho, keep, Sdim)
-    Compute the partial trace of a system.
-BlockExtract(Matrix, block_index, block_sizes)
-    Extract block from matrix or vector using block indices.
-DMToVec(rho)
-    Flatten density matrix to column vector.
-VecToDM(vec, shape)
-    Convert vector back to density matrix.
-CommutationSuperoperator(X)
-    Return the commutator superoperator L_X.
-AntiCommutationSuperoperator(X)
-    Return the anti-commutator superoperator.
-DoubleCommutationSuperoperator(X, Y)
-    Return [[X, ·], [Y, ·]] as a superoperator.
-Bracket(X, A, Y)
-    Return ⟨X|A|Y⟩ or Tr(X† A Y).
-Eigen(A)
-    Compute eigenvalues and eigenvectors of an operator.
-Eigen_Split(A)
-    Return eigenvalues and each eigenvector as a separate QunObj.
 """
 
 # ========== Imports ========== #
 
-from PyOR_QuantumObject import QunObj
+try:
+    from .PyOR_QuantumObject import QunObj
+except ImportError:
+    from PyOR_QuantumObject import QunObj
+
+
 import numpy as np
 from functools import reduce
 import scipy.linalg as la

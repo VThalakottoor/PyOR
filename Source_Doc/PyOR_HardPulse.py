@@ -13,8 +13,13 @@ Documentation is done
 import numpy as np
 from scipy.linalg import expm
 
-from PyOR_Commutators import Commutators as COM
-from PyOR_QuantumObject import QunObj
+try:
+    from .PyOR_Commutators import Commutators as COM
+    from .PyOR_QuantumObject import QunObj
+except ImportError:
+    from PyOR_Commutators import Commutators as COM
+    from PyOR_QuantumObject import QunObj
+
 
 class HardPulse:
     def __init__(self, class_QS):

@@ -9,7 +9,11 @@ Documentation is done
 """
 
 import numpy as np
-from PyOR_QuantumObject import QunObj
+try:
+    from .PyOR_QuantumObject import QunObj
+except ImportError:
+    from PyOR_QuantumObject import QunObj
+
 
 def MatrixToSphericalTensors(AQ):
     """

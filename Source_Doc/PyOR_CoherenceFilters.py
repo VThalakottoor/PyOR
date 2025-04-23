@@ -10,9 +10,15 @@ Documentation is done.
 
 import numpy as np
 
-from PyOR_QuantumObject import QunObj
-from PyOR_Basis import Basis
-from PyOR_Hamiltonian import Hamiltonian
+try:
+    from .PyOR_QuantumObject import QunObj
+    from .PyOR_Basis import Basis
+    from .PyOR_Hamiltonian import Hamiltonian
+except ImportError:
+    from PyOR_QuantumObject import QunObj
+    from PyOR_Basis import Basis
+    from PyOR_Hamiltonian import Hamiltonian
+
 
 
 class CoherenceFilter:

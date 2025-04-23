@@ -16,10 +16,17 @@ from scipy import sparse
 from IPython.display import display, Latex, Math
 from sympy.physics.quantum.cg import CG
 
-from PyOR_Relaxation import RelaxationProcess
-from PyOR_NonlinearNMR import NonLinear
-from PyOR_QuantumObject import QunObj
-from PyOR_Commutators import Commutators
+try:
+    from .PyOR_Relaxation import RelaxationProcess
+    from .PyOR_NonlinearNMR import NonLinear
+    from .PyOR_QuantumObject import QunObj
+    from .PyOR_Commutators import Commutators
+except ImportError:
+    from PyOR_Relaxation import RelaxationProcess
+    from PyOR_NonlinearNMR import NonLinear
+    from PyOR_QuantumObject import QunObj
+    from PyOR_Commutators import Commutators
+
 
 class Evolutions:    
     def __init__(self, class_QS,class_Ham):

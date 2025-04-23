@@ -14,9 +14,15 @@ Attribute:
 Documentation is done.
 """
 
-import PyOR_SpinQuantumNumber 
-import PyOR_Gamma
-import PyOR_QuadrupoleMoment 
+try:
+    from . import PyOR_SpinQuantumNumber
+    from . import PyOR_Gamma
+    from . import PyOR_QuadrupoleMoment
+except ImportError:
+    import PyOR_SpinQuantumNumber
+    import PyOR_Gamma
+    import PyOR_QuadrupoleMoment
+
 
 class particle():
     def __init__(self, value):

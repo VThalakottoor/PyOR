@@ -15,7 +15,11 @@ from IPython.display import display, Latex, Math
 from sympy.physics.quantum.cg import CG
 from fractions import Fraction
 
-from PyOR_QuantumObject import QunObj
+try:
+    from .PyOR_QuantumObject import QunObj  # For Sphinx and package usage
+except ImportError:
+    from PyOR_QuantumObject import QunObj   # For scripts or notebooks
+
 
 class Basis:    
     def __init__(self, class_QS):

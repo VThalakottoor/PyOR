@@ -11,10 +11,17 @@ Documentation is done.
 import numpy as np
 from scipy.linalg import expm
 
-import PyOR_PhysicalConstants
-import PyOR_Rotation
-from PyOR_QuantumObject import QunObj
-from PyOR_QuantumLibrary import QuantumLibrary
+try:
+    from . import PyOR_PhysicalConstants
+    from . import PyOR_Rotation
+    from .PyOR_QuantumObject import QunObj
+    from .PyOR_QuantumLibrary import QuantumLibrary
+except ImportError:
+    import PyOR_PhysicalConstants
+    import PyOR_Rotation
+    from PyOR_QuantumObject import QunObj
+    from PyOR_QuantumLibrary import QuantumLibrary
+
 
 QLib = QuantumLibrary()
 

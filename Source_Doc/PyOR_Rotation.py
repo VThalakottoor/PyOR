@@ -11,8 +11,13 @@ Documentation is done.
 import numpy as np
 from scipy.linalg import expm
 
-from PyOR_QuantumObject import QunObj
-from PyOR_QuantumLibrary import QuantumLibrary
+try:
+    from .PyOR_QuantumObject import QunObj
+    from .PyOR_QuantumLibrary import QuantumLibrary
+except ImportError:
+    from PyOR_QuantumObject import QunObj
+    from PyOR_QuantumLibrary import QuantumLibrary
+
 QLib = QuantumLibrary()
 
 def RotateX(theta):
