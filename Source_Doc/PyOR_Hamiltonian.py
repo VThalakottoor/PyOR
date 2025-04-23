@@ -613,6 +613,105 @@ class Hamiltonian:
         if approx == "secular + pseudosecular":
             return QunObj(A0 * T0 + A10 * T10 + A20 * T20)
 
+    def Interaction_Hamiltonian_MAS_SphericalTensor(self, X, ApafQ, Y, string, approx, alpha=0.0, beta=0.0, gamma=0.0, alpha1=0.0, beta1=0.0, gamma1=0.0):
+        """
+        General Hamiltonian using spherical tensor formalism for Magical Angle Spinning (MAS).
+
+        Reference:
+        ---------
+        Michael Mehring, Internal Spin Interactions and Rotations in Solids.
+        """
+
+        # Transform tensor to lab frame via Wigner rotation
+        Sptensor = ST.MatrixToSphericalTensors(ApafQ)
+        AA0 = Sptensor["rank0"]
+        AA11, AA10, AA1m1 = Sptensor["rank1"]
+        AA22, AA21, AA20, AA2m1, AA2m2 = Sptensor["rank2"]
+
+        Wigner_rank11 = PyOR_Rotation.Wigner_D_Matrix(1, -alpha, beta, gamma) # PAF to RAF. Note the negative sign !!!
+        Wigner_rank22 = PyOR_Rotation.Wigner_D_Matrix(2, -alpha, beta, gamma) # PAF to RAF. Note the negative sign !!!
+
+        Wigner_rank1 = PyOR_Rotation.Wigner_D_Matrix(1, -alpha1, beta1, gamma1) # RAF to LAB. Note the negative sign !!!
+        Wigner_rank2 = PyOR_Rotation.Wigner_D_Matrix(2, -alpha1, beta1, gamma1) # RAF to LAB. Note the negative sign !!!
+
+        Rot_rank1 = Wigner_rank1.data @ Wigner_rank11.data @ np.array([[AA11], [AA10], [AA1m1]])
+        Rot_rank2 = Wigner_rank2.data @ Wigner_rank22.data @ np.array([[AA22], [AA21], [AA20], [AA2m1], [AA2m2]])
+
+        # Apply gyromagnetic ratio scaling for spin-field
+        if string == "spin-field":
+            if self.InteractioTensor_AngularFrequency: # Isotropic and Anisotropy are in angular frequency units
+                A0 = AA0
+                A11, A10, A1m1 = Rot_rank1[0], Rot_rank1[1], Rot_rank1[2]
+                A22, A21, A20, A2m1, A2m2 = [x for x in Rot_rank2]
+
+                Im, Ip, Iz = getattr(self.class_QS, X + "m").data, getattr(self.class_QS, X + "p").data, getattr(self.class_QS, X + "z").data
+
+                # Tensor operators for spin-field
+                T0 = (-1.0/np.sqrt(3)) * Iz
+                T10 = 0.0 * Iz
+                T11 = -0.5 * Ip
+                T1m1 = -0.5 * Im
+                T20 = (2.0/np.sqrt(6)) * Iz
+                T21 = -0.5 * Ip
+                T2m1 = 0.5 * Im
+                T22 = 0.0 * Iz
+                T2m2 = 0.0 * Iz
+            else:
+                gamma = getattr(self.class_QS, X).gamma
+                A0 = gamma * AA0
+                A11, A10, A1m1 = gamma * Rot_rank1[0], gamma * Rot_rank1[1], gamma * Rot_rank1[2]
+                A22, A21, A20, A2m1, A2m2 = [gamma * x for x in Rot_rank2]
+
+                Im, Ip, Iz = getattr(self.class_QS, X + "m").data, getattr(self.class_QS, X + "p").data, getattr(self.class_QS, X + "z").data
+                B0 = self.class_QS.B0
+
+                # Tensor operators for spin-field
+                T0 = (-1.0/np.sqrt(3)) * Iz * B0
+                T10 = 0.0 * Iz
+                T11 = -0.5 * Ip * B0
+                T1m1 = -0.5 * Im * B0
+                T20 = (2.0/np.sqrt(6)) * Iz * B0
+                T21 = -0.5 * Ip * B0
+                T2m1 = 0.5 * Im * B0
+                T22 = 0.0 * Iz
+                T2m2 = 0.0 * Iz
+
+        elif string == "spin-spin":
+            A0 = AA0
+            A11, A10, A1m1 = Rot_rank1[0], Rot_rank1[1], Rot_rank1[2]
+            A22, A21, A20, A2m1, A2m2 = Rot_rank2
+
+            Im, Ip, Iz = getattr(self.class_QS, X + "m").data, getattr(self.class_QS, X + "p").data, getattr(self.class_QS, X + "z").data
+            Sm, Sp, Sz = getattr(self.class_QS, Y + "m").data, getattr(self.class_QS, Y + "p").data, getattr(self.class_QS, Y + "z").data
+
+            Ix, Iy = 0.5 * (Ip + Im), -0.5j * (Ip - Im)
+            Sx, Sy = 0.5 * (Sp + Sm), -0.5j * (Sp - Sm)
+
+            # Tensor products for spin-spin interaction
+            T0 = (-1/np.sqrt(3)) * (Ix @ Sx + Iy @ Sy + Iz @ Sz)
+            T10 = (-0.5/np.sqrt(2)) * (Ip @ Sm - Im @ Sp)
+            T11 = 0.5 * (Iz @ Sp - Ip @ Sz)
+            T1m1 = 0.5 * (Iz @ Sm - Im @ Sz)
+            T20 = (1/np.sqrt(6)) * (3 * Iz @ Sz - (Ix @ Sx + Iy @ Sy + Iz @ Sz))
+            T21 = -0.5 * (Iz @ Sp + Ip @ Sz)
+            T2m1 = 0.5 * (Iz @ Sm + Im @ Sz)
+            T22 = 0.5 * Ip @ Sp
+            T2m2 = 0.5 * Im @ Sm
+
+        # Final assembly
+        if approx == "all":
+            return QunObj(
+                A0 * T0 + A10 * T10 - (A11 * T1m1 + A1m1 * T11) +
+                A20 * T20 - (A21 * T2m1 + A2m1 * T21) + A22 * T2m2 + A2m2 * T22
+            )
+        if approx == "secular":
+            return QunObj(np.diag(np.diag(
+                A0 * T0 + A10 * T10 - (A11 * T1m1 + A1m1 * T11) +
+                A20 * T20 - (A21 * T2m1 + A2m1 * T21) + A22 * T2m2 + A2m2 * T22
+            )))
+        if approx == "secular + pseudosecular":
+            return QunObj(A0 * T0 + A10 * T10 + A20 * T20)
+        
     def Interaction_Hamiltonian_LAB_CSA_Secular(self, X, ApasQ, theta, phi):
         """
         Constructs the secular CSA Hamiltonian in the lab frame.
@@ -879,7 +978,7 @@ class Hamiltonian:
 
     def PowderSpectrum(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx,
                     alpha, beta, gamma, weighted=True, weight=None,
-                    SecularEquation="spherical", ncores = -1):
+                    SecularEquation="spherical", ncores = -1, apodization = 0.5):
         """
         Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.
 
@@ -921,7 +1020,7 @@ class Hamiltonian:
                 det_Mt = getattr(self.class_QS, X + "p").data + getattr(self.class_QS, Y + "p").data
 
             t, Mt = EVol.Expectation(rho_t, det_Mt)
-            Mt = Spro.WindowFunction(t, Mt, 0.5)
+            Mt = Spro.WindowFunction(t, Mt, apodization)
             freq, spectrum_single = Spro.FourierTransform(Mt, self.class_QS.AcqFS, 5)
             return freq, np.abs(spectrum_single)
 
@@ -949,6 +1048,88 @@ class Hamiltonian:
 
         return freq, spectrum
 
+    def MASSpectrum(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx,
+                    alpha, beta, gamma, weighted=True, weight=None,
+                    MagicAngle=0.0, RotortFrequency=0.0, ncores=-1, apodization = 0.5):
+        """
+
+        <<<< Attention: Function under testing. >>>>
+
+        Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.
+
+        Parameters:
+        -----------
+        weighted : bool
+            Whether to use weighted averaging.
+        weight : ndarray or None
+            Optional crystallite weights. If None and weighted=True,
+            defaults to sin(beta) weighting.
+
+        Returns:
+        --------
+        freq : ndarray
+            Frequency axis.
+        spectrum : ndarray
+            Powder-averaged spectrum (absolute value).
+        """
+
+        dt = self.class_QS.AcqDT
+        Npoints = int(self.class_QS.AcqAQ / self.class_QS.AcqDT)
+
+        RotortFrequency_rad = 2.0 * np.pi * RotortFrequency
+        MagicAngle_rad = np.radians(MagicAngle)
+
+        t = np.linspace(0, dt * Npoints, Npoints, endpoint=False)
+        alpha_beta_gamma_pairs = list(zip(alpha, beta, gamma))
+
+        def compute_single(alpha_i, beta_i, gamma_i):
+            MAS_Ham = np.zeros((Npoints, self.class_QS.Vdim, self.class_QS.Vdim), dtype=complex)
+
+            for idx, time_i in enumerate(t):
+                MAS_Ham[idx] = self.Interaction_Hamiltonian_MAS_SphericalTensor(
+                    X, IT_PAF, Y, string, approx,
+                    alpha=alpha_i, beta=beta_i, gamma=gamma_i,
+                    alpha1=RotortFrequency_rad * time_i,
+                    beta1=MagicAngle_rad,
+                    gamma1=0.0
+                ).data  # Assuming QunObj wraps a .data matrix
+
+            # Time evolution
+            _, rho_t = EVol.Evolution(rhoI, rhoeq, self.Zeeman_RotFrame(), HamiltonianArray=MAS_Ham)
+
+            # Detection operator
+            if Y == "":
+                det_Mt = getattr(self.class_QS, X + "p").data
+            else:
+                det_Mt = getattr(self.class_QS, X + "p").data + getattr(self.class_QS, Y + "p").data
+
+            _, Mt = EVol.Expectation(rho_t, det_Mt)
+            Mt = Spro.WindowFunction(t, Mt, apodization)
+            freq, spectrum_single = Spro.FourierTransform(Mt, self.class_QS.AcqFS, 5)
+            return freq, np.abs(spectrum_single)
+
+        # Run in parallel
+        results = Parallel(n_jobs=ncores)(
+            delayed(compute_single)(alpha_i, beta_i, gamma_i)
+            for alpha_i, beta_i, gamma_i in alpha_beta_gamma_pairs
+        )
+
+        freq_list, spectra = zip(*results)
+        freq = freq_list[0]
+
+        if weighted:
+            if weight is not None:
+                weights = np.asarray(weight)
+            else:
+                weights = np.sin(np.radians(beta))
+            weights = weights / np.sum(weights)
+            spectrum = np.sum([w * s for w, s in zip(weights, spectra)], axis=0)
+        else:
+            spectrum = np.sum(spectra, axis=0)
+
+        return freq, spectrum
+
+    
     def ShapedPulse_Bruker(self, file_path, pulseLength, RotationAngle):
         """
         Load and process a shaped pulse from a Bruker shape file.
