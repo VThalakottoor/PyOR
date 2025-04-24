@@ -13,6 +13,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+def Bruker1Ddata(filepath, outname):
+    """
+    Converts a Bruker 'fid' file into a CSV with Mx and My columns only.
+
+    Args:
+        filepath (str): Path to the Bruker 'fid' binary file.
+        outname (str): Output CSV filename (with or without .csv extension).
+    """
+    # Ensure correct output file extension
+    if not outname.lower().endswith(".csv"):
+        outname += ".csv"
+
+    # Step 1: Load int32 binary data from file
+    dat = np.fromfile(filepath, dtype=np.int32)
+
+    # Step 2: Separate real (Mx) and imaginary (My) parts
+    mx = dat[0::2]
+    my = dat[1::2]
+
+    # Step 3: Stack Mx and My into two-column array
+    out_array = np.column_stack((mx, my))
+
+    # Step 4: Save to CSV (no header, comma delimiter)
+    np.savetxt(outname, out_array, delimiter=",", fmt="%.6f")
+
 class MaserDataAnalyzer:
     """
     MaserDataAnalyzer handles loading, processing, and plotting of maser data.
@@ -25,25 +50,34 @@ class MaserDataAnalyzer:
         dt (float): Time step between signal points.
     """
 
-    def __init__(self, filepath, dt, offset=0.0, flip_spectrum=False, abs_spectrum=True):
+    def __init__(self, filepath, dt, offset=0.0, flip_spectrum=False, abs_spectrum=True, simulation = False):
         self.filepath = filepath
         self.offset = offset
         self.dt = dt
         self.flip_spectrum = flip_spectrum
         self.abs_spectrum = abs_spectrum
+        self.simulation = simulation
+        self.Xlimt = None
 
         self.Load_Data()
         self.Prepare_Signal()
         self.Compute_FFT()
+
+    def Plot(self):
         self.Setup_Plot()
         self.Connect_Events()
 
     def Load_Data(self):
         """Loads maser signal data from a CSV file."""
-        self.data = np.genfromtxt(self.filepath, delimiter=',')
-        self.Mx = self.data[:, 1]
-        self.My = self.data[:, 2]
-        self.tpoints = self.data[:, 0] * self.dt
+        if self.simulation:
+            self.data = np.load(self.filepath)
+            self.Mx = self.data.real
+            self.My = self.data.imag           
+        else:
+            self.data = np.genfromtxt(self.filepath, delimiter=',')
+            self.Mx = self.data[:, 1]
+            self.My = self.data[:, 2]
+        self.tpoints =  np.linspace(0, self.Mx.shape[-1] * self.dt, self.Mx.shape[-1] )  
         self.fs = 1.0 / self.dt
 
     def Prepare_Signal(self):
@@ -78,6 +112,8 @@ class MaserDataAnalyzer:
         self.ax[0, 1].set_title("Frequency Domain (Top)")
         self.ax[0, 1].set_xlabel("Frequency [Hz]")
         self.ax[0, 1].set_ylabel("Spectrum")
+        if self.Xlimt is not None:
+            self.ax[0, 1].set_xlim(self.Xlimt)
         self.ax[0, 1].grid()
 
         # Frequency domain (bottom)
@@ -85,6 +121,8 @@ class MaserDataAnalyzer:
         self.ax[1, 0].set_title("Frequency Domain (Bottom)")
         self.ax[1, 0].set_xlabel("Frequency [Hz]")
         self.ax[1, 0].set_ylabel("Spectrum")
+        if self.Xlimt is not None:
+            self.ax[1, 0].set_xlim(self.Xlimt)
         self.ax[1, 0].grid()
 
         # Reconstructed signal
@@ -102,7 +140,7 @@ class MaserDataAnalyzer:
         self.fourier = Fourier(self.Mx, self.My, self.spectrum, self.ax, self.fig,
                                self.line1, self.line2, self.line3, self.line4,
                                self.vline1, self.vline2, self.vline3, self.vline4,
-                               self.text1, self.text2, self.offset, self.flip_spectrum, self.abs_spectrum)
+                               self.text1, self.text2, self.offset, self.flip_spectrum, self.abs_spectrum, self.filepath)
 
         self.fig.canvas.mpl_connect("button_press_event", self.fourier.button_press)
         self.fig.canvas.mpl_connect("button_release_event", self.fourier.button_release)
@@ -125,6 +163,11 @@ class MaserDataAnalyzer:
         plt.tight_layout()
         plt.show()
 
+        # Save the figure to the same directory
+        directory = os.path.dirname(self.filepath)
+        output_path = os.path.join(directory, "Signal.svg")
+        plt.savefig(output_path, format='svg')
+
     def Plot_FFT(self):
         """Plots the frequency-domain spectrum only."""
         spectrum_data = np.abs(self.spectrum) if self.abs_spectrum else self.spectrum
@@ -136,6 +179,91 @@ class MaserDataAnalyzer:
         plt.grid()
         plt.tight_layout()
         plt.show()
+
+        # Save the figure to the same directory
+        directory = os.path.dirname(self.filepath)
+        output_path = os.path.join(directory, "Spectrum.svg")
+        plt.savefig(output_path, format='svg')
+
+    def Plot_Mz(self, Mz_list):
+        """
+        Plot all the Mz arrays from the list Mz_list and save the figure.
+
+        Parameters:
+        - Mz_list: List of strings, each representing the base name of a .npy file
+                (without the .npy extension) located in the same directory as self.filepath.
+        """
+        # Determine the directory containing the .npy files
+        directory = os.path.dirname(self.filepath)
+
+        # Create a new figure for plotting
+        plt.figure(figsize=(10, 6))
+
+        # Iterate over each Mz file name in the list
+        for name in Mz_list:
+            # Construct the full path to the .npy file
+            file_path = os.path.join(directory, f"{name}.npy")
+
+            # Check if the file exists
+            if os.path.exists(file_path):
+                # Load the data from the .npy file
+                data = np.load(file_path)
+
+                # Plot the data with a label
+                plt.plot(self.tpoints, data, label=name)
+            else:
+                print(f"Warning: File {file_path} does not exist.")
+
+        # Add labels and title to the plot
+        plt.xlabel("Time (s)")
+        plt.ylabel("Mz")
+        plt.title("Mz Plots")
+        plt.legend()
+        plt.grid(True)
+
+        # Save the figure to the same directory
+        output_path = os.path.join(directory, "Mz_plot.svg")
+        plt.savefig(output_path, format='svg')
+
+    def Plot_Mx(self, Mx_list):
+        """
+        Plot all the Mx arrays from the list Mx_list and save the figure.
+
+        Parameters:
+        - Mx_list: List of strings, each representing the base name of a .npy file
+                (without the .npy extension) located in the same directory as self.filepath.
+        """
+        # Determine the directory containing the .npy files
+        directory = os.path.dirname(self.filepath)
+
+        # Create a new figure for plotting
+        plt.figure(figsize=(10, 6))
+
+        # Iterate over each Mz file name in the list
+        for name in Mx_list:
+            # Construct the full path to the .npy file
+            file_path = os.path.join(directory, f"{name}.npy")
+
+            # Check if the file exists
+            if os.path.exists(file_path):
+                # Load the data from the .npy file
+                data = np.load(file_path)
+
+                # Plot the data with a label
+                plt.plot(self.tpoints, data, label=name)
+            else:
+                print(f"Warning: File {file_path} does not exist.")
+
+        # Add labels and title to the plot
+        plt.xlabel("Time (s)")
+        plt.ylabel("Mx")
+        plt.title("Mx Plots")
+        plt.legend()
+        plt.grid(True)
+
+        # Save the figure to the same directory
+        output_path = os.path.join(directory, "Mx_plot.svg")
+        plt.savefig(output_path, format='svg')
 
 class Fourier:
     """
@@ -158,7 +286,7 @@ class Fourier:
     def __init__(self, Mx, My, spectrum, ax, fig,
                  line1, line2, line3, line4,
                  vline1, vline2, vline3, vline4,
-                 text1, text2, offset, Flip_Sp, Abs_Sp):
+                 text1, text2, offset, Flip_Sp, Abs_Sp, filepath):
         # Time and frequency axis data from main plots
         self.x1, self.y1 = line1.get_data()
         self.x2, self.y2 = line2.get_data()
@@ -186,6 +314,7 @@ class Fourier:
         self.Flip_Sp = Flip_Sp
         self.Abs_Sp = Abs_Sp
         self.spectrum = spectrum
+        self.filepath = filepath
 
         # Variables to store interaction coordinates
         self.x1in = self.x1fi = self.x2in = self.x2fi = self.x3in = self.x3fi = self.x4in = self.x4fi = None
@@ -200,8 +329,10 @@ class Fourier:
             outdir (str): Output folder to save the files.
         """
         # Ensure output directory exists
-        os.makedirs(outdir, exist_ok=True)
-        full_path = os.path.join(outdir, filename)
+        directory = os.path.dirname(self.filepath)
+        output_dir = os.path.join(directory, outdir)
+        os.makedirs(output_dir, exist_ok=True)
+        full_path = os.path.join(output_dir, filename)
 
         # Create new figure and replicate the subplot
         fig, new_ax = plt.subplots(figsize=(6, 4))
@@ -222,7 +353,7 @@ class Fourier:
 
         # Save and clean up
         fig.tight_layout()
-        fig.savefig(full_path, bbox_inches='tight')
+        fig.savefig(full_path, bbox_inches='tight', format='svg')
         plt.close(fig)
 
     def button_press(self, event):
@@ -271,8 +402,8 @@ class Fourier:
             plt.draw()
 
             # Save plots cleanly
-            self.save_subplot_from_axis(self.ax[0, 0], "time_domain_selected.png")
-            self.save_subplot_from_axis(self.ax[0, 1], "fft_of_selection.png")
+            self.save_subplot_from_axis(self.ax[0, 0], "time_domain_selected.svg")
+            self.save_subplot_from_axis(self.ax[0, 1], "fft_of_selection.svg")
 
         elif event.inaxes is self.ax[1, 0]:  # Frequency range selection
             self.x3fi = min(np.searchsorted(self.x3, event.xdata), len(self.x3) - 1)
@@ -296,8 +427,8 @@ class Fourier:
             plt.draw()
 
             # Save updated frequency and reconstructed signal plots
-            self.save_subplot_from_axis(self.ax[1, 0], "selected_freq_range.png")
-            self.save_subplot_from_axis(self.ax[1, 1], "reconstructed_signal.png")
+            self.save_subplot_from_axis(self.ax[1, 0], "selected_freq_range.svg")
+            self.save_subplot_from_axis(self.ax[1, 1], "reconstructed_signal.svg")
 
         elif event.inaxes is self.ax[0, 1]:  # Measuring frequency difference
             self.x2fi = event.xdata
