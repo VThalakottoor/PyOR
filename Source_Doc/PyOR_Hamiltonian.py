@@ -998,7 +998,7 @@ class Hamiltonian:
 
     def PowderSpectrum(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx,
                     alpha, beta, gamma, weighted=True, weight=None,
-                    SecularEquation="spherical", ncores = -1, apodization = 0.5):
+                    SecularEquation="spherical", ncores = -2, apodization = 0.5):
         """
         Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.
 
@@ -1034,7 +1034,7 @@ class Hamiltonian:
 
             t, rho_t = EVol.Evolution(rhoI, rhoeq, HAM)
 
-            if Y == "":
+            if Y == "" or Y == X:
                 det_Mt = getattr(self.class_QS, X + "p").data
             else:
                 det_Mt = getattr(self.class_QS, X + "p").data + getattr(self.class_QS, Y + "p").data
@@ -1068,12 +1068,12 @@ class Hamiltonian:
 
         return freq, spectrum
 
-    def MASSpectrum(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx,
+    def MASSpectrum2(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx,
                     alpha, beta, gamma, weighted=True, weight=None,
-                    MagicAngle=0.0, RotortFrequency=0.0, ncores=-1, apodization = 0.5):
+                    MagicAngle=0.0, RotortFrequency=0.0, ncores=-2, apodization = 0.0):
         """
 
-        <<<< Attention: Function under testing. >>>>
+        <<<< Attention: This function is slow. >>>>
 
         Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.
 
@@ -1097,7 +1097,6 @@ class Hamiltonian:
         Npoints = int(self.class_QS.AcqAQ / self.class_QS.AcqDT)
 
         RotortFrequency_rad = 2.0 * np.pi * RotortFrequency
-        MagicAngle_rad = np.radians(MagicAngle)
 
         t = np.linspace(0, dt * Npoints, Npoints, endpoint=False)
         alpha_beta_gamma_pairs = list(zip(alpha, beta, gamma))
@@ -1109,16 +1108,16 @@ class Hamiltonian:
                 MAS_Ham[idx] = self.Interaction_Hamiltonian_MAS_SphericalTensor(
                     X, IT_PAF, Y, string, approx,
                     alpha=alpha_i, beta=beta_i, gamma=gamma_i,
-                    alpha1=RotortFrequency_rad * time_i,
-                    beta1=MagicAngle_rad,
-                    gamma1=0.0
+                    alpha1=0.0,
+                    beta1=MagicAngle,
+                    gamma1=np.degrees(RotortFrequency_rad * time_i)
                 ).data  # Assuming QunObj wraps a .data matrix
 
             # Time evolution
             _, rho_t = EVol.Evolution(rhoI, rhoeq, self.Zeeman_RotFrame(), HamiltonianArray=MAS_Ham)
 
             # Detection operator
-            if Y == "":
+            if Y == "" or Y == X:
                 det_Mt = getattr(self.class_QS, X + "p").data
             else:
                 det_Mt = getattr(self.class_QS, X + "p").data + getattr(self.class_QS, Y + "p").data
@@ -1149,7 +1148,130 @@ class Hamiltonian:
 
         return freq, spectrum
 
-    
+    def MASSpectrum(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx,
+                    alpha, beta, gamma, weighted=True, weight=None,
+                    MagicAngle=0.0, RotortFrequency=0.0, ncores=-2, apodization = 0.0):
+        """
+        Computes the Magic Angle Spinning (MAS) powder-averaged spectrum.
+
+        This function constructs a periodic time-dependent Hamiltonian array for MAS,
+        evolving the system under that Hamiltonian, and computing the spectrum by Fourier transforming
+        the expectation values.
+
+        Parameters:
+        -----------
+        EVol : Evolution object
+            Evolution class instance capable of time evolution.
+        rhoI : ndarray
+            Initial density matrix.
+        rhoeq : ndarray
+            Equilibrium density matrix.
+        X : str
+            Spin species (e.g., "H", "C").
+        IT_PAF : ndarray
+            Interaction tensor in principal axis frame (PAF).
+        Y : str
+            Secondary spin species for spin-spin interactions (can be empty for spin-field interactions).
+        string : str
+            Type of interaction: "spin-field" or "spin-spin".
+        approx : str
+            Approximation method: "all", "secular", or "secular + pseudosecular".
+        alpha, beta, gamma : array-like
+            Orientation angles (in radians) for the powder averaging.
+        weighted : bool, optional
+            Whether to use weighted averaging. Default is True.
+        weight : ndarray, optional
+            Weights for each crystallite orientation.
+        MagicAngle : float, optional
+            Magic angle value in degrees. Default is 0.
+        RotortFrequency : float, optional
+            Spinning frequency in Hz. Default is 0.
+        ncores : int, optional
+            Number of cores for parallelization. Default is -2 (use all but two cores).
+        apodization : float, optional
+            Apodization factor for windowing. Default is 0.
+
+        Returns:
+        --------
+        freq : ndarray
+            Frequency axis (Hz).
+        spectrum : ndarray
+            Powder-averaged spectrum (absolute value).
+
+        Acknowledgements:
+        -----------------
+        1. Subhadip Pradhan, TIFR Hyderabad, for sharing the concept of using periodic Hamiltonian.
+
+        """
+
+        dt = self.class_QS.AcqDT
+        Npoints = int(self.class_QS.AcqAQ / self.class_QS.AcqDT)
+
+        RotortFrequency_rad = 2.0 * np.pi * RotortFrequency
+
+        t = np.linspace(0, dt * Npoints, Npoints, endpoint=False)
+        alpha_beta_gamma_pairs = list(zip(alpha, beta, gamma))
+
+        # Determine the number of Hamiltonians over a rotor period
+        num_H = int(2 * np.pi / (dt * RotortFrequency_rad))
+        print("Time points in one rotor period", num_H)
+
+        def compute_single(alpha_i, beta_i, gamma_i):
+            # Precompute the unique Hamiltonians
+            Ham_unique = []
+            for k in range(num_H):
+                gamma1_k = RotortFrequency_rad * k * dt
+                H = self.Interaction_Hamiltonian_MAS_SphericalTensor(
+                    X, IT_PAF, Y, string, approx,
+                    alpha=alpha_i, beta=beta_i, gamma=gamma_i,
+                    alpha1=0.0,
+                    beta1=MagicAngle,
+                    gamma1=np.degrees(gamma1_k)
+                ).data
+                Ham_unique.append(H)
+
+            # Repeat the Hamiltonians periodically over all time points
+            MAS_Ham = [Ham_unique[i % num_H] for i in range(Npoints)]
+
+            # Evolve the density matrix
+            _, rho_t = EVol.Evolution(rhoI, rhoeq, self.Zeeman_RotFrame(), HamiltonianArray=MAS_Ham)
+
+            # Setup detection operator
+            if Y == "" or Y == X:
+                det_Mt = getattr(self.class_QS, X + "p").data
+            else:
+                det_Mt = getattr(self.class_QS, X + "p").data + getattr(self.class_QS, Y + "p").data
+
+            # Compute expectation values and apply window function
+            _, Mt = EVol.Expectation(rho_t, det_Mt)
+            Mt = Spro.WindowFunction(t, Mt, apodization)
+
+            # Fourier transform to obtain the spectrum
+            freq, spectrum_single = Spro.FourierTransform(Mt, self.class_QS.AcqFS, 5)
+            return freq, np.abs(spectrum_single)
+
+        # Compute the spectrum for each orientation in parallel
+        results = Parallel(n_jobs=ncores)(
+            delayed(compute_single)(alpha_i, beta_i, gamma_i)
+            for alpha_i, beta_i, gamma_i in alpha_beta_gamma_pairs
+        )
+
+        freq_list, spectra = zip(*results)
+        freq = freq_list[0]
+
+        # Perform weighted or unweighted averaging
+        if weighted:
+            if weight is not None:
+                weights = np.asarray(weight)
+            else:
+                weights = np.sin(np.radians(beta))
+            weights = weights / np.sum(weights)
+            spectrum = np.sum([w * s for w, s in zip(weights, spectra)], axis=0)
+        else:
+            spectrum = np.sum(spectra, axis=0)
+
+        return freq, spectrum
+
     def ShapedPulse_Bruker(self, file_path, pulseLength, RotationAngle):
         """
         Load and process a shaped pulse from a Bruker shape file.
