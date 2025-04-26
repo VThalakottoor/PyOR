@@ -61,7 +61,7 @@ Liquid State NMR 1D
 Nonlinear NMR Maser Data Analysis
 ---------------------------------
 
-- `PyOR Maser Analyzer <Examples/Nonlinear_NMR/Maser_DataAnalysis/PyOR_MaserAnalyzer.ipynb>`_
+- `PyOR Maser Simulation Analyzer <Examples/Nonlinear_NMR/Maser_SimulationDataAnalysis/PyOR_MaserAnalyzer.ipynb>`_
 
 Shape Pulse
 -----------
