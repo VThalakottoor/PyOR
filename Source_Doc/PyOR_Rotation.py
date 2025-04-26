@@ -1,11 +1,18 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contain functions related to Rotation
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module provides functions related to rotation operations in quantum mechanics 
+    and magnetic resonance simulations.
+
+    Functions include generating rotation matrices, applying rotations to quantum states 
+    and operators, and supporting Euler angle-based transformations.
 """
 
 import numpy as np

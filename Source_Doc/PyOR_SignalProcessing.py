@@ -1,12 +1,20 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contain functions for signal processing
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module provides functions for signal processing in magnetic resonance 
+    simulations, including time-domain and frequency-domain transformations.
+
+    Functions include Fourier transforms, filtering operations, phase corrections, 
+    and signal normalization techniques tailored for NMR and EPR data.
 """
+
 
 import numpy as np
 

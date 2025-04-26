@@ -1,13 +1,20 @@
-""" 
-PyOR - Python On Resonance 
-Author: Vineeth Francis Thalakottoor Jose Chacko 
-Email: vineethfrancis.physics@gmail.com 
-
-This file contains the Hamiltonian class, which includes routines for building various 
-spin interaction Hamiltonians used in magnetic resonance simulations.
-
-Documentation is done.
 """
+PyOR - Python On Resonance
+
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
+
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This file contains the `Hamiltonian` class, which provides routines for building 
+    various spin interaction Hamiltonians used in magnetic resonance simulations.
+
+    Supported interactions may include Zeeman, dipolar coupling, scalar coupling, 
+    and quadrupolar interactions depending on system specifications.
+"""
+
 
 import numpy as np
 from numpy import linalg as lina

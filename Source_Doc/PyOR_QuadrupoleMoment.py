@@ -1,10 +1,20 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contain quadrapole moment (Q) values of electron and other nuclei
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
+
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module provides quadrupole moment (Q) values for the electron and 
+    various nuclei relevant to magnetic resonance simulations.
+
+    The quadrupole moment is important for modeling quadrupolar interactions 
+    in NMR and EPR experiments, especially for nuclei with spin > 1/2.
 """
+
 
 QUADRUPOLE = {} # Unit: fm^2, values from ref 2
 

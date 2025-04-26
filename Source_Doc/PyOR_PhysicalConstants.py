@@ -1,12 +1,21 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contain physical constants
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module provides commonly used physical constants relevant to magnetic resonance 
+    simulations, including Planck's constant, Boltzmann constant, magnetic permeability, 
+    and elementary charge.
+
+    These constants are critical for calculating resonance conditions, thermal polarization, 
+    and magnetic interactions.
 """
+
 
 import numpy as np
 

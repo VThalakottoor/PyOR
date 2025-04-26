@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,14 +77,23 @@
              
   <h1>Source code for Source_Doc.PyOR_PhysicalConstants</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contain physical constants</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This module provides commonly used physical constants relevant to magnetic resonance </span>
+<span class="sd">    simulations, including Planck&#39;s constant, Boltzmann constant, magnetic permeability, </span>
+<span class="sd">    and elementary charge.</span>
+
+<span class="sd">    These constants are critical for calculating resonance conditions, thermal polarization, </span>
+<span class="sd">    and magnetic interactions.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -97,7 +109,7 @@
 <span class="n">CONSTANTS</span><span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.602e-19</span> <span class="c1"># Electric charge; A s</span>
 
 <div class="viewcode-block" id="constants">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_PhysicalConstants.constants">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_PhysicalConstants.constants">[docs]</a>
 <span class="k">def</span> <span class="nf">constants</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the value of a fundamental physical constant.</span>

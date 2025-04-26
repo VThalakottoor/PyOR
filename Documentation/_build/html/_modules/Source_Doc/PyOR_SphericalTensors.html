@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,14 +77,24 @@
              
   <h1>Source code for Source_Doc.PyOR_SphericalTensors</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contain functions related to spherical tensors</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This module provides functions related to spherical tensors, which are essential </span>
+<span class="sd">    in the quantum mechanical description of angular momentum operators and their </span>
+<span class="sd">    transformations.</span>
+
+<span class="sd">    Functions include the construction of irreducible spherical tensors, </span>
+<span class="sd">    tensor operator manipulation, and transformation properties under rotations, </span>
+<span class="sd">    relevant to magnetic resonance simulations.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="k">try</span><span class="p">:</span>
@@ -91,7 +104,7 @@
 
 
 <div class="viewcode-block" id="MatrixToSphericalTensors">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_SphericalTensors.MatrixToSphericalTensors">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_SphericalTensors.MatrixToSphericalTensors">[docs]</a>
 <span class="k">def</span> <span class="nf">MatrixToSphericalTensors</span><span class="p">(</span><span class="n">AQ</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a 3x3 Cartesian matrix into its corresponding spherical tensor components.</span>
@@ -151,7 +164,7 @@
 
 
 <div class="viewcode-block" id="SphericalTensorsToMatrix">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_SphericalTensors.SphericalTensorsToMatrix">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_SphericalTensors.SphericalTensorsToMatrix">[docs]</a>
 <span class="k">def</span> <span class="nf">SphericalTensorsToMatrix</span><span class="p">(</span><span class="n">Sptensor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reconstructs a 3x3 complex Cartesian matrix from its spherical tensor components.</span>

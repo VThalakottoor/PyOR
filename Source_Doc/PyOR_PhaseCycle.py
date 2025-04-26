@@ -1,13 +1,20 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contains the PhaseCycle class, which handles phase cycling operations 
-including pulse phasing and receiver phase adjustments in magnetic resonance simulations.
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This file defines the `PhaseCycle` class, which handles phase cycling operations 
+    including pulse phasing and receiver phase adjustments in magnetic resonance simulations.
+
+    Phase cycling is a crucial technique for eliminating unwanted coherence pathways 
+    and improving signal-to-noise ratios in NMR and EPR experiments.
 """
+
 
 import numpy as np
 from scipy.linalg import expm

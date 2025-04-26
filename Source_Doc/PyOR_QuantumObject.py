@@ -1,18 +1,21 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contains the class QunObj
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-QunObj - Quantum Object:
-------------------------
-A flexible class representing quantum states (kets, bras) and operators. 
-It supports standard quantum operations such as Hermitian conjugation, 
-tensor products, expectation values, and more.
+Email:
+    vineethfrancis.physics@gmail.com
 
-Documentation is done.
+Description:
+    This module defines the `QunObj` (Quantum Object) class, a flexible object for 
+    representing quantum states (kets, bras) and operators.
+
+    The `QunObj` class supports standard quantum mechanical operations, including 
+    Hermitian conjugation, tensor products, inner products, outer products, 
+    expectation value calculations, and more.
 """
+
 
 # ---------- Package Imports ----------
 

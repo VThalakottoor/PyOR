@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -75,12 +78,13 @@
   <h1>Source code for Source_Doc.PyOR_Commutators</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">PyOR - Python On Resonance</span>
+
 <span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
+
 <span class="sd">Email: vineethfrancis.physics@gmail.com</span>
 
-<span class="sd">This file contains the class Commutators.</span>
-
-<span class="sd">Documentation is done.</span>
+<span class="sd">Description:</span>
+<span class="sd">    This file contains the class `Commutators`.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -94,7 +98,7 @@
 
 
 <div class="viewcode-block" id="Commutators">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Commutators.Commutators">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Commutators.Commutators">[docs]</a>
 <span class="k">class</span> <span class="nc">Commutators</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -117,7 +121,7 @@
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 
 <div class="viewcode-block" id="Commutators.Commutator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Commutators.Commutators.Commutator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Commutators.Commutators.Commutator">[docs]</a>
     <span class="k">def</span> <span class="nf">Commutator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">BQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the commutator [A, B].</span>
@@ -138,7 +142,7 @@
 
 
 <div class="viewcode-block" id="Commutators.DoubleCommutator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Commutators.Commutators.DoubleCommutator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Commutators.Commutators.DoubleCommutator">[docs]</a>
     <span class="k">def</span> <span class="nf">DoubleCommutator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">BQ</span><span class="p">,</span> <span class="n">rhoQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the double commutator [A, [B, ρ]].</span>
@@ -160,7 +164,7 @@
 
 
 <div class="viewcode-block" id="Commutators.AntiCommutator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Commutators.Commutators.AntiCommutator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Commutators.Commutators.AntiCommutator">[docs]</a>
     <span class="k">def</span> <span class="nf">AntiCommutator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">BQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the anti-commutator {A, B}.</span>
@@ -181,7 +185,7 @@
 
 
 <div class="viewcode-block" id="Commutators.CommutationSuperoperator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Commutators.Commutators.CommutationSuperoperator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Commutators.Commutators.CommutationSuperoperator">[docs]</a>
     <span class="k">def</span> <span class="nf">CommutationSuperoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct the commutation superoperator [X, •].</span>
@@ -210,7 +214,7 @@
 
 
 <div class="viewcode-block" id="Commutators.AntiCommutationSuperoperator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Commutators.Commutators.AntiCommutationSuperoperator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Commutators.Commutators.AntiCommutationSuperoperator">[docs]</a>
     <span class="k">def</span> <span class="nf">AntiCommutationSuperoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct the anti-commutation superoperator {X, •}.</span>
@@ -239,7 +243,7 @@
 
 
 <div class="viewcode-block" id="Commutators.Left_Superoperator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Commutators.Commutators.Left_Superoperator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Commutators.Commutators.Left_Superoperator">[docs]</a>
     <span class="k">def</span> <span class="nf">Left_Superoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct the left multiplication superoperator: X ⊗ I or I ⊗ X.</span>
@@ -268,7 +272,7 @@
 
 
 <div class="viewcode-block" id="Commutators.Right_Superoperator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Commutators.Commutators.Right_Superoperator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Commutators.Commutators.Right_Superoperator">[docs]</a>
     <span class="k">def</span> <span class="nf">Right_Superoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct the right multiplication superoperator: I ⊗ Xᵀ or Xᵀ ⊗ I.</span>
@@ -297,7 +301,7 @@
 
 
 <div class="viewcode-block" id="Commutators.DoubleCommutationSuperoperator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Commutators.Commutators.DoubleCommutationSuperoperator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Commutators.Commutators.DoubleCommutationSuperoperator">[docs]</a>
     <span class="k">def</span> <span class="nf">DoubleCommutationSuperoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XQ</span><span class="p">,</span> <span class="n">YQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct the double commutation superoperator: [X, [Y, •]].</span>

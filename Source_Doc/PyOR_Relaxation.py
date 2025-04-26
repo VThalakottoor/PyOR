@@ -1,12 +1,21 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contain class Relaxation
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module defines the `Relaxation` class, which provides methods to model 
+    relaxation processes in magnetic resonance simulations.
+
+    The `Relaxation` class includes functionalities for simulating longitudinal (T1) 
+    and transverse (T2) relaxation, relaxation superoperators, and decoherence 
+    mechanisms relevant to spin dynamics.
 """
+
 
 import numpy as np
 from numpy import linalg as lina

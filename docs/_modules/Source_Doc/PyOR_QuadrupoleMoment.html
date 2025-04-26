@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,12 +77,22 @@
              
   <h1>Source code for Source_Doc.PyOR_QuadrupoleMoment</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contain quadrapole moment (Q) values of electron and other nuclei</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
+
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This module provides quadrupole moment (Q) values for the electron and </span>
+<span class="sd">    various nuclei relevant to magnetic resonance simulations.</span>
+
+<span class="sd">    The quadrupole moment is important for modeling quadrupolar interactions </span>
+<span class="sd">    in NMR and EPR experiments, especially for nuclei with spin &gt; 1/2.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="n">QUADRUPOLE</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># Unit: fm^2, values from ref 2</span>
 
@@ -93,7 +106,7 @@
 <span class="n">QUADRUPOLE</span><span class="p">[</span><span class="s2">&quot;F19&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Flurine 19;  </span>
 
 <div class="viewcode-block" id="quadrupole">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuadrupoleMoment.quadrupole">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuadrupoleMoment.quadrupole">[docs]</a>
 <span class="k">def</span> <span class="nf">quadrupole</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the nuclear electric quadrupole moment of a specified particle.</span>

@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -75,13 +78,21 @@
   <h1>Source code for Source_Doc.PyOR_Plotting</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">PyOR - Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">Email: vineethfrancis.physics@gmail.com</span>
 
-<span class="sd">This file contains the `Plotting` class for visualization utilities in PyOR.</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This module defines the `Plotting` class, which provides visualization utilities </span>
+<span class="sd">    for PyOR simulations.</span>
+
+<span class="sd">    The `Plotting` class includes functions for plotting time-domain signals, frequency spectra, </span>
+<span class="sd">    evolution of density matrices, and other data relevant to magnetic resonance experiments.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -92,7 +103,7 @@
 
 
 <div class="viewcode-block" id="Plotting">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting">[docs]</a>
 <span class="k">class</span> <span class="nc">Plotting</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -114,7 +125,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_counter</span> <span class="o">=</span> <span class="mi">1</span>
 
 <div class="viewcode-block" id="Plotting.MatrixPlot">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.MatrixPlot">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.MatrixPlot">[docs]</a>
     <span class="k">def</span> <span class="nf">MatrixPlot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot a 2D color map of a matrix with labels.</span>
@@ -149,7 +160,7 @@
 
 
 <div class="viewcode-block" id="Plotting.MatrixPlot_slider">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.MatrixPlot_slider">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.MatrixPlot_slider">[docs]</a>
     <span class="k">def</span> <span class="nf">MatrixPlot_slider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">rho_t</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot a time-dependent matrix with a slider to change time steps.</span>
@@ -197,7 +208,7 @@
 
 
 <div class="viewcode-block" id="Plotting.MatrixPlot3D">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.MatrixPlot3D">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.MatrixPlot3D">[docs]</a>
     <span class="k">def</span> <span class="nf">MatrixPlot3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a 3D bar plot of matrix values.</span>
@@ -238,7 +249,7 @@
 
 
 <div class="viewcode-block" id="Plotting.Plotting">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.Plotting">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.Plotting">[docs]</a>
     <span class="k">def</span> <span class="nf">Plotting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xlab</span><span class="p">,</span> <span class="n">ylab</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot a simple 2D line graph.</span>
@@ -276,7 +287,7 @@
 
 
 <div class="viewcode-block" id="Plotting.Plotting_SpanSelector">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.Plotting_SpanSelector">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.Plotting_SpanSelector">[docs]</a>
     <span class="k">def</span> <span class="nf">Plotting_SpanSelector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xlab</span><span class="p">,</span> <span class="n">ylab</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot signal with span selector for interactive region selection.</span>
@@ -347,7 +358,7 @@
 
 
 <div class="viewcode-block" id="Plotting.PlottingTwin">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.PlottingTwin">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.PlottingTwin">[docs]</a>
     <span class="k">def</span> <span class="nf">PlottingTwin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">xlab</span><span class="p">,</span> <span class="n">ylab1</span><span class="p">,</span> <span class="n">ylab2</span><span class="p">,</span> <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot two signals with twin Y-axes.</span>
@@ -405,7 +416,7 @@
 
 
 <div class="viewcode-block" id="Plotting.PlottingTwin_SpanSelector">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.PlottingTwin_SpanSelector">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.PlottingTwin_SpanSelector">[docs]</a>
     <span class="k">def</span> <span class="nf">PlottingTwin_SpanSelector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">xlab</span><span class="p">,</span> <span class="n">ylab1</span><span class="p">,</span> <span class="n">ylab2</span><span class="p">,</span> <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot two signals with twin Y-axes and a horizontal span selector.</span>
@@ -481,7 +492,7 @@
 
 
 <div class="viewcode-block" id="Plotting.PlottingMulti">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.PlottingMulti">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.PlottingMulti">[docs]</a>
     <span class="k">def</span> <span class="nf">PlottingMulti</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xlab</span><span class="p">,</span> <span class="n">ylab</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot multiple signals on a single set of axes.</span>
@@ -522,7 +533,7 @@
 
 
 <div class="viewcode-block" id="Plotting.PlottingMulti_SpanSelector">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.PlottingMulti_SpanSelector">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.PlottingMulti_SpanSelector">[docs]</a>
     <span class="k">def</span> <span class="nf">PlottingMulti_SpanSelector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xlab</span><span class="p">,</span> <span class="n">ylab</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot multiple signals with a horizontal span selector for interactive range selection.</span>
@@ -583,7 +594,7 @@
 
 
 <div class="viewcode-block" id="Plotting.Plotting3DWire">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.Plotting3DWire">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.Plotting3DWire">[docs]</a>
     <span class="k">def</span> <span class="nf">Plotting3DWire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">xlab</span><span class="p">,</span> <span class="n">ylab</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">upL</span><span class="p">,</span> <span class="n">loL</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot a 3D wireframe surface using meshgrid data.</span>
@@ -632,7 +643,7 @@
 
 
 <div class="viewcode-block" id="Plotting.PlottingContour">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.PlottingContour">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.PlottingContour">[docs]</a>
     <span class="k">def</span> <span class="nf">PlottingContour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">xlab</span><span class="p">,</span> <span class="n">ylab</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a contour plot of a 2D scalar field.</span>
@@ -672,7 +683,7 @@
 
 
 <div class="viewcode-block" id="Plotting.InnerProduct">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.InnerProduct">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.InnerProduct">[docs]</a>
     <span class="k">def</span> <span class="nf">InnerProduct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the inner product of two matrices or vectors.</span>
@@ -695,7 +706,7 @@
 
     
 <div class="viewcode-block" id="Plotting.PlottingSphere">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.PlottingSphere">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.PlottingSphere">[docs]</a>
     <span class="k">def</span> <span class="nf">PlottingSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Mx</span><span class="p">,</span> <span class="n">My</span><span class="p">,</span> <span class="n">Mz</span><span class="p">,</span> <span class="n">rho_eqQ</span><span class="p">,</span> <span class="n">plot_vector</span><span class="p">,</span> <span class="n">scale_datapoints</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot the evolution of magnetization on a Bloch sphere.</span>
@@ -753,7 +764,7 @@
 
 
 <div class="viewcode-block" id="Plotting.PlottingMultimodeAnalyzer">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Plotting.PlottingMultimodeAnalyzer">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Plotting.PlottingMultimodeAnalyzer">[docs]</a>
     <span class="k">def</span> <span class="nf">PlottingMultimodeAnalyzer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">sig</span><span class="p">,</span> <span class="n">spec</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Multimode Fourier Analyzer with interactive plot linking time and frequency domains.</span>
@@ -820,7 +831,7 @@
 
 
 <div class="viewcode-block" id="Fanalyzer">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Fanalyzer">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Fanalyzer">[docs]</a>
 <span class="k">class</span> <span class="nc">Fanalyzer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interactive Fourier analyzer for visualizing time-frequency transformations.</span>
@@ -879,7 +890,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">Mt</span> <span class="o">=</span> <span class="n">Mx</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">My</span>
 
 <div class="viewcode-block" id="Fanalyzer.button_press">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Fanalyzer.button_press">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Fanalyzer.button_press">[docs]</a>
     <span class="k">def</span> <span class="nf">button_press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handle mouse press event for interactive selection.</span>
@@ -911,7 +922,7 @@
 
 
 <div class="viewcode-block" id="Fanalyzer.button_release">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Plotting.Fanalyzer.button_release">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Plotting.Fanalyzer.button_release">[docs]</a>
     <span class="k">def</span> <span class="nf">button_release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handle mouse release event and update plots based on selection.</span>

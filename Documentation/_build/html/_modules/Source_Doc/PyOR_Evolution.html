@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,12 +77,19 @@
              
   <h1>Source code for Source_Doc.PyOR_Evolution</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contain class Evolutions</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
+
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This file contains the class `Evolutions`, which is used for simulating </span>
+<span class="sd">    time evolution of spin systems under different Hamiltonians and conditions.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">lina</span>
@@ -104,7 +114,7 @@
 
 
 <div class="viewcode-block" id="Evolutions">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Evolution.Evolutions">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Evolution.Evolutions">[docs]</a>
 <span class="k">class</span> <span class="nc">Evolutions</span><span class="p">:</span>    
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="p">,</span><span class="n">class_Ham</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span> <span class="o">=</span> <span class="n">class_QS</span>
@@ -133,7 +143,7 @@
 
 
 <div class="viewcode-block" id="Evolutions.Update">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Evolution.Evolutions.Update">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Evolution.Evolutions.Update">[docs]</a>
     <span class="k">def</span> <span class="nf">Update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PropagationMethod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationMethod</span>
@@ -160,7 +170,7 @@
 
         
 <div class="viewcode-block" id="Evolutions.TimeDependent_Hamiltonian">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Evolution.Evolutions.TimeDependent_Hamiltonian">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Evolution.Evolutions.TimeDependent_Hamiltonian">[docs]</a>
     <span class="k">def</span> <span class="nf">TimeDependent_Hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -172,7 +182,7 @@
 
 
 <div class="viewcode-block" id="Evolutions.TimeDependent_Hamiltonian_Hilbert">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Evolution.Evolutions.TimeDependent_Hamiltonian_Hilbert">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Evolution.Evolutions.TimeDependent_Hamiltonian_Hilbert">[docs]</a>
     <span class="k">def</span> <span class="nf">TimeDependent_Hamiltonian_Hilbert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -183,7 +193,7 @@
 
 
 <div class="viewcode-block" id="Evolutions.Evolution">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Evolution.Evolutions.Evolution">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Evolution.Evolutions.Evolution">[docs]</a>
     <span class="k">def</span> <span class="nf">Evolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rhoQ</span><span class="p">,</span><span class="n">rhoeqQ</span><span class="p">,</span><span class="n">HamiltonianQ</span><span class="p">,</span><span class="n">RelaxationQ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">HamiltonianArray</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="n">Pmethod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PropagationMethod</span>
@@ -535,7 +545,7 @@
 
             
 <div class="viewcode-block" id="Evolutions.Expectation">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Evolution.Evolutions.Expectation">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Evolution.Evolutions.Expectation">[docs]</a>
     <span class="k">def</span> <span class="nf">Expectation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rho_t</span><span class="p">,</span><span class="n">detectionQ</span><span class="p">):</span>
 
         <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AcqDT</span>
@@ -601,7 +611,7 @@
        
     
 <div class="viewcode-block" id="Evolutions.Convert_LrhoTO2Drho">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Evolution.Evolutions.Convert_LrhoTO2Drho">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Evolution.Evolutions.Convert_LrhoTO2Drho">[docs]</a>
     <span class="k">def</span> <span class="nf">Convert_LrhoTO2Drho</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Lrho</span><span class="p">):</span> 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert a Vector into a 2d Matrix</span>
@@ -618,7 +628,7 @@
 
 
 <div class="viewcode-block" id="Evolutions.Commutator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Evolution.Evolutions.Commutator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Evolution.Evolutions.Commutator">[docs]</a>
     <span class="k">def</span> <span class="nf">Commutator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commutator</span>

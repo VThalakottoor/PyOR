@@ -1,18 +1,27 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contain class Particle
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Attribute:
-    name
-    spin
-    gamma
-    quadrupole
+Email:
+    vineethfrancis.physics@gmail.com
 
-Documentation is done.
+Description:
+    This file defines the `Particle` class, which represents a quantum particle 
+    with properties relevant to magnetic resonance simulations.
+
+Attributes:
+    name (str): 
+        The name of the particle (e.g., '1H', '13C', 'Electron').
+    spin (float): 
+        The spin quantum number of the particle.
+    gamma (float): 
+        The gyromagnetic ratio of the particle (in rad/s/T).
+    quadrupole (float): 
+        The quadrupole moment of the particle (if applicable, otherwise zero).
 """
+
 
 try:
     from . import PyOR_SpinQuantumNumber

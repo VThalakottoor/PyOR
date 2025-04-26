@@ -1,12 +1,20 @@
 """
 PyOR - Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-Email: vineethfrancis.physics@gmail.com
 
-This file contains functions for curve fitting.
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This file contains functions for curve fitting, typically used to 
+    analyze simulation outputs and extract physical parameters.
+
+    Functions include utilities for fitting decay curves, frequency 
+    sweeps, and relaxation models relevant to magnetic resonance experiments.
 """
+
 
 import numpy as np
 from scipy.optimize import curve_fit

@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,18 +77,23 @@
              
   <h1>Source code for Source_Doc.PyOR_QuantumLibrary</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contains class QuantumLibrary.</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">This class provides a collection of quantum operations and tools including</span>
-<span class="sd">basis construction, tensor operations, commutators, eigenvalue analysis,</span>
-<span class="sd">partial trace, and more for quantum mechanical systems.</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Description:</span>
+<span class="sd">    This module defines the `QuantumLibrary` class, which provides a collection </span>
+<span class="sd">    of quantum operations and tools for quantum mechanical systems.</span>
+
+<span class="sd">    The `QuantumLibrary` class includes methods for basis construction, tensor operations, </span>
+<span class="sd">    commutator evaluation, eigenvalue analysis, partial trace computations, and more, </span>
+<span class="sd">    supporting simulations in magnetic resonance and general quantum mechanics.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="c1"># ========== Imports ========== #</span>
 
@@ -102,7 +110,7 @@
 <span class="c1"># ========== Class ========== #</span>
 
 <div class="viewcode-block" id="QuantumLibrary">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary">[docs]</a>
 <span class="k">class</span> <span class="nc">QuantumLibrary</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -124,7 +132,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">hbarEQ1</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="QuantumLibrary.Basis_Ket">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Basis_Ket">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Basis_Ket">[docs]</a>
     <span class="k">def</span> <span class="nf">Basis_Ket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a ket basis vector `|i⟩` of dimension `dim`.</span>
@@ -151,7 +159,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.Basis_Bra">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Basis_Bra">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Basis_Bra">[docs]</a>
     <span class="k">def</span> <span class="nf">Basis_Bra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a bra basis vector ⟨i| of dimension `dim`.</span>
@@ -178,7 +186,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.Bloch_Vector">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Bloch_Vector">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Bloch_Vector">[docs]</a>
     <span class="k">def</span> <span class="nf">Bloch_Vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a qubit state vector `|ψ⟩` on the Bloch sphere.</span>
@@ -203,7 +211,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.SSpinOp">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.SSpinOp">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.SSpinOp">[docs]</a>
     <span class="k">def</span> <span class="nf">SSpinOp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct single spin operators (Sx, Sy, Sz, S+, S-) for a given spin S.</span>
@@ -260,7 +268,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.Purity">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Purity">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Purity">[docs]</a>
     <span class="k">def</span> <span class="nf">Purity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QunObj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the purity of a quantum state: Tr(ρ²).</span>
@@ -282,7 +290,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.TensorProduct">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.TensorProduct">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.TensorProduct">[docs]</a>
     <span class="k">def</span> <span class="nf">TensorProduct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QunObj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the Kronecker product (tensor product) of two QunObj instances.</span>
@@ -303,7 +311,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.TensorProductMultiple">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.TensorProductMultiple">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.TensorProductMultiple">[docs]</a>
     <span class="k">def</span> <span class="nf">TensorProductMultiple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">matrices</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QunObj</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute tensor product of multiple QunObj instances.</span>
@@ -327,7 +335,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.DirectSum">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DirectSum">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DirectSum">[docs]</a>
     <span class="k">def</span> <span class="nf">DirectSum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QunObj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the direct sum of two QunObj instances.</span>
@@ -360,7 +368,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.DirectSumMultiple">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DirectSumMultiple">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DirectSumMultiple">[docs]</a>
     <span class="k">def</span> <span class="nf">DirectSumMultiple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">matrices</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QunObj</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute direct sum of multiple quantum operators or kets.</span>
@@ -404,7 +412,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.OuterProduct">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.OuterProduct">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.OuterProduct">[docs]</a>
     <span class="k">def</span> <span class="nf">OuterProduct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the outer product of two QunObj instances.</span>
@@ -428,7 +436,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.InnerProduct">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.InnerProduct">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.InnerProduct">[docs]</a>
     <span class="k">def</span> <span class="nf">InnerProduct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the inner product ⟨A|B⟩.</span>
@@ -449,7 +457,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.Identity">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Identity">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Identity">[docs]</a>
     <span class="k">def</span> <span class="nf">Identity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an identity matrix.</span>
@@ -468,7 +476,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.Zeros">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Zeros">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Zeros">[docs]</a>
     <span class="k">def</span> <span class="nf">Zeros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a zero matrix.</span>
@@ -487,7 +495,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.Commutator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Commutator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Commutator">[docs]</a>
     <span class="k">def</span> <span class="nf">Commutator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the commutator [A, B] = AB - BA.</span>
@@ -508,7 +516,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.DoubleCommutator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DoubleCommutator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DoubleCommutator">[docs]</a>
     <span class="k">def</span> <span class="nf">DoubleCommutator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the double commutator [A, [B, ρ]].</span>
@@ -530,7 +538,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.AntiCommutator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.AntiCommutator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.AntiCommutator">[docs]</a>
     <span class="k">def</span> <span class="nf">AntiCommutator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the anticommutator {A, B} = AB + BA.</span>
@@ -628,7 +636,7 @@
         <span class="k">return</span> <span class="n">eigenvalue_obj</span><span class="p">,</span> <span class="n">eigenvector_objs</span>
 
 <div class="viewcode-block" id="QuantumLibrary.PartialTrace">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.PartialTrace">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.PartialTrace">[docs]</a>
     <span class="k">def</span> <span class="nf">PartialTrace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">keep</span><span class="p">,</span> <span class="n">Sdim</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the partial trace over specified subsystems of a density matrix.</span>
@@ -669,7 +677,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.BlockExtract">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.BlockExtract">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.BlockExtract">[docs]</a>
     <span class="k">def</span> <span class="nf">BlockExtract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">block_index</span><span class="p">,</span> <span class="n">block_sizes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract a specific block from a block-diagonal matrix or ket.</span>
@@ -712,7 +720,7 @@
         
 
 <div class="viewcode-block" id="QuantumLibrary.DMToVec">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DMToVec">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DMToVec">[docs]</a>
     <span class="k">def</span> <span class="nf">DMToVec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert a density matrix to a column vector (vectorization) in Liouville space.</span>
@@ -739,7 +747,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.VecToDM">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.VecToDM">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.VecToDM">[docs]</a>
     <span class="k">def</span> <span class="nf">VecToDM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert a vectorized density matrix back into matrix form.</span>
@@ -771,7 +779,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.CommutationSuperoperator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.CommutationSuperoperator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.CommutationSuperoperator">[docs]</a>
     <span class="k">def</span> <span class="nf">CommutationSuperoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the commutation superoperator [X, ⋅] as a matrix acting on vectorized density matrices.</span>
@@ -799,7 +807,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.AntiCommutationSuperoperator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.AntiCommutationSuperoperator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.AntiCommutationSuperoperator">[docs]</a>
     <span class="k">def</span> <span class="nf">AntiCommutationSuperoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the anti-commutation superoperator {X, ⋅} as a matrix acting on vectorized density matrices.</span>
@@ -827,7 +835,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.DoubleCommutationSuperoperator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DoubleCommutationSuperoperator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.DoubleCommutationSuperoperator">[docs]</a>
     <span class="k">def</span> <span class="nf">DoubleCommutationSuperoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct the double commutator superoperator [[X, ⋅], Y].</span>
@@ -861,7 +869,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.Bracket">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Bracket">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Bracket">[docs]</a>
     <span class="k">def</span> <span class="nf">Bracket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the scalar bracket ⟨X|A|Y⟩ = Tr(X† A Y)</span>
@@ -887,7 +895,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.Eigen">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Eigen">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Eigen">[docs]</a>
     <span class="k">def</span> <span class="nf">Eigen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute eigenvalues and eigenvectors of a quantum operator.</span>
@@ -912,7 +920,7 @@
 
 
 <div class="viewcode-block" id="QuantumLibrary.Eigen_Split">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Eigen_Split">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumLibrary.QuantumLibrary.Eigen_Split">[docs]</a>
     <span class="k">def</span> <span class="nf">Eigen_Split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute eigenvalues and eigenvectors of a quantum operator.</span>

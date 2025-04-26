@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,19 +77,27 @@
              
   <h1>Source code for Source_Doc.PyOR_SignalProcessing</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contain functions for signal processing</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This module provides functions for signal processing in magnetic resonance </span>
+<span class="sd">    simulations, including time-domain and frequency-domain transformations.</span>
+
+<span class="sd">    Functions include Fourier transforms, filtering operations, phase corrections, </span>
+<span class="sd">    and signal normalization techniques tailored for NMR and EPR data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="WindowFunction">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_SignalProcessing.WindowFunction">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_SignalProcessing.WindowFunction">[docs]</a>
 <span class="k">def</span> <span class="nf">WindowFunction</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">LB</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies an exponential window function to simulate signal decay.</span>
@@ -114,7 +125,7 @@
 
 
 <div class="viewcode-block" id="FourierTransform">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_SignalProcessing.FourierTransform">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_SignalProcessing.FourierTransform">[docs]</a>
 <span class="k">def</span> <span class="nf">FourierTransform</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">zeropoints</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the Fourier Transform of a time-domain signal with optional zero filling.</span>
@@ -148,7 +159,7 @@
 
     
 <div class="viewcode-block" id="PhaseAdjust_PH0">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_SignalProcessing.PhaseAdjust_PH0">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_SignalProcessing.PhaseAdjust_PH0">[docs]</a>
 <span class="k">def</span> <span class="nf">PhaseAdjust_PH0</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="n">PH0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies zero-order phase correction to a spectrum.</span>
@@ -175,7 +186,7 @@
 
 
 <div class="viewcode-block" id="PhaseAdjust_PH1">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_SignalProcessing.PhaseAdjust_PH1">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_SignalProcessing.PhaseAdjust_PH1">[docs]</a>
 <span class="k">def</span> <span class="nf">PhaseAdjust_PH1</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">slope</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies first-order phase correction to a spectrum.</span>
@@ -209,7 +220,7 @@
 
 
 <div class="viewcode-block" id="FourierTransform2D">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_SignalProcessing.FourierTransform2D">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_SignalProcessing.FourierTransform2D">[docs]</a>
 <span class="k">def</span> <span class="nf">FourierTransform2D</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">fs1</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">zeropoints</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform a 2D Fourier Transform on a 2D signal array.</span>
@@ -254,7 +265,7 @@
 
 
 <div class="viewcode-block" id="FourierTransform2D_F1">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_SignalProcessing.FourierTransform2D_F1">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_SignalProcessing.FourierTransform2D_F1">[docs]</a>
 <span class="k">def</span> <span class="nf">FourierTransform2D_F1</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">zeropoints</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform a 1D Fourier Transform along the F1 (indirect) dimension </span>
@@ -290,7 +301,7 @@
 
 
 <div class="viewcode-block" id="FourierTransform2D_F2">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_SignalProcessing.FourierTransform2D_F2">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_SignalProcessing.FourierTransform2D_F2">[docs]</a>
 <span class="k">def</span> <span class="nf">FourierTransform2D_F2</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">zeropoints</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform a 1D Fourier Transform along the F2 (direct) dimension </span>

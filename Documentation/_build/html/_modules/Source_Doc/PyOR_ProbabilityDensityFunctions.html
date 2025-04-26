@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,19 +77,27 @@
              
   <h1>Source code for Source_Doc.PyOR_ProbabilityDensityFunctions</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance  </span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko  </span>
-<span class="sd">email: vineethfrancis.physics@gmail.com  </span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contains probability density functions.</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This module provides probability density functions (PDFs) for use in </span>
+<span class="sd">    magnetic resonance simulations and statistical modeling within PyOR.</span>
+
+<span class="sd">    Functions include Gaussian distributions, Lorentzian distributions, </span>
+<span class="sd">    and custom probability models relevant for signal analysis and noise modeling.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="PDFgaussian">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_ProbabilityDensityFunctions.PDFgaussian">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_ProbabilityDensityFunctions.PDFgaussian">[docs]</a>
 <span class="k">def</span> <span class="nf">PDFgaussian</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">std</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mean</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the normalized Gaussian (normal) probability density function.</span>

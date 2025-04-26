@@ -1,12 +1,21 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contains class QuantumSystem
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module defines the `QuantumSystem` class, which represents composite 
+    quantum systems consisting of multiple interacting particles or subsystems.
+
+    The `QuantumSystem` class provides tools for managing the total system Hilbert space, 
+    constructing composite states and operators, and simulating evolution under 
+    system-wide Hamiltonians.
 """
+
 
 # -------------- Package Imports --------------
 try:

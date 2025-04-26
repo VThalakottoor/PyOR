@@ -1,12 +1,19 @@
 """
 PyOR - Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-Email: vineethfrancis.physics@gmail.com
 
-This file contains the class for computing the equilibrium density matrix.
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This file contains the class for computing the equilibrium density matrix.
+
+    The equilibrium density matrix is a key concept in magnetic resonance,
+    representing the state of the system at thermal equilibrium.
 """
+
 
 import numpy as np
 from scipy.linalg import expm

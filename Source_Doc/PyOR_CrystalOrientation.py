@@ -1,17 +1,23 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contains functions to load crystal orientation data.
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-It includes utilities to load data from SIMPSON-formatted CSV files and
-extracted crystallite arrays from SIMPSON's crystallite library:
-https://github.com/vosegaard/simpson/blob/master/crystdat.c
+Email:
+    vineethfrancis.physics@gmail.com
 
-Each function returns Euler angles alpha, beta, and the associated crystallite weights.
-Gamma is assumed to be 0 and excluded unless explicitly required.
+Description:
+    This file contains functions to load crystal orientation data.
+
+    It includes utilities to load data from SIMPSON-formatted CSV files and
+    extracted crystallite arrays from SIMPSON's crystallite library:
+    https://github.com/vosegaard/simpson/blob/master/crystdat.c
+
+    Each function returns Euler angles alpha, beta, and the associated crystallite weights.
+    Gamma is assumed to be 0 and excluded unless explicitly required.
 """
+
 
 import numpy as np
 import pandas as pd

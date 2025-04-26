@@ -1,14 +1,22 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contains the NonLinear class, which provides utilities for incorporating 
-non-linear effects such as radiation damping, dipolar shifts, and Gaussian noise 
-into spin dynamics simulations in NMR.
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This file defines the `NonLinear` class, which provides utilities for incorporating 
+    non-linear effects such as radiation damping, dipolar shifts, and Gaussian noise 
+    into spin dynamics simulations in nuclear magnetic resonance (NMR).
+
+    The `NonLinear` class enables the simulation of complex feedback mechanisms 
+    that are critical for modeling real-world magnetic 
+    resonance experiments.
 """
+
 
 import numpy as np
 from numpy import linalg as lina

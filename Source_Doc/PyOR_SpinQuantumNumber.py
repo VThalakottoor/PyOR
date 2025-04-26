@@ -1,12 +1,20 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contain spin quantum number of electron and other nuclei
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module provides spin quantum numbers for the electron and various nuclei, 
+    which are essential parameters for magnetic resonance simulations.
+
+    Spin quantum numbers are used to define the size of Hilbert spaces, 
+    construct spin operators, and simulate spin dynamics in NMR and EPR experiments.
 """
+
 
 SPIN = {}
 

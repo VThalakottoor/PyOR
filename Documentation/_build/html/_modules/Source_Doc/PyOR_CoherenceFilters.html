@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -75,12 +78,13 @@
   <h1>Source code for Source_Doc.PyOR_CoherenceFilters</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">PyOR - Python On Resonance</span>
+
 <span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
+
 <span class="sd">Email: vineethfrancis.physics@gmail.com</span>
 
-<span class="sd">This file contains the class CoherenceFilter.</span>
-
-<span class="sd">Documentation is done.</span>
+<span class="sd">Description:</span>
+<span class="sd">    This file contains the class `CoherenceFilter`.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -97,7 +101,7 @@
 
 
 <div class="viewcode-block" id="CoherenceFilter">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_CoherenceFilters.CoherenceFilter">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_CoherenceFilters.CoherenceFilter">[docs]</a>
 <span class="k">class</span> <span class="nc">CoherenceFilter</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -116,7 +120,7 @@
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 
 <div class="viewcode-block" id="CoherenceFilter.Filter_T00">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_CoherenceFilters.CoherenceFilter.Filter_T00">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_CoherenceFilters.CoherenceFilter.Filter_T00">[docs]</a>
     <span class="k">def</span> <span class="nf">Filter_T00</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        T00 Filter: Extracts zero quantum coherence for selected spins.</span>
@@ -148,7 +152,7 @@
 
 
 <div class="viewcode-block" id="CoherenceFilter.Filter_Coherence">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_CoherenceFilters.CoherenceFilter.Filter_Coherence">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_CoherenceFilters.CoherenceFilter.Filter_Coherence">[docs]</a>
     <span class="k">def</span> <span class="nf">Filter_Coherence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">Allow_Coh</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Filter to allow only selected coherence order.</span>

@@ -1,14 +1,22 @@
 """
 PyOR - Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-Email: vineethfrancis.physics@gmail.com
 
-This file contains the HardPulse class, which implements methods for handling 
-rotation (pulse) operations in both Hilbert and Liouville spaces as used 
-in magnetic resonance simulations.
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This file defines the `HardPulse` class, which implements methods for handling 
+    rotation (pulse) operations in both Hilbert and Liouville spaces as applied 
+    in magnetic resonance simulations.
+
+    The `HardPulse` class supports the construction of rotation operators, 
+    pulse applications, and conversions between different quantum mechanical 
+    representations.
 """
+
 
 import numpy as np
 from scipy.linalg import expm

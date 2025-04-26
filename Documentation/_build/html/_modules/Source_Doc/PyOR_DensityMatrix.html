@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -75,13 +78,20 @@
   <h1>Source code for Source_Doc.PyOR_DensityMatrix</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">PyOR - Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">Email: vineethfrancis.physics@gmail.com</span>
 
-<span class="sd">This file contains the class for computing the equilibrium density matrix.</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This file contains the class for computing the equilibrium density matrix.</span>
+
+<span class="sd">    The equilibrium density matrix is a key concept in magnetic resonance,</span>
+<span class="sd">    representing the state of the system at thermal equilibrium.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">expm</span>
@@ -102,7 +112,7 @@
 
 
 <div class="viewcode-block" id="DensityMatrix">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix">[docs]</a>
 <span class="k">class</span> <span class="nc">DensityMatrix</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="p">,</span> <span class="n">class_HAM</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span> <span class="o">=</span> <span class="n">class_QS</span>
@@ -113,7 +123,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span> <span class="o">=</span> <span class="n">class_QS</span><span class="o">.</span><span class="n">MatrixTolarence</span>
 
 <div class="viewcode-block" id="DensityMatrix.Update">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Update">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Update">[docs]</a>
     <span class="k">def</span> <span class="nf">Update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update matrix tolerance from quantum system settings.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">MatrixTolarence</span></div>
@@ -124,7 +134,7 @@
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 
 <div class="viewcode-block" id="DensityMatrix.EquilibriumDensityMatrix">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.EquilibriumDensityMatrix">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.EquilibriumDensityMatrix">[docs]</a>
     <span class="k">def</span> <span class="nf">EquilibriumDensityMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Ti</span><span class="p">,</span> <span class="n">HT_approx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate equilibrium density matrix for given spin temperatures.</span>
@@ -160,7 +170,7 @@
 
 
 <div class="viewcode-block" id="DensityMatrix.EquilibriumDensityMatrix_Add_TotalHamiltonian">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.EquilibriumDensityMatrix_Add_TotalHamiltonian">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.EquilibriumDensityMatrix_Add_TotalHamiltonian">[docs]</a>
     <span class="k">def</span> <span class="nf">EquilibriumDensityMatrix_Add_TotalHamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HQ</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">HT_approx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate equilibrium density matrix for total Hamiltonian.</span>
@@ -193,21 +203,21 @@
 
 
 <div class="viewcode-block" id="DensityMatrix.InitialDensityMatrix">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.InitialDensityMatrix">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.InitialDensityMatrix">[docs]</a>
     <span class="k">def</span> <span class="nf">InitialDensityMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HT_approx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper for equilibrium density matrix using initial temperatures.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">EquilibriumDensityMatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Ispintemp</span><span class="p">,</span> <span class="n">HT_approx</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DensityMatrix.FinalDensityMatrix">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.FinalDensityMatrix">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.FinalDensityMatrix">[docs]</a>
     <span class="k">def</span> <span class="nf">FinalDensityMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HT_approx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper for equilibrium density matrix using final temperatures.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">EquilibriumDensityMatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Fspintemp</span><span class="p">,</span> <span class="n">HT_approx</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DensityMatrix.PolarizationVector">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.PolarizationVector">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.PolarizationVector">[docs]</a>
     <span class="k">def</span> <span class="nf">PolarizationVector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinQ</span><span class="p">,</span> <span class="n">rhoQ</span><span class="p">,</span> <span class="n">SzQ</span><span class="p">,</span> <span class="n">PolPercentage</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute polarization of a spin system.</span>
@@ -239,42 +249,42 @@
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 
 <div class="viewcode-block" id="DensityMatrix.Create_DensityMatrix">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Create_DensityMatrix">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Create_DensityMatrix">[docs]</a>
     <span class="k">def</span> <span class="nf">Create_DensityMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a density matrix from a pure state.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">(</span><span class="n">state</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="DensityMatrix.Norm_Matrix">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Norm_Matrix">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Norm_Matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">Norm_Matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the Frobenius norm of a matrix.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="s1">&#39;fro&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DensityMatrix.Adjoint">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Adjoint">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Adjoint">[docs]</a>
     <span class="k">def</span> <span class="nf">Adjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the Hermitian adjoint (conjugate transpose) of a matrix.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="DensityMatrix.InnerProduct">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.InnerProduct">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.InnerProduct">[docs]</a>
     <span class="k">def</span> <span class="nf">InnerProduct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the inner product ⟨A|B⟩.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">@</span> <span class="n">B</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DensityMatrix.Normalize">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Normalize">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Normalize">[docs]</a>
     <span class="k">def</span> <span class="nf">Normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a normalized operator with unit inner product.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">A</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">InnerProduct</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">A</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="DensityMatrix.DensityMatrix_Components">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.DensityMatrix_Components">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.DensityMatrix_Components">[docs]</a>
     <span class="k">def</span> <span class="nf">DensityMatrix_Components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">rhoQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decompose density matrix into basis components.</span>
@@ -314,7 +324,7 @@
 
 
 <div class="viewcode-block" id="DensityMatrix.Matrix_Tol">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Matrix_Tol">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Matrix_Tol">[docs]</a>
     <span class="k">def</span> <span class="nf">Matrix_Tol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Zero out small values in a matrix below tolerance.&quot;&quot;&quot;</span>
         <span class="n">tol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">MatrixTolarence</span>
@@ -324,7 +334,7 @@
 
 
 <div class="viewcode-block" id="DensityMatrix.Matrix_Round">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Matrix_Round">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Matrix_Round">[docs]</a>
     <span class="k">def</span> <span class="nf">Matrix_Round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">roundto</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Round matrix elements to specified number of decimal places.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">roundto</span><span class="p">)</span></div>
@@ -335,7 +345,7 @@
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 
 <div class="viewcode-block" id="DensityMatrix.Vector_L">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Vector_L">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Vector_L">[docs]</a>
     <span class="k">def</span> <span class="nf">Vector_L</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Vectorize an operator into a Liouville space column vector.</span>
@@ -355,7 +365,7 @@
 
 
 <div class="viewcode-block" id="DensityMatrix.Detection_L">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Detection_L">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Detection_L">[docs]</a>
     <span class="k">def</span> <span class="nf">Detection_L</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Detection vector for Liouville space.</span>
@@ -374,7 +384,7 @@
 
 
 <div class="viewcode-block" id="DensityMatrix.ProductOperators_ConvertToLiouville">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.ProductOperators_ConvertToLiouville">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.ProductOperators_ConvertToLiouville">[docs]</a>
     <span class="k">def</span> <span class="nf">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Basis_X</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert basis operators to Liouville space.</span>
@@ -393,7 +403,7 @@
 
 
 <div class="viewcode-block" id="DensityMatrix.Liouville_Bracket">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Liouville_Bracket">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Liouville_Bracket">[docs]</a>
     <span class="k">def</span> <span class="nf">Liouville_Bracket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the Liouville bracket ⟨A|B|C⟩.</span>

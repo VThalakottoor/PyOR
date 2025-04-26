@@ -1,12 +1,22 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contain functions related to spherical tensors
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module provides functions related to spherical tensors, which are essential 
+    in the quantum mechanical description of angular momentum operators and their 
+    transformations.
+
+    Functions include the construction of irreducible spherical tensors, 
+    tensor operator manipulation, and transformation properties under rotations, 
+    relevant to magnetic resonance simulations.
 """
+
 
 import numpy as np
 try:

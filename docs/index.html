@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to PyOR’s documentation! &mdash; PyOR 1.0.0 documentation</title>
+  <title>Welcome to PyOR’s Documentation! &mdash; PyOR 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -46,9 +46,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -66,7 +69,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to PyOR’s documentation!</li>
+      <li class="breadcrumb-item active">Welcome to PyOR’s Documentation!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -77,24 +80,95 @@
            <div itemprop="articleBody">
              
   <section id="welcome-to-pyor-s-documentation">
-<h1>Welcome to PyOR’s documentation!<a class="headerlink" href="#welcome-to-pyor-s-documentation" title="Link to this heading"></a></h1>
-<p>This is the PyOR simulation toolkit for quantum and NMR simulations.</p>
+<h1>Welcome to PyOR’s Documentation!<a class="headerlink" href="#welcome-to-pyor-s-documentation" title="Link to this heading"></a></h1>
+<p><strong>PyOR</strong> (Python on Resonance)</p>
+<p><em>Motto:</em> <strong>“Everybody can simulate NMR”</strong></p>
+<p><strong>Author:</strong> Vineeth Francis Thalakottoor Jose Chacko</p>
+<p><strong>Contact:</strong> <a class="reference external" href="mailto:vineethfrancis&#46;physics&#37;&#52;&#48;gmail&#46;com">vineethfrancis<span>&#46;</span>physics<span>&#64;</span>gmail<span>&#46;</span>com</a></p>
+<section id="about-pyor">
+<h2>About PyOR<a class="headerlink" href="#about-pyor" title="Link to this heading"></a></h2>
+<p>I developed <strong>PyOR</strong> during the early stages of my postdoc at École Normale Supérieure, Paris, purely for pleasure — to simulate NMR masers/rasers and assist individuals from physics, chemistry, and biology backgrounds in learning and simulating magnetic resonance experiments.
+PyOR is written entirely in Python because it is free, open-source, and widely accessible.</p>
+<p>PyOR is particularly useful for:
+- Beginners with a basic understanding of matrices, spin operators, and Python programming.
+- Those interested in coding magnetic resonance pulse sequences and relaxation mechanisms.
+- Educators using it as a tool to teach NMR principles to undergraduate and graduate students.</p>
+<p><strong>Note:</strong>
+While PyOR strives for accuracy, users should watch out for potential numerical inaccuracies and possible errors in theoretical equations.</p>
+</section>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Anaconda (Python Distribution, <a class="reference external" href="https://www.anaconda.com/download">https://www.anaconda.com/download</a>)</p></li>
+<li><p>Visual Studio Code (Editor, <a class="reference external" href="https://code.visualstudio.com/">https://code.visualstudio.com/</a>)</p></li>
+<li><p>Install <cite>ipympl</cite> to enable interactive matplotlib features:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`pip</span> <span class="pre">install</span> <span class="pre">ipympl`</span></code></p>
+</li>
+</ul>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Basic knowledge of Python programming (especially with <strong>SciPy</strong> and <strong>NumPy</strong>).</p></li>
+<li><p>Familiarity with object-oriented programming (OOP) concepts.</p></li>
+<li><p>Basic understanding of spin operators.</p></li>
+</ul>
+</section>
+<section id="recommended-reading">
+<h2>Recommended Reading<a class="headerlink" href="#recommended-reading" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><em>Protein NMR Spectroscopy: Principles and Practice</em> — John Cavanagh et al.</p></li>
+</ul>
+</section>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">PyOR Source Code</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Source_Doc.html">Source_Doc package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#basis-module">Basis Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#coherence-filters-module">Coherence Filters Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#commutators-module">Commutators Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#crystal-orientation-module">Crystal Orientation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#density-matrix-module">Density Matrix Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#evolution-module">Evolution Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#fitting-module">Fitting Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#gamma-module">Gamma Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#hamiltonian-module">Hamiltonian Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#hard-pulse-module">Hard Pulse Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#maser-data-analyzer-module">Maser Data Analyzer Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#nonlinear-nmr-module">Nonlinear NMR Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#particle-module">Particle Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#phase-cycle-module">Phase Cycle Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#physical-constants-module">Physical Constants Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#plotting-module">Plotting Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#probability-density-functions-module">Probability Density Functions Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#quadrupole-moment-module">Quadrupole Moment Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#quantum-library-module">Quantum Library Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#quantum-object-module">Quantum Object Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#quantum-system-module">Quantum System Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#relaxation-module">Relaxation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#rotation-module">Rotation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#signal-processing-module">Signal Processing Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#spherical-tensors-module">Spherical Tensors Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#spin-quantum-number-module">Spin Quantum Number Module</a></li>
 </ul>
 </li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">PyOR Simulation Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#quantum-objectandlibrary">Quantum Objectandlibrary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#quantum-object-and-library">Quantum Object and Library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#solids">Solids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#relaxation">Relaxation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#density-matrix">Density Matrix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#schrodinger">Schrodinger</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#basis">Basis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#spin-operator">Spin Operator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#liquid-state-nmr-1d">Liquid State Nmr 1D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#liquid-state-nmr-1d">Liquid State NMR 1D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#nonlinear-nmr-maser-data-analysis">Nonlinear NMR Maser Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#shape-pulse">Shape Pulse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#states">States</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#hamiltonians">Hamiltonians</a></li>
@@ -103,13 +177,6 @@
 </ul>
 </div>
 </section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
 </section>
 
 

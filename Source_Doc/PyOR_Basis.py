@@ -1,11 +1,12 @@
 """
 PyOR Python On Resonance
+
 Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
 
-This file contains class Basis
+Email: vineethfrancis.physics@gmail.com
 
-Documentation is done.
+Description:
+    This file contains the class `Basis`.
 """
 
 import numpy as np

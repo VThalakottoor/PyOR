@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,14 +77,23 @@
              
   <h1>Source code for Source_Doc.PyOR_QuantumSystem</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contains class QuantumSystem</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This module defines the `QuantumSystem` class, which represents composite </span>
+<span class="sd">    quantum systems consisting of multiple interacting particles or subsystems.</span>
+
+<span class="sd">    The `QuantumSystem` class provides tools for managing the total system Hilbert space, </span>
+<span class="sd">    constructing composite states and operators, and simulating evolution under </span>
+<span class="sd">    system-wide Hamiltonians.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="c1"># -------------- Package Imports --------------</span>
 <span class="k">try</span><span class="p">:</span>
@@ -127,7 +139,7 @@
 <span class="c1"># -------------- Main Class --------------</span>
 
 <div class="viewcode-block" id="QuantumSystem">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem">[docs]</a>
 <span class="k">class</span> <span class="nc">QuantumSystem</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QuantumSystem: Central class in PyOR for defining and manipulating multi-spin quantum systems.</span>
@@ -396,7 +408,7 @@
     <span class="c1"># ---------------------------------------------------------</span>
 
 <div class="viewcode-block" id="QuantumSystem.PyOR_Version">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.PyOR_Version">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.PyOR_Version">[docs]</a>
     <span class="k">def</span> <span class="nf">PyOR_Version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Print version info for PyOR and its dependencies.</span>
@@ -419,7 +431,7 @@
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 
 <div class="viewcode-block" id="QuantumSystem.PPMtoHz">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.PPMtoHz">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.PPMtoHz">[docs]</a>
     <span class="k">def</span> <span class="nf">PPMtoHz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ppm</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert chemical shift from PPM to Hz.</span>
@@ -441,7 +453,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.HztoPPM">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.HztoPPM">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.HztoPPM">[docs]</a>
     <span class="k">def</span> <span class="nf">HztoPPM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq_sample</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert frequency from Hz to PPM.</span>
@@ -463,7 +475,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.Convert_EnergyTOFreqUnits">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Convert_EnergyTOFreqUnits">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Convert_EnergyTOFreqUnits">[docs]</a>
     <span class="k">def</span> <span class="nf">Convert_EnergyTOFreqUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert Hamiltonian from energy units (Joules) to angular frequency units (rad/s).</span>
@@ -483,7 +495,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.Convert_FreqUnitsTOEnergy">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Convert_FreqUnitsTOEnergy">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Convert_FreqUnitsTOEnergy">[docs]</a>
     <span class="k">def</span> <span class="nf">Convert_FreqUnitsTOEnergy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert Hamiltonian from angular frequency units to energy units (Joules).</span>
@@ -507,7 +519,7 @@
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 
 <div class="viewcode-block" id="QuantumSystem.Initialize">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Initialize">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Initialize">[docs]</a>
     <span class="k">def</span> <span class="nf">Initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the quantum system:</span>
@@ -519,7 +531,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.Update">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Update">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Update">[docs]</a>
     <span class="k">def</span> <span class="nf">Update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update system settings after parameter changes.</span>
@@ -560,7 +572,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.JcoupleValue">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.JcoupleValue">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.JcoupleValue">[docs]</a>
     <span class="k">def</span> <span class="nf">JcoupleValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set scalar J coupling constant between two spins.</span>
@@ -578,7 +590,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.ParticleParameters">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.ParticleParameters">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.ParticleParameters">[docs]</a>
     <span class="k">def</span> <span class="nf">ParticleParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize particle properties for each spin.</span>
@@ -594,7 +606,7 @@
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 
 <div class="viewcode-block" id="QuantumSystem.SpinOperatorsSingleSpin">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperatorsSingleSpin">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperatorsSingleSpin">[docs]</a>
     <span class="k">def</span> <span class="nf">SpinOperatorsSingleSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate spin operators (Sx, Sy, Sz) for a single spin quantum number.</span>
@@ -648,7 +660,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.SpinOperator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperator">[docs]</a>
     <span class="k">def</span> <span class="nf">SpinOperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate spin operators Sx, Sy, Sz, Sp, Sm for all spins in the system.</span>
@@ -710,7 +722,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.SpinOperator_Sub">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperator_Sub">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperator_Sub">[docs]</a>
     <span class="k">def</span> <span class="nf">SpinOperator_Sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate subsystem spin operators for each individual spin.</span>
@@ -732,7 +744,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.SpinOperator_SpinQunatulNumber_List">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperator_SpinQunatulNumber_List">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.SpinOperator_SpinQunatulNumber_List">[docs]</a>
     <span class="k">def</span> <span class="nf">SpinOperator_SpinQunatulNumber_List</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SpinQNlist</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate full-system spin operators from a list of spin quantum numbers.</span>
@@ -772,7 +784,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.MagQnuSingle">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.MagQnuSingle">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.MagQnuSingle">[docs]</a>
     <span class="k">def</span> <span class="nf">MagQnuSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return magnetic quantum number values for an individual spin.</span>
@@ -791,7 +803,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.MagQnuSystem">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.MagQnuSystem">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.MagQnuSystem">[docs]</a>
     <span class="k">def</span> <span class="nf">MagQnuSystem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return total magnetic quantum numbers (Sz expectation) for each Zeeman state.</span>
@@ -806,7 +818,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.StateZeeman">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.StateZeeman">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.StateZeeman">[docs]</a>
     <span class="k">def</span> <span class="nf">StateZeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MagQunList</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a Zeeman state vector from magnetic quantum numbers of individual spins.</span>
@@ -846,7 +858,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.States">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.States">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.States">[docs]</a>
     <span class="k">def</span> <span class="nf">States</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DicList</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct tensor product state(s) from a list of Zeeman or coupled spin dictionaries.</span>
@@ -902,7 +914,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.Bracket">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Bracket">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Bracket">[docs]</a>
     <span class="k">def</span> <span class="nf">Bracket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the bracket ⟨X|A|Y⟩ / ⟨X|Y⟩.</span>
@@ -928,7 +940,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.State_SpinQuantumNumber_SpinOperators">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.State_SpinQuantumNumber_SpinOperators">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.State_SpinQuantumNumber_SpinOperators">[docs]</a>
     <span class="k">def</span> <span class="nf">State_SpinQuantumNumber_SpinOperators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Ssq</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Sz</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract spin quantum numbers from a given state and spin operators.</span>
@@ -962,7 +974,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.State_SpinQuantumNumber">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.State_SpinQuantumNumber">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.State_SpinQuantumNumber">[docs]</a>
     <span class="k">def</span> <span class="nf">State_SpinQuantumNumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find total spin and magnetic quantum number for a system state.</span>
@@ -994,7 +1006,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.Eigen">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Eigen">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Eigen">[docs]</a>
     <span class="k">def</span> <span class="nf">Eigen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute eigenvalues and eigenvectors of a quantum object.</span>
@@ -1017,7 +1029,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.Eigen_Split">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Eigen_Split">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Eigen_Split">[docs]</a>
     <span class="k">def</span> <span class="nf">Eigen_Split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">QunObj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute eigenvalues and return eigenvectors as a list of QunObj.</span>
@@ -1041,7 +1053,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.ZeemanBasis_Ket">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.ZeemanBasis_Ket">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.ZeemanBasis_Ket">[docs]</a>
     <span class="k">def</span> <span class="nf">ZeemanBasis_Ket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of basis kets as strings for the full system.</span>
@@ -1071,7 +1083,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.ZeemanBasis_Bra">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.ZeemanBasis_Bra">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.ZeemanBasis_Bra">[docs]</a>
     <span class="k">def</span> <span class="nf">ZeemanBasis_Bra</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of basis bras as strings for the full system.</span>
@@ -1101,7 +1113,7 @@
 
 
 <div class="viewcode-block" id="QuantumSystem.IndividualThermalDensityMatrix">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.IndividualThermalDensityMatrix">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.IndividualThermalDensityMatrix">[docs]</a>
     <span class="k">def</span> <span class="nf">IndividualThermalDensityMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize and assign the individual spin thermal density matrices.</span>

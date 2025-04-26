@@ -1,12 +1,20 @@
 """
-PyOR Python On Resonance  
-Author: Vineeth Francis Thalakottoor Jose Chacko  
-email: vineethfrancis.physics@gmail.com  
+PyOR - Python On Resonance
 
-This file contains probability density functions.
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module provides probability density functions (PDFs) for use in 
+    magnetic resonance simulations and statistical modeling within PyOR.
+
+    Functions include Gaussian distributions, Lorentzian distributions, 
+    and custom probability models relevant for signal analysis and noise modeling.
 """
+
 
 import numpy as np
 

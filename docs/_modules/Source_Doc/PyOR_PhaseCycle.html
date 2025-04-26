@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,15 +77,22 @@
              
   <h1>Source code for Source_Doc.PyOR_PhaseCycle</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contains the PhaseCycle class, which handles phase cycling operations </span>
-<span class="sd">including pulse phasing and receiver phase adjustments in magnetic resonance simulations.</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This file defines the `PhaseCycle` class, which handles phase cycling operations </span>
+<span class="sd">    including pulse phasing and receiver phase adjustments in magnetic resonance simulations.</span>
+
+<span class="sd">    Phase cycling is a crucial technique for eliminating unwanted coherence pathways </span>
+<span class="sd">    and improving signal-to-noise ratios in NMR and EPR experiments.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">expm</span>
@@ -96,7 +106,7 @@
 
 
 <div class="viewcode-block" id="PhaseCycle">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_PhaseCycle.PhaseCycle">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_PhaseCycle.PhaseCycle">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseCycle</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -115,7 +125,7 @@
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    </span>
     
 <div class="viewcode-block" id="PhaseCycle.Pulse_Phase">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_PhaseCycle.PhaseCycle.Pulse_Phase">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_PhaseCycle.PhaseCycle.Pulse_Phase">[docs]</a>
     <span class="k">def</span> <span class="nf">Pulse_Phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SxQ</span><span class="p">,</span> <span class="n">SyQ</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a pulse operator along a defined phase direction.</span>
@@ -155,7 +165,7 @@
 
     
 <div class="viewcode-block" id="PhaseCycle.Receiver_Phase">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_PhaseCycle.PhaseCycle.Receiver_Phase">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_PhaseCycle.PhaseCycle.Receiver_Phase">[docs]</a>
     <span class="k">def</span> <span class="nf">Receiver_Phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SxQ</span><span class="p">,</span> <span class="n">SyQ</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span> 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a receiver (detection) operator with a defined phase.</span>

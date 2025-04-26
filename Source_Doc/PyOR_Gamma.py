@@ -1,12 +1,17 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contain gyromagnetic ratio of electron and other nuclei
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This file contains the gyromagnetic ratios of the electron and various nuclei
+    commonly encountered in magnetic resonance experiments.
 """
+
 
 GAMMA = {}
 

@@ -21,6 +21,8 @@ release = '1.0.0'
 
 extensions = ["sphinx.ext.todo","sphinx.ext.viewcode","sphinx.ext.autodoc", "nbsphinx"]
 
+add_module_names = False
+
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 
@@ -34,3 +36,5 @@ html_static_path = ['_static']
 html_logo = "_static/logo.png"
 
 html_baseurl = "https://vthalakottoor.github.io/PyOR/"
+
+html_split_index = False

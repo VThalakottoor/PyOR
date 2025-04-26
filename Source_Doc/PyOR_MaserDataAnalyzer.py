@@ -1,13 +1,20 @@
 """
 PyOR - Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-Email: vineethfrancis.physics@gmail.com
 
-This module provides the MaserDataAnalyzer class for loading, analyzing,
-and visualizing maser signal data in both time and frequency domains.
-It includes interactive matplotlib visualizations for signal inspection,
-FFT/iFFT transformations, and automatic subplot saving after user interactions.
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
+
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module provides the `MaserDataAnalyzer` class for loading, analyzing,
+    and visualizing maser signal data in both time and frequency domains.
+
+    It includes interactive matplotlib visualizations for signal inspection,
+    FFT/iFFT transformations, and automatic subplot saving after user interactions.
 """
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -187,11 +194,16 @@ class MaserDataAnalyzer:
 
     def Plot_Mz(self, Mz_list):
         """
-        Plot all the Mz arrays from the list Mz_list and save the figure.
+        Plot multiple Mz arrays and save the combined figure.
 
         Parameters:
-        - Mz_list: List of strings, each representing the base name of a .npy file
-                (without the .npy extension) located in the same directory as self.filepath.
+            Mz_list (list of str):
+                A list of base names of `.npy` files (without the `.npy` extension),
+                located in the same directory as `self.filepath`.
+                Each `.npy` file contains a 1D array representing Mz.
+
+        Returns:
+            None
         """
         # Determine the directory containing the .npy files
         directory = os.path.dirname(self.filepath)
@@ -227,11 +239,15 @@ class MaserDataAnalyzer:
 
     def Plot_Mx(self, Mx_list):
         """
-        Plot all the Mx arrays from the list Mx_list and save the figure.
+        Plot all the Mx arrays from a list of file names and save the figure.
 
         Parameters:
-        - Mx_list: List of strings, each representing the base name of a .npy file
-                (without the .npy extension) located in the same directory as self.filepath.
+            Mx_list (list of str):
+                List of base names of `.npy` files (without the `.npy` extension),
+                located in the same directory as `self.filepath`.
+
+        Returns:
+            None
         """
         # Determine the directory containing the .npy files
         directory = os.path.dirname(self.filepath)

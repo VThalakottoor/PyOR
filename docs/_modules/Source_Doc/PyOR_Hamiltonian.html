@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -73,16 +76,23 @@
            <div itemprop="articleBody">
              
   <h1>Source code for Source_Doc.PyOR_Hamiltonian</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">PyOR - Python On Resonance </span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko </span>
-<span class="sd">Email: vineethfrancis.physics@gmail.com </span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contains the Hamiltonian class, which includes routines for building various </span>
-<span class="sd">spin interaction Hamiltonians used in magnetic resonance simulations.</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This file contains the `Hamiltonian` class, which provides routines for building </span>
+<span class="sd">    various spin interaction Hamiltonians used in magnetic resonance simulations.</span>
+
+<span class="sd">    Supported interactions may include Zeeman, dipolar coupling, scalar coupling, </span>
+<span class="sd">    and quadrupolar interactions depending on system specifications.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">lina</span>
@@ -106,7 +116,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian">[docs]</a>
 <span class="k">class</span> <span class="nc">Hamiltonian</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -137,7 +147,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">InteractioTensor_AngularFrequency</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Hamiltonian.Update">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Update">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Update">[docs]</a>
     <span class="k">def</span> <span class="nf">Update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates internal parameters from the QuantumSystem instance.</span>
@@ -152,7 +162,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.LarmorFrequency">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.LarmorFrequency">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.LarmorFrequency">[docs]</a>
     <span class="k">def</span> <span class="nf">LarmorFrequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the Larmor frequency (Ω₀) for each spin in the lab frame.</span>
@@ -188,7 +198,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Zeeman">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Zeeman">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Zeeman">[docs]</a>
     <span class="k">def</span> <span class="nf">Zeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs the Zeeman Hamiltonian in the laboratory frame.</span>
@@ -219,7 +229,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Zeeman_RotFrame">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Zeeman_RotFrame">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Zeeman_RotFrame">[docs]</a>
     <span class="k">def</span> <span class="nf">Zeeman_RotFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs the Zeeman Hamiltonian in the rotating frame.</span>
@@ -253,7 +263,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Zeeman_B1">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Zeeman_B1">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Zeeman_B1">[docs]</a>
     <span class="k">def</span> <span class="nf">Zeeman_B1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Omega1</span><span class="p">,</span> <span class="n">Omega1Phase</span><span class="p">):</span>  
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs the B₁ Hamiltonian for RF excitation in the rotating frame.</span>
@@ -287,7 +297,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Zeeman_B1_Offresonance">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Zeeman_B1_Offresonance">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Zeeman_B1_Offresonance">[docs]</a>
     <span class="k">def</span> <span class="nf">Zeeman_B1_Offresonance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">Omega1</span><span class="p">,</span> <span class="n">Omega1freq</span><span class="p">,</span> <span class="n">Omega1Phase</span><span class="p">):</span>  
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs a time-dependent Zeeman Hamiltonian for an off-resonant RF field.</span>
@@ -326,7 +336,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Zeeman_B1_ShapedPulse">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Zeeman_B1_ShapedPulse">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Zeeman_B1_ShapedPulse">[docs]</a>
     <span class="k">def</span> <span class="nf">Zeeman_B1_ShapedPulse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">Omega1T</span><span class="p">,</span> <span class="n">Omega1freq</span><span class="p">,</span> <span class="n">Omega1PhaseT</span><span class="p">):</span>  
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs time-dependent B₁ Hamiltonian with shaped amplitude and phase (e.g., Gaussian).</span>
@@ -364,7 +374,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Jcoupling">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Jcoupling">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Jcoupling">[docs]</a>
     <span class="k">def</span> <span class="nf">Jcoupling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>    
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct full J-coupling Hamiltonian (isotropic scalar coupling).</span>
@@ -401,7 +411,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Jcoupling_Weak">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Jcoupling_Weak">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Jcoupling_Weak">[docs]</a>
     <span class="k">def</span> <span class="nf">Jcoupling_Weak</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>    
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct simplified J-coupling Hamiltonian (weak coupling approximation).</span>
@@ -434,7 +444,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Dipole_Coupling_Constant">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Dipole_Coupling_Constant">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Dipole_Coupling_Constant">[docs]</a>
     <span class="k">def</span> <span class="nf">Dipole_Coupling_Constant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Gamma1</span><span class="p">,</span> <span class="n">Gamma2</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the dipolar coupling constant between two spins.</span>
@@ -461,7 +471,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.DDcoupling">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.DDcoupling">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.DDcoupling">[docs]</a>
     <span class="k">def</span> <span class="nf">DDcoupling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct the Dipole-Dipole (DD) interaction Hamiltonian for all spin pairs.</span>
@@ -531,7 +541,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Interaction_Hamiltonian_Catesian_Wigner">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_Catesian_Wigner">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_Catesian_Wigner">[docs]</a>
     <span class="k">def</span> <span class="nf">Interaction_Hamiltonian_Catesian_Wigner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XQ</span><span class="p">,</span> <span class="n">ApafQ</span><span class="p">,</span> <span class="n">YQ</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        General interaction Hamiltonian using Wigner rotation of Cartesian tensors.</span>
@@ -602,7 +612,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Interaction_Hamiltonian_Catesian_Euler">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_Catesian_Euler">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_Catesian_Euler">[docs]</a>
     <span class="k">def</span> <span class="nf">Interaction_Hamiltonian_Catesian_Euler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XQ</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">YQ</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rotate interaction tensor using Euler angles and construct Hamiltonian in Cartesian space.</span>
@@ -654,7 +664,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Interaction_Hamiltonian_SphericalTensor">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_SphericalTensor">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_SphericalTensor">[docs]</a>
     <span class="k">def</span> <span class="nf">Interaction_Hamiltonian_SphericalTensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">ApafQ</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">approx</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        General Hamiltonian using spherical tensor formalism.</span>
@@ -753,7 +763,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Interaction_Hamiltonian_MAS_SphericalTensor">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_MAS_SphericalTensor">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_MAS_SphericalTensor">[docs]</a>
     <span class="k">def</span> <span class="nf">Interaction_Hamiltonian_MAS_SphericalTensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">ApafQ</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">approx</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">alpha1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">gamma1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        General Hamiltonian using spherical tensor formalism for Magical Angle Spinning (MAS).</span>
@@ -855,7 +865,7 @@
 
         
 <div class="viewcode-block" id="Hamiltonian.Interaction_Hamiltonian_LAB_CSA_Secular">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_LAB_CSA_Secular">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_LAB_CSA_Secular">[docs]</a>
     <span class="k">def</span> <span class="nf">Interaction_Hamiltonian_LAB_CSA_Secular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">ApasQ</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs the secular CSA Hamiltonian in the lab frame.</span>
@@ -899,7 +909,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Interaction_Hamiltonian_LAB_Quadrupole_Secular">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_LAB_Quadrupole_Secular">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Interaction_Hamiltonian_LAB_Quadrupole_Secular">[docs]</a>
     <span class="k">def</span> <span class="nf">Interaction_Hamiltonian_LAB_Quadrupole_Secular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Coupling</span><span class="p">,</span> <span class="n">etaQ</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs the secular quadrupole Hamiltonian.</span>
@@ -940,7 +950,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.InteractionTensor_LAB">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_LAB">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_LAB">[docs]</a>
     <span class="k">def</span> <span class="nf">InteractionTensor_LAB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ApafQ</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rotates a tensor from PAF to LAB frame using spherical tensors and Wigner rotation.</span>
@@ -979,7 +989,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.InteractionTensor_PAF_CSA">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_CSA">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_CSA">[docs]</a>
     <span class="k">def</span> <span class="nf">InteractionTensor_PAF_CSA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Iso</span><span class="p">,</span> <span class="n">Aniso</span><span class="p">,</span> <span class="n">Asymmetry</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs the CSA interaction tensor in the principal axis frame (PAF).</span>
@@ -1012,7 +1022,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.InteractionTensor_PAF_Quadrupole">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_Quadrupole">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_Quadrupole">[docs]</a>
     <span class="k">def</span> <span class="nf">InteractionTensor_PAF_Quadrupole</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Coupling</span><span class="p">,</span> <span class="n">etaQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs the quadrupolar tensor in the PAF.</span>
@@ -1046,7 +1056,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.InteractionTensor_PAF_Dipole">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_Dipole">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_Dipole">[docs]</a>
     <span class="k">def</span> <span class="nf">InteractionTensor_PAF_Dipole</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs a PAF dipolar tensor.</span>
@@ -1072,7 +1082,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.InteractionTensor_PAF_Decomposition">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_Decomposition">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_Decomposition">[docs]</a>
     <span class="k">def</span> <span class="nf">InteractionTensor_PAF_Decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decomposes a PAF tensor into isotropic, anisotropy, and asymmetry components.</span>
@@ -1107,7 +1117,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.InteractionTensor_LAB_Decomposition">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_LAB_Decomposition">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_LAB_Decomposition">[docs]</a>
     <span class="k">def</span> <span class="nf">InteractionTensor_LAB_Decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decomposes a LAB-frame tensor into isotropic, symmetric, and antisymmetric parts.</span>
@@ -1143,10 +1153,10 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.PowderSpectrum">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.PowderSpectrum">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.PowderSpectrum">[docs]</a>
     <span class="k">def</span> <span class="nf">PowderSpectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EVol</span><span class="p">,</span> <span class="n">rhoI</span><span class="p">,</span> <span class="n">rhoeq</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">IT_PAF</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">approx</span><span class="p">,</span>
                     <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">SecularEquation</span><span class="o">=</span><span class="s2">&quot;spherical&quot;</span><span class="p">,</span> <span class="n">ncores</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">apodization</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+                    <span class="n">SecularEquation</span><span class="o">=</span><span class="s2">&quot;spherical&quot;</span><span class="p">,</span> <span class="n">ncores</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">apodization</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.</span>
 
@@ -1182,7 +1192,7 @@
 
             <span class="n">t</span><span class="p">,</span> <span class="n">rho_t</span> <span class="o">=</span> <span class="n">EVol</span><span class="o">.</span><span class="n">Evolution</span><span class="p">(</span><span class="n">rhoI</span><span class="p">,</span> <span class="n">rhoeq</span><span class="p">,</span> <span class="n">HAM</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">Y</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Y</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">Y</span> <span class="o">==</span> <span class="n">X</span><span class="p">:</span>
                 <span class="n">det_Mt</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="p">,</span> <span class="n">X</span> <span class="o">+</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">det_Mt</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="p">,</span> <span class="n">X</span> <span class="o">+</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="p">,</span> <span class="n">Y</span> <span class="o">+</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
@@ -1217,14 +1227,14 @@
         <span class="k">return</span> <span class="n">freq</span><span class="p">,</span> <span class="n">spectrum</span></div>
 
 
-<div class="viewcode-block" id="Hamiltonian.MASSpectrum">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.MASSpectrum">[docs]</a>
-    <span class="k">def</span> <span class="nf">MASSpectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EVol</span><span class="p">,</span> <span class="n">rhoI</span><span class="p">,</span> <span class="n">rhoeq</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">IT_PAF</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">approx</span><span class="p">,</span>
+<div class="viewcode-block" id="Hamiltonian.MASSpectrum2">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.MASSpectrum2">[docs]</a>
+    <span class="k">def</span> <span class="nf">MASSpectrum2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EVol</span><span class="p">,</span> <span class="n">rhoI</span><span class="p">,</span> <span class="n">rhoeq</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">IT_PAF</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">approx</span><span class="p">,</span>
                     <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">MagicAngle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">RotortFrequency</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ncores</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">apodization</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+                    <span class="n">MagicAngle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">RotortFrequency</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ncores</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">apodization</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        &lt;&lt;&lt;&lt; Attention: Function under testing. &gt;&gt;&gt;&gt;</span>
+<span class="sd">        &lt;&lt;&lt;&lt; Attention: This function is slow. &gt;&gt;&gt;&gt;</span>
 
 <span class="sd">        Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.</span>
 
@@ -1248,7 +1258,6 @@
         <span class="n">Npoints</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">AcqAQ</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">AcqDT</span><span class="p">)</span>
 
         <span class="n">RotortFrequency_rad</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">RotortFrequency</span>
-        <span class="n">MagicAngle_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">MagicAngle</span><span class="p">)</span>
 
         <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">Npoints</span><span class="p">,</span> <span class="n">Npoints</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">alpha_beta_gamma_pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">))</span>
@@ -1260,16 +1269,16 @@
                 <span class="n">MAS_Ham</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Interaction_Hamiltonian_MAS_SphericalTensor</span><span class="p">(</span>
                     <span class="n">X</span><span class="p">,</span> <span class="n">IT_PAF</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">approx</span><span class="p">,</span>
                     <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_i</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta_i</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma_i</span><span class="p">,</span>
-                    <span class="n">alpha1</span><span class="o">=</span><span class="n">RotortFrequency_rad</span> <span class="o">*</span> <span class="n">time_i</span><span class="p">,</span>
-                    <span class="n">beta1</span><span class="o">=</span><span class="n">MagicAngle_rad</span><span class="p">,</span>
-                    <span class="n">gamma1</span><span class="o">=</span><span class="mf">0.0</span>
+                    <span class="n">alpha1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                    <span class="n">beta1</span><span class="o">=</span><span class="n">MagicAngle</span><span class="p">,</span>
+                    <span class="n">gamma1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">RotortFrequency_rad</span> <span class="o">*</span> <span class="n">time_i</span><span class="p">)</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># Assuming QunObj wraps a .data matrix</span>
 
             <span class="c1"># Time evolution</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">rho_t</span> <span class="o">=</span> <span class="n">EVol</span><span class="o">.</span><span class="n">Evolution</span><span class="p">(</span><span class="n">rhoI</span><span class="p">,</span> <span class="n">rhoeq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zeeman_RotFrame</span><span class="p">(),</span> <span class="n">HamiltonianArray</span><span class="o">=</span><span class="n">MAS_Ham</span><span class="p">)</span>
 
             <span class="c1"># Detection operator</span>
-            <span class="k">if</span> <span class="n">Y</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Y</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">Y</span> <span class="o">==</span> <span class="n">X</span><span class="p">:</span>
                 <span class="n">det_Mt</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="p">,</span> <span class="n">X</span> <span class="o">+</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">det_Mt</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="p">,</span> <span class="n">X</span> <span class="o">+</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="p">,</span> <span class="n">Y</span> <span class="o">+</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
@@ -1301,9 +1310,135 @@
         <span class="k">return</span> <span class="n">freq</span><span class="p">,</span> <span class="n">spectrum</span></div>
 
 
-    
+<div class="viewcode-block" id="Hamiltonian.MASSpectrum">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.MASSpectrum">[docs]</a>
+    <span class="k">def</span> <span class="nf">MASSpectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EVol</span><span class="p">,</span> <span class="n">rhoI</span><span class="p">,</span> <span class="n">rhoeq</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">IT_PAF</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">approx</span><span class="p">,</span>
+                    <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">MagicAngle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">RotortFrequency</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ncores</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">apodization</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the Magic Angle Spinning (MAS) powder-averaged spectrum.</span>
+
+<span class="sd">        This function constructs a periodic time-dependent Hamiltonian array for MAS,</span>
+<span class="sd">        evolving the system under that Hamiltonian, and computing the spectrum by Fourier transforming</span>
+<span class="sd">        the expectation values.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        -----------</span>
+<span class="sd">        EVol : Evolution object</span>
+<span class="sd">            Evolution class instance capable of time evolution.</span>
+<span class="sd">        rhoI : ndarray</span>
+<span class="sd">            Initial density matrix.</span>
+<span class="sd">        rhoeq : ndarray</span>
+<span class="sd">            Equilibrium density matrix.</span>
+<span class="sd">        X : str</span>
+<span class="sd">            Spin species (e.g., &quot;H&quot;, &quot;C&quot;).</span>
+<span class="sd">        IT_PAF : ndarray</span>
+<span class="sd">            Interaction tensor in principal axis frame (PAF).</span>
+<span class="sd">        Y : str</span>
+<span class="sd">            Secondary spin species for spin-spin interactions (can be empty for spin-field interactions).</span>
+<span class="sd">        string : str</span>
+<span class="sd">            Type of interaction: &quot;spin-field&quot; or &quot;spin-spin&quot;.</span>
+<span class="sd">        approx : str</span>
+<span class="sd">            Approximation method: &quot;all&quot;, &quot;secular&quot;, or &quot;secular + pseudosecular&quot;.</span>
+<span class="sd">        alpha, beta, gamma : array-like</span>
+<span class="sd">            Orientation angles (in radians) for the powder averaging.</span>
+<span class="sd">        weighted : bool, optional</span>
+<span class="sd">            Whether to use weighted averaging. Default is True.</span>
+<span class="sd">        weight : ndarray, optional</span>
+<span class="sd">            Weights for each crystallite orientation.</span>
+<span class="sd">        MagicAngle : float, optional</span>
+<span class="sd">            Magic angle value in degrees. Default is 0.</span>
+<span class="sd">        RotortFrequency : float, optional</span>
+<span class="sd">            Spinning frequency in Hz. Default is 0.</span>
+<span class="sd">        ncores : int, optional</span>
+<span class="sd">            Number of cores for parallelization. Default is -2 (use all but two cores).</span>
+<span class="sd">        apodization : float, optional</span>
+<span class="sd">            Apodization factor for windowing. Default is 0.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        --------</span>
+<span class="sd">        freq : ndarray</span>
+<span class="sd">            Frequency axis (Hz).</span>
+<span class="sd">        spectrum : ndarray</span>
+<span class="sd">            Powder-averaged spectrum (absolute value).</span>
+
+<span class="sd">        Acknowledgements:</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        1. Subhadip Pradhan, TIFR Hyderabad, for sharing the concept of using periodic Hamiltonian.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">AcqDT</span>
+        <span class="n">Npoints</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">AcqAQ</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">AcqDT</span><span class="p">)</span>
+
+        <span class="n">RotortFrequency_rad</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">RotortFrequency</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">Npoints</span><span class="p">,</span> <span class="n">Npoints</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">alpha_beta_gamma_pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">))</span>
+
+        <span class="c1"># Determine the number of Hamiltonians over a rotor period</span>
+        <span class="n">num_H</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">RotortFrequency_rad</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time points in one rotor period&quot;</span><span class="p">,</span> <span class="n">num_H</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">compute_single</span><span class="p">(</span><span class="n">alpha_i</span><span class="p">,</span> <span class="n">beta_i</span><span class="p">,</span> <span class="n">gamma_i</span><span class="p">):</span>
+            <span class="c1"># Precompute the unique Hamiltonians</span>
+            <span class="n">Ham_unique</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_H</span><span class="p">):</span>
+                <span class="n">gamma1_k</span> <span class="o">=</span> <span class="n">RotortFrequency_rad</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">dt</span>
+                <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Interaction_Hamiltonian_MAS_SphericalTensor</span><span class="p">(</span>
+                    <span class="n">X</span><span class="p">,</span> <span class="n">IT_PAF</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">approx</span><span class="p">,</span>
+                    <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_i</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta_i</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma_i</span><span class="p">,</span>
+                    <span class="n">alpha1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                    <span class="n">beta1</span><span class="o">=</span><span class="n">MagicAngle</span><span class="p">,</span>
+                    <span class="n">gamma1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">gamma1_k</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">data</span>
+                <span class="n">Ham_unique</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+
+            <span class="c1"># Repeat the Hamiltonians periodically over all time points</span>
+            <span class="n">MAS_Ham</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ham_unique</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="n">num_H</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Npoints</span><span class="p">)]</span>
+
+            <span class="c1"># Evolve the density matrix</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">rho_t</span> <span class="o">=</span> <span class="n">EVol</span><span class="o">.</span><span class="n">Evolution</span><span class="p">(</span><span class="n">rhoI</span><span class="p">,</span> <span class="n">rhoeq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zeeman_RotFrame</span><span class="p">(),</span> <span class="n">HamiltonianArray</span><span class="o">=</span><span class="n">MAS_Ham</span><span class="p">)</span>
+
+            <span class="c1"># Setup detection operator</span>
+            <span class="k">if</span> <span class="n">Y</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">Y</span> <span class="o">==</span> <span class="n">X</span><span class="p">:</span>
+                <span class="n">det_Mt</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="p">,</span> <span class="n">X</span> <span class="o">+</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">det_Mt</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="p">,</span> <span class="n">X</span> <span class="o">+</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="p">,</span> <span class="n">Y</span> <span class="o">+</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+            <span class="c1"># Compute expectation values and apply window function</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">Mt</span> <span class="o">=</span> <span class="n">EVol</span><span class="o">.</span><span class="n">Expectation</span><span class="p">(</span><span class="n">rho_t</span><span class="p">,</span> <span class="n">det_Mt</span><span class="p">)</span>
+            <span class="n">Mt</span> <span class="o">=</span> <span class="n">Spro</span><span class="o">.</span><span class="n">WindowFunction</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Mt</span><span class="p">,</span> <span class="n">apodization</span><span class="p">)</span>
+
+            <span class="c1"># Fourier transform to obtain the spectrum</span>
+            <span class="n">freq</span><span class="p">,</span> <span class="n">spectrum_single</span> <span class="o">=</span> <span class="n">Spro</span><span class="o">.</span><span class="n">FourierTransform</span><span class="p">(</span><span class="n">Mt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">AcqFS</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">freq</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">spectrum_single</span><span class="p">)</span>
+
+        <span class="c1"># Compute the spectrum for each orientation in parallel</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">ncores</span><span class="p">)(</span>
+            <span class="n">delayed</span><span class="p">(</span><span class="n">compute_single</span><span class="p">)(</span><span class="n">alpha_i</span><span class="p">,</span> <span class="n">beta_i</span><span class="p">,</span> <span class="n">gamma_i</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">alpha_i</span><span class="p">,</span> <span class="n">beta_i</span><span class="p">,</span> <span class="n">gamma_i</span> <span class="ow">in</span> <span class="n">alpha_beta_gamma_pairs</span>
+        <span class="p">)</span>
+
+        <span class="n">freq_list</span><span class="p">,</span> <span class="n">spectra</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">freq_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Perform weighted or unweighted averaging</span>
+        <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">beta</span><span class="p">))</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+            <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">w</span> <span class="o">*</span> <span class="n">s</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">spectra</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">freq</span><span class="p">,</span> <span class="n">spectrum</span></div>
+
+
 <div class="viewcode-block" id="Hamiltonian.ShapedPulse_Bruker">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.ShapedPulse_Bruker">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.ShapedPulse_Bruker">[docs]</a>
     <span class="k">def</span> <span class="nf">ShapedPulse_Bruker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">pulseLength</span><span class="p">,</span> <span class="n">RotationAngle</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load and process a shaped pulse from a Bruker shape file.</span>
@@ -1356,7 +1491,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.ShapedPulse_Interpolate">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.ShapedPulse_Interpolate">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.ShapedPulse_Interpolate">[docs]</a>
     <span class="k">def</span> <span class="nf">ShapedPulse_Interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">SPIntensity</span><span class="p">,</span> <span class="n">SPPhase</span><span class="p">,</span> <span class="n">Kind</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interpolate amplitude and phase arrays of a shaped pulse.</span>
@@ -1384,7 +1519,7 @@
 
 
 <div class="viewcode-block" id="Hamiltonian.Eigen">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Eigen">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.Eigen">[docs]</a>
     <span class="k">def</span> <span class="nf">Eigen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute eigenvalues and eigenvectors of a Hamiltonian.</span>

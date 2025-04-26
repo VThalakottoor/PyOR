@@ -1,85 +1,91 @@
 PyOR Simulation Examples
 ========================
 
-Quantum Objectandlibrary
-------------------------
+Quantum Object and Library
+---------------------------
 
-- `Introduction Quantumlibrary <Examples/Quantum_ObjectAndLibrary/Introduction_QuantumLibrary.ipynb>`_
-- `Introduction Quantumobjects <Examples/Quantum_ObjectAndLibrary/Introduction_QuantumObjects.ipynb>`_
+- `Introduction Quantum Library <Examples/Quantum_ObjectAndLibrary/Introduction_QuantumLibrary.ipynb>`_
+- `Introduction Quantum Objects <Examples/Quantum_ObjectAndLibrary/Introduction_QuantumObjects.ipynb>`_
 - `Partial Trace <Examples/Quantum_ObjectAndLibrary/Partial_Trace.ipynb>`_
 
 Solids
 ------
 
-- `Extract Crstalorientations <Examples/Solids/Extract_CrstalOrientations.ipynb>`_
-- `Powderaverage Csa <Examples/Solids/PowderAverage_CSA.ipynb>`_
-- `Powderaverage Quadrupole <Examples/Solids/PowderAverage_Quadrupole.ipynb>`_
+- `Extract Crystalorientations <Examples/Solids/Extract_CrystalOrientations.ipynb>`_
+- `MAS CSA <Examples/Solids/MAS_CSA.ipynb>`_
+- `Powder Average CSA <Examples/Solids/PowderAverage_CSA.ipynb>`_
+- `Powder Average Quadrupole <Examples/Solids/PowderAverage_Quadrupole.ipynb>`_
 
 Relaxation
 ----------
 
-- `Noe Hilbert Lindblad <Examples/Relaxation/NOE_Hilbert_Lindblad.ipynb>`_
-- `Noe Hilbert Redfield <Examples/Relaxation/NOE_Hilbert_Redfield.ipynb>`_
-- `Noe Liouville Lindblad <Examples/Relaxation/NOE_Liouville_Lindblad.ipynb>`_
-- `Noe Lioville Redfield <Examples/Relaxation/NOE_Lioville_Redfield.ipynb>`_
+- `NOE Hilbert Lindblad <Examples/Relaxation/NOE_Hilbert_Lindblad.ipynb>`_
+- `NOE Hilbert Redfield <Examples/Relaxation/NOE_Hilbert_Redfield.ipynb>`_
+- `NOE Liouville Lindblad <Examples/Relaxation/NOE_Liouville_Lindblad.ipynb>`_
+- `NOE Liouville Redfield <Examples/Relaxation/NOE_Liouville_Redfield.ipynb>`_
 
 Density Matrix
 --------------
 
-- `Equlibriumdensitymatrix <Examples/Density_Matrix/EqulibriumDensityMatrix.ipynb>`_
+- `Equilibrium Density Matrix <Examples/Density_Matrix/EquilibriumDensityMatrix.ipynb>`_
 
 Schrodinger
 -----------
 
-- `Schrodinger Ode <Examples/Schrodinger/Schrodinger_ODE.ipynb>`_
+- `Schrodinger ODE <Examples/Schrodinger/Schrodinger_ODE.ipynb>`_
 - `Schrodinger Propagator <Examples/Schrodinger/Schrodinger_Propagator.ipynb>`_
 
 Basis
 -----
 
-- `Productoperators Cartesian Anyspinhalf <Examples/Basis/ProductOperators_Cartesian_AnySpinHalf.ipynb>`_
-- `Productoperators Pmz Anyspinhalf <Examples/Basis/ProductOperators_PMZ_AnySpinHalf.ipynb>`_
-- `Productoperators Sphericaltensors Anyspinhalf <Examples/Basis/ProductOperators_SphericalTensors_AnySpinHalf.ipynb>`_
-- `Productoperators Sphericaltensors Spinhalf <Examples/Basis/ProductOperators_SphericalTensors_SpinHalf.ipynb>`_
-- `Productoperators Sphericaltensors Spinone <Examples/Basis/ProductOperators_SphericalTensors_SpinOne.ipynb>`_
-- `Productoperators Sphericaltensors Twospinhalf <Examples/Basis/ProductOperators_SphericalTensors_TwoSpinHalf.ipynb>`_
-- `Productoperators Zeeman Pmzbasis <Examples/Basis/ProductOperators_Zeeman_PMZBasis.ipynb>`_
-- `Zeeman Singlettriplet <Examples/Basis/Zeeman_SingletTriplet.ipynb>`_
+- `Product Operators Cartesian (any spin half) <Examples/Basis/ProductOperators_Cartesian_AnySpinHalf.ipynb>`_
+- `Product Operators PMZ (any spin half) <Examples/Basis/ProductOperators_PMZ_AnySpinHalf.ipynb>`_
+- `Product Operators Spherical Tensors (any spin half) <Examples/Basis/ProductOperators_SphericalTensors_AnySpinHalf.ipynb>`_
+- `Product Operators Spherical Tensors (spin half) <Examples/Basis/ProductOperators_SphericalTensors_SpinHalf.ipynb>`_
+- `Product Operators Spherical Tensors (spin one) <Examples/Basis/ProductOperators_SphericalTensors_SpinOne.ipynb>`_
+- `Product Operators Spherical Tensors (two spin half) <Examples/Basis/ProductOperators_SphericalTensors_TwoSpinHalf.ipynb>`_
+- `Product Operators Zeeman PMZ Basis <Examples/Basis/ProductOperators_Zeeman_PMZBasis.ipynb>`_
+- `Zeeman Singlet Triplet <Examples/Basis/Zeeman_SingletTriplet.ipynb>`_
 
 Spin Operator
 -------------
 
-- `Singlespin <Examples/Spin_Operator/SingleSpin.ipynb>`_
-- `Twospins <Examples/Spin_Operator/TwoSpins.ipynb>`_
+- `Single Spin <Examples/Spin_Operator/SingleSpin.ipynb>`_
+- `Two Spins <Examples/Spin_Operator/TwoSpins.ipynb>`_
 
-Liquid State Nmr 1D
+Liquid State NMR 1D
 -------------------
 
 - `1D Pulse Acquisition <Examples/Liquid_State_NMR_1D/1D_Pulse_Acquisition.ipynb>`_
 
+Nonlinear NMR Maser Data Analysis
+---------------------------------
+
+- `PyOR Maser Analyzer <Examples/Nonlinear_NMR/Maser_DataAnalysis/PyOR_MaserAnalyzer.ipynb>`_
+
 Shape Pulse
 -----------
 
-- `Shapedpulse <Examples/Shape_Pulse/ShapedPulse.ipynb>`_
-- `Shapedpulse Finalmz <Examples/Shape_Pulse/ShapedPulse_FinalMz.ipynb>`_
-- `Shapedpulse Profile <Examples/Shape_Pulse/ShapedPulse_Profile.ipynb>`_
-- `Shapedpulse Propagator <Examples/Shape_Pulse/ShapedPulse_Propagator.ipynb>`_
-- `Shapedpulse Relaxation Radiationdamping <Examples/Shape_Pulse/ShapedPulse_Relaxation_Radiationdamping.ipynb>`_
+- `Shaped Pulse <Examples/Shape_Pulse/ShapedPulse.ipynb>`_
+- `Shaped Pulse Final Mz <Examples/Shape_Pulse/ShapedPulse_FinalMz.ipynb>`_
+- `Shaped Pulse Profile <Examples/Shape_Pulse/ShapedPulse_Profile.ipynb>`_
+- `Shaped Pulse Propagator <Examples/Shape_Pulse/ShapedPulse_Propagator.ipynb>`_
+- `Shaped Pulse Relaxation Radiationdamping <Examples/Shape_Pulse/ShapedPulse_Relaxation_Radiationdamping.ipynb>`_
 
 States
 ------
 
-- `Blochvector <Examples/States/BlochVector.ipynb>`_
-- `Coupledstates <Examples/States/CoupledStates.ipynb>`_
-- `Ketandbra <Examples/States/KetAndBra.ipynb>`_
-- `Zeemanstates <Examples/States/ZeemanStates.ipynb>`_
-- `Zeemanstates Label <Examples/States/ZeemanStates_Label.ipynb>`_
+- `Bloch Vector <Examples/States/BlochVector.ipynb>`_
+- `Coupled States <Examples/States/CoupledStates.ipynb>`_
+- `Ket and Bra <Examples/States/KetAndBra.ipynb>`_
+- `Zeeman States <Examples/States/ZeemanStates.ipynb>`_
+- `Zeeman States Label <Examples/States/ZeemanStates_Label.ipynb>`_
 
 Hamiltonians
 ------------
 
-- `Csahamiltonian <Examples/Hamiltonians/CSAHamiltonian.ipynb>`_
-- `Dipolarhamiltonian <Examples/Hamiltonians/DipolarHamiltonian.ipynb>`_
-- `Quadrupolarhamiltonian <Examples/Hamiltonians/QuadrupolarHamiltonian.ipynb>`_
-- `Zeeman B1 Jcoupling Dipolarcoupling <Examples/Hamiltonians/Zeeman_B1_JCoupling_DipolarCoupling.ipynb>`_
+- `CSA Hamiltonian <Examples/Hamiltonians/CSAHamiltonian.ipynb>`_
+- `Dipolar Hamiltonian <Examples/Hamiltonians/DipolarHamiltonian.ipynb>`_
+- `Quadrupolar Hamiltonian <Examples/Hamiltonians/QuadrupolarHamiltonian.ipynb>`_
+- `Zeeman B1 JCoupling Dipolar Coupling <Examples/Hamiltonians/Zeeman_B1_JCoupling_DipolarCoupling.ipynb>`_
 

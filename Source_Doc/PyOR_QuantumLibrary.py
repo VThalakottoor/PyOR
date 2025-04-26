@@ -1,16 +1,21 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contains class QuantumLibrary.
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-This class provides a collection of quantum operations and tools including
-basis construction, tensor operations, commutators, eigenvalue analysis,
-partial trace, and more for quantum mechanical systems.
+Email:
+    vineethfrancis.physics@gmail.com
 
-Documentation is done.
+Description:
+    This module defines the `QuantumLibrary` class, which provides a collection 
+    of quantum operations and tools for quantum mechanical systems.
+
+    The `QuantumLibrary` class includes methods for basis construction, tensor operations, 
+    commutator evaluation, eigenvalue analysis, partial trace computations, and more, 
+    supporting simulations in magnetic resonance and general quantum mechanics.
 """
+
 
 # ========== Imports ========== #
 

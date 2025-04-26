@@ -1,12 +1,20 @@
 """
 PyOR - Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-Email: vineethfrancis.physics@gmail.com
 
-This file contains the `Plotting` class for visualization utilities in PyOR.
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
 
-Documentation is done.
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This module defines the `Plotting` class, which provides visualization utilities 
+    for PyOR simulations.
+
+    The `Plotting` class includes functions for plotting time-domain signals, frequency spectra, 
+    evolution of density matrices, and other data relevant to magnetic resonance experiments.
 """
+
 
 import numpy as np
 import matplotlib.pyplot as plt

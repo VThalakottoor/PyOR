@@ -1,11 +1,12 @@
 """
 PyOR - Python On Resonance
+
 Author: Vineeth Francis Thalakottoor Jose Chacko
+
 Email: vineethfrancis.physics@gmail.com
 
-This file contains the class Commutators.
-
-Documentation is done.
+Description:
+    This file contains the class `Commutators`.
 """
 
 import numpy as np

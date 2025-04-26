@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,20 +77,29 @@
              
   <h1>Source code for Source_Doc.PyOR_Particle</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contain class Particle</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Attribute:</span>
-<span class="sd">    name</span>
-<span class="sd">    spin</span>
-<span class="sd">    gamma</span>
-<span class="sd">    quadrupole</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Description:</span>
+<span class="sd">    This file defines the `Particle` class, which represents a quantum particle </span>
+<span class="sd">    with properties relevant to magnetic resonance simulations.</span>
+
+<span class="sd">Attributes:</span>
+<span class="sd">    name (str): </span>
+<span class="sd">        The name of the particle (e.g., &#39;1H&#39;, &#39;13C&#39;, &#39;Electron&#39;).</span>
+<span class="sd">    spin (float): </span>
+<span class="sd">        The spin quantum number of the particle.</span>
+<span class="sd">    gamma (float): </span>
+<span class="sd">        The gyromagnetic ratio of the particle (in rad/s/T).</span>
+<span class="sd">    quadrupole (float): </span>
+<span class="sd">        The quadrupole moment of the particle (if applicable, otherwise zero).</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PyOR_SpinQuantumNumber</span>
@@ -100,7 +112,7 @@
 
 
 <div class="viewcode-block" id="particle">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Particle.particle">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Particle.particle">[docs]</a>
 <span class="k">class</span> <span class="nc">particle</span><span class="p">():</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">value</span>

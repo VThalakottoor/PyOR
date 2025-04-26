@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -75,15 +78,23 @@
   <h1>Source code for Source_Doc.PyOR_HardPulse</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">PyOR - Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">Email: vineethfrancis.physics@gmail.com</span>
 
-<span class="sd">This file contains the HardPulse class, which implements methods for handling </span>
-<span class="sd">rotation (pulse) operations in both Hilbert and Liouville spaces as used </span>
-<span class="sd">in magnetic resonance simulations.</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This file defines the `HardPulse` class, which implements methods for handling </span>
+<span class="sd">    rotation (pulse) operations in both Hilbert and Liouville spaces as applied </span>
+<span class="sd">    in magnetic resonance simulations.</span>
+
+<span class="sd">    The `HardPulse` class supports the construction of rotation operators, </span>
+<span class="sd">    pulse applications, and conversions between different quantum mechanical </span>
+<span class="sd">    representations.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">expm</span>
@@ -97,7 +108,7 @@
 
 
 <div class="viewcode-block" id="HardPulse">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_HardPulse.HardPulse">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_HardPulse.HardPulse">[docs]</a>
 <span class="k">class</span> <span class="nc">HardPulse</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -112,7 +123,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">class_COM</span> <span class="o">=</span> <span class="n">COM</span><span class="p">()</span>
 
 <div class="viewcode-block" id="HardPulse.Rotate_CyclicPermutation">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_HardPulse.HardPulse.Rotate_CyclicPermutation">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_HardPulse.HardPulse.Rotate_CyclicPermutation">[docs]</a>
     <span class="k">def</span> <span class="nf">Rotate_CyclicPermutation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">BS</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rotate operator BS about operator AQ using cyclic commutation relations.</span>
@@ -159,7 +170,7 @@
 
 
 <div class="viewcode-block" id="HardPulse.Rotate_Pulse">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_HardPulse.HardPulse.Rotate_Pulse">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_HardPulse.HardPulse.Rotate_Pulse">[docs]</a>
     <span class="k">def</span> <span class="nf">Rotate_Pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhoQ</span><span class="p">,</span> <span class="n">theta_rad</span><span class="p">,</span> <span class="n">operatorQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform rotation on an operator or state under a pulse.</span>
@@ -200,7 +211,7 @@
 
 
 <div class="viewcode-block" id="HardPulse.Matrix_Tol">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_HardPulse.HardPulse.Matrix_Tol">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_HardPulse.HardPulse.Matrix_Tol">[docs]</a>
     <span class="k">def</span> <span class="nf">Matrix_Tol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set elements of a matrix below a threshold tolerance to zero.</span>

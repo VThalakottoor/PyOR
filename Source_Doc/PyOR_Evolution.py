@@ -1,10 +1,17 @@
 """
-PyOR Python On Resonance
-Author: Vineeth Francis Thalakottoor Jose Chacko
-email: vineethfrancis.physics@gmail.com
+PyOR - Python On Resonance
 
-This file contain class Evolutions
+Author:
+    Vineeth Francis Thalakottoor Jose Chacko
+
+Email:
+    vineethfrancis.physics@gmail.com
+
+Description:
+    This file contains the class `Evolutions`, which is used for simulating 
+    time evolution of spin systems under different Hamiltonians and conditions.
 """
+
 
 import numpy as np
 from numpy import linalg as lina

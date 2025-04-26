@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -74,14 +77,23 @@
              
   <h1>Source code for Source_Doc.PyOR_Relaxation</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PyOR Python On Resonance</span>
-<span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
+<span class="sd">PyOR - Python On Resonance</span>
 
-<span class="sd">This file contain class Relaxation</span>
+<span class="sd">Author:</span>
+<span class="sd">    Vineeth Francis Thalakottoor Jose Chacko</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Email:</span>
+<span class="sd">    vineethfrancis.physics@gmail.com</span>
+
+<span class="sd">Description:</span>
+<span class="sd">    This module defines the `Relaxation` class, which provides methods to model </span>
+<span class="sd">    relaxation processes in magnetic resonance simulations.</span>
+
+<span class="sd">    The `Relaxation` class includes functionalities for simulating longitudinal (T1) </span>
+<span class="sd">    and transverse (T2) relaxation, relaxation superoperators, and decoherence </span>
+<span class="sd">    mechanisms relevant to spin dynamics.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">lina</span>
@@ -106,7 +118,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess">[docs]</a>
 <span class="k">class</span> <span class="nc">RelaxationProcess</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span> <span class="o">=</span> <span class="n">class_QS</span>
@@ -135,7 +147,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">SparseM</span> <span class="o">=</span> <span class="n">class_QS</span><span class="o">.</span><span class="n">SparseM</span>
 
 <div class="viewcode-block" id="RelaxationProcess.Adjoint">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Adjoint">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Adjoint">[docs]</a>
     <span class="k">def</span> <span class="nf">Adjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return adjoint (Hermitian conjugate) of operator A</span>
@@ -144,7 +156,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.InnerProduct">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.InnerProduct">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.InnerProduct">[docs]</a>
     <span class="k">def</span> <span class="nf">InnerProduct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Inner product of two operators or vectors: ⟨A|B⟩</span>
@@ -153,7 +165,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.Vector_L">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Vector_L">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Vector_L">[docs]</a>
     <span class="k">def</span> <span class="nf">Vector_L</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Vectorize the operator X for Liouville space calculations.</span>
@@ -163,7 +175,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.SpectralDensity">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.SpectralDensity">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.SpectralDensity">[docs]</a>
     <span class="k">def</span> <span class="nf">SpectralDensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Spectral density function J(ω) for Redfield theory.</span>
@@ -187,7 +199,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.Lindblad_TemperatureGradient">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Lindblad_TemperatureGradient">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Lindblad_TemperatureGradient">[docs]</a>
     <span class="k">def</span> <span class="nf">Lindblad_TemperatureGradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the inverse temperature at time t for a linear temperature gradient.</span>
@@ -206,7 +218,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.SpectralDensity_Lb">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.SpectralDensity_Lb">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.SpectralDensity_Lb">[docs]</a>
     <span class="k">def</span> <span class="nf">SpectralDensity_Lb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Spectral density with thermal correction for Lindblad master equation.</span>
@@ -234,7 +246,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.Spherical_Tensor">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Spherical_Tensor">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Spherical_Tensor">[docs]</a>
     <span class="k">def</span> <span class="nf">Spherical_Tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">Rank</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">Sx</span><span class="p">,</span> <span class="n">Sy</span><span class="p">,</span> <span class="n">Sz</span><span class="p">,</span> <span class="n">Sp</span><span class="p">,</span> <span class="n">Sm</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Spherical tensor components (Rank 1 and 2).</span>
@@ -278,7 +290,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.Spherical_Tensor_Ernst">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Spherical_Tensor_Ernst">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Spherical_Tensor_Ernst">[docs]</a>
     <span class="k">def</span> <span class="nf">Spherical_Tensor_Ernst</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">Rank</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">Sx</span><span class="p">,</span> <span class="n">Sy</span><span class="p">,</span> <span class="n">Sz</span><span class="p">,</span> <span class="n">Sp</span><span class="p">,</span> <span class="n">Sm</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Ernst-form spherical tensor operators for dipolar relaxation.</span>
@@ -322,7 +334,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.Spherical_Tensor_Ernst_P">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Spherical_Tensor_Ernst_P">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Spherical_Tensor_Ernst_P">[docs]</a>
     <span class="k">def</span> <span class="nf">Spherical_Tensor_Ernst_P</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">Rank</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">Sx</span><span class="p">,</span> <span class="n">Sy</span><span class="p">,</span> <span class="n">Sz</span><span class="p">,</span> <span class="n">Sp</span><span class="p">,</span> <span class="n">Sm</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Ernst spherical tensors with frequency label.</span>
@@ -372,7 +384,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.EigFreq_ProductOperator_L">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.EigFreq_ProductOperator_L">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.EigFreq_ProductOperator_L">[docs]</a>
     <span class="k">def</span> <span class="nf">EigFreq_ProductOperator_L</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Hz_L</span><span class="p">,</span> <span class="n">opBasis_L</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the eigenfrequency of a product operator in Liouville space.</span>
@@ -393,7 +405,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.EigFreq_ProductOperator_H">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.EigFreq_ProductOperator_H">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.EigFreq_ProductOperator_H">[docs]</a>
     <span class="k">def</span> <span class="nf">EigFreq_ProductOperator_H</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Hz</span><span class="p">,</span> <span class="n">opBasis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute eigenfrequency in Hilbert space.</span>
@@ -414,7 +426,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.RelaxationRate_H">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.RelaxationRate_H">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.RelaxationRate_H">[docs]</a>
     <span class="k">def</span> <span class="nf">RelaxationRate_H</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">BQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute relaxation rate in Hilbert space:</span>
@@ -440,7 +452,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.RelaxationRate_L">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.RelaxationRate_L">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.RelaxationRate_L">[docs]</a>
     <span class="k">def</span> <span class="nf">RelaxationRate_L</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">BQ</span><span class="p">,</span> <span class="n">Relax_LQ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute relaxation rate in Liouville space:</span>
@@ -471,7 +483,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.Lindblad_Dissipator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Lindblad_Dissipator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Lindblad_Dissipator">[docs]</a>
     <span class="k">def</span> <span class="nf">Lindblad_Dissipator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the Lindblad dissipator in Liouville space.</span>
@@ -492,7 +504,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.Lindblad_Dissipator_Hilbert">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Lindblad_Dissipator_Hilbert">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Lindblad_Dissipator_Hilbert">[docs]</a>
     <span class="k">def</span> <span class="nf">Lindblad_Dissipator_Hilbert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">rho</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute Lindblad dissipator directly in Hilbert space.</span>
@@ -515,7 +527,7 @@
 
 
 <div class="viewcode-block" id="RelaxationProcess.Relaxation">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Relaxation">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Relaxation">[docs]</a>
     <span class="k">def</span> <span class="nf">Relaxation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Rprocess</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the relaxation superoperator or apply relaxation to the given density matrix</span>

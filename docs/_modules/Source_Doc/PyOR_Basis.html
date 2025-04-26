@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Source Code</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">PyOR Source Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">PyOR Simulation Examples</a></li>
 </ul>
 
@@ -75,12 +78,13 @@
   <h1>Source code for Source_Doc.PyOR_Basis</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">PyOR Python On Resonance</span>
+
 <span class="sd">Author: Vineeth Francis Thalakottoor Jose Chacko</span>
-<span class="sd">email: vineethfrancis.physics@gmail.com</span>
 
-<span class="sd">This file contains class Basis</span>
+<span class="sd">Email: vineethfrancis.physics@gmail.com</span>
 
-<span class="sd">Documentation is done.</span>
+<span class="sd">Description:</span>
+<span class="sd">    This file contains the class `Basis`.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -97,7 +101,7 @@
 
 
 <div class="viewcode-block" id="Basis">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis">[docs]</a>
 <span class="k">class</span> <span class="nc">Basis</span><span class="p">:</span>    
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_QS</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -111,7 +115,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span> <span class="o">=</span> <span class="n">class_QS</span>
 
 <div class="viewcode-block" id="Basis.BasisChange_TransformationMatrix">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.BasisChange_TransformationMatrix">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.BasisChange_TransformationMatrix">[docs]</a>
     <span class="k">def</span> <span class="nf">BasisChange_TransformationMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the transformation matrix between two basis sets.</span>
@@ -147,7 +151,7 @@
 
 
 <div class="viewcode-block" id="Basis.BasisChange_State">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.BasisChange_State">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.BasisChange_State">[docs]</a>
     <span class="k">def</span> <span class="nf">BasisChange_State</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">U</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transform a state vector using the given transformation matrix.</span>
@@ -171,7 +175,7 @@
 
 
 <div class="viewcode-block" id="Basis.BasisChange_Operator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.BasisChange_Operator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.BasisChange_Operator">[docs]</a>
     <span class="k">def</span> <span class="nf">BasisChange_Operator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">O</span><span class="p">,</span> <span class="n">U</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transform an operator using the given transformation matrix.</span>
@@ -195,7 +199,7 @@
 
 
 <div class="viewcode-block" id="Basis.BasisChange_SpinOperators">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.BasisChange_SpinOperators">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.BasisChange_SpinOperators">[docs]</a>
     <span class="k">def</span> <span class="nf">BasisChange_SpinOperators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Sop</span><span class="p">,</span> <span class="n">U</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transform a list of spin operators using a transformation matrix.</span>
@@ -229,7 +233,7 @@
 
 
 <div class="viewcode-block" id="Basis.CG_Coefficient">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.CG_Coefficient">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.CG_Coefficient">[docs]</a>
     <span class="k">def</span> <span class="nf">CG_Coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">m1</span><span class="p">,</span> <span class="n">j2</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the Clebsch-Gordan coefficient ⟨j1 m1 j2 m2 | J M⟩.</span>
@@ -248,7 +252,7 @@
 
 
 <div class="viewcode-block" id="Basis.Spherical_OpBasis">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.Spherical_OpBasis">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.Spherical_OpBasis">[docs]</a>
     <span class="k">def</span> <span class="nf">Spherical_OpBasis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate spherical tensor operator basis for a single spin.</span>
@@ -298,7 +302,7 @@
 
 
 <div class="viewcode-block" id="Basis.ProductOperators_SphericalTensor">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SphericalTensor">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SphericalTensor">[docs]</a>
     <span class="k">def</span> <span class="nf">ProductOperators_SphericalTensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;negative to positive&#39;</span><span class="p">,</span> <span class="n">Index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate spherical tensor basis for a multi-spin system.</span>
@@ -334,7 +338,7 @@
 
 
 <div class="viewcode-block" id="Basis.ProductOperator">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.ProductOperator">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperator">[docs]</a>
     <span class="k">def</span> <span class="nf">ProductOperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">OP1</span><span class="p">,</span> <span class="n">CO1</span><span class="p">,</span> <span class="n">DIC1</span><span class="p">,</span> <span class="n">OP2</span><span class="p">,</span> <span class="n">CO2</span><span class="p">,</span> <span class="n">DIC2</span><span class="p">,</span> <span class="n">sort</span><span class="p">,</span> <span class="n">indexing</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform the Kronecker product of two sets of spherical basis operators.</span>
@@ -402,7 +406,7 @@
 
 
 <div class="viewcode-block" id="Basis.ProductOperators_SpinHalf_Cartesian">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_Cartesian">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_Cartesian">[docs]</a>
     <span class="k">def</span> <span class="nf">ProductOperators_SpinHalf_Cartesian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Normal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate product operator basis in the Cartesian basis for spin-1/2 systems.</span>
@@ -459,7 +463,7 @@
 
 
 <div class="viewcode-block" id="Basis.ProductOperators_SpinHalf_PMZ">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_PMZ">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_PMZ">[docs]</a>
     <span class="k">def</span> <span class="nf">ProductOperators_SpinHalf_PMZ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;negative to positive&#39;</span><span class="p">,</span> <span class="n">Index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Normal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate product operators for spin-1/2 systems in the PMZ basis.</span>
@@ -525,7 +529,7 @@
 
 
 <div class="viewcode-block" id="Basis.ProductOperators_SpinHalf_SphericalTensor">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_SphericalTensor">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_SphericalTensor">[docs]</a>
     <span class="k">def</span> <span class="nf">ProductOperators_SpinHalf_SphericalTensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;negative to positive&#39;</span><span class="p">,</span> <span class="n">Index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate product operators for spin-1/2 systems in the spherical tensor basis.</span>
@@ -577,7 +581,7 @@
 
 
 <div class="viewcode-block" id="Basis.String_to_Matrix">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.String_to_Matrix">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.String_to_Matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">String_to_Matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">Basis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert a dictionary of labels to a dictionary mapping labels to matrices.</span>
@@ -603,7 +607,7 @@
 
 
 <div class="viewcode-block" id="Basis.ProductOperators_Zeeman">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_Zeeman">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_Zeeman">[docs]</a>
     <span class="k">def</span> <span class="nf">ProductOperators_Zeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate product operators in the Zeeman basis.</span>
@@ -637,7 +641,7 @@
 
     
 <div class="viewcode-block" id="Basis.Zeeman_Basis">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.Zeeman_Basis">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.Zeeman_Basis">[docs]</a>
     <span class="k">def</span> <span class="nf">Zeeman_Basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute eigenbasis of the total Sz operator (Zeeman basis).</span>
@@ -660,7 +664,7 @@
 
 
 <div class="viewcode-block" id="Basis.SingletTriplet_Basis">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.SingletTriplet_Basis">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.SingletTriplet_Basis">[docs]</a>
     <span class="k">def</span> <span class="nf">SingletTriplet_Basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate singlet-triplet basis for two spin-1/2 particles.</span>
@@ -694,7 +698,7 @@
 
 
 <div class="viewcode-block" id="Basis.Basis_Ket_AngularMomentum_Array">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.Basis_Ket_AngularMomentum_Array">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.Basis_Ket_AngularMomentum_Array">[docs]</a>
     <span class="k">def</span> <span class="nf">Basis_Ket_AngularMomentum_Array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute magnetic quantum numbers for each Zeeman state.</span>
@@ -709,7 +713,7 @@
 
 
 <div class="viewcode-block" id="Basis.Basis_Ket_AngularMomentum_List">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.Basis_Ket_AngularMomentum_List">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.Basis_Ket_AngularMomentum_List">[docs]</a>
     <span class="k">def</span> <span class="nf">Basis_Ket_AngularMomentum_List</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute magnetic quantum numbers for each Zeeman state as strings.</span>
@@ -728,7 +732,7 @@
 
 
 <div class="viewcode-block" id="Basis.Normalize">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.Normalize">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.Normalize">[docs]</a>
     <span class="k">def</span> <span class="nf">Normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Normalize an operator so its inner product with itself is 1.</span>
@@ -747,7 +751,7 @@
 
 
 <div class="viewcode-block" id="Basis.InnerProduct">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.InnerProduct">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.InnerProduct">[docs]</a>
     <span class="k">def</span> <span class="nf">InnerProduct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute inner product of two operators.</span>
@@ -766,7 +770,7 @@
 
 
 <div class="viewcode-block" id="Basis.Adjoint">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.Adjoint">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.Adjoint">[docs]</a>
     <span class="k">def</span> <span class="nf">Adjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the adjoint (Hermitian conjugate) of an operator.</span>
@@ -785,7 +789,7 @@
 
 
 <div class="viewcode-block" id="Basis.ProductOperators_ConvertToLiouville">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_ConvertToLiouville">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_ConvertToLiouville">[docs]</a>
     <span class="k">def</span> <span class="nf">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Basis_X</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert product operator basis to Liouville space.</span>
@@ -808,7 +812,7 @@
 
 
 <div class="viewcode-block" id="Basis.Vector_L">
-<a class="viewcode-back" href="../../Source_Doc.html#Source_Doc.PyOR_Basis.Basis.Vector_L">[docs]</a>
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.Vector_L">[docs]</a>
     <span class="k">def</span> <span class="nf">Vector_L</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Vectorize an operator into Liouville space form.</span>
