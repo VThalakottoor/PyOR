@@ -11,7 +11,7 @@ Quantum Object and Library
 Solids
 ------
 
-- `Extract Crystalorientations <Examples/Solids/Extract_CrystalOrientations.ipynb>`_
+- `Extract Crystal Orientations <Examples/Solids/Extract_CrstalOrientations.ipynb>`_
 - `MAS CSA <Examples/Solids/MAS_CSA.ipynb>`_
 - `Powder Average CSA <Examples/Solids/PowderAverage_CSA.ipynb>`_
 - `Powder Average Quadrupole <Examples/Solids/PowderAverage_Quadrupole.ipynb>`_
@@ -22,12 +22,12 @@ Relaxation
 - `NOE Hilbert Lindblad <Examples/Relaxation/NOE_Hilbert_Lindblad.ipynb>`_
 - `NOE Hilbert Redfield <Examples/Relaxation/NOE_Hilbert_Redfield.ipynb>`_
 - `NOE Liouville Lindblad <Examples/Relaxation/NOE_Liouville_Lindblad.ipynb>`_
-- `NOE Liouville Redfield <Examples/Relaxation/NOE_Liouville_Redfield.ipynb>`_
+- `NOE Liouville Redfield <Examples/Relaxation/NOE_Lioville_Redfield.ipynb>`_
 
 Density Matrix
 --------------
 
-- `Equilibrium Density Matrix <Examples/Density_Matrix/EquilibriumDensityMatrix.ipynb>`_
+- `Equilibrium Density Matrix <Examples/Density_Matrix/EqulibriumDensityMatrix.ipynb>`_
 
 Schrodinger
 -----------

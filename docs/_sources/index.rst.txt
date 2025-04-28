@@ -14,6 +14,8 @@ Welcome to PyOR's Documentation!
 
 **Contact:** vineethfrancis.physics@gmail.com
 
+**Github:** https://github.com/VThalakottoor/PyOR
+
 About PyOR
 ----------
 
