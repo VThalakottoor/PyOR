@@ -8,6 +8,8 @@
 
 import os
 import sys
+import matplotlib
+matplotlib.use('agg')  # Force non-interactive backend during build
 
 sys.path.insert(0,os.path.abspath(".."))
 
@@ -19,7 +21,9 @@ release = '1.0.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.todo","sphinx.ext.viewcode","sphinx.ext.autodoc", "nbsphinx"]
+extensions = ["sphinx.ext.todo","sphinx.ext.viewcode","sphinx.ext.autodoc", "nbsphinx","matplotlib.sphinxext.plot_directive"]
+
+#nbsphinx_execute = 'auto'
 
 add_module_names = False
 
@@ -34,6 +38,12 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 html_logo = "_static/logo.png"
+
+
+plot_html_show_formats = False  # hide format selector
+plot_html_show_source_link = False
+plot_formats = [('png', 100)]  # save plots as PNG with 100 dpi
+
 
 html_baseurl = "https://vthalakottoor.github.io/PyOR/"
 
