@@ -126,6 +126,58 @@
     <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">outname</span><span class="p">,</span> <span class="n">out_array</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.6f</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="Bruker2Ddata">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_MaserDataAnalyzer.Bruker2Ddata">[docs]</a>
+<span class="k">def</span> <span class="nf">Bruker2Ddata</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">TD_F1</span><span class="p">,</span> <span class="n">FIDno</span><span class="p">,</span> <span class="n">outname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract and save a specific FID (Free Induction Decay) from Bruker 2D NMR data.</span>
+
+<span class="sd">    This function reads a Bruker 2D &quot;ser&quot; file, extracts the specified FID number,</span>
+<span class="sd">    and saves its real and imaginary components into a CSV file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filepath : str</span>
+<span class="sd">        Path to the Bruker &quot;ser&quot; file containing the raw 2D NMR data.</span>
+<span class="sd">    TD_F1 : int</span>
+<span class="sd">        The size of the indirect dimension (F1) of the dataset.</span>
+<span class="sd">    FIDno : int</span>
+<span class="sd">        The number of the FID to extract (0-based indexing).</span>
+<span class="sd">    outname : str</span>
+<span class="sd">        The desired output CSV file name. </span>
+<span class="sd">        If the extension is not provided, &quot;.csv&quot; will be appended automatically.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The output CSV will contain two columns:</span>
+<span class="sd">    - First column: Real part of the FID.</span>
+<span class="sd">    - Second column: Imaginary part of the FID.</span>
+<span class="sd">    Each row corresponds to a point in the FID.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Ensure the output filename has the .csv extension</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">outname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.csv&quot;</span><span class="p">):</span>
+        <span class="n">outname</span> <span class="o">+=</span> <span class="s2">&quot;.csv&quot;</span>
+
+    <span class="c1"># Load the full dataset as 32-bit integers</span>
+    <span class="n">dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+    <span class="c1"># Separate real and imaginary parts</span>
+    <span class="n">Mx</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">TD_F1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>  <span class="c1"># Real parts</span>
+    <span class="n">My</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">TD_F1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>  <span class="c1"># Imaginary parts</span>
+
+    <span class="c1"># Extract the specific FID number</span>
+    <span class="n">real_part</span> <span class="o">=</span> <span class="n">Mx</span><span class="p">[</span><span class="n">FIDno</span><span class="p">,:]</span>
+    <span class="n">imag_part</span> <span class="o">=</span> <span class="n">My</span><span class="p">[</span><span class="n">FIDno</span><span class="p">,:]</span>
+
+    <span class="c1"># Stack real and imaginary parts side-by-side</span>
+    <span class="n">out_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">real_part</span><span class="p">,</span> <span class="n">imag_part</span><span class="p">))</span>
+
+    <span class="c1"># Save to CSV</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">outname</span><span class="p">,</span> <span class="n">out_array</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.6f</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="MaserDataAnalyzer">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_MaserDataAnalyzer.MaserDataAnalyzer">[docs]</a>
 <span class="k">class</span> <span class="nc">MaserDataAnalyzer</span><span class="p">:</span>
@@ -170,8 +222,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">My</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">imag</span>           
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Mx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">My</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Mx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">My</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tpoints</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>  
         <span class="bp">self</span><span class="o">.</span><span class="n">fs</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span></div>
 

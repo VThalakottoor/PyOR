@@ -62,6 +62,7 @@ Nonlinear NMR Maser Data Analysis
 ---------------------------------
 
 - `PyOR Maser Simulation Analyzer <Examples/Nonlinear_NMR/Maser_SimulationDataAnalysis/PyOR_MaserAnalyzer.ipynb>`_
+- `PyOR Maser Data Analyzer (Bruker) <Examples/Nonlinear_NMR/Maser_DataAnalyzer_Bruker/PyOR_MaserAnalyzer.ipynb>`_
 
 Shape Pulse
 -----------

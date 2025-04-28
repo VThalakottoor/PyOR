@@ -45,6 +45,55 @@ def Bruker1Ddata(filepath, outname):
     # Step 4: Save to CSV (no header, comma delimiter)
     np.savetxt(outname, out_array, delimiter=",", fmt="%.6f")
 
+import numpy as np
+
+def Bruker2Ddata(filepath, TD_F1, FIDno, outname):
+    """
+    Extract and save a specific FID (Free Induction Decay) from Bruker 2D NMR data.
+
+    This function reads a Bruker 2D "ser" file, extracts the specified FID number,
+    and saves its real and imaginary components into a CSV file.
+
+    Parameters
+    ----------
+    filepath : str
+        Path to the Bruker "ser" file containing the raw 2D NMR data.
+    TD_F1 : int
+        The size of the indirect dimension (F1) of the dataset.
+    FIDno : int
+        The number of the FID to extract (0-based indexing).
+    outname : str
+        The desired output CSV file name. 
+        If the extension is not provided, ".csv" will be appended automatically.
+
+    Notes
+    -----
+    The output CSV will contain two columns:
+    - First column: Real part of the FID.
+    - Second column: Imaginary part of the FID.
+    Each row corresponds to a point in the FID.
+    """
+    # Ensure the output filename has the .csv extension
+    if not outname.lower().endswith(".csv"):
+        outname += ".csv"
+
+    # Load the full dataset as 32-bit integers
+    dat = np.fromfile(filepath, dtype=np.int32)
+
+    # Separate real and imaginary parts
+    Mx = dat[0::2].reshape((TD_F1, -1))  # Real parts
+    My = dat[1::2].reshape((TD_F1, -1))  # Imaginary parts
+
+    # Extract the specific FID number
+    real_part = Mx[FIDno,:]
+    imag_part = My[FIDno,:]
+
+    # Stack real and imaginary parts side-by-side
+    out_array = np.column_stack((real_part, imag_part))
+
+    # Save to CSV
+    np.savetxt(outname, out_array, delimiter=",", fmt="%.6f")
+
 class MaserDataAnalyzer:
     """
     MaserDataAnalyzer handles loading, processing, and plotting of maser data.
@@ -82,8 +131,8 @@ class MaserDataAnalyzer:
             self.My = self.data.imag           
         else:
             self.data = np.genfromtxt(self.filepath, delimiter=',')
-            self.Mx = self.data[:, 1]
-            self.My = self.data[:, 2]
+            self.Mx = self.data[:, 0]
+            self.My = self.data[:, 1]
         self.tpoints =  np.linspace(0, self.Mx.shape[-1] * self.dt, self.Mx.shape[-1] )  
         self.fs = 1.0 / self.dt
 
