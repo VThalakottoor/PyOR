@@ -282,8 +282,47 @@ class Evolutions:
                 def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
                     rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
                     rhodot = np.zeros((rhoi.shape[-1]))
-                    Rprocess2 = "Phenomenological"
+                    Rprocess2 = "Phenomenological Matrix"
                     Rso_temp = self.class_Relax.Relaxation(rho_temp-rhoeq) + self.class_Relax.Relaxation(rho_temp-rhoeq,Rprocess2)
+                    Brd = self.class_NonL.Radiation_Damping(rho_temp)
+                    Bdipole = self.class_NonL.DipoleShift(rho_temp)
+                    H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
+                    rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
+                    return rhodot  
+                rhoSol = solve_ivp(rhoDOT,[0,dt*Npoints],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
+                t, rho2d = rhoSol.t, rhoSol.y
+                for i in range(Npoints):          
+                    rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
+                    rho_t[i] = rho
+
+            if Pmethod == "ODE Solver Lindblad Relaxation and Phenomenological":
+                """
+                Relaxation possible in Hilbert space by using solver for ODE. 
+                Integrators not supported: 'Radau' and LSODA
+                """
+                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)                       
+                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                rhoi = rho.reshape(-1) + 0 * 1j
+                def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
+                    rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
+                    rhodot = np.zeros((rhoi.shape[-1]))
+
+                    if self.Maser_TempGradient:
+                        TempTemp = round(self.class_Relax.Lindblad_TemperatureGradient(t),6)
+                        if self.Lindblad_InitialInverseTemp < 0:
+                            if TempTemp <= self.Lindblad_FinalInverseTemp:
+                                self.class_QS.Lindblad_Temp = TempTemp
+                            else:
+                                self.class_QS.Lindblad_Temp = self.Lindblad_FinalInverseTemp
+                        else:
+                            if TempTemp >= self.Lindblad_FinalInverseTemp:
+                                self.class_QS.Lindblad_Temp = TempTemp
+                            else:
+                                self.class_QS.Lindblad_Temp = self.Lindblad_FinalInverseTemp
+                        print(f"\rt = {t:0.3f}  Temp = {TempTemp:0.3f}  Lindblad_Temp = {self.class_QS.Lindblad_Temp:0.3f}", end='')  
+
+                    Rprocess2 = "Phenomenological Matrix"
+                    Rso_temp = self.class_Relax.Relaxation(rho_temp) + self.class_Relax.Relaxation(rho_temp,Rprocess2)
                     Brd = self.class_NonL.Radiation_Damping(rho_temp)
                     Bdipole = self.class_NonL.DipoleShift(rho_temp)
                     H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     

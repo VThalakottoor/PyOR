@@ -31,12 +31,14 @@ try:
     from .PyOR_QuantumObject import QunObj
     from .PyOR_Hamiltonian import Hamiltonian
     from .PyOR_Commutators import Commutators
+    from .PyOR_Basis import Basis
 except ImportError:
     import PyOR_PhysicalConstants
     import PyOR_Rotation
     from PyOR_QuantumObject import QunObj
     from PyOR_Hamiltonian import Hamiltonian
     from PyOR_Commutators import Commutators
+    from PyOR_Basis import Basis    
 
 
 class RelaxationProcess:
@@ -400,6 +402,41 @@ class RelaxationProcess:
             Result of applying Lindblad dissipator
         """
         return A @ rho @ B - 0.5 * self.class_COMM.AntiCommutator(B @ A, rho)
+    
+    def Relaxation_CoherenceDecay(self, coherence_orders, relaxa_rate, diagonal_relaxa_rate=0, default_rate=0):
+        """
+        Apply relaxation decay to selected coherence orders, with proper separation of true diagonal elements.
+
+        Parameters:
+        - coherence_orders (list or set): coherence orders to apply relaxation to (off-diagonal).
+        - relaxa_rate (float): relaxation rate to apply to specified off-diagonal coherence orders.
+        - diagonal_relaxa_rate (float): relaxation rate for true diagonal elements (population terms).
+        - default_rate (float): relaxation rate for all other coherence orders.
+
+        Returns:
+        - Modified coherence Zeeman array with relaxation rates applied.
+        """
+        BS = Basis(self.class_QS)
+        Basis_Zeeman, dic_Zeeman, coh_Zeeman, coh_Zeeman_arrayQ = BS.ProductOperators_Zeeman()
+        coh_Zeeman_array = coh_Zeeman_arrayQ.data
+
+        # Get matrix shape and create indices (matrix is assumed square)
+        n = coh_Zeeman_array.shape[0]
+        rows, cols = np.indices((n, n))
+
+        # Masks
+        mask_true_diagonal = (rows == cols)
+        mask_relax = np.isin(coh_Zeeman_array, coherence_orders) & (~mask_true_diagonal)
+        mask_default = ~(mask_true_diagonal | mask_relax)
+
+        # Apply rates
+        if diagonal_relaxa_rate != default_rate:
+            coh_Zeeman_array[mask_true_diagonal] = diagonal_relaxa_rate
+        if relaxa_rate != default_rate:
+            coh_Zeeman_array[mask_relax] = relaxa_rate
+        coh_Zeeman_array[mask_default] = default_rate
+
+        return QunObj(coh_Zeeman_array)
 
     def Relaxation(self,rho=None,Rprocess = None):
         """
@@ -444,7 +481,7 @@ class RelaxationProcess:
 
         R1 = self.R1
         R2 = self.R2
-        R_input = self.R_Matrix
+        R_input = self.R_Matrix.data
 
         Sx = self.class_QS.Sx_
         Sy = self.class_QS.Sy_ 
@@ -714,6 +751,20 @@ class RelaxationProcess:
         # Lindblad Equation - Liouville Space
         # ==================================================
         if self.MasterEquation == "Lindblad" and self.PropagationSpace == "Liouville":
+
+            if Rprocess == "No Relaxation":
+                """
+                No Relaxation
+                """
+                Rso = np.zeros((self.Ldim,self.Ldim))
+                
+            if Rprocess == "Phenomenological":  
+                """
+                Phenomenological Relaxation
+                """
+                Rso = np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble)
+                np.fill_diagonal(Rso, R1)
+
             if Rprocess == "Auto-correlated Dipolar Heteronuclear Ernst":
                 """
                 Homonuclear Auto-correlated
@@ -797,6 +848,31 @@ class RelaxationProcess:
         # Lindblad Equation - Hilbert Space
         # ==================================================
         if self.MasterEquation == "Lindblad" and self.PropagationSpace == "Hilbert":
+
+            if Rprocess == "No Relaxation":
+                """
+                No Relaxation
+                """
+                dim = self.Vdim
+                Rso = np.zeros((dim,dim))
+                
+            if Rprocess == "Phenomenological":
+                """
+                Phenomenological Relaxation
+                """
+                dim = self.Vdim 
+                Rso = R2 * np.ones((dim,dim))
+                np.fill_diagonal(Rso, R1) 
+                Rso = 2.0 * np.multiply(Rso,rho)               
+
+            if Rprocess == "Phenomenological Matrix":
+                """
+                Phenomenological Relaxation
+                Relaxation Matrix is given as input
+                see function, Relaxation_Phenomenological_Input(R)
+                """
+                Rso = 2.0 * np.multiply(R_input,rho) 
+
             if Rprocess == "Auto-correlated Dipolar Heteronuclear Ernst":
                 """
                 Homonuclear Auto-correlated
