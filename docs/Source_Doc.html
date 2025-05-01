@@ -4735,6 +4735,19 @@ Supported options include:
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="Source_Doc.PyOR_Relaxation.RelaxationProcess.Relaxation_CoherenceDecay">
+<span class="sig-name descname"><span class="pre">Relaxation_CoherenceDecay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coherence_orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relaxa_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diagonal_relaxa_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Relaxation.html#RelaxationProcess.Relaxation_CoherenceDecay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Source_Doc.PyOR_Relaxation.RelaxationProcess.Relaxation_CoherenceDecay" title="Link to this definition"></a></dt>
+<dd><p>Apply relaxation decay to selected coherence orders, with proper separation of true diagonal elements.</p>
+<p>Parameters:
+- coherence_orders (list or set): coherence orders to apply relaxation to (off-diagonal).
+- relaxa_rate (float): relaxation rate to apply to specified off-diagonal coherence orders.
+- diagonal_relaxa_rate (float): relaxation rate for true diagonal elements (population terms).
+- default_rate (float): relaxation rate for all other coherence orders.</p>
+<p>Returns:
+- Modified coherence Zeeman array with relaxation rates applied.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="Source_Doc.PyOR_Relaxation.RelaxationProcess.SpectralDensity">
 <span class="sig-name descname"><span class="pre">SpectralDensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">W</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Relaxation.html#RelaxationProcess.SpectralDensity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Source_Doc.PyOR_Relaxation.RelaxationProcess.SpectralDensity" title="Link to this definition"></a></dt>
 <dd><p>Spectral density function J(ω) for Redfield theory.</p>

@@ -181,7 +181,10 @@ class QuantumSystem:
         self.Rprocess = "No Relaxation"
         self.R1 = 0.0
         self.R2 = 0.0
-        self.R_Matrix = np.zeros((self.Vdim, self.Vdim), dtype=np.double)
+        if self.PropagationSpace == "Hilbert":
+            self.R_Matrix = np.zeros((self.Vdim, self.Vdim), dtype=np.double)
+        else:
+            self.R_Matrix = np.zeros((self.Ldim, self.Ldim), dtype=np.double)
         self.RelaxParDipole_tau = 0.0
         self.RelaxParDipole_bIS = []
         self.Lindblad_Temp = 300

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PyOR Quantum &mdash; PyOR 1.0.0 documentation</title>
+  <title>Introduction to Quantum Objects &mdash; PyOR 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -70,7 +70,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">PyOR Quantum</li>
+      <li class="breadcrumb-item active">Introduction to Quantum Objects</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/Examples/Quantum_ObjectAndLibrary/Introduction_QuantumObjects.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -80,19 +80,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="PyOR-Quantum">
-<h1>PyOR Quantum<a class="headerlink" href="#PyOR-Quantum" title="Link to this heading"></a></h1>
+  <section id="Introduction-to-Quantum-Objects">
+<h1>Introduction to Quantum Objects<a class="headerlink" href="#Introduction-to-Quantum-Objects" title="Link to this heading"></a></h1>
 <section id="Author:-Vineeth-Thalakottoor">
 <h2>Author: Vineeth Thalakottoor<a class="headerlink" href="#Author:-Vineeth-Thalakottoor" title="Link to this heading"></a></h2>
 </section>
-<section id="Introduction-to-Quantum-Objects">
-<h2>Introduction to Quantum Objects<a class="headerlink" href="#Introduction-to-Quantum-Objects" title="Link to this heading"></a></h2>
+<section id="Email:-vineethfrancis.physics&#64;gmail.com">
+<h2>Email: <a class="reference external" href="mailto:vineethfrancis&#46;physics&#37;&#52;&#48;gmail&#46;com">vineethfrancis<span>&#46;</span>physics<span>&#64;</span>gmail<span>&#46;</span>com</a><a class="headerlink" href="#Email:-vineethfrancis.physics@gmail.com" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the source path</span>
-<span class="n">SourcePath</span> <span class="o">=</span> <span class="s1">&#39;/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/Source_Doc&#39;</span>
+<span class="n">SourcePath</span> <span class="o">=</span> <span class="s1">&#39;/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/PyOR/Source_Doc&#39;</span>
 
 <span class="c1"># Add source path</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -107,14 +107,19 @@
 <section id="Define-State-and-Operator">
 <h2>Define State and Operator<a class="headerlink" href="#Define-State-and-Operator" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Vector (ket)</span>
-<span class="n">vec</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ket1</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ket2</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]],</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="c1"># Matrix (operator)</span>
-<span class="n">op</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">([[</span><span class="mf">5.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5</span><span class="p">]],</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Matrix (Spin operator operator)</span>
+<span class="n">Sx</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]],</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Sy</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="n">j</span><span class="p">],[</span><span class="mf">0.5</span><span class="n">j</span><span class="p">,</span>  <span class="mf">0.0</span><span class="p">]],</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Sz</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">]],</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">Id</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span><span class="n">PrintDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -124,326 +129,57 @@
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Quantum object initialized: shape=(2, 1), type=&#39;ket&#39;, dtype=complex128
+Quantum object initialized: shape=(2, 1), type=&#39;ket&#39;, dtype=complex128
+Quantum object initialized: shape=(2, 2), type=&#39;operator&#39;, dtype=complex128
+Quantum object initialized: shape=(2, 2), type=&#39;operator&#39;, dtype=complex128
+Quantum object initialized: shape=(2, 2), type=&#39;operator&#39;, dtype=complex128
 Quantum object initialized: shape=(2, 2), type=&#39;operator&#39;, dtype=complex128
 </pre></div></div>
 </div>
 </section>
-<section id="Ket">
-<h2>Ket<a class="headerlink" href="#Ket" title="Link to this heading"></a></h2>
+<section id="Quantum-Object:-Ket">
+<h2>Quantum Object: Ket<a class="headerlink" href="#Quantum-Object:-Ket" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : matrix - show matrix form using sympy</span>
-<span class="n">vec</span><span class="o">.</span><span class="n">matrix</span>
+
+<span class="n">ket1</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
 $\displaystyle \left[\begin{matrix}1.0\\0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : matrix - show matrix form using sympy</span>
+
+<span class="n">ket2</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0\\1.0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : type - show the type of the object (ket, bra or operator)</span>
-<span class="n">vec</span><span class="o">.</span><span class="n">type</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&#39;ket&#39;
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : data - show matrix form using numpy, as array</span>
-<span class="n">vec</span><span class="o">.</span><span class="n">data</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-array([[1.+0.j],
-       [0.+0.j]])
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : datatype - show the data typer of the array</span>
-<span class="n">vec</span><span class="o">.</span><span class="n">datatype</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-dtype(&#39;complex128&#39;)
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Rotate - Rotate the object</span>
-<span class="n">vec1</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">Rotate</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span><span class="n">op</span><span class="p">)</span>
-<span class="n">vec1</span><span class="o">.</span><span class="n">matrix</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}-1.0\\0\end{matrix}\right]$</div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Norm - Norml of the object</span>
-<span class="n">vec1</span><span class="o">.</span><span class="n">Norm</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-1.0
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Normalize - Normalize the object</span>
-<span class="n">vec1</span><span class="o">.</span><span class="n">Normalize</span><span class="p">()</span>
-<span class="n">vec1</span><span class="o">.</span><span class="n">matrix</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}-1.0\\0\end{matrix}\right]$</div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Conjugate - Conjugate of the object</span>
-<span class="n">vec1</span><span class="o">.</span><span class="n">Conjugate</span><span class="p">()</span>
-<span class="n">vec1</span><span class="o">.</span><span class="n">matrix</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}-1.0\\0\end{matrix}\right]$</div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Transpose - Transpose of the object</span>
-<span class="n">vec1</span><span class="o">.</span><span class="n">Tranpose</span><span class="p">()</span>
-<span class="n">vec1</span><span class="o">.</span><span class="n">matrix</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}-1.0\\0\end{matrix}\right]$</div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : OuterProduct - take the outerproduct between two object</span>
-<span class="n">op1</span> <span class="o">=</span> <span class="n">vec1</span><span class="o">.</span><span class="n">OuterProduct</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span>
-<span class="n">op1</span><span class="o">.</span><span class="n">matrix</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}1.0 &amp; 0\\0 &amp; 0\end{matrix}\right]$</div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">op1</span><span class="o">.</span><span class="n">type</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&#39;operator&#39;
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : InnerProduct</span>
-<span class="n">op1</span><span class="o">.</span><span class="n">InnerProduct</span><span class="p">(</span><span class="n">op1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(1+0j)
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : InnerProduct</span>
-<span class="n">vec1</span><span class="o">.</span><span class="n">InnerProduct</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(1+0j)
-</pre></div></div>
-</div>
-</section>
-<section id="Bra">
-<h2>Bra<a class="headerlink" href="#Bra" title="Link to this heading"></a></h2>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Adjoint - Adjoint of the object</span>
-<span class="n">bra</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
-<span class="n">bra</span><span class="o">.</span><span class="n">matrix</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}1.0 &amp; 0\end{matrix}\right]$</div></div>
-</div>
-</section>
-<section id="Operator">
-<h2>Operator<a class="headerlink" href="#Operator" title="Link to this heading"></a></h2>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">op</span><span class="o">.</span><span class="n">matrix</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}5.0 &amp; 0\\0 &amp; -0.5\end{matrix}\right]$</div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">op</span><span class="o">.</span><span class="n">type</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&#39;operator&#39;
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Hermitian - Chech if the object is hermitian</span>
-<span class="n">op</span><span class="o">.</span><span class="n">Hermitian</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-True
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Positive - Chech if the object has positive diagonal elements</span>
-<span class="n">op</span><span class="o">.</span><span class="n">Positive</span><span class="p">()</span>
+
+<span class="n">ket1</span><span class="o">.</span><span class="n">type</span>
 </pre></div>
 </div>
 </div>
@@ -452,20 +188,622 @@ True
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-False
+&#39;ket&#39;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Putiry</span>
-<span class="n">op1</span><span class="o">.</span><span class="n">Purity</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : data - show matrix form using numpy, as array</span>
+
+<span class="n">ket1</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[1.+0.j],
+       [0.+0.j]])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : datatype - show the data type of the array</span>
+
+<span class="n">ket1</span><span class="o">.</span><span class="n">datatype</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+dtype(&#39;complex128&#39;)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : datatype - show the dimension of the array</span>
+
+<span class="n">ket1</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(2, 1)
+</pre></div></div>
+</div>
+</section>
+<section id="Quantum-object:-Operators">
+<h2>Quantum object: Operators<a class="headerlink" href="#Quantum-object:-Operators" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : matrix - show matrix form using sympy</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0.5\\0.5 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : data - show matrix form using numpy, as array</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[0. +0.j, 0.5+0.j],
+       [0.5+0.j, 0. +0.j]])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : type - show the type of the object (ket, bra or operator)</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">type</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;operator&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : datatype - show the data type of the array</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">datatype</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+dtype(&#39;complex128&#39;)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : shape - show the dimension of the array</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(2, 2)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : matrix - show matrix form using sympy</span>
+
+<span class="n">Sy</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; - 0.5 i\\0.5 i &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : matrix - show matrix form using sympy</span>
+
+<span class="n">Sz</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0.5 &amp; 0\\0 &amp; -0.5\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attribute : matrix - show matrix form using sympy</span>
+
+<span class="n">Id</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}1.0 &amp; 0\\0 &amp; 1.0\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Rotate-an-qunatum-object">
+<h2>Rotate an qunatum object<a class="headerlink" href="#Rotate-an-qunatum-object" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Rotate - Rotate the object</span>
+
+<span class="n">ket3</span> <span class="o">=</span> <span class="n">ket1</span><span class="o">.</span><span class="n">Rotate</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span><span class="n">Sx</span><span class="p">)</span>
+<span class="n">ket3</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0\\- 1.0 i\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Adding-two-objects">
+<h2>Adding two objects<a class="headerlink" href="#Adding-two-objects" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Add two objects</span>
+
+<span class="n">ket4</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ket1</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span>  <span class="n">ket2</span>
+<span class="n">ket4</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}2.0\\5.0\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Multiply-two-objects">
+<h2>Multiply two objects<a class="headerlink" href="#Multiply-two-objects" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Multiply two objects</span>
+
+<span class="n">ket5</span> <span class="o">=</span> <span class="n">Sx</span> <span class="o">*</span> <span class="n">ket1</span>
+<span class="n">ket5</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0\\0.5\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Add-and-multiply-objects">
+<h2>Add and multiply objects<a class="headerlink" href="#Add-and-multiply-objects" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Multiply and add quantum objects</span>
+
+<span class="n">H</span> <span class="o">=</span>  <span class="mi">10</span> <span class="o">*</span> <span class="n">Sx</span> <span class="o">*</span> <span class="n">Sx</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">Sy</span> <span class="o">*</span> <span class="n">Sy</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">Sz</span> <span class="o">*</span> <span class="n">Sz</span>
+<span class="n">H</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}7.5 &amp; 0\\0 &amp; 7.5\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Adjoint">
+<h2>Adjoint<a class="headerlink" href="#Adjoint" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Adjoint</span>
+
+<span class="n">bra1</span> <span class="o">=</span> <span class="n">ket1</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
+<span class="n">bra1</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}1.0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bra1</span><span class="o">.</span><span class="n">type</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;bra&#39;
+</pre></div></div>
+</div>
+</section>
+<section id="Conjugate">
+<h2>Conjugate<a class="headerlink" href="#Conjugate" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Conjugate</span>
+
+<span class="n">ket3</span><span class="o">.</span><span class="n">Conjugate</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0\\1.0 i\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Transpose">
+<h2>Transpose<a class="headerlink" href="#Transpose" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Method : Transpose</span>
+
+<span class="n">ket3</span><span class="o">.</span><span class="n">Tranpose</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; - 1.0 i\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Trace">
+<h2>Trace<a class="headerlink" href="#Trace" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Trace</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">Trace</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0j
+</pre></div></div>
+</div>
+</section>
+<section id="Frobenius-norm">
+<h2>Frobenius norm<a class="headerlink" href="#Frobenius-norm" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># method : Norm</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">Norm</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.7071067811865476
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># method : Norm</span>
+
+<span class="n">ket1</span><span class="o">.</span><span class="n">Norm</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1.0
+</pre></div></div>
+</div>
+</section>
+<section id="Exponential-of-an-operator">
+<h2>Exponential of an operator<a class="headerlink" href="#Exponential-of-an-operator" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Expm, Compute the matrix exponential</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">Expm</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}1.12762596520638 &amp; 0.521095305493747\\0.521095305493747 &amp; 1.12762596520638\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Check-for-Hermitian">
+<h2>Check for Hermitian<a class="headerlink" href="#Check-for-Hermitian" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Hermitian, Check whether the matrix is Hermitian (A = A†)</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">Hermitian</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+</section>
+<section id="Check-for-commute">
+<h2>Check for commute<a class="headerlink" href="#Check-for-commute" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Commute, Check if two QunObj instances commute</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">Commute</span><span class="p">(</span><span class="n">Sy</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Don&#39;t Commute
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+False
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sy</span><span class="o">.</span><span class="n">Commute</span><span class="p">(</span><span class="n">Sy</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Commute
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+</section>
+<section id="Tensor-Producrt">
+<h2>Tensor Producrt<a class="headerlink" href="#Tensor-Producrt" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[73]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Tensor Product</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">TensorProduct</span><span class="p">(</span><span class="n">Id</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[73]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0.5 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0.5\\0.5 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0.5 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Tensor Product</span>
+
+<span class="n">Id</span><span class="o">.</span><span class="n">TensorProduct</span><span class="p">(</span><span class="n">Sx</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0.5 &amp; 0 &amp; 0\\0.5 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0.5\\0 &amp; 0 &amp; 0.5 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Outer-Product">
+<h2>Outer Product<a class="headerlink" href="#Outer-Product" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : OuterProduct</span>
+
+<span class="n">ket1</span><span class="o">.</span><span class="n">OuterProduct</span><span class="p">(</span><span class="n">ket1</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}1.0 &amp; 0\\0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : OuterProduct</span>
+
+<span class="n">ket1</span><span class="o">.</span><span class="n">OuterProduct</span><span class="p">(</span><span class="n">ket2</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 1.0\\0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Inner-Product">
+<h2>Inner Product<a class="headerlink" href="#Inner-Product" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : InnerProduct</span>
+
+<span class="n">ket1</span><span class="o">.</span><span class="n">InnerProduct</span><span class="p">(</span><span class="n">ket1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -474,75 +812,78 @@ False
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[79]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Expm - exponential of a matrix</span>
-<span class="n">op</span><span class="o">.</span><span class="n">Expm</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : InnerProduct</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">InnerProduct</span><span class="p">(</span><span class="n">Sx</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[79]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(0.5+0j)
+</pre></div></div>
+</div>
+</section>
+<section id="Normalize">
+<h2>Normalize<a class="headerlink" href="#Normalize" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[80]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Method : Normalize, normalize an object</span>
+
+<span class="n">Sx</span><span class="o">.</span><span class="n">Normalize</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[80]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}148.413159102577 &amp; 0\\0 &amp; 0.606530659712633\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}0 &amp; 0.707106781186547\\0.707106781186547 &amp; 0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[82]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Multiply two objects</span>
-<span class="n">vec2</span> <span class="o">=</span> <span class="n">op</span> <span class="o">*</span> <span class="n">vec</span>
-<span class="n">vec2</span><span class="o">.</span><span class="n">matrix</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sx</span><span class="o">.</span><span class="n">Normalize</span><span class="p">()</span><span class="o">.</span><span class="n">Norm</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[82]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}5.0\\0\end{matrix}\right]$</div></div>
+<div class="highlight"><pre>
+0.9999999999999999
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[83]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add a object with a scalar</span>
-<span class="n">vec3</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">vec</span>
-<span class="n">vec3</span><span class="o">.</span><span class="n">matrix</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}5.0\\0\end{matrix}\right]$</div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add two objects</span>
-<span class="n">op2</span> <span class="o">=</span> <span class="n">op1</span> <span class="o">+</span> <span class="n">op</span>
-<span class="n">op2</span><span class="o">.</span><span class="n">matrix</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sx</span><span class="o">.</span><span class="n">Norm</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[83]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}6.0 &amp; 0\\0 &amp; -0.5\end{matrix}\right]$</div></div>
+<div class="highlight"><pre>
+0.7071067811865476
+</pre></div></div>
 </div>
 </section>
 </section>

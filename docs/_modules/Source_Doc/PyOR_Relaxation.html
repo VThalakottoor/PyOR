@@ -110,12 +110,14 @@
     <span class="kn">from</span> <span class="nn">.PyOR_QuantumObject</span> <span class="kn">import</span> <span class="n">QunObj</span>
     <span class="kn">from</span> <span class="nn">.PyOR_Hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
     <span class="kn">from</span> <span class="nn">.PyOR_Commutators</span> <span class="kn">import</span> <span class="n">Commutators</span>
+    <span class="kn">from</span> <span class="nn">.PyOR_Basis</span> <span class="kn">import</span> <span class="n">Basis</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">PyOR_PhysicalConstants</span>
     <span class="kn">import</span> <span class="nn">PyOR_Rotation</span>
     <span class="kn">from</span> <span class="nn">PyOR_QuantumObject</span> <span class="kn">import</span> <span class="n">QunObj</span>
     <span class="kn">from</span> <span class="nn">PyOR_Hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
     <span class="kn">from</span> <span class="nn">PyOR_Commutators</span> <span class="kn">import</span> <span class="n">Commutators</span>
+    <span class="kn">from</span> <span class="nn">PyOR_Basis</span> <span class="kn">import</span> <span class="n">Basis</span>    
 
 
 <div class="viewcode-block" id="RelaxationProcess">
@@ -526,6 +528,43 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">A</span> <span class="o">@</span> <span class="n">rho</span> <span class="o">@</span> <span class="n">B</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_COMM</span><span class="o">.</span><span class="n">AntiCommutator</span><span class="p">(</span><span class="n">B</span> <span class="o">@</span> <span class="n">A</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span></div>
 
+    
+<div class="viewcode-block" id="RelaxationProcess.Relaxation_CoherenceDecay">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Relaxation_CoherenceDecay">[docs]</a>
+    <span class="k">def</span> <span class="nf">Relaxation_CoherenceDecay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coherence_orders</span><span class="p">,</span> <span class="n">relaxa_rate</span><span class="p">,</span> <span class="n">diagonal_relaxa_rate</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">default_rate</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply relaxation decay to selected coherence orders, with proper separation of true diagonal elements.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        - coherence_orders (list or set): coherence orders to apply relaxation to (off-diagonal).</span>
+<span class="sd">        - relaxa_rate (float): relaxation rate to apply to specified off-diagonal coherence orders.</span>
+<span class="sd">        - diagonal_relaxa_rate (float): relaxation rate for true diagonal elements (population terms).</span>
+<span class="sd">        - default_rate (float): relaxation rate for all other coherence orders.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        - Modified coherence Zeeman array with relaxation rates applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">BS</span> <span class="o">=</span> <span class="n">Basis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="p">)</span>
+        <span class="n">Basis_Zeeman</span><span class="p">,</span> <span class="n">dic_Zeeman</span><span class="p">,</span> <span class="n">coh_Zeeman</span><span class="p">,</span> <span class="n">coh_Zeeman_arrayQ</span> <span class="o">=</span> <span class="n">BS</span><span class="o">.</span><span class="n">ProductOperators_Zeeman</span><span class="p">()</span>
+        <span class="n">coh_Zeeman_array</span> <span class="o">=</span> <span class="n">coh_Zeeman_arrayQ</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># Get matrix shape and create indices (matrix is assumed square)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">coh_Zeeman_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">indices</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+        <span class="c1"># Masks</span>
+        <span class="n">mask_true_diagonal</span> <span class="o">=</span> <span class="p">(</span><span class="n">rows</span> <span class="o">==</span> <span class="n">cols</span><span class="p">)</span>
+        <span class="n">mask_relax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">coh_Zeeman_array</span><span class="p">,</span> <span class="n">coherence_orders</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">mask_true_diagonal</span><span class="p">)</span>
+        <span class="n">mask_default</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">mask_true_diagonal</span> <span class="o">|</span> <span class="n">mask_relax</span><span class="p">)</span>
+
+        <span class="c1"># Apply rates unconditionally</span>
+        <span class="n">coh_Zeeman_array</span><span class="p">[</span><span class="n">mask_true_diagonal</span><span class="p">]</span> <span class="o">=</span> <span class="n">diagonal_relaxa_rate</span>
+        <span class="n">coh_Zeeman_array</span><span class="p">[</span><span class="n">mask_relax</span><span class="p">]</span> <span class="o">=</span> <span class="n">relaxa_rate</span>
+        <span class="n">coh_Zeeman_array</span><span class="p">[</span><span class="n">mask_default</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_rate</span>
+
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">coh_Zeeman_array</span><span class="p">)</span></div>
+
+
 
 <div class="viewcode-block" id="RelaxationProcess.Relaxation">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Relaxation.RelaxationProcess.Relaxation">[docs]</a>
@@ -572,7 +611,7 @@
 
         <span class="n">R1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R1</span>
         <span class="n">R2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R2</span>
-        <span class="n">R_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R_Matrix</span>
+        <span class="n">R_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">R_Matrix</span><span class="o">.</span><span class="n">data</span> 
 
         <span class="n">Sx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Sx_</span>
         <span class="n">Sy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Sy_</span> 
@@ -842,6 +881,20 @@
         <span class="c1"># Lindblad Equation - Liouville Space</span>
         <span class="c1"># ==================================================</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MasterEquation</span> <span class="o">==</span> <span class="s2">&quot;Lindblad&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">Rprocess</span> <span class="o">==</span> <span class="s2">&quot;No Relaxation&quot;</span><span class="p">:</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                No Relaxation</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">Rso</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Ldim</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Ldim</span><span class="p">))</span>
+                
+            <span class="k">if</span> <span class="n">Rprocess</span> <span class="o">==</span> <span class="s2">&quot;Phenomenological&quot;</span><span class="p">:</span>  
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Phenomenological Relaxation</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">Rso</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Ldim</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Ldim</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">cdouble</span><span class="p">)</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">Rso</span><span class="p">,</span> <span class="n">R1</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="n">Rprocess</span> <span class="o">==</span> <span class="s2">&quot;Auto-correlated Dipolar Heteronuclear Ernst&quot;</span><span class="p">:</span>
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">                Homonuclear Auto-correlated</span>
@@ -925,6 +978,31 @@
         <span class="c1"># Lindblad Equation - Hilbert Space</span>
         <span class="c1"># ==================================================</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MasterEquation</span> <span class="o">==</span> <span class="s2">&quot;Lindblad&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Hilbert&quot;</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">Rprocess</span> <span class="o">==</span> <span class="s2">&quot;No Relaxation&quot;</span><span class="p">:</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                No Relaxation</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span>
+                <span class="n">Rso</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span><span class="n">dim</span><span class="p">))</span>
+                
+            <span class="k">if</span> <span class="n">Rprocess</span> <span class="o">==</span> <span class="s2">&quot;Phenomenological&quot;</span><span class="p">:</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Phenomenological Relaxation</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vdim</span> 
+                <span class="n">Rso</span> <span class="o">=</span> <span class="n">R2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span><span class="n">dim</span><span class="p">))</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">Rso</span><span class="p">,</span> <span class="n">R1</span><span class="p">)</span> 
+                <span class="n">Rso</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">Rso</span><span class="p">,</span><span class="n">rho</span><span class="p">)</span>               
+
+            <span class="k">if</span> <span class="n">Rprocess</span> <span class="o">==</span> <span class="s2">&quot;Phenomenological Matrix&quot;</span><span class="p">:</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Phenomenological Relaxation</span>
+<span class="sd">                Relaxation Matrix is given as input</span>
+<span class="sd">                see function, Relaxation_Phenomenological_Input(R)</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">Rso</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">R_input</span><span class="p">,</span><span class="n">rho</span><span class="p">)</span> 
+
             <span class="k">if</span> <span class="n">Rprocess</span> <span class="o">==</span> <span class="s2">&quot;Auto-correlated Dipolar Heteronuclear Ernst&quot;</span><span class="p">:</span>
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">                Homonuclear Auto-correlated</span>

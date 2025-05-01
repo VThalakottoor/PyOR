@@ -429,14 +429,13 @@ class RelaxationProcess:
         mask_relax = np.isin(coh_Zeeman_array, coherence_orders) & (~mask_true_diagonal)
         mask_default = ~(mask_true_diagonal | mask_relax)
 
-        # Apply rates
-        if diagonal_relaxa_rate != default_rate:
-            coh_Zeeman_array[mask_true_diagonal] = diagonal_relaxa_rate
-        if relaxa_rate != default_rate:
-            coh_Zeeman_array[mask_relax] = relaxa_rate
+        # Apply rates unconditionally
+        coh_Zeeman_array[mask_true_diagonal] = diagonal_relaxa_rate
+        coh_Zeeman_array[mask_relax] = relaxa_rate
         coh_Zeeman_array[mask_default] = default_rate
 
         return QunObj(coh_Zeeman_array)
+
 
     def Relaxation(self,rho=None,Rprocess = None):
         """
@@ -481,7 +480,7 @@ class RelaxationProcess:
 
         R1 = self.R1
         R2 = self.R2
-        R_input = self.R_Matrix.data
+        R_input = self.class_QS.R_Matrix.data 
 
         Sx = self.class_QS.Sx_
         Sy = self.class_QS.Sy_ 
