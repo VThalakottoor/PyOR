@@ -854,6 +854,39 @@ class Hamiltonian:
         AQ = ST.SphericalTensorsToMatrix(Sptensor_f)
         return AQ
 
+    def InteractionTensor_PAF_General(self, diagList):
+        """
+        Constructs an interaction tensor in the Principal Axis Frame (PAF) from a diagonal list of components.
+
+        This method builds a 3x3 diagonal interaction tensor in the PAF using values provided in `diagList`.
+        If the `InteractioTensor_AngularFrequency` flag is set to True, the input values are assumed to be in Hz
+        and are converted to angular frequency units (rad/s) by multiplying by 2π.
+
+        Parameters
+        ----------
+        diagList : list or array-like of float
+            A list or array with three diagonal elements representing the interaction tensor
+            components along the x, y, and z axes in the PAF. Units are Hz unless the flag
+            `InteractioTensor_AngularFrequency` is True, in which case the result will be in rad/s.
+
+        Returns
+        -------
+        QunObj
+            An instance of `QunObj` representing the 3x3 interaction tensor matrix constructed
+            from the diagonal values.
+        """
+        diag = np.asarray(diagList)
+        if self.InteractioTensor_AngularFrequency:
+            diag = 2.0 * np.pi * diag
+
+        I1 = np.eye(3)
+        I1[0][0] = diag[0]
+        I1[1][1] = diag[1]
+        I1[2][2] = diag[2]
+
+        return QunObj(I1)
+
+    
     def InteractionTensor_PAF_CSA(self, Iso, Aniso, Asymmetry):
         """
         Constructs the CSA interaction tensor in the principal axis frame (PAF).
@@ -884,6 +917,42 @@ class Hamiltonian:
 
         return QunObj(I1 + Aniso * I2)
 
+    def InteractionTensor_PAF_ElectronZeeman(self, gshiftList):
+        """
+        Constructs the electron Zeeman interaction tensor in the principal axis frame (PAF).
+
+        This method calculates the electron Zeeman interaction tensor by combining the isotropic
+        contribution (from the free electron g-factor) and the anisotropic shifts (g-shifts).
+        If specified, the resulting tensor components are converted to angular frequency units.
+
+        Parameters:
+        -----------
+        gshiftList : list or array-like of float
+            A list of three g-shift values [g_xx, g_yy, g_zz] representing the anisotropic g-tensor
+            components in the principal axis frame.
+
+        Returns:
+        --------
+        QunObj
+            A quantum object representing the full 3x3 electron Zeeman interaction tensor.
+        """
+
+        gshift = np.asarray(gshiftList)
+
+        if self.InteractioTensor_AngularFrequency:  # Convert g-shift to angular frequency units
+            gshift = 2.0 * np.pi * gshift
+
+        ge = 2.002319304  # Free electron g-factor
+
+        I1 = ge * np.eye(3)  # Isotropic part
+        I2 = np.eye(3)
+        I2[0][0] = gshift[0]
+        I2[1][1] = gshift[1]
+        I2[2][2] = gshift[2]
+
+        return QunObj(I1 + I2)  # Total interaction tensor
+
+
     def InteractionTensor_PAF_Quadrupole(self, X, Coupling, etaQ):
         """
         Constructs the quadrupolar tensor in the PAF.
@@ -912,6 +981,46 @@ class Hamiltonian:
         I[0][0] = -0.5 * (1 + etaQ) * constant
         I[1][1] = -0.5 * (1 - etaQ) * constant
         I[2][2] = constant
+
+        return QunObj(I)
+
+    def InteractionTensor_PAF_ZeroField(self, D, E):
+        """
+        Constructs the zero-field splitting (ZFS) interaction tensor in the principal axis frame (PAF).
+
+        This method builds a symmetric 3x3 tensor representing the ZFS interaction for an electron
+        spin system in the absence of an external magnetic field. The tensor is expressed in angular
+        frequency units (i.e., radians per second), assuming D and E are initially given in Hz.
+
+        Parameters:
+        -----------
+        D : float
+            The axial zero-field splitting parameter (in Hz).
+        E : float
+            The rhombic zero-field splitting parameter (in Hz).
+
+        Returns:
+        --------
+        QunObj
+            A quantum object representing the 3x3 zero-field splitting interaction tensor.
+
+        Notes:
+        ------
+        - D and E are converted to angular frequency units by multiplying with 2π.
+        - The tensor is constructed with the following diagonal elements:
+            - T_xx = (-1/3) * D + E
+            - T_yy = (-1/3) * D - E
+            - T_zz = (2/3) * D
+        - This is appropriate for spin systems with S > 1/2, typically S = 1.
+        """
+
+        D = 2.0 * np.pi * D
+        E = 2.0 * np.pi * E
+
+        I = np.eye(3)
+        I[0][0] = (-1.0/3.0) * D + E
+        I[1][1] = (-1.0/3.0) * D - E
+        I[2][2] = (2.0/3.0) * D
 
         return QunObj(I)
 

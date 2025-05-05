@@ -37,3 +37,7 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 2. Basic knowledge of Spin Operators
 	- Read, Protein NMR Spectroscopy: Principles and Practice, John Cavanagh et. al.
 
+## Acknowledgements:
+1. Agence Nationale de la Recherche (ANR)
+2. Dr. Daniel Abergel (ENS)
+3. Gauri, The Second (For being the catalyst behind this project)
