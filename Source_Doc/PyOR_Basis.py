@@ -140,6 +140,48 @@ class Basis:
             Sop_N[i] = QunObj(U.data @ Sop[i].data @ self.Adjoint(U.data)) 
         return Sop_N 
 
+    def KetState_Components(self, AQ, dic, ketQ):
+        """
+        Decompose ket state into basis components.
+
+        Parameters
+        ----------
+        AQ : list of QunObj
+            Basis ket vectors (assumed orthonormal).
+        dic : dict
+            Dictionary mapping basis indices to basis labels.
+        ketQ : QunObj
+            Ket state vector to be decomposed.
+
+        Returns
+        -------
+        None
+        """
+        if not isinstance(AQ, list):
+            raise TypeError("Input must be a list.")
+        if not all(isinstance(item, QunObj) for item in AQ):
+            raise TypeError("All elements must be instances of QunObj.")
+
+        psi = ketQ.data
+        if psi.shape[1] != 1:
+            raise ValueError("Input state must be a column vector (ket).")
+
+        components = np.array([self.InnerProduct(A.data, psi) for A in AQ])
+        tol = 1.0e-10
+        components.real[abs(components.real) < tol] = 0.0
+        components.imag[abs(components.imag) < tol] = 0.0
+
+        output = ["Ket State = "]
+        for i, val in enumerate(components):
+            if val != 0:
+                comp_str = f"{round(val.real, 5)}" if val.imag == 0 else \
+                        f"{round(val.real, 5)} + {round(val.imag, 5)}j" if val.real != 0 else \
+                        f"{round(val.imag, 5)}j"
+                output.append(f"{comp_str} {dic[i]} + ")
+
+        print((''.join(output))[:-3])
+
+
     def CG_Coefficient(self, j1, m1, j2, m2, J, M):
         """
         Compute the Clebsch-Gordan coefficient ⟨j1 m1 j2 m2 | J M⟩.
