@@ -20,7 +20,7 @@
    "outputs": [],
    "source": [
     "# Define the source path\n",
-    "SourcePath = '/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/Source_Doc'\n",
+    "SourcePath = '/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/PyOR/Source_Doc'\n",
     "\n",
     "# Add source path\n",
     "import sys\n",
@@ -682,6 +682,64 @@
   {
    "cell_type": "code",
    "execution_count": 25,
+   "id": "1720fc59",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}1.24999997786618 & 0 & 0 & 0\\\\0 & 1.24999997786618 & 0 & 0\\\\0 & 0 & 1.24999997786618 & 0\\\\0 & 0 & 0 & -3.74999993359853\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[1.24999997786618,                0,                0,                 0],\n",
+       "[               0, 1.24999997786618,                0,                 0],\n",
+       "[               0,                0, 1.24999997786618,                 0],\n",
+       "[               0,                0,                0, -3.74999993359853]])"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Alternate way\n",
+    "Hj.BasisChange(U_Z_ST).Inverse2PI().matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "id": "d154b96a",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}1.24999997786618 & 0 & 0 & 0\\\\0 & 1.24999997786618 & 0 & 0\\\\0 & 0 & 1.24999997786618 & 0\\\\0 & 0 & 0 & -3.74999993359853\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[1.24999997786618,                0,                0,                 0],\n",
+       "[               0, 1.24999997786618,                0,                 0],\n",
+       "[               0,                0, 1.24999997786618,                 0],\n",
+       "[               0,                0,                0, -3.74999993359853]])"
+      ]
+     },
+     "execution_count": 26,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Another alternate way\n",
+    "Hj.Basis(\"singlettriplet\").Inverse2PI().matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
    "id": "546b8e7e",
    "metadata": {},
    "outputs": [
@@ -698,7 +756,7 @@
        "[                0, 20.0000008601147,                0,                0]])"
       ]
      },
-     "execution_count": 25,
+     "execution_count": 27,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -706,6 +764,72 @@
    "source": [
     "Hz_ST.Inverse2PI().matrix"
    ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "id": "6e2d91e9",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}-30.0000000759161 & 0 & 0 & 0\\\\0 & 0 & 0 & 20.0000008601147\\\\0 & 0 & 30.0000000759161 & 0\\\\0 & 20.0000008601147 & 0 & 0\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[-30.0000000759161,                0,                0,                0],\n",
+       "[                0,                0,                0, 20.0000008601147],\n",
+       "[                0,                0, 30.0000000759161,                0],\n",
+       "[                0, 20.0000008601147,                0,                0]])"
+      ]
+     },
+     "execution_count": 28,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Alternate way\n",
+    "Hz.BasisChange(U_Z_ST).Inverse2PI().matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "id": "ddbc86d1",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}-30.0000000759161 & 0 & 0 & 0\\\\0 & 0 & 0 & 20.0000008601147\\\\0 & 0 & 30.0000000759161 & 0\\\\0 & 20.0000008601147 & 0 & 0\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[-30.0000000759161,                0,                0,                0],\n",
+       "[                0,                0,                0, 20.0000008601147],\n",
+       "[                0,                0, 30.0000000759161,                0],\n",
+       "[                0, 20.0000008601147,                0,                0]])"
+      ]
+     },
+     "execution_count": 29,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Another alternate way\n",
+    "Hz.Basis(\"singlettriplet\").Inverse2PI().matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ea4e5d4a",
+   "metadata": {},
+   "outputs": [],
+   "source": []
   }
  ],
  "metadata": {

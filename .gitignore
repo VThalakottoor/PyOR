@@ -1,0 +1,13 @@
+# Ignore temporary data
+tmp/
+__pycache__/
+
+# Ignore virtual environments
+venv/
+
+# Nonlinear NMR
+Maser/
+RadiationDamping/
+
+# Documentation
+Documentation/

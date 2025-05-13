@@ -275,6 +275,87 @@ class QunObj():
         has_negative_diagonal = np.any(np.diag(self.data) < 0)
         print("False" if has_negative_diagonal else "True")
 
+    def BasisChange(self, U):
+        r"""
+        Perform a basis transformation on the quantum object using transformation matrix U.
+
+        For quantum states (type='ket'): :math:`|\psi\rangle \rightarrow U|\psi\rangle`  
+        For operators (type='operator'): :math:`O \rightarrow U^\dagger O U`
+
+        Parameters
+        ----------
+        U : QunObj
+            The unitary transformation matrix.
+
+        Returns
+        -------
+        QunObj
+            The quantum object expressed in the new basis.
+
+        Raises
+        ------
+        TypeError
+            If U is not a QunObj.
+        ValueError
+            If called on an unsupported object type (e.g., 'bra').
+        """
+        if not isinstance(U, QunObj):
+            raise TypeError("Basis transformation requires a QunObj for the transformation matrix.")
+
+        if self.type == "ket":
+            return QunObj(U.data @ self.data, Type="ket")
+        elif self.type == "operator":
+            return QunObj(U.data.conj().T @ self.data @ U.data, Type="operator")
+        else:
+            raise ValueError("Basis transformation only supported for 'ket' and 'operator' types.")
+
+    def Basis(self, basis_name):
+        r"""
+        Perform a basis transformation using a predefined transformation matrix.
+
+        For quantum states (type='ket'): :math:`|\psi\rangle \rightarrow U|\psi\rangle`  
+        For operators (type='operator'): :math:`O \rightarrow U^\dagger O U`
+
+        Currently supported basis names:
+        - 'singlettriplet' : Transformation to singlet-triplet basis.
+
+        Parameters
+        ----------
+        basis_name : str
+            Name of the predefined basis.
+
+        Returns
+        -------
+        QunObj
+            The quantum object in the new basis.
+
+        Raises
+        ------
+        ValueError
+            If an unsupported basis name is provided or type is unsupported.
+        """
+        if basis_name.lower() == "singlettriplet":
+            # Define the singlet-triplet transformation matrix
+            # This is a 4x4 unitary transformation from product basis to singlet-triplet basis
+            U_matrix = np.array([
+                [1,     0,     0,  0],
+                [0, 1/np.sqrt(2),  0, 1/np.sqrt(2)],
+                [0, 1/np.sqrt(2),  0, -1/np.sqrt(2)],
+                [0,     0,     1,  0]
+            ], dtype=complex)
+            U = QunObj(U_matrix, Type="operator")
+
+        else:
+            raise ValueError(f"Unsupported basis name '{basis_name}'.")
+
+        # Perform basis transformation
+        if self.type == "ket":
+            return QunObj(U.data @ self.data, Type="ket")
+        elif self.type == "operator":
+            return QunObj(U.data.conj().T @ self.data @ U.data, Type="operator")
+        else:
+            raise ValueError("Basis transformation only supported for 'ket' and 'operator' types.")
+
     def __add__(self, *others):
         """
         Add multiple QunObj instances element-wise.

@@ -989,6 +989,42 @@
         <span class="k">return</span> <span class="n">AQ</span></div>
 
 
+<div class="viewcode-block" id="Hamiltonian.InteractionTensor_PAF_General">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_General">[docs]</a>
+    <span class="k">def</span> <span class="nf">InteractionTensor_PAF_General</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diagList</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs an interaction tensor in the Principal Axis Frame (PAF) from a diagonal list of components.</span>
+
+<span class="sd">        This method builds a 3x3 diagonal interaction tensor in the PAF using values provided in `diagList`.</span>
+<span class="sd">        If the `InteractioTensor_AngularFrequency` flag is set to True, the input values are assumed to be in Hz</span>
+<span class="sd">        and are converted to angular frequency units (rad/s) by multiplying by 2π.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        diagList : list or array-like of float</span>
+<span class="sd">            A list or array with three diagonal elements representing the interaction tensor</span>
+<span class="sd">            components along the x, y, and z axes in the PAF. Units are Hz unless the flag</span>
+<span class="sd">            `InteractioTensor_AngularFrequency` is True, in which case the result will be in rad/s.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            An instance of `QunObj` representing the 3x3 interaction tensor matrix constructed</span>
+<span class="sd">            from the diagonal values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">diag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">diagList</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">InteractioTensor_AngularFrequency</span><span class="p">:</span>
+            <span class="n">diag</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">diag</span>
+
+        <span class="n">I1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">I1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">diag</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">I1</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">diag</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">I1</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">diag</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">I1</span><span class="p">)</span></div>
+
+
+    
 <div class="viewcode-block" id="Hamiltonian.InteractionTensor_PAF_CSA">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_CSA">[docs]</a>
     <span class="k">def</span> <span class="nf">InteractionTensor_PAF_CSA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Iso</span><span class="p">,</span> <span class="n">Aniso</span><span class="p">,</span> <span class="n">Asymmetry</span><span class="p">):</span>
@@ -1022,6 +1058,45 @@
         <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">I1</span> <span class="o">+</span> <span class="n">Aniso</span> <span class="o">*</span> <span class="n">I2</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Hamiltonian.InteractionTensor_PAF_ElectronZeeman">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_ElectronZeeman">[docs]</a>
+    <span class="k">def</span> <span class="nf">InteractionTensor_PAF_ElectronZeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gshiftList</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs the electron Zeeman interaction tensor in the principal axis frame (PAF).</span>
+
+<span class="sd">        This method calculates the electron Zeeman interaction tensor by combining the isotropic</span>
+<span class="sd">        contribution (from the free electron g-factor) and the anisotropic shifts (g-shifts).</span>
+<span class="sd">        If specified, the resulting tensor components are converted to angular frequency units.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        -----------</span>
+<span class="sd">        gshiftList : list or array-like of float</span>
+<span class="sd">            A list of three g-shift values [g_xx, g_yy, g_zz] representing the anisotropic g-tensor</span>
+<span class="sd">            components in the principal axis frame.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        --------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            A quantum object representing the full 3x3 electron Zeeman interaction tensor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">gshift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gshiftList</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">InteractioTensor_AngularFrequency</span><span class="p">:</span>  <span class="c1"># Convert g-shift to angular frequency units</span>
+            <span class="n">gshift</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">gshift</span>
+
+        <span class="n">ge</span> <span class="o">=</span> <span class="mf">2.002319304</span>  <span class="c1"># Free electron g-factor</span>
+
+        <span class="n">I1</span> <span class="o">=</span> <span class="n">ge</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># Isotropic part</span>
+        <span class="n">I2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">I2</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">gshift</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">I2</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">gshift</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">I2</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">gshift</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">I1</span> <span class="o">+</span> <span class="n">I2</span><span class="p">)</span>  <span class="c1"># Total interaction tensor</span></div>
+
+
+
 <div class="viewcode-block" id="Hamiltonian.InteractionTensor_PAF_Quadrupole">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_Quadrupole">[docs]</a>
     <span class="k">def</span> <span class="nf">InteractionTensor_PAF_Quadrupole</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Coupling</span><span class="p">,</span> <span class="n">etaQ</span><span class="p">):</span>
@@ -1052,6 +1127,49 @@
         <span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">etaQ</span><span class="p">)</span> <span class="o">*</span> <span class="n">constant</span>
         <span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">etaQ</span><span class="p">)</span> <span class="o">*</span> <span class="n">constant</span>
         <span class="n">I</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">constant</span>
+
+        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">I</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Hamiltonian.InteractionTensor_PAF_ZeroField">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Hamiltonian.Hamiltonian.InteractionTensor_PAF_ZeroField">[docs]</a>
+    <span class="k">def</span> <span class="nf">InteractionTensor_PAF_ZeroField</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">E</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs the zero-field splitting (ZFS) interaction tensor in the principal axis frame (PAF).</span>
+
+<span class="sd">        This method builds a symmetric 3x3 tensor representing the ZFS interaction for an electron</span>
+<span class="sd">        spin system in the absence of an external magnetic field. The tensor is expressed in angular</span>
+<span class="sd">        frequency units (i.e., radians per second), assuming D and E are initially given in Hz.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        -----------</span>
+<span class="sd">        D : float</span>
+<span class="sd">            The axial zero-field splitting parameter (in Hz).</span>
+<span class="sd">        E : float</span>
+<span class="sd">            The rhombic zero-field splitting parameter (in Hz).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        --------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            A quantum object representing the 3x3 zero-field splitting interaction tensor.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        ------</span>
+<span class="sd">        - D and E are converted to angular frequency units by multiplying with 2π.</span>
+<span class="sd">        - The tensor is constructed with the following diagonal elements:</span>
+<span class="sd">            - T_xx = (-1/3) * D + E</span>
+<span class="sd">            - T_yy = (-1/3) * D - E</span>
+<span class="sd">            - T_zz = (2/3) * D</span>
+<span class="sd">        - This is appropriate for spin systems with S &gt; 1/2, typically S = 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">D</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">E</span>
+
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">D</span> <span class="o">+</span> <span class="n">E</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">D</span> <span class="o">-</span> <span class="n">E</span>
+        <span class="n">I</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">D</span>
 
         <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">I</span><span class="p">)</span></div>
 

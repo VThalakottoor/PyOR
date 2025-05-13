@@ -395,6 +395,93 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;False&quot;</span> <span class="k">if</span> <span class="n">has_negative_diagonal</span> <span class="k">else</span> <span class="s2">&quot;True&quot;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="QunObj.BasisChange">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumObject.QunObj.BasisChange">[docs]</a>
+    <span class="k">def</span> <span class="nf">BasisChange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">U</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a basis transformation on the quantum object using transformation matrix U.</span>
+
+<span class="sd">        For quantum states (type=&#39;ket&#39;): :math:`|\psi\rangle \rightarrow U|\psi\rangle`  </span>
+<span class="sd">        For operators (type=&#39;operator&#39;): :math:`O \rightarrow U^\dagger O U`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        U : QunObj</span>
+<span class="sd">            The unitary transformation matrix.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            The quantum object expressed in the new basis.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If U is not a QunObj.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If called on an unsupported object type (e.g., &#39;bra&#39;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Basis transformation requires a QunObj for the transformation matrix.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ket&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">data</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;ket&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">@</span> <span class="n">U</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;operator&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Basis transformation only supported for &#39;ket&#39; and &#39;operator&#39; types.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QunObj.Basis">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumObject.QunObj.Basis">[docs]</a>
+    <span class="k">def</span> <span class="nf">Basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basis_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a basis transformation using a predefined transformation matrix.</span>
+
+<span class="sd">        For quantum states (type=&#39;ket&#39;): :math:`|\psi\rangle \rightarrow U|\psi\rangle`  </span>
+<span class="sd">        For operators (type=&#39;operator&#39;): :math:`O \rightarrow U^\dagger O U`</span>
+
+<span class="sd">        Currently supported basis names:</span>
+<span class="sd">        - &#39;singlettriplet&#39; : Transformation to singlet-triplet basis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        basis_name : str</span>
+<span class="sd">            Name of the predefined basis.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QunObj</span>
+<span class="sd">            The quantum object in the new basis.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If an unsupported basis name is provided or type is unsupported.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">basis_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;singlettriplet&quot;</span><span class="p">:</span>
+            <span class="c1"># Define the singlet-triplet transformation matrix</span>
+            <span class="c1"># This is a 4x4 unitary transformation from product basis to singlet-triplet basis</span>
+            <span class="n">U_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="p">[</span><span class="mi">1</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>  <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span>     <span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">]</span>
+            <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+            <span class="n">U</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">U_matrix</span><span class="p">,</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;operator&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported basis name &#39;</span><span class="si">{</span><span class="n">basis_name</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Perform basis transformation</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;ket&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">data</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;ket&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;operator&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">@</span> <span class="n">U</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">Type</span><span class="o">=</span><span class="s2">&quot;operator&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Basis transformation only supported for &#39;ket&#39; and &#39;operator&#39; types.&quot;</span><span class="p">)</span></div>
+
+
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add multiple QunObj instances element-wise.</span>
