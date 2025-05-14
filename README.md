@@ -1,7 +1,7 @@
 # PyOR (Python on Resonance)
-Current Version: Jeener-1.0.0
+Dedicated to Jean Jeener, whom I never had the chance to meet, but whose scientific work continues to inspire me. And Gauri, The Second (For being the catalyst behind this project, "Sometimes, inner peace is found where confusion and chaos exist.")
 
-Motto: "Everybody can simulate NMR"
+Motto: "Everybody can simulate Magnetic Resonance"
 
 ## Documentation
 https://vthalakottoor.github.io/PyOR/
@@ -15,9 +15,7 @@ Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.c
 <img src="https://github.com/VThalakottoor/PyOR_vJeener.0.9.0/blob/main/logo/PyOR_logo.png" alt="PyOR logo" width="300">
 
 ## About PyOR
-I developed PyOR during the early stage of my postdoc at École Normale Supérieure, Paris, purely for pleasure, to simulate NMR masers/rasers and assist individuals from physics, chemistry, and biology backgrounds in learning and simulating NMR experiments. PyOR is written in Python because it is free and widely accessible.
-
-PyOR is particularly useful for beginners with a basic understanding of matrices, spin operators, and Python programming who are interested in coding magnetic resonance pulse sequences and relaxation mechanics. It can also serve as an educational tool for teaching NMR to undergraduate and graduate students.
+Python On Resonance (PyOR) is a versatile magnetic resonance simulation package developed in Python using an object-oriented design. Originally created to model nonlinear NMR phenomena such as radiation damping and maser effects, PyOR has evolved into a user-friendly tool for both beginners and advanced users. It supports the simulation of a wide range of magnetic resonance problems in both liquid-state and solid-state NMR. As an open-source project, PyOR offers full transparency, allowing users to clearly see how textbook equations are transformed into executable code. A comprehensive collection of example notebooks is provided as Jupyter Notebook files, enabling users to quickly begin simulating and exploring NMR phenomena.
 
 Finally, watch out for numerical inaccuracies and potential errors in equations!
 
@@ -40,4 +38,3 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 ## Acknowledgements:
 1. Agence Nationale de la Recherche (ANR)
 2. Dr. Daniel Abergel (ENS)
-3. Gauri, The Second (For being the catalyst behind this project)
