@@ -164,6 +164,10 @@ class QuantumSystem:
         self.DipoleAngle = []
         self.DipolebIS = []
 
+        # ----------------- Basis of the Spin Operators -----------------
+        self.Basis_SpinOperators = "Zeeman"
+        self.Basis_SpinOperators_TransformationMatrix = None # Unitary transformation matrix should be QunObj
+
         # ----------------- Temperature -----------------
         self.I_spintemp = {key: 0 for key in self.SpinList}
         self.F_spintemp = {key: 0 for key in self.SpinList}
@@ -550,7 +554,20 @@ class QuantumSystem:
         if self.hbarEQ1:
             SingleSpin = SingleSpin / hbar
 
-        return SingleSpin
+        if self.Basis_SpinOperators == "Zeeman":
+            return SingleSpin
+
+        elif self.Basis_SpinOperators == "Hamiltonian eigen states":
+            B_Sx, B_Sy, B_Sz = SingleSpin
+            B_U = self.Basis_SpinOperators_TransformationMatrix
+            B_U_Adjoint = B_U.Adjoint()
+            B_Sx = B_U_Adjoint.data @ B_Sx @ B_U.data
+            B_Sy = B_U_Adjoint.data @ B_Sy @ B_U.data
+            B_Sz = B_U_Adjoint.data @ B_Sz @ B_U.data
+            return np.array([B_Sx, B_Sy, B_Sz])
+
+        else:
+            raise ValueError(f"Unknown Basis_SpinOperators: {self.Basis_SpinOperators}")
 
     def SpinOperator(self, PrintDefault=False):
         """
