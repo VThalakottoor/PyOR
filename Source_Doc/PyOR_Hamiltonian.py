@@ -72,8 +72,7 @@ class Hamiltonian:
         Useful when the quantum system is modified externally and 
         the Hamiltonian needs to be resynchronized.
         """
-        if self.class_QS.Basis_SpinOperators == "Hamiltonian eigen states":
-            self.class_QS.Initialize()
+
         self.class_QS.Update()
         self.Gamma = self.class_QS.Gamma
         self.B0 = self.class_QS.B0

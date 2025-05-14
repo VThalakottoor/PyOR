@@ -554,20 +554,7 @@ class QuantumSystem:
         if self.hbarEQ1:
             SingleSpin = SingleSpin / hbar
 
-        if self.Basis_SpinOperators == "Zeeman":
-            return SingleSpin
-
-        elif self.Basis_SpinOperators == "Hamiltonian eigen states":
-            B_Sx, B_Sy, B_Sz = SingleSpin
-            B_U = self.Basis_SpinOperators_TransformationMatrix
-            B_U_Adjoint = B_U.Adjoint()
-            B_Sx = B_U_Adjoint.data @ B_Sx @ B_U.data
-            B_Sy = B_U_Adjoint.data @ B_Sy @ B_U.data
-            B_Sz = B_U_Adjoint.data @ B_Sz @ B_U.data
-            return np.array([B_Sx, B_Sy, B_Sz])
-
-        else:
-            raise ValueError(f"Unknown Basis_SpinOperators: {self.Basis_SpinOperators}")
+        return SingleSpin
 
     def SpinOperator(self, PrintDefault=False):
         """
@@ -602,6 +589,13 @@ class QuantumSystem:
             Sp[i] = Sx[i] + 1j * Sy[i]
             Sm[i] = Sx[i] - 1j * Sy[i]
 
+        if self.Basis_SpinOperators == "Hamiltonian eigen states":
+            Sx = self.BasisChange_SpinOperators_Local(Sx,self.Basis_SpinOperators_TransformationMatrix)
+            Sy = self.BasisChange_SpinOperators_Local(Sy,self.Basis_SpinOperators_TransformationMatrix)
+            Sz = self.BasisChange_SpinOperators_Local(Sz,self.Basis_SpinOperators_TransformationMatrix)
+            Sp = self.BasisChange_SpinOperators_Local(Sp,self.Basis_SpinOperators_TransformationMatrix)
+            Sm = self.BasisChange_SpinOperators_Local(Sm,self.Basis_SpinOperators_TransformationMatrix)
+
         # Save operators
         self.Sx_ = Sx
         self.Sy_ = Sy
@@ -614,6 +608,10 @@ class QuantumSystem:
             np.matmul(np.sum(Sy, axis=0), np.sum(Sy, axis=0)) +
             np.matmul(np.sum(Sz, axis=0), np.sum(Sz, axis=0))
         )
+
+        if self.Basis_SpinOperators == "Hamiltonian eigen states":
+            Jsq = self.BasisChange_Operator_Local(Jsq,self.Basis_SpinOperators_TransformationMatrix)
+
         self.Jsq_ = Jsq
         setattr(self, "Jsq", QunObj(Jsq, PrintDefault=PrintDefault))
 
@@ -1002,3 +1000,77 @@ class QuantumSystem:
             rho = expm(-H)
             rho_normalized = rho / np.trace(rho)
             setattr(self, f"{sdic}rho", QunObj(rho_normalized))
+
+    def BasisChange_Operator_Local(self, O, U):
+        """
+        Transform an operator using the given transformation matrix.
+
+        Parameters
+        ----------
+        O : np.ndarray
+            Operator in the original basis.
+        U : QunObj
+            Transformation matrix as a QunObj.
+
+        Returns
+        -------
+        np.ndarray
+            Operator in the new basis.
+        """
+        if not isinstance(O, np.ndarray):
+            raise TypeError("O must be a NumPy array.")
+        if not isinstance(U, QunObj):
+            raise TypeError("U must be an instance of QunObj.")
+
+        U_dag = self.Adjoint(U.data)
+        return U_dag @ O @ U.data 
+
+    def BasisChange_SpinOperators_Local(self, Sop, U):
+        """
+        Transform an array of spin operators using a transformation matrix.
+
+        Parameters
+        ----------
+        Sop : np.ndarray
+            Array of shape (N, dim, dim) containing spin operators (e.g., [Sx, Sy, Sz]).
+        U : QunObj
+            Transformation matrix as a QunObj.
+
+        Returns
+        -------
+        np.ndarray
+            Transformed spin operators as an array of shape (N, dim, dim).
+        """
+        if not isinstance(Sop, np.ndarray):
+            raise TypeError("Sop must be a NumPy array.")
+
+        if Sop.ndim != 3:
+            raise ValueError("Sop must be a 3D NumPy array of shape (N, dim, dim).")
+
+        if not isinstance(U, QunObj):
+            raise TypeError("U must be an instance of QunObj.")
+
+        U_data = U.data
+        U_dag = self.Adjoint(U_data)
+        Sop_N = np.empty_like(Sop, dtype=self.DTYPE_C)
+
+        for i in range(Sop.shape[0]):
+            Sop_N[i] = U_dag @ Sop[i] @ U_data
+
+        return Sop_N
+    
+    def Adjoint(self, A):
+        """
+        Compute the adjoint (Hermitian conjugate) of an operator.
+
+        Parameters
+        ----------
+        A : ndarray
+            Operator or state vector.
+
+        Returns
+        -------
+        ndarray
+            Hermitian conjugate of the input.
+        """
+        return A.T.conj()    
