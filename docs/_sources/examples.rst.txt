@@ -46,6 +46,7 @@ Basis
 - `Product Operators Spherical Tensors (two spin half) <Examples/Basis/ProductOperators_SphericalTensors_TwoSpinHalf.ipynb>`_
 - `Product Operators Zeeman PMZ Basis <Examples/Basis/ProductOperators_Zeeman_PMZBasis.ipynb>`_
 - `Zeeman Singlet Triplet <Examples/Basis/Zeeman_SingletTriplet.ipynb>`_
+- `Basis Change of the System (Spinoperators and States) <Examples/Basis/Basis_Change_of_the_System_(Spinoperators_and_States).ipynb>`_
 
 Spin Operator
 -------------

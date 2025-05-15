@@ -17,7 +17,7 @@
    "outputs": [],
    "source": [
     "# Define the source path\n",
-    "SourcePath = '/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/Source'\n",
+    "SourcePath = '/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/PyOR/Source_Doc'\n",
     "\n",
     "# Add source path\n",
     "import sys\n",
@@ -78,7 +78,7 @@
    ],
    "source": [
     "# Four uncouple spins \n",
-    "X1 = QS.States([{\"A\": 1/2},{\"B\": 1/2},{\"C\": 1/2},{\"D\": 1/2}])\n",
+    "X1 = QS.States_Coupled([{\"A\": 1/2},{\"B\": 1/2},{\"C\": 1/2},{\"D\": 1/2}])\n",
     "X1.matrix"
    ]
   },
@@ -119,7 +119,7 @@
    ],
    "source": [
     "# Four uncouple spins\n",
-    "X2 = QS.States([{\"A\": -1/2},{\"B\": -1/2},{\"C\": -1/2},{\"D\": -1/2}])\n",
+    "X2 = QS.States_Coupled([{\"A\": -1/2},{\"B\": -1/2},{\"C\": -1/2},{\"D\": -1/2}])\n",
     "X2.matrix"
    ]
   },
@@ -146,7 +146,7 @@
    ],
    "source": [
     "# State of sub system A\n",
-    "X3 = QS.States([{\"A\": 1/2}])\n",
+    "X3 = QS.States_Coupled([{\"A\": 1/2}])\n",
     "X3.matrix"
    ]
   },
@@ -173,7 +173,7 @@
    ],
    "source": [
     "# State of sub system A\n",
-    "X4 = QS.States([{\"A\": -1/2}])\n",
+    "X4 = QS.States_Coupled([{\"A\": -1/2}])\n",
     "X4.matrix"
    ]
   },
@@ -202,7 +202,7 @@
    ],
    "source": [
     "# State of uncoupled sub system A and B\n",
-    "X5 = QS.States([{\"A\": 1/2},{\"B\": 1/2}])\n",
+    "X5 = QS.States_Coupled([{\"A\": 1/2},{\"B\": 1/2}])\n",
     "X5.matrix"
    ]
   },
@@ -231,7 +231,7 @@
    ],
    "source": [
     "# State of coupled sub system A and B\n",
-    "X6 = QS.States([{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}}])\n",
+    "X6 = QS.States_Coupled([{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}}])\n",
     "X6.matrix"
    ]
   },
@@ -260,7 +260,7 @@
    ],
    "source": [
     "# State of coupled sub system A and B\n",
-    "X7 = QS.States([{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}}])\n",
+    "X7 = QS.States_Coupled([{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}}])\n",
     "X7.matrix"
    ]
   },
@@ -289,7 +289,7 @@
    ],
    "source": [
     "# State of coupled sub system A and B\n",
-    "X8 = QS.States([{\"New\" : {\"l\" : 1, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}}])\n",
+    "X8 = QS.States_Coupled([{\"New\" : {\"l\" : 1, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}}])\n",
     "X8.matrix"
    ]
   },
@@ -318,7 +318,7 @@
    ],
    "source": [
     "# State of coupled sub system A and B\n",
-    "X9 = QS.States([{\"New\" : {\"l\" : 1, \"m\" : -1, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}}])\n",
+    "X9 = QS.States_Coupled([{\"New\" : {\"l\" : 1, \"m\" : -1, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}}])\n",
     "X9.matrix"
    ]
   },
@@ -352,7 +352,7 @@
    "source": [
     "# One uncoupled (A) spin and Two coupled spins (B and C)\n",
     "# State of coupled sub system A and B\n",
-    "X10 = QS.States([{\"A\": 1/2},{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 0},\"Old\" : {\"B\": 1/2,\"C\": 1/2}}])\n",
+    "X10 = QS.States_Coupled([{\"A\": 1/2},{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 0},\"Old\" : {\"B\": 1/2,\"C\": 1/2}}])\n",
     "X10.matrix"
    ]
   },
@@ -386,7 +386,7 @@
    "source": [
     "# One uncoupled (A) spin and Two coupled spins (B and C)\n",
     "# State of coupled sub system A and B\n",
-    "X11 = QS.States([{\"A\": 1/2},{\"New\" : {\"l\" : 1, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"B\": 1/2,\"C\": 1/2}}])\n",
+    "X11 = QS.States_Coupled([{\"A\": 1/2},{\"New\" : {\"l\" : 1, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"B\": 1/2,\"C\": 1/2}}])\n",
     "X11.matrix"
    ]
   },
@@ -420,7 +420,7 @@
    "source": [
     "# One uncoupled (A) spin and Two coupled spins (B and C)\n",
     "# State of coupled sub system A and B\n",
-    "X12 = QS.States([{\"A\": 1/2},{\"New\" : {\"l\" : 1, \"m\" : -1, \"Select_l\" : 0},\"Old\" : {\"B\": 1/2,\"C\": 1/2}}])\n",
+    "X12 = QS.States_Coupled([{\"A\": 1/2},{\"New\" : {\"l\" : 1, \"m\" : -1, \"Select_l\" : 0},\"Old\" : {\"B\": 1/2,\"C\": 1/2}}])\n",
     "X12.matrix"
    ]
   },
@@ -454,7 +454,7 @@
    "source": [
     "# One uncoupled (A) spin and Two coupled spins (B and C)\n",
     "# State of coupled sub system A and B\n",
-    "X13 = QS.States([{\"A\": 1/2},{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"B\": 1/2,\"C\": 1/2}}])\n",
+    "X13 = QS.States_Coupled([{\"A\": 1/2},{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"B\": 1/2,\"C\": 1/2}}])\n",
     "X13.matrix"
    ]
   },
@@ -495,7 +495,7 @@
    ],
    "source": [
     "# Two pair of coupled system A and B coupled, and C and D coupled\n",
-    "X14 = QS.States([{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}},{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"C\": 1/2,\"D\": 1/2}}])\n",
+    "X14 = QS.States_Coupled([{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}},{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"C\": 1/2,\"D\": 1/2}}])\n",
     "X14.matrix"
    ]
   },
@@ -536,7 +536,7 @@
    ],
    "source": [
     "# Two pair of coupled system A and B coupled, and C and D coupled\n",
-    "X14 = QS.States([{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}},{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 0},\"Old\" : {\"C\": 1/2,\"D\": 1/2}}])\n",
+    "X14 = QS.States_Coupled([{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}},{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 0},\"Old\" : {\"C\": 1/2,\"D\": 1/2}}])\n",
     "X14.matrix"
    ]
   },
@@ -577,7 +577,7 @@
    ],
    "source": [
     "# Two pair of coupled system A and B coupled, and C and D coupled\n",
-    "X15 = QS.States([{\"New\" : {\"l\" : 1, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}},{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"C\": 1/2,\"D\": 1/2}}])\n",
+    "X15 = QS.States_Coupled([{\"New\" : {\"l\" : 1, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2}},{\"New\" : {\"l\" : 0, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"C\": 1/2,\"D\": 1/2}}])\n",
     "X15.matrix"
    ]
   },
@@ -618,7 +618,7 @@
    ],
    "source": [
     "# All spins are coupled\n",
-    "X16 = QS.States([{\"New\" : {\"l\" : 2, \"m\" : 2, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
+    "X16 = QS.States_Coupled([{\"New\" : {\"l\" : 2, \"m\" : 2, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
     "X16.matrix"
    ]
   },
@@ -659,7 +659,7 @@
    ],
    "source": [
     "# All spins are coupled\n",
-    "X17 = QS.States([{\"New\" : {\"l\" : 2, \"m\" : 1, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
+    "X17 = QS.States_Coupled([{\"New\" : {\"l\" : 2, \"m\" : 1, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
     "X17.matrix"
    ]
   },
@@ -700,7 +700,7 @@
    ],
    "source": [
     "# All spins are coupled\n",
-    "X18 = QS.States([{\"New\" : {\"l\" : 2, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
+    "X18 = QS.States_Coupled([{\"New\" : {\"l\" : 2, \"m\" : 0, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
     "X18.matrix"
    ]
   },
@@ -741,7 +741,7 @@
    ],
    "source": [
     "# All spins are coupled\n",
-    "X19 = QS.States([{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
+    "X19 = QS.States_Coupled([{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 0},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
     "X19.matrix"
    ]
   },
@@ -782,7 +782,7 @@
    ],
    "source": [
     "# All spins are coupled\n",
-    "X20 = QS.States([{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 1},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
+    "X20 = QS.States_Coupled([{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 1},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
     "X20.matrix"
    ]
   },
@@ -823,7 +823,7 @@
    ],
    "source": [
     "# All spins are coupled\n",
-    "X21 = QS.States([{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 2},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
+    "X21 = QS.States_Coupled([{\"New\" : {\"l\" : 1, \"m\" : 1, \"Select_l\" : 2},\"Old\" : {\"A\": 1/2,\"B\": 1/2, \"C\": 1/2,\"D\": 1/2}}])\n",
     "X21.matrix"
    ]
   }

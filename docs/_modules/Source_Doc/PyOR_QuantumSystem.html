@@ -99,6 +99,11 @@
 <span class="c1"># -------------- Package Imports --------------</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.PyOR_QuantumObject</span> <span class="kn">import</span> <span class="n">QunObj</span>
+    <span class="kn">from</span> <span class="nn">.PyOR_Basis</span> <span class="kn">import</span> <span class="n">Basis</span>
+    <span class="kn">from</span> <span class="nn">.PyOR_Hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>  
+    <span class="kn">from</span> <span class="nn">.PyOR_DensityMatrix</span> <span class="kn">import</span> <span class="n">DensityMatrix</span>  
+    <span class="kn">from</span> <span class="nn">.PyOR_QuantumLibrary</span> <span class="kn">import</span> <span class="n">QuantumLibrary</span> 
+    <span class="kn">from</span> <span class="nn">.PyOR_HardPulse</span> <span class="kn">import</span> <span class="n">HardPulse</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PyOR_PhysicalConstants</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PyOR_SpinQuantumNumber</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PyOR_Gamma</span>
@@ -106,6 +111,11 @@
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PyOR_Particle</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">PyOR_QuantumObject</span> <span class="kn">import</span> <span class="n">QunObj</span>
+    <span class="kn">from</span> <span class="nn">PyOR_Basis</span> <span class="kn">import</span> <span class="n">Basis</span>
+    <span class="kn">from</span> <span class="nn">PyOR_Hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
+    <span class="kn">from</span> <span class="nn">PyOR_DensityMatrix</span> <span class="kn">import</span> <span class="n">DensityMatrix</span>  
+    <span class="kn">from</span> <span class="nn">PyOR_QuantumLibrary</span> <span class="kn">import</span> <span class="n">QuantumLibrary</span>   
+    <span class="kn">from</span> <span class="nn">PyOR_HardPulse</span> <span class="kn">import</span> <span class="n">HardPulse</span>
     <span class="kn">import</span> <span class="nn">PyOR_PhysicalConstants</span>
     <span class="kn">import</span> <span class="nn">PyOR_SpinQuantumNumber</span>
     <span class="kn">import</span> <span class="nn">PyOR_Gamma</span>
@@ -248,6 +258,7 @@
         <span class="c1"># ----------------- Basis of the Spin Operators -----------------</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators</span> <span class="o">=</span> <span class="s2">&quot;Zeeman&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Unitary transformation matrix should be QunObj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 
         <span class="c1"># ----------------- Temperature -----------------</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">I_spintemp</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">}</span>
@@ -547,6 +558,8 @@
 <span class="sd">        Useful after modifying B0, OMEGA_RF, OFFSET, etc.</span>
 <span class="sd">        Recomputes internal attributes used in simulation and spin labels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
+
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinDic</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">OMEGA_RF</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gamma</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">SpinIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span>
 
@@ -576,7 +589,15 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DipolePairs = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Dipole_Pairs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RelaxParDipole_bIS = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_bIS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">IndividualThermalDensityMatrix</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IndividualThermalDensityMatrix</span><span class="p">()</span>
+
+        <span class="c1"># Calling other classes from other modules (testing)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Class_basis</span> <span class="o">=</span> <span class="n">Basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Class_hamiltonian</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Class_densitymatrix</span> <span class="o">=</span> <span class="n">DensityMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Class_hamiltonian</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Class_quantumlibrary</span> <span class="o">=</span> <span class="n">QuantumLibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Class_hardpulse</span> <span class="o">=</span> <span class="n">HardPulse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="QuantumSystem.JcoupleValue">
@@ -709,6 +730,13 @@
             <span class="n">Sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sp</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">)</span>
             <span class="n">Sm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sm</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+            <span class="n">Sx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sx</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="p">)</span>
+            <span class="n">Sy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sy</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="p">)</span>
+            <span class="n">Sz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="p">)</span>
+            <span class="n">Sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sp</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="p">)</span>
+            <span class="n">Sm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sm</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="p">)</span>
+
         <span class="c1"># Save operators</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Sx_</span> <span class="o">=</span> <span class="n">Sx</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Sy_</span> <span class="o">=</span> <span class="n">Sy</span>
@@ -724,6 +752,9 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators</span> <span class="o">==</span> <span class="s2">&quot;Hamiltonian eigen states&quot;</span><span class="p">:</span>
             <span class="n">Jsq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_Operator_Local</span><span class="p">(</span><span class="n">Jsq</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+            <span class="n">Jsq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_Operator_Local</span><span class="p">(</span><span class="n">Jsq</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">Jsq_</span> <span class="o">=</span> <span class="n">Jsq</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Jsq&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Jsq</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
@@ -836,9 +867,9 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="QuantumSystem.StateZeeman">
-<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.StateZeeman">[docs]</a>
-    <span class="k">def</span> <span class="nf">StateZeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MagQunList</span><span class="p">):</span>
+<div class="viewcode-block" id="QuantumSystem.State">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.State">[docs]</a>
+    <span class="k">def</span> <span class="nf">State</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MagQunList</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a Zeeman state vector from magnetic quantum numbers of individual spins.</span>
 
@@ -873,12 +904,17 @@
             <span class="n">EV</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">)):</span>
                 <span class="n">EV</span> <span class="o">=</span> <span class="n">EV</span><span class="o">.</span><span class="n">TensorProduct</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">return</span> <span class="n">EV</span></div>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>  
+                <span class="k">return</span> <span class="n">EV</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">EV</span><span class="o">.</span><span class="n">BasisChange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">())</span>   
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators</span> <span class="o">==</span> <span class="s2">&quot;Hamiltonian eigen states&quot;</span><span class="p">:</span>  <span class="c1"># testing</span>
+                <span class="k">return</span> <span class="n">EV</span><span class="o">.</span><span class="n">BasisChange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">)</span> </div>
 
-
-<div class="viewcode-block" id="QuantumSystem.States">
-<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.States">[docs]</a>
-    <span class="k">def</span> <span class="nf">States</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DicList</span><span class="p">):</span>
+            
+<div class="viewcode-block" id="QuantumSystem.States_Coupled">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.States_Coupled">[docs]</a>
+    <span class="k">def</span> <span class="nf">States_Coupled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DicList</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct tensor product state(s) from a list of Zeeman or coupled spin dictionaries.</span>
 
@@ -924,14 +960,14 @@
                 <span class="n">eigenvectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eigenvectors_multi</span><span class="p">[</span><span class="n">select_value</span><span class="p">])</span>
                 <span class="n">eigenvectors_multi</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">eigenvectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">StateZeeman</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+                <span class="n">eigenvectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
 
         <span class="n">EV</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">)):</span>
             <span class="n">EV</span> <span class="o">=</span> <span class="n">EV</span><span class="o">.</span><span class="n">TensorProduct</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">EV</span></div>
 
-
+        
 <div class="viewcode-block" id="QuantumSystem.Bracket">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Bracket">[docs]</a>
     <span class="k">def</span> <span class="nf">Bracket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="s1">&#39;QunObj&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>

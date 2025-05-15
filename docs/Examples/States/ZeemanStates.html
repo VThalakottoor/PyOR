@@ -92,7 +92,7 @@
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the source path</span>
-<span class="n">SourcePath</span> <span class="o">=</span> <span class="s1">&#39;/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/Source&#39;</span>
+<span class="n">SourcePath</span> <span class="o">=</span> <span class="s1">&#39;/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/PyOR/Source_Doc&#39;</span>
 
 <span class="c1"># Add source path</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -120,7 +120,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X1</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">StateZeeman</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X1</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
 <span class="n">X1</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
@@ -137,7 +137,7 @@ $\displaystyle \left[\begin{matrix}1.0\\0\\0\\0\\0\\0\\0\\0\end{matrix}\right]$<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X2</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">StateZeeman</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X2</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
 <span class="n">X2</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
@@ -154,7 +154,7 @@ $\displaystyle \left[\begin{matrix}0\\1.0\\0\\0\\0\\0\\0\\0\end{matrix}\right]$<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X3</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">StateZeeman</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X3</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
 <span class="n">X3</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
@@ -171,7 +171,7 @@ $\displaystyle \left[\begin{matrix}0\\0\\1.0\\0\\0\\0\\0\\0\end{matrix}\right]$<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X4</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">StateZeeman</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X4</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
 <span class="n">X4</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
@@ -188,7 +188,7 @@ $\displaystyle \left[\begin{matrix}0\\0\\0\\1.0\\0\\0\\0\\0\end{matrix}\right]$<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X5</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">StateZeeman</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X5</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
 <span class="n">X5</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
@@ -205,7 +205,7 @@ $\displaystyle \left[\begin{matrix}0\\0\\0\\0\\1.0\\0\\0\\0\end{matrix}\right]$<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X6</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">StateZeeman</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X6</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
 <span class="n">X6</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
@@ -222,7 +222,7 @@ $\displaystyle \left[\begin{matrix}0\\0\\0\\0\\0\\1.0\\0\\0\end{matrix}\right]$<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X7</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">StateZeeman</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X7</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
 <span class="n">X7</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
@@ -239,7 +239,7 @@ $\displaystyle \left[\begin{matrix}0\\0\\0\\0\\0\\0\\1.0\\0\end{matrix}\right]$<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X8</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">StateZeeman</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X8</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
 <span class="n">X8</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>

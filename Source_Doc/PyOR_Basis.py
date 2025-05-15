@@ -88,6 +88,37 @@ class Basis:
 
         return QunObj(U.data @ state.data)
 
+    def BasisChange_States(self, states, U):
+        """
+        Transform one or more state vectors using the given transformation matrix.
+
+        Parameters
+        ----------
+        states : QunObj or list of QunObj
+            State(s) in the original basis.
+        U : QunObj
+            Transformation matrix.
+
+        Returns
+        -------
+        QunObj or list of QunObj
+            State(s) in the new basis.
+        """
+        if not isinstance(U, QunObj):
+            raise TypeError("U must be an instance of QunObj.")
+        
+        # Handle a single state
+        if isinstance(states, QunObj):
+            return QunObj(U.data @ states.data)
+        
+        # Handle a list of states
+        if isinstance(states, list):
+            if not all(isinstance(s, QunObj) for s in states):
+                raise TypeError("All elements in the list must be instances of QunObj.")
+            return [QunObj(U.data @ s.data) for s in states]
+
+        raise TypeError("states must be a QunObj or a list of QunObj.")
+
     def BasisChange_Operator(self, O, U):
         """
         Transform an operator using the given transformation matrix.
@@ -580,9 +611,14 @@ class Basis:
         B_Zeeman = []
         eigenvalues, eigenvectors = lina.eig(Sz) 
         for i in range(self.class_QS.Vdim):
-            B_Zeeman.append(QunObj((eigenvectors[:, i].reshape(-1, 1)).real))         
-        return B_Zeeman, Dic  
-
+            B_Zeeman.append(QunObj((eigenvectors[:, i].reshape(-1, 1)).real))   
+        if self.class_QS.Basis_SpinOperators == "Zeeman":          
+            return B_Zeeman, Dic  
+        if self.class_QS.Basis_SpinOperators == "Singlet Triplet":
+            return self.BasisChange_States(B_Zeeman,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), Dic
+        if self.class_QS.Basis_SpinOperators == "Hamiltonian eigen states":
+            return self.BasisChange_States(B_Zeeman,self.class_QS.Basis_SpinOperators_TransformationMatrix), Dic
+                
     def SingletTriplet_Basis(self): 
         """
         Generate singlet-triplet basis for two spin-1/2 particles.
@@ -598,19 +634,22 @@ class Basis:
         -----
         Only works for two spin-1/2 systems.
         """
-        Dic = ["Tm ", "T0 ", "Tp ", "S0 "]
+        Dic = ["S0 ", "Tp ", "T0 ", "Tm "]
 
         if ((self.class_QS.Nspins == 2) and 
             (self.class_QS.slist[0] == 1/2) and 
             (self.class_QS.slist[1] == 1/2)):
             B_Zeeman, _ = self.Zeeman_Basis()
             B_ST = [
-                B_Zeeman[0],
-                (1/np.sqrt(2)) * (B_Zeeman[1] + B_Zeeman[2]),
-                B_Zeeman[3],
-                (1/np.sqrt(2)) * (B_Zeeman[1] - B_Zeeman[2])
+                QunObj(np.array([[0], [1/np.sqrt(2)], [-1/np.sqrt(2)], [0]], dtype=complex)),
+                QunObj(np.array([[1], [0], [0], [0]], dtype=complex)),
+                QunObj(np.array([[0], [1/np.sqrt(2)], [1/np.sqrt(2)], [0]], dtype=complex)) ,
+                QunObj(np.array([[0], [0], [0], [1]], dtype=complex))                
             ]
-            return B_ST, Dic
+            if self.class_QS.Basis_SpinOperators == "Zeeman":
+                return B_ST, Dic
+            if self.class_QS.Basis_SpinOperators == "Singlet Triplet":
+                return self.BasisChange_States(B_ST,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), Dic
         else:
             print("Two spin half system only")
 

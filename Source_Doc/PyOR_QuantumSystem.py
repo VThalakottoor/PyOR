@@ -20,6 +20,11 @@ Description:
 # -------------- Package Imports --------------
 try:
     from .PyOR_QuantumObject import QunObj
+    from .PyOR_Basis import Basis
+    from .PyOR_Hamiltonian import Hamiltonian  
+    from .PyOR_DensityMatrix import DensityMatrix  
+    from .PyOR_QuantumLibrary import QuantumLibrary 
+    from .PyOR_HardPulse import HardPulse
     from . import PyOR_PhysicalConstants
     from . import PyOR_SpinQuantumNumber
     from . import PyOR_Gamma
@@ -27,6 +32,11 @@ try:
     from . import PyOR_Particle
 except ImportError:
     from PyOR_QuantumObject import QunObj
+    from PyOR_Basis import Basis
+    from PyOR_Hamiltonian import Hamiltonian
+    from PyOR_DensityMatrix import DensityMatrix  
+    from PyOR_QuantumLibrary import QuantumLibrary   
+    from PyOR_HardPulse import HardPulse
     import PyOR_PhysicalConstants
     import PyOR_SpinQuantumNumber
     import PyOR_Gamma
@@ -167,6 +177,7 @@ class QuantumSystem:
         # ----------------- Basis of the Spin Operators -----------------
         self.Basis_SpinOperators = "Zeeman"
         self.Basis_SpinOperators_TransformationMatrix = None # Unitary transformation matrix should be QunObj
+        self.Basis_SpinOperators_TransformationMatrix_SingletTriplet = QunObj([[0, 1, 0, 0], [1/np.sqrt(2), 0, 1/np.sqrt(2),0], [-1/np.sqrt(2), 0, 1/np.sqrt(2),0], [0, 0, 0, 1]])
 
         # ----------------- Temperature -----------------
         self.I_spintemp = {key: 0 for key in self.SpinList}
@@ -446,6 +457,8 @@ class QuantumSystem:
         Useful after modifying B0, OMEGA_RF, OFFSET, etc.
         Recomputes internal attributes used in simulation and spin labels.
         """
+        self.Initialize()
+
         for i in self.SpinDic:
             self.OMEGA_RF[i] = -1 * self.Gamma[self.SpinIndex[i]] * self.B0
 
@@ -476,6 +489,14 @@ class QuantumSystem:
         print(f"RelaxParDipole_bIS = {self.RelaxParDipole_bIS}")
 
         self.IndividualThermalDensityMatrix()
+
+        # Calling other classes from other modules (testing)
+
+        self.Class_basis = Basis(self)
+        self.Class_hamiltonian = Hamiltonian(self)
+        self.Class_densitymatrix = DensityMatrix(self,self.Class_hamiltonian)
+        self.Class_quantumlibrary = QuantumLibrary(self)
+        self.Class_hardpulse = HardPulse(self)
 
     def JcoupleValue(self, x, y, value):
         """
@@ -596,6 +617,13 @@ class QuantumSystem:
             Sp = self.BasisChange_SpinOperators_Local(Sp,self.Basis_SpinOperators_TransformationMatrix)
             Sm = self.BasisChange_SpinOperators_Local(Sm,self.Basis_SpinOperators_TransformationMatrix)
 
+        if self.Basis_SpinOperators == "Singlet Triplet":
+            Sx = self.BasisChange_SpinOperators_Local(Sx,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
+            Sy = self.BasisChange_SpinOperators_Local(Sy,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
+            Sz = self.BasisChange_SpinOperators_Local(Sz,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
+            Sp = self.BasisChange_SpinOperators_Local(Sp,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
+            Sm = self.BasisChange_SpinOperators_Local(Sm,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
+
         # Save operators
         self.Sx_ = Sx
         self.Sy_ = Sy
@@ -611,6 +639,9 @@ class QuantumSystem:
 
         if self.Basis_SpinOperators == "Hamiltonian eigen states":
             Jsq = self.BasisChange_Operator_Local(Jsq,self.Basis_SpinOperators_TransformationMatrix)
+
+        if self.Basis_SpinOperators == "Singlet Triplet":
+            Jsq = self.BasisChange_Operator_Local(Jsq,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
 
         self.Jsq_ = Jsq
         setattr(self, "Jsq", QunObj(Jsq, PrintDefault=PrintDefault))
@@ -710,7 +741,7 @@ class QuantumSystem:
         Sz = self.Sz_
         return (np.sum(Sz, axis=0).real).diagonal()
 
-    def StateZeeman(self, MagQunList):
+    def State(self, MagQunList):
         """
         Construct a Zeeman state vector from magnetic quantum numbers of individual spins.
 
@@ -745,9 +776,14 @@ class QuantumSystem:
             EV = eigenvectors[0]
             for i in range(1, len(eigenvectors)):
                 EV = EV.TensorProduct(eigenvectors[i])
-            return EV
-
-    def States(self, DicList):
+            if self.Basis_SpinOperators == "Zeeman":  
+                return EV
+            if self.Basis_SpinOperators == "Singlet Triplet":
+                return EV.BasisChange(self.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint())   
+            if self.Basis_SpinOperators == "Hamiltonian eigen states":  # testing
+                return EV.BasisChange(self.Basis_SpinOperators_TransformationMatrix) 
+            
+    def States_Coupled(self, DicList):
         """
         Construct tensor product state(s) from a list of Zeeman or coupled spin dictionaries.
 
@@ -793,13 +829,13 @@ class QuantumSystem:
                 eigenvectors.append(eigenvectors_multi[select_value])
                 eigenvectors_multi = []
             else:
-                eigenvectors.append(self.StateZeeman(d))
+                eigenvectors.append(self.State(d))
 
         EV = eigenvectors[0]
         for i in range(1, len(eigenvectors)):
             EV = EV.TensorProduct(eigenvectors[i])
         return EV
-
+        
     def Bracket(self, X: 'QunObj', A: 'QunObj', Y: 'QunObj') -> float:
         """
         Compute the bracket ⟨X|A|Y⟩ / ⟨X|Y⟩.

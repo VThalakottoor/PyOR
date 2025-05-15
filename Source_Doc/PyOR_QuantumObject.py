@@ -337,13 +337,7 @@ class QunObj():
         if basis_name.lower() == "singlettriplet":
             # Define the singlet-triplet transformation matrix
             # This is a 4x4 unitary transformation from product basis to singlet-triplet basis
-            U_matrix = np.array([
-                [1,     0,     0,  0],
-                [0, 1/np.sqrt(2),  0, 1/np.sqrt(2)],
-                [0, 1/np.sqrt(2),  0, -1/np.sqrt(2)],
-                [0,     0,     1,  0]
-            ], dtype=complex)
-            U = QunObj(U_matrix, Type="operator")
+            U = QunObj([[0, 1, 0, 0], [1/np.sqrt(2), 0, 1/np.sqrt(2),0], [-1/np.sqrt(2), 0, 1/np.sqrt(2),0], [0, 0, 0, 1]])
 
         else:
             raise ValueError(f"Unsupported basis name '{basis_name}'.")

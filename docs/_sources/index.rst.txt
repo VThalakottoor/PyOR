@@ -8,7 +8,7 @@ Welcome to PyOR's Documentation!
 
 **PyOR** (Python on Resonance)
 
-*Motto:* **"Everybody can simulate NMR"**
+*Motto:* **"Everybody can simulate Magnetic Resonance"**
 
 **Author:** Vineeth Francis Thalakottoor Jose Chacko  
 
