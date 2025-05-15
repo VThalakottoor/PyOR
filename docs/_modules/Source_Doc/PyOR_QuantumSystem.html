@@ -33,7 +33,7 @@
           
           <a href="../../index.html" class="icon icon-home">
             PyOR
-              <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+              <img src="../../_static/logo_.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -244,6 +244,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">Dipole_DipolarAlpabet</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DipoleAngle</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DipolebIS</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># ----------------- Basis of the Spin Operators -----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators</span> <span class="o">=</span> <span class="s2">&quot;Zeeman&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Unitary transformation matrix should be QunObj</span>
 
         <span class="c1"># ----------------- Temperature -----------------</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">I_spintemp</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span><span class="p">}</span>
@@ -698,6 +702,13 @@
             <span class="n">Sp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Sx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">Sy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">Sm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Sx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">Sy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators</span> <span class="o">==</span> <span class="s2">&quot;Hamiltonian eigen states&quot;</span><span class="p">:</span>
+            <span class="n">Sx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sx</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">)</span>
+            <span class="n">Sy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sy</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">)</span>
+            <span class="n">Sz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">)</span>
+            <span class="n">Sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sp</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">)</span>
+            <span class="n">Sm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="n">Sm</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">)</span>
+
         <span class="c1"># Save operators</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Sx_</span> <span class="o">=</span> <span class="n">Sx</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Sy_</span> <span class="o">=</span> <span class="n">Sy</span>
@@ -710,6 +721,10 @@
             <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">+</span>
             <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Sz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
         <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators</span> <span class="o">==</span> <span class="s2">&quot;Hamiltonian eigen states&quot;</span><span class="p">:</span>
+            <span class="n">Jsq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_Operator_Local</span><span class="p">(</span><span class="n">Jsq</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">Jsq_</span> <span class="o">=</span> <span class="n">Jsq</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Jsq&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">Jsq</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="n">PrintDefault</span><span class="p">))</span>
 
@@ -1140,6 +1155,89 @@
             <span class="n">rho</span> <span class="o">=</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="n">H</span><span class="p">)</span>
             <span class="n">rho_normalized</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sdic</span><span class="si">}</span><span class="s2">rho&quot;</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_normalized</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QuantumSystem.BasisChange_Operator_Local">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.BasisChange_Operator_Local">[docs]</a>
+    <span class="k">def</span> <span class="nf">BasisChange_Operator_Local</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">O</span><span class="p">,</span> <span class="n">U</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transform an operator using the given transformation matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        O : np.ndarray</span>
+<span class="sd">            Operator in the original basis.</span>
+<span class="sd">        U : QunObj</span>
+<span class="sd">            Transformation matrix as a QunObj.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            Operator in the new basis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">O</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;O must be a NumPy array.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;U must be an instance of QunObj.&quot;</span><span class="p">)</span>
+
+        <span class="n">U_dag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">U_dag</span> <span class="o">@</span> <span class="n">O</span> <span class="o">@</span> <span class="n">U</span><span class="o">.</span><span class="n">data</span> </div>
+
+
+<div class="viewcode-block" id="QuantumSystem.BasisChange_SpinOperators_Local">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.BasisChange_SpinOperators_Local">[docs]</a>
+    <span class="k">def</span> <span class="nf">BasisChange_SpinOperators_Local</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Sop</span><span class="p">,</span> <span class="n">U</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transform an array of spin operators using a transformation matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Sop : np.ndarray</span>
+<span class="sd">            Array of shape (N, dim, dim) containing spin operators (e.g., [Sx, Sy, Sz]).</span>
+<span class="sd">        U : QunObj</span>
+<span class="sd">            Transformation matrix as a QunObj.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            Transformed spin operators as an array of shape (N, dim, dim).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Sop</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Sop must be a NumPy array.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">Sop</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sop must be a 3D NumPy array of shape (N, dim, dim).&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;U must be an instance of QunObj.&quot;</span><span class="p">)</span>
+
+        <span class="n">U_data</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">U_dag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">(</span><span class="n">U_data</span><span class="p">)</span>
+        <span class="n">Sop_N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">Sop</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_C</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Sop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">Sop_N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">U_dag</span> <span class="o">@</span> <span class="n">Sop</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">@</span> <span class="n">U_data</span>
+
+        <span class="k">return</span> <span class="n">Sop_N</span></div>
+
+    
+<div class="viewcode-block" id="QuantumSystem.Adjoint">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumSystem.QuantumSystem.Adjoint">[docs]</a>
+    <span class="k">def</span> <span class="nf">Adjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the adjoint (Hermitian conjugate) of an operator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : ndarray</span>
+<span class="sd">            Operator or state vector.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            Hermitian conjugate of the input.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>    </div>
 </div>
 
 </pre></div>

@@ -5,7 +5,7 @@ Motto: "Everybody can simulate Magnetic Resonance"
 
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
 
-<img src="https://github.com/VThalakottoor/PyOR_vJeener.0.9.0/blob/main/logo/PyOR_logo.png" alt="PyOR logo" width="300">
+<img src="https://github.com/VThalakottoor/PyOR_vJeener.0.9.0/blob/main/logo/PyOR_logo_.png" alt="PyOR logo" width="300">
 
 ## Documentation
 https://vthalakottoor.github.io/PyOR/
