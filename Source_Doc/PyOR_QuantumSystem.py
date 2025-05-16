@@ -175,7 +175,8 @@ class QuantumSystem:
         self.DipolebIS = []
 
         # ----------------- Basis of the Spin Operators -----------------
-        self.Basis_SpinOperators = "Zeeman"
+        self.Basis_SpinOperators_Hilbert = "Zeeman"
+        self.Basis_SpinOperators_Liouville = "Zeeman"
         self.Basis_SpinOperators_TransformationMatrix = None # Unitary transformation matrix should be QunObj
         self.Basis_SpinOperators_TransformationMatrix_SingletTriplet = QunObj([[0, 1, 0, 0], [1/np.sqrt(2), 0, 1/np.sqrt(2),0], [-1/np.sqrt(2), 0, 1/np.sqrt(2),0], [0, 0, 0, 1]])
 
@@ -610,14 +611,14 @@ class QuantumSystem:
             Sp[i] = Sx[i] + 1j * Sy[i]
             Sm[i] = Sx[i] - 1j * Sy[i]
 
-        if self.Basis_SpinOperators == "Hamiltonian eigen states":
+        if self.Basis_SpinOperators_Hilbert == "Hamiltonian eigen states":
             Sx = self.BasisChange_SpinOperators_Local(Sx,self.Basis_SpinOperators_TransformationMatrix)
             Sy = self.BasisChange_SpinOperators_Local(Sy,self.Basis_SpinOperators_TransformationMatrix)
             Sz = self.BasisChange_SpinOperators_Local(Sz,self.Basis_SpinOperators_TransformationMatrix)
             Sp = self.BasisChange_SpinOperators_Local(Sp,self.Basis_SpinOperators_TransformationMatrix)
             Sm = self.BasisChange_SpinOperators_Local(Sm,self.Basis_SpinOperators_TransformationMatrix)
 
-        if self.Basis_SpinOperators == "Singlet Triplet":
+        if self.Basis_SpinOperators_Hilbert == "Singlet Triplet":
             Sx = self.BasisChange_SpinOperators_Local(Sx,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
             Sy = self.BasisChange_SpinOperators_Local(Sy,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
             Sz = self.BasisChange_SpinOperators_Local(Sz,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
@@ -637,10 +638,10 @@ class QuantumSystem:
             np.matmul(np.sum(Sz, axis=0), np.sum(Sz, axis=0))
         )
 
-        if self.Basis_SpinOperators == "Hamiltonian eigen states":
+        if self.Basis_SpinOperators_Hilbert == "Hamiltonian eigen states":
             Jsq = self.BasisChange_Operator_Local(Jsq,self.Basis_SpinOperators_TransformationMatrix)
 
-        if self.Basis_SpinOperators == "Singlet Triplet":
+        if self.Basis_SpinOperators_Hilbert == "Singlet Triplet":
             Jsq = self.BasisChange_Operator_Local(Jsq,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
 
         self.Jsq_ = Jsq
@@ -776,12 +777,12 @@ class QuantumSystem:
             EV = eigenvectors[0]
             for i in range(1, len(eigenvectors)):
                 EV = EV.TensorProduct(eigenvectors[i])
-            if self.Basis_SpinOperators == "Zeeman":  
+            if self.Basis_SpinOperators_Hilbert == "Zeeman":  
                 return EV
-            if self.Basis_SpinOperators == "Singlet Triplet":
+            if self.Basis_SpinOperators_Hilbert == "Singlet Triplet":
                 return EV.BasisChange(self.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint())   
-            if self.Basis_SpinOperators == "Hamiltonian eigen states":  # testing
-                return EV.BasisChange(self.Basis_SpinOperators_TransformationMatrix) 
+            if self.Basis_SpinOperators_Hilbert == "Hamiltonian eigen states":  # testing
+                return EV.BasisChange(self.Basis_SpinOperators_TransformationMatrix.Adjoint()) 
             
     def States_Coupled(self, DicList):
         """
