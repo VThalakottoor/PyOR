@@ -95,7 +95,7 @@
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the source path</span>
-<span class="n">SourcePath</span> <span class="o">=</span> <span class="s1">&#39;/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/Source_Doc&#39;</span>
+<span class="n">SourcePath</span> <span class="o">=</span> <span class="s1">&#39;/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/PyOR/Source_Doc&#39;</span>
 
 <span class="c1"># Add source path</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -186,6 +186,7 @@ Rprocess = Auto-correlated Dipolar Homonuclear
 RelaxParDipole_tau = 1e-11
 DipolePairs = [(&#39;A&#39;, &#39;B&#39;)]
 RelaxParDipole_bIS = [30000.0]
+Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 </pre></div></div>
 </div>
 </section>
@@ -264,7 +265,7 @@ RelaxParDipole_bIS = [30000.0]
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}1.0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}1.0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -280,7 +281,7 @@ $\displaystyle \left[\begin{matrix}1.0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}0 &amp; 1.0 &amp; 1.0 &amp; 2.0\\-1.0 &amp; 0 &amp; 0 &amp; 1.0\\-1.0 &amp; 0 &amp; 0 &amp; 1.0\\-2.0 &amp; -1.0 &amp; -1.0 &amp; 0\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}0\\1.0\\1.0\\2.0\\-1.0\\0\\0\\1.0\\-1.0\\0\\0\\1.0\\-2.0\\-1.0\\-1.0\\0\end{matrix}\right]$</div></div>
 </div>
 </section>
 <section id="Product-Operator-Basis:-PMZ-(Hilbert-Space)">
@@ -342,7 +343,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 1.0 &amp; 1.0 &amp; 2.0\\-1.0 &amp; 0
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\\1.0 &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\1.0\\0\\0\\0\end{matrix}\right]$</div></div>
 </div>
 </section>
 <section id="Call-Product-Operator-with-string-index">
@@ -377,7 +378,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\\1.0 &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\1.0\\0\\0\\0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
@@ -398,7 +399,10 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Basis_Zeeman_L</span> <span class="o">=</span> <span class="n">BS</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_Zeeman</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
+    <span class="n">Basis_Zeeman_L</span> <span class="o">=</span> <span class="n">Basis_Zeeman</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">Basis_Zeeman_L</span> <span class="o">=</span> <span class="n">BS</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_Zeeman</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -498,7 +502,7 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span> <span class="o">=</span> <span class="n">Plotting</span><span class="p">(</span><span class="n">QS</span><span class="p">)</span>
 <span class="n">plot</span><span class="o">.</span><span class="n">PlotFigureSize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">plot</span><span class="o">.</span><span class="n">PlotFontSize</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">plot</span><span class="o">.</span><span class="n">MatrixPlot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">R_L</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">dic_Zeeman</span><span class="p">,</span><span class="n">dic_Zeeman</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">MatrixPlot</span><span class="p">(</span><span class="n">R_L</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">dic_Zeeman</span><span class="p">,</span><span class="n">dic_Zeeman</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -506,7 +510,7 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b1f8494a185249e0989d03c27a710f33", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "02fbc6537b5a4411ab41bc94fd0d612f", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 <section id="Converting-Relaxation-Superoperator-in-Liouville-Space-from-Zeeman-to-PMZ-basis">
@@ -523,7 +527,7 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="o">.</span><span class="n">MatrixPlot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">R_L_PMZ</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">dic_PMZ</span><span class="p">,</span><span class="n">dic_PMZ</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="o">.</span><span class="n">MatrixPlot</span><span class="p">(</span><span class="n">R_L_PMZ</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">dic_PMZ</span><span class="p">,</span><span class="n">dic_PMZ</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -531,7 +535,7 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "09a7bde05d5c484ead9fecba8937adcc", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f570eb6a5308485394c5d9e71353f688", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 </section>

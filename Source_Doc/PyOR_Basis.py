@@ -153,7 +153,7 @@ class Basis:
 
         Returns
         -------
-        np.ndarray
+        list of QunObj
             Transformed spin operators.
         """
         if not isinstance(Sop, list):
@@ -165,11 +165,12 @@ class Basis:
         if not isinstance(U, QunObj):
             raise TypeError("Input must be instances of QunObj.")
 
-        dim = len(Sop)
-        Sop_N = np.zeros(len(Sop), dtype=object)
-        for i in range(dim):
-            Sop_N[i] = QunObj(U.data @ Sop[i].data @ self.Adjoint(U.data)) 
-        return Sop_N 
+        Sop_N = []
+        for i in range(len(Sop)):
+            transformed = QunObj(U.data @ Sop[i].data @ self.Adjoint(U.data))
+            Sop_N.append(transformed)
+        return Sop_N
+
 
     def KetState_Components(self, AQ, dic, ketQ):
         """
@@ -308,7 +309,11 @@ class Basis:
             OP, CO, DIC = self.ProductOperator(OP, CO, DIC, OP_next, CO_next, DIC_next, sort=sort, indexing=Index)
 
         if self.class_QS.PropagationSpace == "Hilbert":
-            return OP, CO, DIC
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
+                return OP, CO, DIC
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+                return self.BasisChange_SpinOperators(OP,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), CO, DIC    
+                    
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(OP), CO, DIC        
 
@@ -430,7 +435,11 @@ class Basis:
                 Basis_SpinHalf_out[j] = QunObj(self.Normalize(Basis_SpinHalf_out[j].data))
         
         if self.class_QS.PropagationSpace == "Hilbert":
-            return Basis_SpinHalf_out, Dic_out 
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
+                return Basis_SpinHalf_out, Dic_out 
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), Dic_out 
+                        
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Dic_out
 
@@ -496,7 +505,11 @@ class Basis:
                 Basis_SpinHalf_out[j] = QunObj(self.Normalize(Basis_SpinHalf_out[j].data))
 
         if self.class_QS.PropagationSpace == "Hilbert":
-            return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out 
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
+                return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out 
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), Coherence_order_SpinHalf_out, Dic_out 
+                        
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
 
@@ -547,8 +560,12 @@ class Basis:
                     Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out,
                     Basis_SpinHalf, Coherence_order_SpinHalf, Dic, sort, indexing)
 
-        if self.class_QS.PropagationSpace == "Hilbert":        
-            return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out 
+        if self.class_QS.PropagationSpace == "Hilbert":   
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":     
+                return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out 
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":     
+                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), Coherence_order_SpinHalf_out, Dic_out 
+                        
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
 
@@ -605,7 +622,11 @@ class Basis:
                 coh.append(State_Momentum[i] - State_Momentum[j])
 
         if self.class_QS.PropagationSpace == "Hilbert":
-            return B, dic, coh, QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim))) 
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
+                return B, dic, coh, QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim))) 
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+                return B, dic, coh, QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim))) 
+                        
         if self.class_QS.PropagationSpace == "Liouville":  
             return self.ProductOperators_ConvertToLiouville(B), dic, coh, self.class_QS.Class_quantumlibrary.DMToVec(QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim)))) 
     
