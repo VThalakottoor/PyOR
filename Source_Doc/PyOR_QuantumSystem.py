@@ -458,6 +458,8 @@ class QuantumSystem:
         Useful after modifying B0, OMEGA_RF, OFFSET, etc.
         Recomputes internal attributes used in simulation and spin labels.
         """
+
+        self.Class_quantumlibrary = QuantumLibrary(self)
         self.Initialize()
 
         for i in self.SpinDic:
@@ -496,7 +498,6 @@ class QuantumSystem:
         self.Class_basis = Basis(self)
         self.Class_hamiltonian = Hamiltonian(self)
         self.Class_densitymatrix = DensityMatrix(self,self.Class_hamiltonian)
-        self.Class_quantumlibrary = QuantumLibrary(self)
         self.Class_hardpulse = HardPulse(self)
 
     def JcoupleValue(self, x, y, value):
@@ -647,14 +648,27 @@ class QuantumSystem:
         self.Jsq_ = Jsq
         setattr(self, "Jsq", QunObj(Jsq, PrintDefault=PrintDefault))
 
-        # Assign individual spin operators as class attributes (e.g., Ix, Iy, Iz...)
-        for idx, spin in enumerate(self.SpinDic):
-            setattr(self, f"{spin}x", QunObj(Sx[idx], PrintDefault=PrintDefault))
-            setattr(self, f"{spin}y", QunObj(Sy[idx], PrintDefault=PrintDefault))
-            setattr(self, f"{spin}z", QunObj(Sz[idx], PrintDefault=PrintDefault))
-            setattr(self, f"{spin}p", QunObj(Sp[idx], PrintDefault=PrintDefault))
-            setattr(self, f"{spin}m", QunObj(Sm[idx], PrintDefault=PrintDefault))
-            setattr(self, f"{spin}id", QunObj(np.eye(self.Vdim), PrintDefault=PrintDefault))
+        if self.PropagationSpace == "Hilbert":
+
+            # Assign individual spin operators as class attributes (e.g., Ix, Iy, Iz...)
+            for idx, spin in enumerate(self.SpinDic):
+                setattr(self, f"{spin}x", QunObj(Sx[idx], PrintDefault=PrintDefault))
+                setattr(self, f"{spin}y", QunObj(Sy[idx], PrintDefault=PrintDefault))
+                setattr(self, f"{spin}z", QunObj(Sz[idx], PrintDefault=PrintDefault))
+                setattr(self, f"{spin}p", QunObj(Sp[idx], PrintDefault=PrintDefault))
+                setattr(self, f"{spin}m", QunObj(Sm[idx], PrintDefault=PrintDefault))
+                setattr(self, f"{spin}id", QunObj(np.eye(self.Vdim), PrintDefault=PrintDefault))
+
+        if self.PropagationSpace == "Liouville":
+
+            # Assign individual spin operators as class attributes (e.g., Ix, Iy, Iz...)
+            for idx, spin in enumerate(self.SpinDic):
+                setattr(self, f"{spin}x", self.Class_quantumlibrary.DMToVec(QunObj(Sx[idx], PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}y", self.Class_quantumlibrary.DMToVec(QunObj(Sy[idx], PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}z", self.Class_quantumlibrary.DMToVec(QunObj(Sz[idx], PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}p", self.Class_quantumlibrary.DMToVec(QunObj(Sp[idx], PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}m", self.Class_quantumlibrary.DMToVec(QunObj(Sm[idx], PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}id", self.Class_quantumlibrary.DMToVec(QunObj(np.eye(self.Vdim), PrintDefault=PrintDefault)))
 
         self.SpinOperator_Sub(PrintDefault=PrintDefault)
 
@@ -665,17 +679,32 @@ class QuantumSystem:
         Stores operators with suffix `_sub` for each spin label.
         Example: Ix_sub, Iy_sub, Iz_sub, Ip_sub, Im_sub, Iid_sub
         """
-        for idx, spin in enumerate(self.SpinDic):
-            Sx, Sy, Sz = self.SpinOperatorsSingleSpin(self.slist[idx])
-            Sp = Sx + 1j * Sy
-            Sm = Sx - 1j * Sy
 
-            setattr(self, f"{spin}x_sub", QunObj(Sx, PrintDefault=PrintDefault))
-            setattr(self, f"{spin}y_sub", QunObj(Sy, PrintDefault=PrintDefault))
-            setattr(self, f"{spin}z_sub", QunObj(Sz, PrintDefault=PrintDefault))
-            setattr(self, f"{spin}p_sub", QunObj(Sp, PrintDefault=PrintDefault))
-            setattr(self, f"{spin}m_sub", QunObj(Sm, PrintDefault=PrintDefault))
-            setattr(self, f"{spin}id_sub", QunObj(np.eye(Sx.shape[0]), PrintDefault=PrintDefault))
+        if self.PropagationSpace == "Hilbert":
+            for idx, spin in enumerate(self.SpinDic):
+                Sx, Sy, Sz = self.SpinOperatorsSingleSpin(self.slist[idx])
+                Sp = Sx + 1j * Sy
+                Sm = Sx - 1j * Sy
+
+                setattr(self, f"{spin}x_sub", QunObj(Sx, PrintDefault=PrintDefault))
+                setattr(self, f"{spin}y_sub", QunObj(Sy, PrintDefault=PrintDefault))
+                setattr(self, f"{spin}z_sub", QunObj(Sz, PrintDefault=PrintDefault))
+                setattr(self, f"{spin}p_sub", QunObj(Sp, PrintDefault=PrintDefault))
+                setattr(self, f"{spin}m_sub", QunObj(Sm, PrintDefault=PrintDefault))
+                setattr(self, f"{spin}id_sub", QunObj(np.eye(Sx.shape[0]), PrintDefault=PrintDefault))
+
+        if self.PropagationSpace == "Liouville":
+            for idx, spin in enumerate(self.SpinDic):
+                Sx, Sy, Sz = self.SpinOperatorsSingleSpin(self.slist[idx])
+                Sp = Sx + 1j * Sy
+                Sm = Sx - 1j * Sy
+
+                setattr(self, f"{spin}x_sub", self.Class_quantumlibrary.DMToVec(QunObj(Sx, PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}y_sub", self.Class_quantumlibrary.DMToVec(QunObj(Sy, PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}z_sub", self.Class_quantumlibrary.DMToVec(QunObj(Sz, PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}p_sub", self.Class_quantumlibrary.DMToVec(QunObj(Sp, PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}m_sub", self.Class_quantumlibrary.DMToVec(QunObj(Sm, PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}id_sub", self.Class_quantumlibrary.DMToVec(QunObj(np.eye(Sx.shape[0]), PrintDefault=PrintDefault)))
 
     def SpinOperator_SpinQunatulNumber_List(self, SpinQNlist):
         """
@@ -1025,18 +1054,19 @@ class QuantumSystem:
         hbar = 1.054e-34
         kb = 1.380e-23
 
-        for sdic in self.SpinDic:
-            gamma = self.Gamma[self.SpinIndex[sdic]]
-            offset = self.Offset[self.SpinIndex[sdic]]
-            temp = self.Ispintemp[self.SpinIndex[sdic]]
-            Sz_sub = getattr(self, f"{sdic}z_sub", None).data
+        if self.PropagationSpace == "Hilbert":
+            for sdic in self.SpinDic:
+                gamma = self.Gamma[self.SpinIndex[sdic]]
+                offset = self.Offset[self.SpinIndex[sdic]]
+                temp = self.Ispintemp[self.SpinIndex[sdic]]
+                Sz_sub = getattr(self, f"{sdic}z_sub", None).data
 
-            W = -gamma * self.B0 - 2 * np.pi * offset
-            H = hbar * W * Sz_sub / (kb * temp)
+                W = -gamma * self.B0 - 2 * np.pi * offset
+                H = hbar * W * Sz_sub / (kb * temp)
 
-            rho = expm(-H)
-            rho_normalized = rho / np.trace(rho)
-            setattr(self, f"{sdic}rho", QunObj(rho_normalized))
+                rho = expm(-H)
+                rho_normalized = rho / np.trace(rho)
+                setattr(self, f"{sdic}rho", QunObj(rho_normalized))
 
     def BasisChange_Operator_Local(self, O, U):
         """
@@ -1111,3 +1141,31 @@ class QuantumSystem:
             Hermitian conjugate of the input.
         """
         return A.T.conj()    
+    
+    def Unitarytransformation_ZeemanToPMZ(self):
+        """
+        Constructs and returns the unitary transformation matrix that changes 
+        the basis from the Zeeman basis to the PMZ (Product of Mz basis for Spin-1/2) basis.
+
+        This transformation is essential for converting operators or states 
+        expressed in the Zeeman basis to the PMZ basis, which may be more 
+        convenient for certain quantum simulations or analyses.
+
+        Returns:
+            U (ndarray): Unitary transformation matrix from Zeeman basis to PMZ basis.
+        """
+        # Get product operators in Zeeman basis
+        Z_B, dic_Zeeman, coh_Zeeman, coh_Zeeman_array = self.Class_basis.ProductOperators_Zeeman()
+        
+        # Get product operators in PMZ basis (with standard options)
+        sort = 'negative to positive'
+        Index = False
+        Normal = True
+        PMZ_PMZ, coh_PMZ, dic_PMZ = self.Class_basis.ProductOperators_SpinHalf_PMZ(sort, Index, Normal)
+        
+        # Construct the unitary transformation matrix from Zeeman to PMZ basis
+        U = self.Class_basis.BasisChange_TransformationMatrix(Z_B, PMZ_PMZ)
+        
+        return U
+
+

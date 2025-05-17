@@ -117,7 +117,7 @@ class HardPulse:
             U = expm(-1j * theta_rad * operator)
             rotated = U @ rho @ U.T.conj()
         elif self.class_QS.PropagationSpace == "Liouville":
-            L = self.class_COM.CommutationSuperoperator(operator)
+            L = self.class_COM.CommutationSuperoperator(self.class_QS.Class_quantumlibrary.VecToDM(QunObj(operator),(self.class_QS.Vdim,self.class_QS.Vdim)).data)
             rotated = expm(-1j * theta_rad * L) @ rho
         else:
             raise ValueError("Unknown propagation space specified in class_QS.")

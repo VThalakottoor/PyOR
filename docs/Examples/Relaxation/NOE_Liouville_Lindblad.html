@@ -95,7 +95,7 @@
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the source path</span>
-<span class="n">SourcePath</span> <span class="o">=</span> <span class="s1">&#39;/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/Source_Doc&#39;</span>
+<span class="n">SourcePath</span> <span class="o">=</span> <span class="s1">&#39;/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/PyOR/Source_Doc&#39;</span>
 
 <span class="c1"># Add source path</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -186,6 +186,7 @@ Rprocess = Auto-correlated Dipolar Homonuclear
 RelaxParDipole_tau = 1e-11
 DipolePairs = [(&#39;A&#39;, &#39;B&#39;)]
 RelaxParDipole_bIS = [30000.0]
+Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 </pre></div></div>
 </div>
 </section>
@@ -235,7 +236,7 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;PyOR_QuantumObject.QunObj at 0x7f07473d40b0&gt;
+&lt;PyOR_QuantumObject.QunObj at 0x7f3a140630b0&gt;
 </pre></div></div>
 </div>
 </section>
@@ -270,10 +271,10 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
     <span class="n">HT_approx</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="c1"># Initial Density Matrix</span>
-    <span class="n">rho_in</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">EquilibriumDensityMatrix</span><span class="p">(</span><span class="n">QS</span><span class="o">.</span><span class="n">Ispintemp</span><span class="p">,</span><span class="n">HT_approx</span><span class="p">)</span>
+    <span class="n">rho_in_L</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">EquilibriumDensityMatrix</span><span class="p">(</span><span class="n">QS</span><span class="o">.</span><span class="n">Ispintemp</span><span class="p">,</span><span class="n">HT_approx</span><span class="p">)</span>
 
     <span class="c1"># Equlibrium Density Matrix</span>
-    <span class="n">rhoeq</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">EquilibriumDensityMatrix</span><span class="p">(</span><span class="n">QS</span><span class="o">.</span><span class="n">Fspintemp</span><span class="p">,</span><span class="n">HT_approx</span><span class="p">)</span>
+    <span class="n">rhoeq_L</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">EquilibriumDensityMatrix</span><span class="p">(</span><span class="n">QS</span><span class="o">.</span><span class="n">Fspintemp</span><span class="p">,</span><span class="n">HT_approx</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">rho_in</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">Az</span> <span class="o">+</span> <span class="n">QS</span><span class="o">.</span><span class="n">Bz</span>
     <span class="n">rhoeq</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">Az</span> <span class="o">+</span> <span class="n">QS</span><span class="o">.</span><span class="n">Bz</span>
@@ -289,18 +290,8 @@ Trace of density matrix =  1.0
 Trace of density matrix =  1.0
 </pre></div></div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Converting to Liouville</span>
-<span class="n">rho_in_L</span> <span class="o">=</span> <span class="n">QLib</span><span class="o">.</span><span class="n">DMToVec</span><span class="p">(</span><span class="n">rho_in</span><span class="p">)</span>
-<span class="n">rhoeq_L</span> <span class="o">=</span> <span class="n">QLib</span><span class="o">.</span><span class="n">DMToVec</span><span class="p">(</span><span class="n">rhoeq</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DM</span><span class="o">.</span><span class="n">DensityMatrix_Components</span><span class="p">(</span><span class="n">Basis_PMZ</span><span class="p">,</span><span class="n">dic_PMZ</span><span class="p">,</span><span class="n">rho_in_L</span><span class="p">)</span>
@@ -319,7 +310,7 @@ Density Matrix = 2e-05 Iz1 Id2  + 2e-05 Id1 Iz2  + 0.5 Id1 Id2
 <section id="Pulse">
 <h3>Pulse<a class="headerlink" href="#Pulse" title="Link to this heading"></a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">HardP</span> <span class="o">=</span> <span class="n">HardPulse</span><span class="p">(</span><span class="n">QS</span><span class="p">)</span>
@@ -333,7 +324,7 @@ Density Matrix = 2e-05 Iz1 Id2  + 2e-05 Id1 Iz2  + 0.5 Id1 Id2
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DM</span><span class="o">.</span><span class="n">DensityMatrix_Components</span><span class="p">(</span><span class="n">Basis_PMZ</span><span class="p">,</span><span class="n">dic_PMZ</span><span class="p">,</span><span class="n">rho</span><span class="p">)</span>
@@ -353,7 +344,7 @@ Density Matrix = 2e-05 Iz1 Id2  + -2e-05 Id1 Iz2  + 0.5 Id1 Id2
 <section id="Evolution">
 <h2>Evolution<a class="headerlink" href="#Evolution" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">AcqDT</span> <span class="o">=</span> <span class="mf">0.0001</span>
@@ -368,7 +359,7 @@ Density Matrix = 2e-05 Iz1 Id2  + -2e-05 Id1 Iz2  + 0.5 Id1 Id2
 <span class="n">EVol</span> <span class="o">=</span> <span class="n">Evolutions</span><span class="p">(</span><span class="n">QS</span><span class="p">,</span><span class="n">Ham</span><span class="p">)</span>
 
 <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="n">t</span><span class="p">,</span> <span class="n">rho_t</span> <span class="o">=</span> <span class="n">EVol</span><span class="o">.</span><span class="n">Evolution</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">rhoeq</span><span class="p">,</span><span class="n">Hz_L</span><span class="p">,</span><span class="n">R_L</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">rho_t</span> <span class="o">=</span> <span class="n">EVol</span><span class="o">.</span><span class="n">Evolution</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">rhoeq_L</span><span class="p">,</span><span class="n">Hz_L</span><span class="p">,</span><span class="n">R_L</span><span class="p">)</span>
 <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 <span class="n">timetaken</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total time = </span><span class="si">%s</span><span class="s2"> seconds &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">timetaken</span><span class="p">))</span>
@@ -382,17 +373,17 @@ Density Matrix = 2e-05 Iz1 Id2  + -2e-05 Id1 Iz2  + 0.5 Id1 Id2
 <div class="highlight"><pre>
 Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
-Total time = 0.7395715713500977 seconds
+Total time = 0.6403965950012207 seconds
 </pre></div></div>
 </div>
 <section id="Expectation-Value">
 <h3>Expectation Value<a class="headerlink" href="#Expectation-Value" title="Link to this heading"></a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">det_Z1</span> <span class="o">=</span> <span class="n">QLib</span><span class="o">.</span><span class="n">DMToVec</span><span class="p">(</span><span class="n">QS</span><span class="o">.</span><span class="n">Az</span><span class="p">)</span>
-<span class="n">det_Z2</span> <span class="o">=</span> <span class="n">QLib</span><span class="o">.</span><span class="n">DMToVec</span><span class="p">(</span><span class="n">QS</span><span class="o">.</span><span class="n">Bz</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">det_Z1</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">Az</span>
+<span class="n">det_Z2</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">Bz</span>
 
 <span class="n">t</span><span class="p">,</span> <span class="n">signal_Z1</span> <span class="o">=</span> <span class="n">EVol</span><span class="o">.</span><span class="n">Expectation</span><span class="p">(</span><span class="n">rho_t</span><span class="p">,</span><span class="n">det_Z1</span><span class="p">)</span>
 <span class="n">t</span><span class="p">,</span> <span class="n">signal_Z2</span> <span class="o">=</span> <span class="n">EVol</span><span class="o">.</span><span class="n">Expectation</span><span class="p">(</span><span class="n">rho_t</span><span class="p">,</span><span class="n">det_Z2</span><span class="p">)</span>
@@ -400,13 +391,13 @@ Total time = 0.7395715713500977 seconds
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span> <span class="o">=</span> <span class="n">Plotting</span><span class="p">(</span><span class="n">QS</span><span class="p">)</span>
 <span class="n">plot</span><span class="o">.</span><span class="n">PlotFigureSize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">plot</span><span class="o">.</span><span class="n">PlotFontSize</span> <span class="o">=</span> <span class="mi">20</span>
-<span class="n">plot</span><span class="o">.</span><span class="n">PlottingMulti</span><span class="p">(</span><span class="mi">1</span><span class="p">,[</span><span class="n">t</span><span class="p">,</span><span class="n">t</span><span class="p">],[</span><span class="n">signal_Z1</span><span class="p">,</span><span class="n">signal_Z2</span><span class="p">],</span><span class="s2">&quot;time (s)&quot;</span><span class="p">,</span><span class="s2">&quot;Mz&quot;</span><span class="p">,[</span><span class="s2">&quot;green&quot;</span><span class="p">,</span><span class="s2">&quot;blue&quot;</span><span class="p">])</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">PlottingMulti</span><span class="p">([</span><span class="n">t</span><span class="p">,</span><span class="n">t</span><span class="p">],[</span><span class="n">signal_Z1</span><span class="p">,</span><span class="n">signal_Z2</span><span class="p">],</span><span class="s2">&quot;time (s)&quot;</span><span class="p">,</span><span class="s2">&quot;Mz&quot;</span><span class="p">,[</span><span class="s2">&quot;green&quot;</span><span class="p">,</span><span class="s2">&quot;blue&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -425,7 +416,7 @@ Total time = 0.7395715713500977 seconds
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ce834e253b4847cf8838b64b9a50ffa9", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "90905408776c4e17a556d7129f5e2cd6", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 </section>

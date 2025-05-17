@@ -81,8 +81,13 @@ class DensityMatrix:
             rho_T = expm(-H_Eq_T) / np.trace(expm(-H_Eq_T))
 
         print("Trace of density matrix = ", (np.trace(rho_T)).real)
-        return QunObj(rho_T, tolerence=self.MatrixTolarence)
 
+        if self.class_QS.PropagationSpace == "Hilbert":
+            return QunObj(rho_T, tolerence=self.MatrixTolarence)
+
+        if self.class_QS.PropagationSpace == "Liouville":
+            return self.class_QS.Class_quantumlibrary.DMToVec(QunObj(rho_T, tolerence=self.MatrixTolarence))  
+        
     def EquilibriumDensityMatrix_Add_TotalHamiltonian(self, HQ, T, HT_approx=False):
         """
         Calculate equilibrium density matrix for total Hamiltonian.
@@ -111,7 +116,12 @@ class DensityMatrix:
             rho_T = expm(-H_Eq_T) / np.trace(expm(-H_Eq_T))
 
         print("Trace of density matrix = ", (np.trace(rho_T)).real)
-        return QunObj(rho_T, tolerence=self.MatrixTolarence)
+
+        if self.class_QS.PropagationSpace == "Hilbert":
+            return QunObj(rho_T, tolerence=self.MatrixTolarence)
+
+        if self.class_QS.PropagationSpace == "Liouville":
+            return self.class_QS.Class_quantumlibrary.DMToVec(QunObj(rho_T, tolerence=self.MatrixTolarence)) 
 
     def InitialDensityMatrix(self, HT_approx=False):
         """Wrapper for equilibrium density matrix using initial temperatures."""

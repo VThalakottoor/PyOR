@@ -167,9 +167,14 @@
             <span class="n">rho_T</span> <span class="o">=</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="n">H_Eq_T</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="n">H_Eq_T</span><span class="p">))</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Trace of density matrix = &quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho_T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">)</span></div>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Hilbert&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">DMToVec</span><span class="p">(</span><span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">))</span>  </div>
+
+        
 <div class="viewcode-block" id="DensityMatrix.EquilibriumDensityMatrix_Add_TotalHamiltonian">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.EquilibriumDensityMatrix_Add_TotalHamiltonian">[docs]</a>
     <span class="k">def</span> <span class="nf">EquilibriumDensityMatrix_Add_TotalHamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HQ</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">HT_approx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -200,7 +205,12 @@
             <span class="n">rho_T</span> <span class="o">=</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="n">H_Eq_T</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="n">H_Eq_T</span><span class="p">))</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Trace of density matrix = &quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho_T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">)</span></div>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Hilbert&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">DMToVec</span><span class="p">(</span><span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">))</span> </div>
 
 
 <div class="viewcode-block" id="DensityMatrix.InitialDensityMatrix">
