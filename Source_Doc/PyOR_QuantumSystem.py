@@ -163,7 +163,7 @@ class QuantumSystem:
         self.hbarEQ1 = True
         self.MatrixTolarence = 1.0e-10
         self.Gamma = [PyOR_Gamma.gamma(name) for name in self.SpinName]
-        self.B0 = None
+        self.B0 = 9.4 # Tesla
         self.OMEGA_RF = {key: 0 for key in self.SpinList}
         self.OFFSET = {key: 0 for key in self.SpinList}
         self.LARMOR_F = {key: 0 for key in self.SpinList}
@@ -181,8 +181,8 @@ class QuantumSystem:
         self.Basis_SpinOperators_TransformationMatrix_SingletTriplet = QunObj([[0, 1, 0, 0], [1/np.sqrt(2), 0, 1/np.sqrt(2),0], [-1/np.sqrt(2), 0, 1/np.sqrt(2),0], [0, 0, 0, 1]])
 
         # ----------------- Temperature -----------------
-        self.I_spintemp = {key: 0 for key in self.SpinList}
-        self.F_spintemp = {key: 0 for key in self.SpinList}
+        self.I_spintemp = {key: 300 for key in self.SpinList} # Kelvin
+        self.F_spintemp = {key: 300 for key in self.SpinList} # Kelvin
 
         # ----------------- Propagation -----------------
         self.PropagationSpace = "Hilbert"

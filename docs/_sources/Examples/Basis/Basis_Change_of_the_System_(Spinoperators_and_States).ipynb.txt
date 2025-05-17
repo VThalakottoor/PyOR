@@ -97,8 +97,8 @@
     "QS.MasterEquation = \"Redfield\"\n",
     "\n",
     "# Operator Basis (testing)\n",
-    "#QS.Basis_SpinOperators_Hilbert = \"Singlet Triplet\" # or\n",
-    "QS.Basis_SpinOperators = \"Zeeman\"\n",
+    "QS.Basis_SpinOperators_Hilbert = \"Singlet Triplet\" # or\n",
+    "#QS.Basis_SpinOperators_Hilbert = \"Zeeman\"\n",
     "\n",
     "# B0 Field in Tesla, Static Magnetic field (B0) along Z\n",
     "QS.B0 = 9.4\n",
@@ -174,14 +174,14 @@
     {
      "data": {
       "text/latex": [
-       "$\\displaystyle \\left[\\begin{matrix}-30.0000000759161 & 0 & 0 & 0\\\\0 & 20.0000008601147 & 0 & 0\\\\0 & 0 & -20.0000008601147 & 0\\\\0 & 0 & 0 & 30.0000000759161\\end{matrix}\\right]$"
+       "$\\displaystyle \\left[\\begin{matrix}0 & 0 & 20.0000008601147 & 0\\\\0 & -30.0000000759161 & 0 & 0\\\\20.0000008601147 & 0 & 0 & 0\\\\0 & 0 & 0 & 30.0000000759161\\end{matrix}\\right]$"
       ],
       "text/plain": [
        "Matrix([\n",
-       "[-30.0000000759161,                0,                 0,                0],\n",
-       "[                0, 20.0000008601147,                 0,                0],\n",
-       "[                0,                0, -20.0000008601147,                0],\n",
-       "[                0,                0,                 0, 30.0000000759161]])"
+       "[               0,                 0, 20.0000008601147,                0],\n",
+       "[               0, -30.0000000759161,                0,                0],\n",
+       "[20.0000008601147,                 0,                0,                0],\n",
+       "[               0,                 0,                0, 30.0000000759161]])"
       ]
      },
      "execution_count": 5,
@@ -202,14 +202,14 @@
     {
      "data": {
       "text/latex": [
-       "$\\displaystyle \\left[\\begin{matrix}1.24999997786618 & 0 & 0 & 0\\\\0 & -1.24999997786618 & 2.49999995573235 & 0\\\\0 & 2.49999995573235 & -1.24999997786618 & 0\\\\0 & 0 & 0 & 1.24999997786618\\end{matrix}\\right]$"
+       "$\\displaystyle \\left[\\begin{matrix}-3.75000000948952 & 0 & 0 & 0\\\\0 & 1.24999997786618 & 0 & 0\\\\0 & 0 & 1.24999982608419 & 0\\\\0 & 0 & 0 & 1.24999997786618\\end{matrix}\\right]$"
       ],
       "text/plain": [
        "Matrix([\n",
-       "[1.24999997786618,                 0,                 0,                0],\n",
-       "[               0, -1.24999997786618,  2.49999995573235,                0],\n",
-       "[               0,  2.49999995573235, -1.24999997786618,                0],\n",
-       "[               0,                 0,                 0, 1.24999997786618]])"
+       "[-3.75000000948952,                0,                0,                0],\n",
+       "[                0, 1.24999997786618,                0,                0],\n",
+       "[                0,                0, 1.24999982608419,                0],\n",
+       "[                0,                0,                0, 1.24999997786618]])"
       ]
      },
      "execution_count": 6,
@@ -238,14 +238,14 @@
     {
      "data": {
       "text/latex": [
-       "$\\displaystyle \\left[\\begin{matrix}1.24999997786618 & 0 & 0 & 0\\\\0 & -1.24999997786618 & 2.49999995573235 & 0\\\\0 & 2.49999995573235 & -1.24999997786618 & 0\\\\0 & 0 & 0 & 1.24999997786618\\end{matrix}\\right]$"
+       "$\\displaystyle \\left[\\begin{matrix}-3.75000000948952 & 0 & 0 & 0\\\\0 & 1.24999997786618 & 0 & 0\\\\0 & 0 & 1.24999982608419 & 0\\\\0 & 0 & 0 & 1.24999997786618\\end{matrix}\\right]$"
       ],
       "text/plain": [
        "Matrix([\n",
-       "[1.24999997786618,                 0,                 0,                0],\n",
-       "[               0, -1.24999997786618,  2.49999995573235,                0],\n",
-       "[               0,  2.49999995573235, -1.24999997786618,                0],\n",
-       "[               0,                 0,                 0, 1.24999997786618]])"
+       "[-3.75000000948952,                0,                0,                0],\n",
+       "[                0, 1.24999997786618,                0,                0],\n",
+       "[                0,                0, 1.24999982608419,                0],\n",
+       "[                0,                0,                0, 1.24999997786618]])"
       ]
      },
      "execution_count": 7,
@@ -275,14 +275,14 @@
     {
      "data": {
       "text/latex": [
-       "$\\displaystyle \\left[\\begin{matrix}0 & 0 & 0.5 & 0\\\\0 & 0 & 0 & 0.5\\\\0.5 & 0 & 0 & 0\\\\0 & 0.5 & 0 & 0\\end{matrix}\\right]$"
+       "$\\displaystyle \\left[\\begin{matrix}0 & -0.353553384542465 & 0 & 0.353553384542465\\\\-0.353553384542465 & 0 & 0.353553384542465 & 0\\\\0 & 0.353553384542465 & 0 & 0.353553384542465\\\\0.353553384542465 & 0 & 0.353553384542465 & 0\\end{matrix}\\right]$"
       ],
       "text/plain": [
        "Matrix([\n",
-       "[  0,   0, 0.5,   0],\n",
-       "[  0,   0,   0, 0.5],\n",
-       "[0.5,   0,   0,   0],\n",
-       "[  0, 0.5,   0,   0]])"
+       "[                 0, -0.353553384542465,                 0, 0.353553384542465],\n",
+       "[-0.353553384542465,                  0, 0.353553384542465,                 0],\n",
+       "[                 0,  0.353553384542465,                 0, 0.353553384542465],\n",
+       "[ 0.353553384542465,                  0, 0.353553384542465,                 0]])"
       ]
      },
      "execution_count": 8,
@@ -343,14 +343,14 @@
     {
      "data": {
       "text/latex": [
-       "$\\displaystyle \\left[\\begin{matrix}0\\\\0.707106781186547\\\\0.707106781186547\\\\0\\end{matrix}\\right]$"
+       "$\\displaystyle \\left[\\begin{matrix}1.0\\\\0\\\\0\\\\0\\end{matrix}\\right]$"
       ],
       "text/plain": [
        "Matrix([\n",
-       "[                0],\n",
-       "[0.707106781186547],\n",
-       "[0.707106781186547],\n",
-       "[                0]])"
+       "[1.0],\n",
+       "[  0],\n",
+       "[  0],\n",
+       "[  0]])"
       ]
      },
      "execution_count": 11,
@@ -359,35 +359,35 @@
     }
    ],
    "source": [
-    "ST_B[2].matrix"
+    "ST_B[0].matrix"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": 20,
    "id": "8aa491c3",
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/latex": [
-       "$\\displaystyle \\left[\\begin{matrix}0\\\\1.0\\\\0\\\\0\\end{matrix}\\right]$"
+       "$\\displaystyle \\left[\\begin{matrix}0\\\\0\\\\0\\\\1.0\\end{matrix}\\right]$"
       ],
       "text/plain": [
        "Matrix([\n",
        "[  0],\n",
-       "[1.0],\n",
        "[  0],\n",
-       "[  0]])"
+       "[  0],\n",
+       "[1.0]])"
       ]
      },
-     "execution_count": 12,
+     "execution_count": 20,
      "metadata": {},
      "output_type": "execute_result"
     }
    ],
    "source": [
-    "Z_B[1].matrix"
+    "Z_B[3].matrix"
    ]
   },
   {
@@ -410,36 +410,36 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
+   "execution_count": 21,
    "id": "1513fc02",
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/latex": [
-       "$\\displaystyle \\left[\\begin{matrix}0\\\\0\\\\1.0\\\\0\\end{matrix}\\right]$"
+       "$\\displaystyle \\left[\\begin{matrix}0.707106781186547\\\\0\\\\0.707106781186547\\\\0\\end{matrix}\\right]$"
       ],
       "text/plain": [
        "Matrix([\n",
-       "[  0],\n",
-       "[  0],\n",
-       "[1.0],\n",
-       "[  0]])"
+       "[0.707106781186547],\n",
+       "[                0],\n",
+       "[0.707106781186547],\n",
+       "[                0]])"
       ]
      },
-     "execution_count": 14,
+     "execution_count": 21,
      "metadata": {},
      "output_type": "execute_result"
     }
    ],
    "source": [
-    "X1 = QS.State({\"A\": -1/2,\"B\": 1/2})\n",
+    "X1 = QS.State({\"A\": 1/2,\"B\": -1/2})\n",
     "X1.matrix"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 15,
+   "execution_count": 22,
    "id": "bf9780a7",
    "metadata": {},
    "outputs": [
@@ -447,7 +447,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Ket State = -0.70711 S0  + 0.70711 T0 \n"
+      "Ket State = 0.70711 S0  + 0.70711 T0 \n"
      ]
     }
    ],
@@ -457,7 +457,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 16,
+   "execution_count": 23,
    "id": "b0103a5a",
    "metadata": {},
    "outputs": [
@@ -465,7 +465,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Ket State = 1.0 |1/2,-1/2⟩|1/2,1/2⟩\n"
+      "Ket State = 1.0 |1/2,1/2⟩|1/2,-1/2⟩\n"
      ]
     }
    ],

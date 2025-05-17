@@ -36,7 +36,7 @@ except ImportError:
 
 
 class Evolutions:    
-    def __init__(self, class_QS,class_Ham):
+    def __init__(self, class_QS,class_Ham=None):
         self.class_QS = class_QS
         self.class_Ham = class_Ham
         self.class_NonL = NonLinear(class_QS)
