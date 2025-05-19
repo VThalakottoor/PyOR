@@ -121,13 +121,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hbar</span> <span class="o">=</span> <span class="n">PyOR_PhysicalConstants</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s2">&quot;hbar&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mu0</span> <span class="o">=</span> <span class="n">PyOR_PhysicalConstants</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s2">&quot;mu0&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kb</span> <span class="o">=</span> <span class="n">PyOR_PhysicalConstants</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="s2">&quot;kb&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span> <span class="o">=</span> <span class="n">class_QS</span><span class="o">.</span><span class="n">MatrixTolarence</span>
 
 <div class="viewcode-block" id="DensityMatrix.Update">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Update">[docs]</a>
     <span class="k">def</span> <span class="nf">Update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update matrix tolerance from quantum system settings.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">MatrixTolarence</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update matrix tolerance from quantum system settings.&quot;&quot;&quot;</span></div>
 
 
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
@@ -169,10 +167,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Trace of density matrix = &quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho_T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Hilbert&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">DMToVec</span><span class="p">(</span><span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">))</span>  </div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">DMToVec</span><span class="p">(</span><span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">))</span> </div>
 
         
 <div class="viewcode-block" id="DensityMatrix.EquilibriumDensityMatrix_Add_TotalHamiltonian">
@@ -207,10 +205,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Trace of density matrix = &quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho_T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Hilbert&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">DMToVec</span><span class="p">(</span><span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">MatrixTolarence</span><span class="p">))</span> </div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">DMToVec</span><span class="p">(</span><span class="n">QunObj</span><span class="p">(</span><span class="n">rho_T</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="DensityMatrix.InitialDensityMatrix">
@@ -249,10 +247,18 @@
 <span class="sd">        float</span>
 <span class="sd">            Spin polarization value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">rhoQ</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">Sz</span> <span class="o">=</span> <span class="n">SzQ</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">pol</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">spinQ</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho</span> <span class="o">@</span> <span class="n">Sz</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-        <span class="k">return</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">pol</span> <span class="k">if</span> <span class="n">PolPercentage</span> <span class="k">else</span> <span class="n">pol</span></div>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Hilbert&quot;</span><span class="p">:</span>
+            <span class="n">rho</span> <span class="o">=</span> <span class="n">rhoQ</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">Sz</span> <span class="o">=</span> <span class="n">SzQ</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">pol</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">spinQ</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho</span> <span class="o">@</span> <span class="n">Sz</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+            <span class="k">return</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">pol</span> <span class="k">if</span> <span class="n">PolPercentage</span> <span class="k">else</span> <span class="n">pol</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
+            <span class="n">rho</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">VecToDM</span><span class="p">(</span><span class="n">rhoQ</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Vdim</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Vdim</span><span class="p">))</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">Sz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">VecToDM</span><span class="p">(</span><span class="n">SzQ</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Vdim</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Vdim</span><span class="p">))</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">pol</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">spinQ</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho</span> <span class="o">@</span> <span class="n">Sz</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+            <span class="k">return</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">pol</span> <span class="k">if</span> <span class="n">PolPercentage</span> <span class="k">else</span> <span class="n">pol</span>            </div>
 
 
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
@@ -296,59 +302,67 @@
 
 <div class="viewcode-block" id="DensityMatrix.DensityMatrix_Components">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.DensityMatrix_Components">[docs]</a>
-    <span class="k">def</span> <span class="nf">DensityMatrix_Components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">rhoQ</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">DensityMatrix_Components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">rhoQ</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.0e-10</span><span class="p">,</span> <span class="n">roundto</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Decompose density matrix into basis components.</span>
+<span class="sd">        Decompose a density matrix into a linear combination of a given operator basis.</span>
+
+<span class="sd">        This function calculates the components of the density matrix with respect to a </span>
+<span class="sd">        specified basis of operators using an inner product. It prints the resulting </span>
+<span class="sd">        decomposition in a readable format.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        AQ : list of QunObj</span>
-<span class="sd">            Basis operator objects.</span>
+<span class="sd">            List of basis operator objects that define the decomposition space.</span>
 <span class="sd">        dic : dict</span>
-<span class="sd">            Dictionary of basis labels.</span>
+<span class="sd">            Dictionary mapping indices to basis labels for readable output.</span>
 <span class="sd">        rhoQ : QunObj</span>
-<span class="sd">            Density matrix.</span>
+<span class="sd">            The density matrix (or state vector) to be decomposed.</span>
+<span class="sd">        tol : float, optional</span>
+<span class="sd">            Tolerance level for treating small component values as zero. Default is 1.0e-10.</span>
+<span class="sd">        roundto : int, optional</span>
+<span class="sd">            Number of decimal places to round the non-zero components. Default is 5.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If `AQ` is not a list or contains elements that are not instances of `QunObj`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
+<span class="sd">            The function prints the decomposition of the density matrix but does not return it.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Check if AQ is a list and contains only QunObj instances</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">AQ</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a list.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">AQ</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All elements must be instances of QunObj.&quot;</span><span class="p">)</span>
 
+        <span class="c1"># Extract raw data from QunObj</span>
         <span class="n">rho</span> <span class="o">=</span> <span class="n">rhoQ</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># Convert vector to density matrix if needed</span>
         <span class="k">if</span> <span class="n">rho</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">rho</span> <span class="o">=</span> <span class="n">QLib</span><span class="o">.</span><span class="n">VecToDM</span><span class="p">(</span><span class="n">QunObj</span><span class="p">(</span><span class="n">rho</span><span class="p">),</span> <span class="n">AQ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
 
+        <span class="c1"># Calculate inner products with basis elements</span>
         <span class="n">components</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">InnerProduct</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span> <span class="k">for</span> <span class="n">A</span> <span class="ow">in</span> <span class="n">AQ</span><span class="p">])</span>
-        <span class="n">tol</span> <span class="o">=</span> <span class="mf">1.0e-10</span>
+
+        <span class="c1"># Zero out small real and imaginary parts</span>
         <span class="n">components</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">components</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">components</span><span class="o">.</span><span class="n">imag</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">components</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
+        <span class="c1"># Build the string representation of the decomposition</span>
         <span class="n">output</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Density Matrix = &quot;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">real</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> + &quot;</span><span class="p">)</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="w"> </span><span class="n">roundto</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> + &quot;</span><span class="p">)</span>
+
+        <span class="c1"># Print result, removing the trailing &#39; + &#39;</span>
         <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output</span><span class="p">))[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span></div>
 
-
-<div class="viewcode-block" id="DensityMatrix.Matrix_Tol">
-<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Matrix_Tol">[docs]</a>
-    <span class="k">def</span> <span class="nf">Matrix_Tol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Zero out small values in a matrix below tolerance.&quot;&quot;&quot;</span>
-        <span class="n">tol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">MatrixTolarence</span>
-        <span class="n">M</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">M</span><span class="o">.</span><span class="n">imag</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="k">return</span> <span class="n">M</span></div>
-
-
-<div class="viewcode-block" id="DensityMatrix.Matrix_Round">
-<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.Matrix_Round">[docs]</a>
-    <span class="k">def</span> <span class="nf">Matrix_Round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">roundto</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Round matrix elements to specified number of decimal places.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">roundto</span><span class="p">)</span></div>
 
 
     <span class="c1">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>

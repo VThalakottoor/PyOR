@@ -224,49 +224,81 @@ class Basis:
         return Sop_N
 
 
-    def KetState_Components(self, AQ, dic, ketQ):
+    def KetState_Components(self, AQ, dic, ketQ, tol=1.0e-10, roundto=5):
         """
-        Decompose ket state into basis components.
+        Decompose a ket (state vector) into a linear combination of basis vectors.
+
+        This method projects a given ket vector onto an orthonormal basis and prints
+        the resulting decomposition in a readable form. Optionally, it can return 
+        the string representation of the decomposition if the instance attribute 
+        `Return_KetState_Component` is set to True.
 
         Parameters
         ----------
         AQ : list of QunObj
-            Basis ket vectors (assumed orthonormal).
+            List of orthonormal basis vectors as QunObj instances.
         dic : dict
-            Dictionary mapping basis indices to basis labels.
+            Dictionary mapping basis indices to readable basis labels.
         ketQ : QunObj
-            Ket state vector to be decomposed.
+            The ket vector to decompose (must be a column vector).
+        tol : float, optional
+            Numerical tolerance below which component values are considered zero. Default is 1.0e-10.
+        roundto : int, optional
+            Number of decimal places to round each component. Default is 5.
+
+        Raises
+        ------
+        TypeError
+            If `AQ` is not a list or contains non-QunObj elements.
+        ValueError
+            If `ketQ` is not a column vector (i.e., shape mismatch).
 
         Returns
         -------
-        None
+        None or str
+            Prints the decomposition of the ket. If `self.Return_KetState_Component` is True,
+            also returns the string representation of the decomposition.
         """
+
+        # Ensure AQ is a list of QunObj instances
         if not isinstance(AQ, list):
             raise TypeError("Input must be a list.")
         if not all(isinstance(item, QunObj) for item in AQ):
             raise TypeError("All elements must be instances of QunObj.")
 
+        # Extract column vector from ketQ
         psi = ketQ.data
         if psi.shape[1] != 1:
             raise ValueError("Input state must be a column vector (ket).")
 
+        # Project ket onto each basis vector to compute components
         components = np.array([self.InnerProduct(A.data, psi) for A in AQ])
-        tol = 1.0e-10
+
+        # Zero out small values (real and imaginary parts)
         components.real[abs(components.real) < tol] = 0.0
         components.imag[abs(components.imag) < tol] = 0.0
 
+        # Build string representation of the decomposition
         output = ["Ket State = "]
         for i, val in enumerate(components):
             if val != 0:
-                comp_str = f"{round(val.real, 5)}" if val.imag == 0 else \
-                        f"{round(val.real, 5)} + {round(val.imag, 5)}j" if val.real != 0 else \
-                        f"{round(val.imag, 5)}j"
+                # Format complex component
+                comp_str = (
+                    f"{round(val.real, roundto)}"
+                    if val.imag == 0 else
+                    f"{round(val.real, roundto)} + {round(val.imag, roundto)}j"
+                    if val.real != 0 else
+                    f"{round(val.imag, roundto)}j"
+                )
                 output.append(f"{comp_str} {dic[i]} + ")
 
+        # Print final decomposition string, removing the trailing ' + '
         print((''.join(output))[:-3])
 
+        # Optionally return the decomposition string
         if self.Return_KetState_Component:
             return ''.join(output)[:-3]
+
 
     def CG_Coefficient(self, j1, m1, j2, m2, J, M):
         """

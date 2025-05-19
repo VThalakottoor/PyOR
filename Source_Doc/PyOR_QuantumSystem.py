@@ -105,8 +105,6 @@ class QuantumSystem:
         Dimension of the Liouville space (Vdim^2).
     hbarEQ1 : bool
         Toggle to treat ℏ = 1 in Hamiltonians.
-    MatrixTolarence : float
-        Elements smaller than this are considered zero in matrices.
     Gamma : list
         Gyromagnetic ratios of spins.
     B0 : float
@@ -164,7 +162,6 @@ class QuantumSystem:
 
         # ----------------- Constants & Defaults -----------------
         self.hbarEQ1 = True
-        self.MatrixTolarence = 1.0e-10
         self.Gamma = [PyOR_Gamma.gamma(name) for name in self.SpinName]
         self.B0 = 9.4 # Tesla
         self.OMEGA_RF = {key: 0 for key in self.SpinList}
@@ -260,7 +257,6 @@ class QuantumSystem:
         Internal helper method to print default settings for the initialized system.
         """
         print("\nDefine energy units: hbarEQ1 =", self.hbarEQ1)
-        print("\nDefine the matrix tolerance (threshold for zeroing small elements): MatrixTolarence =", self.MatrixTolarence)
         print("\nDefine the gyromagnetic ratios: Gamma =", self.Gamma)
         print("\nDefine the static field along Z: B0 =", self.B0)
         print("\nDefine rotating frame frequency: OMEGA_RF =", self.OMEGA_RF)

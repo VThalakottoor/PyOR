@@ -147,7 +147,7 @@
 <div class="viewcode-block" id="QunObj">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumObject.QunObj">[docs]</a>
 <span class="k">class</span> <span class="nc">QunObj</span><span class="p">():</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">Type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">DType</span><span class="o">=</span><span class="nb">complex</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tolerence</span><span class="o">=</span><span class="mf">1.0e-10</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">Type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">DType</span><span class="o">=</span><span class="nb">complex</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a quantum object.</span>
 
@@ -176,16 +176,11 @@
 <span class="sd">            Object type: &#39;ket&#39;, &#39;bra&#39;, or &#39;operator&#39;.</span>
 <span class="sd">        matrix : sympy.Matrix</span>
 <span class="sd">            Symbolic version of the matrix (for display or symbolic analysis).</span>
-<span class="sd">        Matrix_tol : float</span>
-<span class="sd">            Numerical tolerance threshold.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">Matrix_tol</span> <span class="o">=</span> <span class="n">tolerence</span>  <span class="c1"># Threshold for zeroing small values</span>
+        <span class="c1"># Convert to NumPy array</span>
 
-        <span class="c1"># Convert to NumPy array and clean near-zero components</span>
         <span class="n">Matrix_copy</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">DType</span><span class="p">))</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">Matrix_copy</span><span class="o">.</span><span class="n">real</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">Matrix_copy</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">Matrix_tol</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">Matrix_copy</span><span class="o">.</span><span class="n">imag</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">Matrix_copy</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">Matrix_tol</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Matrix_copy</span>                      <span class="c1"># Numerical data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>                 <span class="c1"># Matrix shape</span>
@@ -602,7 +597,7 @@
 
 <div class="viewcode-block" id="QunObj.Commute">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_QuantumObject.QunObj.Commute">[docs]</a>
-    <span class="k">def</span> <span class="nf">Commute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Commute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">matrix</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if two QunObj instances commute.</span>
 
@@ -615,12 +610,20 @@
 <span class="sd">        bool</span>
 <span class="sd">            True if commutator is zero, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">tol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Commute only supports other QunObj instances.&quot;</span><span class="p">)</span>
         <span class="n">commutator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">@</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">commutator</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">commutator</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Commute&quot;</span> <span class="k">if</span> <span class="n">result</span> <span class="k">else</span> <span class="s2">&quot;Don&#39;t Commute&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Default Tolerence: &quot;</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matrix</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">commutator</span><span class="p">)</span><span class="o">.</span><span class="n">Tolarence</span><span class="p">(</span><span class="n">tol</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="QunObj.TensorProduct">

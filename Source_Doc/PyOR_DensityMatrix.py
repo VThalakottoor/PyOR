@@ -40,11 +40,9 @@ class DensityMatrix:
         self.hbar = PyOR_PhysicalConstants.constants("hbar")
         self.mu0 = PyOR_PhysicalConstants.constants("mu0")
         self.kb = PyOR_PhysicalConstants.constants("kb")
-        self.MatrixTolarence = class_QS.MatrixTolarence
 
     def Update(self):
         """Update matrix tolerance from quantum system settings."""
-        self.MatrixTolarence = self.class_QS.MatrixTolarence
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     # Equilibrium Density Matrix
@@ -83,10 +81,10 @@ class DensityMatrix:
         print("Trace of density matrix = ", (np.trace(rho_T)).real)
 
         if self.class_QS.PropagationSpace == "Hilbert":
-            return QunObj(rho_T, tolerence=self.MatrixTolarence)
+            return QunObj(rho_T)
 
         if self.class_QS.PropagationSpace == "Liouville":
-            return self.class_QS.Class_quantumlibrary.DMToVec(QunObj(rho_T, tolerence=self.MatrixTolarence))  
+            return self.class_QS.Class_quantumlibrary.DMToVec(QunObj(rho_T)) 
         
     def EquilibriumDensityMatrix_Add_TotalHamiltonian(self, HQ, T, HT_approx=False):
         """
@@ -118,10 +116,10 @@ class DensityMatrix:
         print("Trace of density matrix = ", (np.trace(rho_T)).real)
 
         if self.class_QS.PropagationSpace == "Hilbert":
-            return QunObj(rho_T, tolerence=self.MatrixTolarence)
+            return QunObj(rho_T)
 
         if self.class_QS.PropagationSpace == "Liouville":
-            return self.class_QS.Class_quantumlibrary.DMToVec(QunObj(rho_T, tolerence=self.MatrixTolarence)) 
+            return self.class_QS.Class_quantumlibrary.DMToVec(QunObj(rho_T))
 
     def InitialDensityMatrix(self, HT_approx=False):
         """Wrapper for equilibrium density matrix using initial temperatures."""
@@ -151,10 +149,18 @@ class DensityMatrix:
         float
             Spin polarization value.
         """
-        rho = rhoQ.data
-        Sz = SzQ.data
-        pol = -(1.0 / spinQ) * np.trace(rho @ Sz).real / np.trace(rho).real
-        return 100 * pol if PolPercentage else pol
+
+        if self.class_QS.PropagationSpace == "Hilbert":
+            rho = rhoQ.data
+            Sz = SzQ.data
+            pol = -(1.0 / spinQ) * np.trace(rho @ Sz).real / np.trace(rho).real
+            return 100 * pol if PolPercentage else pol
+        
+        if self.class_QS.PropagationSpace == "Liouville":
+            rho = self.class_QS.Class_quantumlibrary.VecToDM(rhoQ, (self.class_QS.Vdim,self.class_QS.Vdim)).data
+            Sz = self.class_QS.Class_quantumlibrary.VecToDM(SzQ, (self.class_QS.Vdim,self.class_QS.Vdim)).data
+            pol = -(1.0 / spinQ) * np.trace(rho @ Sz).real / np.trace(rho).real
+            return 100 * pol if PolPercentage else pol            
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     # Matrix Functions
@@ -180,53 +186,67 @@ class DensityMatrix:
         """Return a normalized operator with unit inner product."""
         return A / np.sqrt(self.InnerProduct(A, A))
 
-    def DensityMatrix_Components(self, AQ, dic, rhoQ):
+    def DensityMatrix_Components(self, AQ, dic, rhoQ, tol=1.0e-10, roundto=5):
         """
-        Decompose density matrix into basis components.
+        Decompose a density matrix into a linear combination of a given operator basis.
+
+        This function calculates the components of the density matrix with respect to a 
+        specified basis of operators using an inner product. It prints the resulting 
+        decomposition in a readable format.
 
         Parameters
         ----------
         AQ : list of QunObj
-            Basis operator objects.
+            List of basis operator objects that define the decomposition space.
         dic : dict
-            Dictionary of basis labels.
+            Dictionary mapping indices to basis labels for readable output.
         rhoQ : QunObj
-            Density matrix.
+            The density matrix (or state vector) to be decomposed.
+        tol : float, optional
+            Tolerance level for treating small component values as zero. Default is 1.0e-10.
+        roundto : int, optional
+            Number of decimal places to round the non-zero components. Default is 5.
+
+        Raises
+        ------
+        TypeError
+            If `AQ` is not a list or contains elements that are not instances of `QunObj`.
 
         Returns
         -------
         None
+            The function prints the decomposition of the density matrix but does not return it.
         """
+
+        # Check if AQ is a list and contains only QunObj instances
         if not isinstance(AQ, list):
             raise TypeError("Input must be a list.")
         if not all(isinstance(item, QunObj) for item in AQ):
             raise TypeError("All elements must be instances of QunObj.")
 
+        # Extract raw data from QunObj
         rho = rhoQ.data
+
+        # Convert vector to density matrix if needed
         if rho.shape[1] == 1:
             rho = QLib.VecToDM(QunObj(rho), AQ[0].data.shape).data
 
+        # Calculate inner products with basis elements
         components = np.array([self.InnerProduct(A.data, rho) for A in AQ])
-        tol = 1.0e-10
+
+        # Zero out small real and imaginary parts
         components.real[abs(components.real) < tol] = 0.0
         components.imag[abs(components.imag) < tol] = 0.0
 
+        # Build the string representation of the decomposition
         output = ["Density Matrix = "]
         for i, val in enumerate(components):
             if val.real != 0:
-                output.append(f"{round(val.real, 5)} {dic[i]} + ")
+                output.append(f"{round(val.real, roundto)} {dic[i]} + ")
+
+        # Print result, removing the trailing ' + '
         print((''.join(output))[:-3])
 
-    def Matrix_Tol(self, M):
-        """Zero out small values in a matrix below tolerance."""
-        tol = self.class_QS.MatrixTolarence
-        M.real[abs(M.real) < tol] = 0.0
-        M.imag[abs(M.imag) < tol] = 0.0
-        return M
-
-    def Matrix_Round(self, M, roundto):
-        """Round matrix elements to specified number of decimal places."""
-        return np.round(M, roundto)
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     # Liouville Vectors

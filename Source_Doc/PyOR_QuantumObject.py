@@ -66,7 +66,7 @@ import math
 # ---------- Class Definition ----------
 
 class QunObj():
-    def __init__(self, data, Type=None, DType=complex, PrintDefault=False, tolerence=1.0e-10):
+    def __init__(self, data, Type=None, DType=complex, PrintDefault=False):
         """
         Initialize a quantum object.
 
@@ -95,16 +95,11 @@ class QunObj():
             Object type: 'ket', 'bra', or 'operator'.
         matrix : sympy.Matrix
             Symbolic version of the matrix (for display or symbolic analysis).
-        Matrix_tol : float
-            Numerical tolerance threshold.
         """
 
-        self.Matrix_tol = tolerence  # Threshold for zeroing small values
+        # Convert to NumPy array
 
-        # Convert to NumPy array and clean near-zero components
         Matrix_copy = (np.array(data, dtype=DType)).copy()
-        Matrix_copy.real[abs(Matrix_copy.real) < self.Matrix_tol] = 0.0
-        Matrix_copy.imag[abs(Matrix_copy.imag) < self.Matrix_tol] = 0.0
 
         self.data = Matrix_copy                      # Numerical data
         self.shape = self.data.shape                 # Matrix shape
@@ -474,7 +469,7 @@ class QunObj():
         else:
             raise TypeError("Division only supports scalars.")
 
-    def Commute(self, other):
+    def Commute(self, other, matrix = False, tol=None):
         """
         Check if two QunObj instances commute.
 
@@ -487,12 +482,20 @@ class QunObj():
         bool
             True if commutator is zero, False otherwise.
         """
+
+        if tol is None:
+            tol = np.sqrt(sys.float_info.epsilon)
+
         if not isinstance(other, QunObj):
             raise TypeError("Commute only supports other QunObj instances.")
         commutator = self.data @ other.data - other.data @ self.data
-        result = np.allclose(commutator, 0)
+        result = np.allclose(commutator, 0, rtol=tol, atol=tol)
         print("Commute" if result else "Don't Commute")
-        return result
+        print("Default Tolerence: ", tol)
+        if matrix:
+            return QunObj(commutator).Tolarence(tol).matrix
+        else:
+            return None
 
     def TensorProduct(self, other):
         """

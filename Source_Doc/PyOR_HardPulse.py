@@ -122,25 +122,4 @@ class HardPulse:
         else:
             raise ValueError("Unknown propagation space specified in class_QS.")
 
-        return QunObj(self.Matrix_Tol(rotated))
-
-    def Matrix_Tol(self, M):
-        """
-        Set elements of a matrix below a threshold tolerance to zero.
-
-        Parameters
-        ----------
-        M : np.ndarray
-            Input matrix to clean.
-
-        Returns
-        -------
-        np.ndarray
-            Matrix with small values zeroed out.
-        """
-        tol = self.class_QS.MatrixTolarence
-        M = np.array(M, dtype=complex)
-
-        M.real[np.abs(M.real) < tol] = 0.0
-        M.imag[np.abs(M.imag) < tol] = 0.0
-        return M
+        return QunObj(rotated)

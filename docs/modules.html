@@ -428,22 +428,43 @@ B : ndarray</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">KetState_Components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ketQ</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Basis.html#Basis.KetState_Components"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Decompose ket state into basis components.</p>
+<span class="sig-name descname"><span class="pre">KetState_Components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ketQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roundto</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Basis.html#Basis.KetState_Components"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Decompose a ket (state vector) into a linear combination of basis vectors.</p>
+<p>This method projects a given ket vector onto an orthonormal basis and prints
+the resulting decomposition in a readable form. Optionally, it can return 
+the string representation of the decomposition if the instance attribute 
+<cite>Return_KetState_Component</cite> is set to True.</p>
 <section id="id19">
 <h4>Parameters<a class="headerlink" href="#id19" title="Link to this heading"></a></h4>
 <dl class="simple">
-<dt>AQ<span class="classifier">list of QunObj</span></dt><dd><p>Basis ket vectors (assumed orthonormal).</p>
+<dt>AQ<span class="classifier">list of QunObj</span></dt><dd><p>List of orthonormal basis vectors as QunObj instances.</p>
 </dd>
-<dt>dic<span class="classifier">dict</span></dt><dd><p>Dictionary mapping basis indices to basis labels.</p>
+<dt>dic<span class="classifier">dict</span></dt><dd><p>Dictionary mapping basis indices to readable basis labels.</p>
 </dd>
-<dt>ketQ<span class="classifier">QunObj</span></dt><dd><p>Ket state vector to be decomposed.</p>
+<dt>ketQ<span class="classifier">QunObj</span></dt><dd><p>The ket vector to decompose (must be a column vector).</p>
+</dd>
+<dt>tol<span class="classifier">float, optional</span></dt><dd><p>Numerical tolerance below which component values are considered zero. Default is 1.0e-10.</p>
+</dd>
+<dt>roundto<span class="classifier">int, optional</span></dt><dd><p>Number of decimal places to round each component. Default is 5.</p>
+</dd>
+</dl>
+</section>
+<section id="raises">
+<h4>Raises<a class="headerlink" href="#raises" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>AQ</cite> is not a list or contains non-QunObj elements.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>ketQ</cite> is not a column vector (i.e., shape mismatch).</p>
 </dd>
 </dl>
 </section>
 <section id="id20">
 <h4>Returns<a class="headerlink" href="#id20" title="Link to this heading"></a></h4>
-<p>None</p>
+<dl class="simple">
+<dt>None or str</dt><dd><p>Prints the decomposition of the ket. If <cite>self.Return_KetState_Component</cite> is True,
+also returns the string representation of the decomposition.</p>
+</dd>
+</dl>
 </section>
 </dd></dl>
 
@@ -1218,22 +1239,39 @@ representing the state of the system at thermal equilibrium.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">DensityMatrix_Components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoQ</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.DensityMatrix_Components"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Decompose density matrix into basis components.</p>
+<span class="sig-name descname"><span class="pre">DensityMatrix_Components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roundto</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.DensityMatrix_Components"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Decompose a density matrix into a linear combination of a given operator basis.</p>
+<p>This function calculates the components of the density matrix with respect to a 
+specified basis of operators using an inner product. It prints the resulting 
+decomposition in a readable format.</p>
 <section id="id75">
 <h4>Parameters<a class="headerlink" href="#id75" title="Link to this heading"></a></h4>
 <dl class="simple">
-<dt>AQ<span class="classifier">list of QunObj</span></dt><dd><p>Basis operator objects.</p>
+<dt>AQ<span class="classifier">list of QunObj</span></dt><dd><p>List of basis operator objects that define the decomposition space.</p>
 </dd>
-<dt>dic<span class="classifier">dict</span></dt><dd><p>Dictionary of basis labels.</p>
+<dt>dic<span class="classifier">dict</span></dt><dd><p>Dictionary mapping indices to basis labels for readable output.</p>
 </dd>
-<dt>rhoQ<span class="classifier">QunObj</span></dt><dd><p>Density matrix.</p>
+<dt>rhoQ<span class="classifier">QunObj</span></dt><dd><p>The density matrix (or state vector) to be decomposed.</p>
+</dd>
+<dt>tol<span class="classifier">float, optional</span></dt><dd><p>Tolerance level for treating small component values as zero. Default is 1.0e-10.</p>
+</dd>
+<dt>roundto<span class="classifier">int, optional</span></dt><dd><p>Number of decimal places to round the non-zero components. Default is 5.</p>
 </dd>
 </dl>
 </section>
 <section id="id76">
-<h4>Returns<a class="headerlink" href="#id76" title="Link to this heading"></a></h4>
-<p>None</p>
+<h4>Raises<a class="headerlink" href="#id76" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>AQ</cite> is not a list or contains elements that are not instances of <cite>QunObj</cite>.</p>
+</dd>
+</dl>
+</section>
+<section id="id77">
+<h4>Returns<a class="headerlink" href="#id77" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>None</dt><dd><p>The function prints the decomposition of the density matrix but does not return it.</p>
+</dd>
+</dl>
 </section>
 </dd></dl>
 
@@ -1241,15 +1279,15 @@ representing the state of the system at thermal equilibrium.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Detection_L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.Detection_L"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Detection vector for Liouville space.</p>
-<section id="id77">
-<h4>Parameters<a class="headerlink" href="#id77" title="Link to this heading"></a></h4>
+<section id="id78">
+<h4>Parameters<a class="headerlink" href="#id78" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>X<span class="classifier">ndarray</span></dt><dd><p>Operator matrix.</p>
 </dd>
 </dl>
 </section>
-<section id="id78">
-<h4>Returns<a class="headerlink" href="#id78" title="Link to this heading"></a></h4>
+<section id="id79">
+<h4>Returns<a class="headerlink" href="#id79" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>ndarray</dt><dd><p>Row vector (bra) for detection.</p>
 </dd>
@@ -1261,8 +1299,8 @@ representing the state of the system at thermal equilibrium.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">EquilibriumDensityMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ti</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HT_approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.EquilibriumDensityMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate equilibrium density matrix for given spin temperatures.</p>
-<section id="id79">
-<h4>Parameters<a class="headerlink" href="#id79" title="Link to this heading"></a></h4>
+<section id="id80">
+<h4>Parameters<a class="headerlink" href="#id80" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>Ti<span class="classifier">list or ndarray</span></dt><dd><p>Spin temperatures for each spin.</p>
 </dd>
@@ -1270,8 +1308,8 @@ representing the state of the system at thermal equilibrium.</p>
 </dd>
 </dl>
 </section>
-<section id="id80">
-<h4>Returns<a class="headerlink" href="#id80" title="Link to this heading"></a></h4>
+<section id="id81">
+<h4>Returns<a class="headerlink" href="#id81" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>Equilibrium density matrix.</p>
 </dd>
@@ -1283,8 +1321,8 @@ representing the state of the system at thermal equilibrium.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">EquilibriumDensityMatrix_Add_TotalHamiltonian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">HQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HT_approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.EquilibriumDensityMatrix_Add_TotalHamiltonian"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate equilibrium density matrix for total Hamiltonian.</p>
-<section id="id81">
-<h4>Parameters<a class="headerlink" href="#id81" title="Link to this heading"></a></h4>
+<section id="id82">
+<h4>Parameters<a class="headerlink" href="#id82" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>HQ<span class="classifier">QunObj</span></dt><dd><p>Total Hamiltonian.</p>
 </dd>
@@ -1294,8 +1332,8 @@ representing the state of the system at thermal equilibrium.</p>
 </dd>
 </dl>
 </section>
-<section id="id82">
-<h4>Returns<a class="headerlink" href="#id82" title="Link to this heading"></a></h4>
+<section id="id83">
+<h4>Returns<a class="headerlink" href="#id83" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>Equilibrium density matrix.</p>
 </dd>
@@ -1325,29 +1363,17 @@ representing the state of the system at thermal equilibrium.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Liouville_Bracket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.Liouville_Bracket"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Compute the Liouville bracket ⟨A|B|C⟩.</p>
-<section id="id83">
-<h4>Parameters<a class="headerlink" href="#id83" title="Link to this heading"></a></h4>
+<section id="id84">
+<h4>Parameters<a class="headerlink" href="#id84" title="Link to this heading"></a></h4>
 <p>A, B, C : ndarrays</p>
 </section>
-<section id="id84">
-<h4>Returns<a class="headerlink" href="#id84" title="Link to this heading"></a></h4>
+<section id="id85">
+<h4>Returns<a class="headerlink" href="#id85" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>float</dt><dd><p>Real part of the bracket.</p>
 </dd>
 </dl>
 </section>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">Matrix_Round</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roundto</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.Matrix_Round"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Round matrix elements to specified number of decimal places.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">Matrix_Tol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.Matrix_Tol"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Zero out small values in a matrix below tolerance.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1366,8 +1392,8 @@ representing the state of the system at thermal equilibrium.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">PolarizationVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spinQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SzQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PolPercentage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.PolarizationVector"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Compute polarization of a spin system.</p>
-<section id="id85">
-<h4>Parameters<a class="headerlink" href="#id85" title="Link to this heading"></a></h4>
+<section id="id86">
+<h4>Parameters<a class="headerlink" href="#id86" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>spinQ<span class="classifier">float</span></dt><dd><p>Spin quantum number.</p>
 </dd>
@@ -1379,8 +1405,8 @@ representing the state of the system at thermal equilibrium.</p>
 </dd>
 </dl>
 </section>
-<section id="id86">
-<h4>Returns<a class="headerlink" href="#id86" title="Link to this heading"></a></h4>
+<section id="id87">
+<h4>Returns<a class="headerlink" href="#id87" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>float</dt><dd><p>Spin polarization value.</p>
 </dd>
@@ -1392,15 +1418,15 @@ representing the state of the system at thermal equilibrium.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">ProductOperators_ConvertToLiouville</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Basis_X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.ProductOperators_ConvertToLiouville"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Convert basis operators to Liouville space.</p>
-<section id="id87">
-<h4>Parameters<a class="headerlink" href="#id87" title="Link to this heading"></a></h4>
+<section id="id88">
+<h4>Parameters<a class="headerlink" href="#id88" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>Basis_X<span class="classifier">list of ndarrays</span></dt><dd><p>Basis operators in Hilbert space.</p>
 </dd>
 </dl>
 </section>
-<section id="id88">
-<h4>Returns<a class="headerlink" href="#id88" title="Link to this heading"></a></h4>
+<section id="id89">
+<h4>Returns<a class="headerlink" href="#id89" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>list of QunObj</dt><dd><p>Operators in Liouville space.</p>
 </dd>
@@ -1418,15 +1444,15 @@ representing the state of the system at thermal equilibrium.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Vector_L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_DensityMatrix.html#DensityMatrix.Vector_L"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Vectorize an operator into a Liouville space column vector.</p>
-<section id="id89">
-<h4>Parameters<a class="headerlink" href="#id89" title="Link to this heading"></a></h4>
+<section id="id90">
+<h4>Parameters<a class="headerlink" href="#id90" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>X<span class="classifier">ndarray</span></dt><dd><p>Operator matrix.</p>
 </dd>
 </dl>
 </section>
-<section id="id90">
-<h4>Returns<a class="headerlink" href="#id90" title="Link to this heading"></a></h4>
+<section id="id91">
+<h4>Returns<a class="headerlink" href="#id91" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>ndarray</dt><dd><p>Vectorized form.</p>
 </dd>
@@ -1474,8 +1500,8 @@ B : matrix B</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Convert_LrhoTO2Drho</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Lrho</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Evolution.html#Evolutions.Convert_LrhoTO2Drho"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Convert a Vector into a 2d Matrix</p>
-<section id="id91">
-<h4>INPUT<a class="headerlink" href="#id91" title="Link to this heading"></a></h4>
+<section id="id92">
+<h4>INPUT<a class="headerlink" href="#id92" title="Link to this heading"></a></h4>
 <p>Lrho: density matrix, coloumn vector
 OUTPUT
 ——        
@@ -1536,8 +1562,8 @@ sweeps, and relaxation models relevant to magnetic resonance experiments.</p>
 <h4>Model<a class="headerlink" href="#model" title="Link to this heading"></a></h4>
 <p>f(x) = c - (c - a) * exp(-b * x)</p>
 </section>
-<section id="id92">
-<h4>Parameters<a class="headerlink" href="#id92" title="Link to this heading"></a></h4>
+<section id="id93">
+<h4>Parameters<a class="headerlink" href="#id93" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>x<span class="classifier">array_like</span></dt><dd><p>Independent variable.</p>
 </dd>
@@ -1545,8 +1571,8 @@ sweeps, and relaxation models relevant to magnetic resonance experiments.</p>
 </dd>
 </dl>
 </section>
-<section id="id93">
-<h4>Returns<a class="headerlink" href="#id93" title="Link to this heading"></a></h4>
+<section id="id94">
+<h4>Returns<a class="headerlink" href="#id94" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>array_like</dt><dd><p>Evaluated function.</p>
 </dd>
@@ -1558,12 +1584,12 @@ sweeps, and relaxation models relevant to magnetic resonance experiments.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Exp_Decay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Fitting.html#Exp_Decay"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Single exponential decay function.</p>
-<section id="id94">
-<h4>Model<a class="headerlink" href="#id94" title="Link to this heading"></a></h4>
+<section id="id95">
+<h4>Model<a class="headerlink" href="#id95" title="Link to this heading"></a></h4>
 <p>f(x) = a * exp(-b * x) + c</p>
 </section>
-<section id="id95">
-<h4>Parameters<a class="headerlink" href="#id95" title="Link to this heading"></a></h4>
+<section id="id96">
+<h4>Parameters<a class="headerlink" href="#id96" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>x<span class="classifier">array_like</span></dt><dd><p>Independent variable.</p>
 </dd>
@@ -1571,8 +1597,8 @@ sweeps, and relaxation models relevant to magnetic resonance experiments.</p>
 </dd>
 </dl>
 </section>
-<section id="id96">
-<h4>Returns<a class="headerlink" href="#id96" title="Link to this heading"></a></h4>
+<section id="id97">
+<h4>Returns<a class="headerlink" href="#id97" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>array_like</dt><dd><p>Evaluated function.</p>
 </dd>
@@ -1584,12 +1610,12 @@ sweeps, and relaxation models relevant to magnetic resonance experiments.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Exp_Decay_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Fitting.html#Exp_Decay_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Double exponential decay function.</p>
-<section id="id97">
-<h4>Model<a class="headerlink" href="#id97" title="Link to this heading"></a></h4>
+<section id="id98">
+<h4>Model<a class="headerlink" href="#id98" title="Link to this heading"></a></h4>
 <p>f(x) = a * exp(-b * x) + c * exp(-d * x) + e</p>
 </section>
-<section id="id98">
-<h4>Parameters<a class="headerlink" href="#id98" title="Link to this heading"></a></h4>
+<section id="id99">
+<h4>Parameters<a class="headerlink" href="#id99" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>x<span class="classifier">array_like</span></dt><dd><p>Independent variable.</p>
 </dd>
@@ -1597,8 +1623,8 @@ sweeps, and relaxation models relevant to magnetic resonance experiments.</p>
 </dd>
 </dl>
 </section>
-<section id="id99">
-<h4>Returns<a class="headerlink" href="#id99" title="Link to this heading"></a></h4>
+<section id="id100">
+<h4>Returns<a class="headerlink" href="#id100" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>array_like</dt><dd><p>Evaluated function.</p>
 </dd>
@@ -1610,8 +1636,8 @@ sweeps, and relaxation models relevant to magnetic resonance experiments.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Fitting_LeastSquare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Fitting.html#Fitting_LeastSquare"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Perform non-linear least squares fitting using a custom function.</p>
-<section id="id100">
-<h4>Parameters<a class="headerlink" href="#id100" title="Link to this heading"></a></h4>
+<section id="id101">
+<h4>Parameters<a class="headerlink" href="#id101" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>func<span class="classifier">callable</span></dt><dd><p>Model function to fit, with signature <cite>func(x, …)</cite>.</p>
 </dd>
@@ -1621,8 +1647,8 @@ sweeps, and relaxation models relevant to magnetic resonance experiments.</p>
 </dd>
 </dl>
 </section>
-<section id="id101">
-<h4>Returns<a class="headerlink" href="#id101" title="Link to this heading"></a></h4>
+<section id="id102">
+<h4>Returns<a class="headerlink" href="#id102" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>popt<span class="classifier">array</span></dt><dd><p>Optimal values for the parameters.</p>
 </dd>
@@ -1630,8 +1656,8 @@ sweeps, and relaxation models relevant to magnetic resonance experiments.</p>
 </dd>
 </dl>
 </section>
-<section id="id102">
-<h4>Notes<a class="headerlink" href="#id102" title="Link to this heading"></a></h4>
+<section id="id103">
+<h4>Notes<a class="headerlink" href="#id103" title="Link to this heading"></a></h4>
 <p>For more details, see:
 <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html</a></p>
 </section>
@@ -1661,8 +1687,8 @@ commonly encountered in magnetic resonance experiments.</p>
 magnetic moment of a particle to its angular momentum. It plays a key role 
 in nuclear magnetic resonance (NMR), electron paramagnetic resonance (EPR), 
 and magnetic field interactions.</p>
-<section id="id103">
-<h4>Parameters:<a class="headerlink" href="#id103" title="Link to this heading"></a></h4>
+<section id="id104">
+<h4>Parameters:<a class="headerlink" href="#id104" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>value<span class="classifier">str</span></dt><dd><dl class="simple">
 <dt>Symbol representing the particle. Common examples include:</dt><dd><ul class="simple">
@@ -1680,15 +1706,15 @@ and magnetic field interactions.</p>
 </dd>
 </dl>
 </section>
-<section id="id104">
-<h4>Returns:<a class="headerlink" href="#id104" title="Link to this heading"></a></h4>
+<section id="id105">
+<h4>Returns:<a class="headerlink" href="#id105" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>float</dt><dd><p>Gyromagnetic ratio of the given particle, in units of radians per second per tesla (rad·s⁻¹·T⁻¹).</p>
 </dd>
 </dl>
 </section>
-<section id="raises">
-<h4>Raises:<a class="headerlink" href="#raises" title="Link to this heading"></a></h4>
+<section id="id106">
+<h4>Raises:<a class="headerlink" href="#id106" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>AssertionError</dt><dd><p>If the particle symbol is not found in the predefined <cite>GAMMA</cite> dictionary.
 In such cases, users are expected to define and add the gyromagnetic ratio manually.</p>
@@ -1702,8 +1728,8 @@ In such cases, users are expected to define and add the gyromagnetic ratio manua
 <p>gamma(“N15”)
 -27116000.0</p>
 </section>
-<section id="id105">
-<h4>Reference:<a class="headerlink" href="#id105" title="Link to this heading"></a></h4>
+<section id="id107">
+<h4>Reference:<a class="headerlink" href="#id107" title="Link to this heading"></a></h4>
 <p>Harris, R. K., Becker, E. D., de Menezes, S. M. C., Goodfellow, R., &amp; Granger, P. (2001).  
 NMR nomenclature. Nuclear spin properties and conventions for chemical shifts (IUPAC Recommendations 2001).  
 <em>Pure and Applied Chemistry</em>, 73(11), 1795–1818.  
@@ -1750,8 +1776,8 @@ and quadrupolar interactions depending on system specifications.</p>
 <li><p>Dipole_DipolarAlpabet: interaction mode (secular, All, A–F)</p></li>
 </ul>
 </section>
-<section id="id106">
-<h4>Output:<a class="headerlink" href="#id106" title="Link to this heading"></a></h4>
+<section id="id108">
+<h4>Output:<a class="headerlink" href="#id108" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>Complete DD coupling Hamiltonian in angular frequency units</p>
 </dd>
@@ -1776,8 +1802,8 @@ b_IS = - (μ₀ / 4π) * (γ₁ * γ₂ * ℏ) / r³</p>
 </dd>
 </dl>
 </section>
-<section id="id107">
-<h4>Output:<a class="headerlink" href="#id107" title="Link to this heading"></a></h4>
+<section id="id109">
+<h4>Output:<a class="headerlink" href="#id109" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>float</dt><dd><p>Dipolar coupling constant in Hz</p>
 </dd>
@@ -1789,15 +1815,15 @@ b_IS = - (μ₀ / 4π) * (γ₁ * γ₂ * ℏ) / r³</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Eigen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Eigen"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Compute eigenvalues and eigenvectors of a Hamiltonian.</p>
-<section id="id108">
-<h4>Parameters:<a class="headerlink" href="#id108" title="Link to this heading"></a></h4>
+<section id="id110">
+<h4>Parameters:<a class="headerlink" href="#id110" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>H<span class="classifier">np.ndarray</span></dt><dd><p>Hamiltonian matrix</p>
 </dd>
 </dl>
 </section>
-<section id="id109">
-<h4>Returns:<a class="headerlink" href="#id109" title="Link to this heading"></a></h4>
+<section id="id111">
+<h4>Returns:<a class="headerlink" href="#id111" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>tuple</dt><dd><p>(eigenvalues, eigenvectors)</p>
 </dd>
@@ -1809,8 +1835,8 @@ b_IS = - (μ₀ / 4π) * (γ₁ * γ₂ * ℏ) / r³</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">InteractionTensor_LAB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ApafQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.InteractionTensor_LAB"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Rotates a tensor from PAF to LAB frame using spherical tensors and Wigner rotation.</p>
-<section id="id110">
-<h4>Parameters:<a class="headerlink" href="#id110" title="Link to this heading"></a></h4>
+<section id="id112">
+<h4>Parameters:<a class="headerlink" href="#id112" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>ApafQ<span class="classifier">QunObj</span></dt><dd><p>Tensor in principal axis frame</p>
 </dd>
@@ -1818,8 +1844,8 @@ b_IS = - (μ₀ / 4π) * (γ₁ * γ₂ * ℏ) / r³</p>
 </dd>
 </dl>
 </section>
-<section id="id111">
-<h4>Returns:<a class="headerlink" href="#id111" title="Link to this heading"></a></h4>
+<section id="id113">
+<h4>Returns:<a class="headerlink" href="#id113" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>Rotated tensor in LAB frame</p>
 </dd>
@@ -1831,15 +1857,15 @@ b_IS = - (μ₀ / 4π) * (γ₁ * γ₂ * ℏ) / r³</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">InteractionTensor_LAB_Decomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AQ</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.InteractionTensor_LAB_Decomposition"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Decomposes a LAB-frame tensor into isotropic, symmetric, and antisymmetric parts.</p>
-<section id="id112">
-<h4>Parameters:<a class="headerlink" href="#id112" title="Link to this heading"></a></h4>
+<section id="id114">
+<h4>Parameters:<a class="headerlink" href="#id114" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>AQ<span class="classifier">QunObj</span></dt><dd><p>LAB-frame tensor</p>
 </dd>
 </dl>
 </section>
-<section id="id113">
-<h4>Returns:<a class="headerlink" href="#id113" title="Link to this heading"></a></h4>
+<section id="id115">
+<h4>Returns:<a class="headerlink" href="#id115" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>dict</dt><dd><p>Dictionary with QunObj entries:
 “Isotropic”, “Symmetric”, “Antisymmetric”</p>
@@ -1852,8 +1878,8 @@ b_IS = - (μ₀ / 4π) * (γ₁ * γ₂ * ℏ) / r³</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">InteractionTensor_PAF_CSA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Iso</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Aniso</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Asymmetry</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.InteractionTensor_PAF_CSA"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Constructs the CSA interaction tensor in the principal axis frame (PAF).</p>
-<section id="id114">
-<h4>Parameters:<a class="headerlink" href="#id114" title="Link to this heading"></a></h4>
+<section id="id116">
+<h4>Parameters:<a class="headerlink" href="#id116" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>Iso<span class="classifier">float</span></dt><dd><p>Isotropic component</p>
 </dd>
@@ -1863,8 +1889,8 @@ b_IS = - (μ₀ / 4π) * (γ₁ * γ₂ * ℏ) / r³</p>
 </dd>
 </dl>
 </section>
-<section id="id115">
-<h4>Returns:<a class="headerlink" href="#id115" title="Link to this heading"></a></h4>
+<section id="id117">
+<h4>Returns:<a class="headerlink" href="#id117" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>3x3 CSA tensor in PAF</p>
 </dd>
@@ -1876,15 +1902,15 @@ b_IS = - (μ₀ / 4π) * (γ₁ * γ₂ * ℏ) / r³</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">InteractionTensor_PAF_Decomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AQ</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.InteractionTensor_PAF_Decomposition"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Decomposes a PAF tensor into isotropic, anisotropy, and asymmetry components.</p>
-<section id="id116">
-<h4>Parameters:<a class="headerlink" href="#id116" title="Link to this heading"></a></h4>
+<section id="id118">
+<h4>Parameters:<a class="headerlink" href="#id118" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>AQ<span class="classifier">QunObj</span></dt><dd><p>Tensor to decompose</p>
 </dd>
 </dl>
 </section>
-<section id="id117">
-<h4>Returns:<a class="headerlink" href="#id117" title="Link to this heading"></a></h4>
+<section id="id119">
+<h4>Returns:<a class="headerlink" href="#id119" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>dict</dt><dd><p>Dictionary with keys: “Isotropic”, “Anisotropy”, “Asymmetry”</p>
 </dd>
@@ -1896,15 +1922,15 @@ b_IS = - (μ₀ / 4π) * (γ₁ * γ₂ * ℏ) / r³</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">InteractionTensor_PAF_Dipole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.InteractionTensor_PAF_Dipole"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Constructs a PAF dipolar tensor.</p>
-<section id="id118">
-<h4>Parameters:<a class="headerlink" href="#id118" title="Link to this heading"></a></h4>
+<section id="id120">
+<h4>Parameters:<a class="headerlink" href="#id120" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>d<span class="classifier">float</span></dt><dd><p>Dipolar coupling constant (in Hz)</p>
 </dd>
 </dl>
 </section>
-<section id="id119">
-<h4>Returns:<a class="headerlink" href="#id119" title="Link to this heading"></a></h4>
+<section id="id121">
+<h4>Returns:<a class="headerlink" href="#id121" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>Dipolar tensor in the PAF</p>
 </dd>
@@ -1919,16 +1945,16 @@ b_IS = - (μ₀ / 4π) * (γ₁ * γ₂ * ℏ) / r³</p>
 <p>This method calculates the electron Zeeman interaction tensor by combining the isotropic
 contribution (from the free electron g-factor) and the anisotropic shifts (g-shifts).
 If specified, the resulting tensor components are converted to angular frequency units.</p>
-<section id="id120">
-<h4>Parameters:<a class="headerlink" href="#id120" title="Link to this heading"></a></h4>
+<section id="id122">
+<h4>Parameters:<a class="headerlink" href="#id122" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>gshiftList<span class="classifier">list or array-like of float</span></dt><dd><p>A list of three g-shift values [g_xx, g_yy, g_zz] representing the anisotropic g-tensor
 components in the principal axis frame.</p>
 </dd>
 </dl>
 </section>
-<section id="id121">
-<h4>Returns:<a class="headerlink" href="#id121" title="Link to this heading"></a></h4>
+<section id="id123">
+<h4>Returns:<a class="headerlink" href="#id123" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>A quantum object representing the full 3x3 electron Zeeman interaction tensor.</p>
 </dd>
@@ -1943,8 +1969,8 @@ components in the principal axis frame.</p>
 <p>This method builds a 3x3 diagonal interaction tensor in the PAF using values provided in <cite>diagList</cite>.
 If the <cite>InteractioTensor_AngularFrequency</cite> flag is set to True, the input values are assumed to be in Hz
 and are converted to angular frequency units (rad/s) by multiplying by 2π.</p>
-<section id="id122">
-<h4>Parameters<a class="headerlink" href="#id122" title="Link to this heading"></a></h4>
+<section id="id124">
+<h4>Parameters<a class="headerlink" href="#id124" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>diagList<span class="classifier">list or array-like of float</span></dt><dd><p>A list or array with three diagonal elements representing the interaction tensor
 components along the x, y, and z axes in the PAF. Units are Hz unless the flag
@@ -1952,8 +1978,8 @@ components along the x, y, and z axes in the PAF. Units are Hz unless the flag
 </dd>
 </dl>
 </section>
-<section id="id123">
-<h4>Returns<a class="headerlink" href="#id123" title="Link to this heading"></a></h4>
+<section id="id125">
+<h4>Returns<a class="headerlink" href="#id125" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>An instance of <cite>QunObj</cite> representing the 3x3 interaction tensor matrix constructed
 from the diagonal values.</p>
@@ -1966,8 +1992,8 @@ from the diagonal values.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">InteractionTensor_PAF_Quadrupole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Coupling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">etaQ</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.InteractionTensor_PAF_Quadrupole"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Constructs the quadrupolar tensor in the PAF.</p>
-<section id="id124">
-<h4>Parameters:<a class="headerlink" href="#id124" title="Link to this heading"></a></h4>
+<section id="id126">
+<h4>Parameters:<a class="headerlink" href="#id126" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>X<span class="classifier">str</span></dt><dd><p>Spin label</p>
 </dd>
@@ -1977,8 +2003,8 @@ from the diagonal values.</p>
 </dd>
 </dl>
 </section>
-<section id="id125">
-<h4>Returns:<a class="headerlink" href="#id125" title="Link to this heading"></a></h4>
+<section id="id127">
+<h4>Returns:<a class="headerlink" href="#id127" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>Quadrupolar tensor in the PAF</p>
 </dd>
@@ -1993,8 +2019,8 @@ from the diagonal values.</p>
 <p>This method builds a symmetric 3x3 tensor representing the ZFS interaction for an electron
 spin system in the absence of an external magnetic field. The tensor is expressed in angular
 frequency units (i.e., radians per second), assuming D and E are initially given in Hz.</p>
-<section id="id126">
-<h4>Parameters:<a class="headerlink" href="#id126" title="Link to this heading"></a></h4>
+<section id="id128">
+<h4>Parameters:<a class="headerlink" href="#id128" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>D<span class="classifier">float</span></dt><dd><p>The axial zero-field splitting parameter (in Hz).</p>
 </dd>
@@ -2002,15 +2028,15 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 </dd>
 </dl>
 </section>
-<section id="id127">
-<h4>Returns:<a class="headerlink" href="#id127" title="Link to this heading"></a></h4>
+<section id="id129">
+<h4>Returns:<a class="headerlink" href="#id129" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>A quantum object representing the 3x3 zero-field splitting interaction tensor.</p>
 </dd>
 </dl>
 </section>
-<section id="id128">
-<h4>Notes:<a class="headerlink" href="#id128" title="Link to this heading"></a></h4>
+<section id="id130">
+<h4>Notes:<a class="headerlink" href="#id130" title="Link to this heading"></a></h4>
 <ul class="simple">
 <li><p>D and E are converted to angular frequency units by multiplying with 2π.</p></li>
 <li><dl class="simple">
@@ -2031,8 +2057,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Interaction_Hamiltonian_Catesian_Euler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">XQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">YQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Interaction_Hamiltonian_Catesian_Euler"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Rotate interaction tensor using Euler angles and construct Hamiltonian in Cartesian space.</p>
-<section id="id129">
-<h4>Parameters:<a class="headerlink" href="#id129" title="Link to this heading"></a></h4>
+<section id="id131">
+<h4>Parameters:<a class="headerlink" href="#id131" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>XQ<span class="classifier">str</span></dt><dd><p>Name of spin operator (e.g., “I”)</p>
 </dd>
@@ -2044,8 +2070,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 </dd>
 </dl>
 </section>
-<section id="id130">
-<h4>Returns:<a class="headerlink" href="#id130" title="Link to this heading"></a></h4>
+<section id="id132">
+<h4>Returns:<a class="headerlink" href="#id132" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>The interaction Hamiltonian</p>
 </dd>
@@ -2057,8 +2083,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Interaction_Hamiltonian_Catesian_Wigner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">XQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ApafQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">YQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Interaction_Hamiltonian_Catesian_Wigner"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>General interaction Hamiltonian using Wigner rotation of Cartesian tensors.</p>
-<section id="id131">
-<h4>Parameters:<a class="headerlink" href="#id131" title="Link to this heading"></a></h4>
+<section id="id133">
+<h4>Parameters:<a class="headerlink" href="#id133" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>XQ<span class="classifier">str</span></dt><dd><p>Name of the spin operator prefix (e.g., “I” or “S”).</p>
 </dd>
@@ -2070,8 +2096,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 </dd>
 </dl>
 </section>
-<section id="id132">
-<h4>Returns:<a class="headerlink" href="#id132" title="Link to this heading"></a></h4>
+<section id="id134">
+<h4>Returns:<a class="headerlink" href="#id134" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>The interaction Hamiltonian.</p>
 </dd>
@@ -2083,8 +2109,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Interaction_Hamiltonian_LAB_CSA_Secular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ApasQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Interaction_Hamiltonian_LAB_CSA_Secular"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Constructs the secular CSA Hamiltonian in the lab frame.</p>
-<section id="id133">
-<h4>Parameters:<a class="headerlink" href="#id133" title="Link to this heading"></a></h4>
+<section id="id135">
+<h4>Parameters:<a class="headerlink" href="#id135" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>X<span class="classifier">str</span></dt><dd><p>Spin label (e.g., ‘I’ or ‘S’)</p>
 </dd>
@@ -2096,8 +2122,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 </dd>
 </dl>
 </section>
-<section id="id134">
-<h4>Returns:<a class="headerlink" href="#id134" title="Link to this heading"></a></h4>
+<section id="id136">
+<h4>Returns:<a class="headerlink" href="#id136" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>The secular CSA Hamiltonian component.</p>
 </dd>
@@ -2109,8 +2135,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Interaction_Hamiltonian_LAB_Quadrupole_Secular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Coupling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">etaQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Interaction_Hamiltonian_LAB_Quadrupole_Secular"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Constructs the secular quadrupole Hamiltonian.</p>
-<section id="id135">
-<h4>Parameters:<a class="headerlink" href="#id135" title="Link to this heading"></a></h4>
+<section id="id137">
+<h4>Parameters:<a class="headerlink" href="#id137" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>X<span class="classifier">str</span></dt><dd><p>Nucleus label</p>
 </dd>
@@ -2122,8 +2148,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 </dd>
 </dl>
 </section>
-<section id="id136">
-<h4>Returns:<a class="headerlink" href="#id136" title="Link to this heading"></a></h4>
+<section id="id138">
+<h4>Returns:<a class="headerlink" href="#id138" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>The quadrupole Hamiltonian</p>
 </dd>
@@ -2135,8 +2161,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Interaction_Hamiltonian_MAS_SphericalTensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ApafQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Interaction_Hamiltonian_MAS_SphericalTensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>General Hamiltonian using spherical tensor formalism for Magical Angle Spinning (MAS).</p>
-<section id="id137">
-<h4>Reference:<a class="headerlink" href="#id137" title="Link to this heading"></a></h4>
+<section id="id139">
+<h4>Reference:<a class="headerlink" href="#id139" title="Link to this heading"></a></h4>
 <p>Michael Mehring, Internal Spin Interactions and Rotations in Solids.</p>
 </section>
 </dd></dl>
@@ -2145,8 +2171,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Interaction_Hamiltonian_SphericalTensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ApafQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Interaction_Hamiltonian_SphericalTensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>General Hamiltonian using spherical tensor formalism.</p>
-<section id="id138">
-<h4>Reference:<a class="headerlink" href="#id138" title="Link to this heading"></a></h4>
+<section id="id140">
+<h4>Reference:<a class="headerlink" href="#id140" title="Link to this heading"></a></h4>
 <p>Michael Mehring, Internal Spin Interactions and Rotations in Solids.</p>
 </section>
 </dd></dl>
@@ -2156,8 +2182,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 <span class="sig-name descname"><span class="pre">Jcoupling</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Jcoupling"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Construct full J-coupling Hamiltonian (isotropic scalar coupling).</p>
 <p>H_J = ∑₍i&lt;j₎ J_ij * (Sxᵢ·Sxⱼ + Syᵢ·Syⱼ + Szᵢ·Szⱼ)</p>
-<section id="id139">
-<h4>Inputs:<a class="headerlink" href="#id139" title="Link to this heading"></a></h4>
+<section id="id141">
+<h4>Inputs:<a class="headerlink" href="#id141" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>J<span class="classifier">2D array (Hz)</span></dt><dd><p>Symmetric matrix of J-couplings between spins i and j.</p>
 </dd>
@@ -2165,8 +2191,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 </dd>
 </dl>
 </section>
-<section id="id140">
-<h4>Output:<a class="headerlink" href="#id140" title="Link to this heading"></a></h4>
+<section id="id142">
+<h4>Output:<a class="headerlink" href="#id142" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>Full J-coupling Hamiltonian (angular frequency units).</p>
 </dd>
@@ -2179,8 +2205,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 <span class="sig-name descname"><span class="pre">Jcoupling_Weak</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Jcoupling_Weak"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Construct simplified J-coupling Hamiltonian (weak coupling approximation).</p>
 <p>H_J ≈ ∑₍i&lt;j₎ J_ij * Szᵢ·Szⱼ</p>
-<section id="id141">
-<h4>Inputs:<a class="headerlink" href="#id141" title="Link to this heading"></a></h4>
+<section id="id143">
+<h4>Inputs:<a class="headerlink" href="#id143" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>J<span class="classifier">2D array (Hz)</span></dt><dd><p>Symmetric matrix of J-couplings between spins i and j.</p>
 </dd>
@@ -2188,8 +2214,8 @@ frequency units (i.e., radians per second), assuming D and E are initially given
 </dd>
 </dl>
 </section>
-<section id="id142">
-<h4>Output:<a class="headerlink" href="#id142" title="Link to this heading"></a></h4>
+<section id="id144">
+<h4>Output:<a class="headerlink" href="#id144" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>Simplified J-coupling Hamiltonian (angular frequency units).</p>
 </dd>
@@ -2209,8 +2235,8 @@ B₀ = magnetic field strength in Tesla,
 δ = chemical shift offset (in Hz)</p>
 </dd>
 </dl>
-<section id="id143">
-<h4>Returns:<a class="headerlink" href="#id143" title="Link to this heading"></a></h4>
+<section id="id145">
+<h4>Returns:<a class="headerlink" href="#id145" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Larmor frequencies (angular frequencies) for each spin in the system.</p>
 </dd>
@@ -2225,8 +2251,8 @@ B₀ = magnetic field strength in Tesla,
 <p>This function constructs a periodic time-dependent Hamiltonian array for MAS,
 evolving the system under that Hamiltonian, and computing the spectrum by Fourier transforming
 the expectation values.</p>
-<section id="id144">
-<h4>Parameters:<a class="headerlink" href="#id144" title="Link to this heading"></a></h4>
+<section id="id146">
+<h4>Parameters:<a class="headerlink" href="#id146" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>EVol<span class="classifier">Evolution object</span></dt><dd><p>Evolution class instance capable of time evolution.</p>
 </dd>
@@ -2260,8 +2286,8 @@ the expectation values.</p>
 </dd>
 </dl>
 </section>
-<section id="id145">
-<h4>Returns:<a class="headerlink" href="#id145" title="Link to this heading"></a></h4>
+<section id="id147">
+<h4>Returns:<a class="headerlink" href="#id147" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>freq<span class="classifier">ndarray</span></dt><dd><p>Frequency axis (Hz).</p>
 </dd>
@@ -2282,31 +2308,6 @@ the expectation values.</p>
 <span class="sig-name descname"><span class="pre">MASSpectrum2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EVol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoeq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IT_PAF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MagicAngle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RotortFrequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apodization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.MASSpectrum2"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>&lt;&lt;&lt;&lt; Attention: This function is slow. &gt;&gt;&gt;&gt;</p>
 <p>Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.</p>
-<section id="id146">
-<h4>Parameters:<a class="headerlink" href="#id146" title="Link to this heading"></a></h4>
-<dl class="simple">
-<dt>weighted<span class="classifier">bool</span></dt><dd><p>Whether to use weighted averaging.</p>
-</dd>
-<dt>weight<span class="classifier">ndarray or None</span></dt><dd><p>Optional crystallite weights. If None and weighted=True,
-defaults to sin(beta) weighting.</p>
-</dd>
-</dl>
-</section>
-<section id="id147">
-<h4>Returns:<a class="headerlink" href="#id147" title="Link to this heading"></a></h4>
-<dl class="simple">
-<dt>freq<span class="classifier">ndarray</span></dt><dd><p>Frequency axis.</p>
-</dd>
-<dt>spectrum<span class="classifier">ndarray</span></dt><dd><p>Powder-averaged spectrum (absolute value).</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">PowderSpectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EVol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoeq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IT_PAF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SecularEquation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apodization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.PowderSpectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.</p>
 <section id="id148">
 <h4>Parameters:<a class="headerlink" href="#id148" title="Link to this heading"></a></h4>
 <dl class="simple">
@@ -2330,10 +2331,35 @@ defaults to sin(beta) weighting.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">ShapedPulse_Bruker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulseLength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RotationAngle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.ShapedPulse_Bruker"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Load and process a shaped pulse from a Bruker shape file.</p>
+<span class="sig-name descname"><span class="pre">PowderSpectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EVol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhoeq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IT_PAF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SecularEquation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apodization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.PowderSpectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Computes the powder-averaged spectrum over (alpha, beta, gamma) angles.</p>
 <section id="id150">
 <h4>Parameters:<a class="headerlink" href="#id150" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>weighted<span class="classifier">bool</span></dt><dd><p>Whether to use weighted averaging.</p>
+</dd>
+<dt>weight<span class="classifier">ndarray or None</span></dt><dd><p>Optional crystallite weights. If None and weighted=True,
+defaults to sin(beta) weighting.</p>
+</dd>
+</dl>
+</section>
+<section id="id151">
+<h4>Returns:<a class="headerlink" href="#id151" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>freq<span class="classifier">ndarray</span></dt><dd><p>Frequency axis.</p>
+</dd>
+<dt>spectrum<span class="classifier">ndarray</span></dt><dd><p>Powder-averaged spectrum (absolute value).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ShapedPulse_Bruker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulseLength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RotationAngle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.ShapedPulse_Bruker"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Load and process a shaped pulse from a Bruker shape file.</p>
+<section id="id152">
+<h4>Parameters:<a class="headerlink" href="#id152" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>file_path<span class="classifier">str</span></dt><dd><p>Path to the shaped pulse file (typically Bruker format)</p>
 </dd>
@@ -2343,8 +2369,8 @@ defaults to sin(beta) weighting.</p>
 </dd>
 </dl>
 </section>
-<section id="id151">
-<h4>Returns:<a class="headerlink" href="#id151" title="Link to this heading"></a></h4>
+<section id="id153">
+<h4>Returns:<a class="headerlink" href="#id153" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>tuple</dt><dd><p>(time array, B1 amplitude over time, B1 phase over time)</p>
 </dd>
@@ -2363,8 +2389,8 @@ defaults to sin(beta) weighting.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">ShapedPulse_Interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPIntensity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPPhase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kind</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.ShapedPulse_Interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Interpolate amplitude and phase arrays of a shaped pulse.</p>
-<section id="id152">
-<h4>Parameters:<a class="headerlink" href="#id152" title="Link to this heading"></a></h4>
+<section id="id154">
+<h4>Parameters:<a class="headerlink" href="#id154" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>time<span class="classifier">array</span></dt><dd><p>Time axis of the pulse shape</p>
 </dd>
@@ -2376,8 +2402,8 @@ defaults to sin(beta) weighting.</p>
 </dd>
 </dl>
 </section>
-<section id="id153">
-<h4>Returns:<a class="headerlink" href="#id153" title="Link to this heading"></a></h4>
+<section id="id155">
+<h4>Returns:<a class="headerlink" href="#id155" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>tuple</dt><dd><p>(amplitude interpolator, phase interpolator)</p>
 </dd>
@@ -2402,8 +2428,8 @@ the Hamiltonian needs to be resynchronized.</p>
 \[H_Z = \sum_i \omega_{0i} \cdot S_{zi}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\omega_{0i}\)</span> is the Larmor frequency of the <em>i</em>-th spin,  
 and <span class="math notranslate nohighlight">\(S_{zi}\)</span> is the z-component spin operator.</p>
-<section id="id154">
-<h4>Returns<a class="headerlink" href="#id154" title="Link to this heading"></a></h4>
+<section id="id156">
+<h4>Returns<a class="headerlink" href="#id156" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>The Zeeman Hamiltonian represented as a quantum object.</p>
 </dd>
@@ -2419,8 +2445,8 @@ and <span class="math notranslate nohighlight">\(S_{zi}\)</span> is the z-compon
 <dt>Assumes a continuous wave RF field:</dt><dd><p>H_RF = ω₁ * [Sₓ cos(ϕ) + Sᵧ sin(ϕ)]</p>
 </dd>
 </dl>
-<section id="id155">
-<h4>Parameters:<a class="headerlink" href="#id155" title="Link to this heading"></a></h4>
+<section id="id157">
+<h4>Parameters:<a class="headerlink" href="#id157" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>Omega1<span class="classifier">float</span></dt><dd><p>RF amplitude in Hz (nutation frequency).</p>
 </dd>
@@ -2428,8 +2454,8 @@ and <span class="math notranslate nohighlight">\(S_{zi}\)</span> is the z-compon
 </dd>
 </dl>
 </section>
-<section id="id156">
-<h4>Returns:<a class="headerlink" href="#id156" title="Link to this heading"></a></h4>
+<section id="id158">
+<h4>Returns:<a class="headerlink" href="#id158" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>Time-independent B₁ Hamiltonian in rotating frame.</p>
 </dd>
@@ -2442,8 +2468,8 @@ and <span class="math notranslate nohighlight">\(S_{zi}\)</span> is the z-compon
 <span class="sig-name descname"><span class="pre">Zeeman_B1_Offresonance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega1freq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega1Phase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Zeeman_B1_Offresonance"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Constructs a time-dependent Zeeman Hamiltonian for an off-resonant RF field.</p>
 <p>H(t) = ω₁ * [Sₓ cos(ω_RF * t + ϕ) + Sᵧ sin(ω_RF * t + ϕ)]</p>
-<section id="id157">
-<h4>Parameters:<a class="headerlink" href="#id157" title="Link to this heading"></a></h4>
+<section id="id159">
+<h4>Parameters:<a class="headerlink" href="#id159" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>t<span class="classifier">float</span></dt><dd><p>Time in seconds.</p>
 </dd>
@@ -2455,8 +2481,8 @@ and <span class="math notranslate nohighlight">\(S_{zi}\)</span> is the z-compon
 </dd>
 </dl>
 </section>
-<section id="id158">
-<h4>Returns:<a class="headerlink" href="#id158" title="Link to this heading"></a></h4>
+<section id="id160">
+<h4>Returns:<a class="headerlink" href="#id160" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Time-dependent Hamiltonian matrix (not a QunObj).</p>
 </dd>
@@ -2468,8 +2494,8 @@ and <span class="math notranslate nohighlight">\(S_{zi}\)</span> is the z-compon
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Zeeman_B1_ShapedPulse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega1T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega1freq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega1PhaseT</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_Hamiltonian.html#Hamiltonian.Zeeman_B1_ShapedPulse"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Constructs time-dependent B₁ Hamiltonian with shaped amplitude and phase (e.g., Gaussian).</p>
-<section id="id159">
-<h4>Parameters:<a class="headerlink" href="#id159" title="Link to this heading"></a></h4>
+<section id="id161">
+<h4>Parameters:<a class="headerlink" href="#id161" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>t<span class="classifier">float</span></dt><dd><p>Time (in seconds).</p>
 </dd>
@@ -2481,8 +2507,8 @@ and <span class="math notranslate nohighlight">\(S_{zi}\)</span> is the z-compon
 </dd>
 </dl>
 </section>
-<section id="id160">
-<h4>Returns:<a class="headerlink" href="#id160" title="Link to this heading"></a></h4>
+<section id="id162">
+<h4>Returns:<a class="headerlink" href="#id162" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Time-dependent Hamiltonian matrix (not a QunObj).</p>
 </dd>
@@ -2500,8 +2526,8 @@ and <span class="math notranslate nohighlight">\(S_{zi}\)</span> is the z-compon
 <p>where:
 - <span class="math notranslate nohighlight">\(\omega_{0i}\)</span> is the Larmor frequency of the <em>i</em>-th spin
 - <span class="math notranslate nohighlight">\(\omega_{\mathrm{RF}i}\)</span> is the rotating frame reference frequency</p>
-<section id="id161">
-<h4>Returns<a class="headerlink" href="#id161" title="Link to this heading"></a></h4>
+<section id="id163">
+<h4>Returns<a class="headerlink" href="#id163" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>QunObj</dt><dd><p>The Zeeman Hamiltonian in the rotating frame.</p>
 </dd>
@@ -2535,26 +2561,6 @@ representations.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HardPulse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_QS</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_HardPulse.html#HardPulse"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">Matrix_Tol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_HardPulse.html#HardPulse.Matrix_Tol"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Set elements of a matrix below a threshold tolerance to zero.</p>
-<section id="id162">
-<h4>Parameters<a class="headerlink" href="#id162" title="Link to this heading"></a></h4>
-<dl class="simple">
-<dt>M<span class="classifier">np.ndarray</span></dt><dd><p>Input matrix to clean.</p>
-</dd>
-</dl>
-</section>
-<section id="id163">
-<h4>Returns<a class="headerlink" href="#id163" title="Link to this heading"></a></h4>
-<dl class="simple">
-<dt>np.ndarray</dt><dd><p>Matrix with small values zeroed out.</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">Rotate_CyclicPermutation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_HardPulse.html#HardPulse.Rotate_CyclicPermutation"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -4307,7 +4313,7 @@ expectation value calculations, and more.</p>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QunObj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DType=&lt;class</span> <span class="pre">'complex'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PrintDefault=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerence=1e-10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_QuantumObject.html#QunObj"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QunObj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DType=&lt;class</span> <span class="pre">'complex'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PrintDefault=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_QuantumObject.html#QunObj"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py">
@@ -4386,7 +4392,7 @@ For operators (type=’operator’): <span class="math notranslate nohighlight
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">Commute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_QuantumObject.html#QunObj.Commute"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-name descname"><span class="pre">Commute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Source_Doc/PyOR_QuantumObject.html#QunObj.Commute"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Check if two QunObj instances commute.</p>
 <section id="id281">
 <h4>Parameters<a class="headerlink" href="#id281" title="Link to this heading"></a></h4>
@@ -4774,8 +4780,6 @@ plotting preferences, and state evolution.</p>
 <dt>Ldim<span class="classifier">int</span></dt><dd><p>Dimension of the Liouville space (Vdim^2).</p>
 </dd>
 <dt>hbarEQ1<span class="classifier">bool</span></dt><dd><p>Toggle to treat ℏ = 1 in Hamiltonians.</p>
-</dd>
-<dt>MatrixTolarence<span class="classifier">float</span></dt><dd><p>Elements smaller than this are considered zero in matrices.</p>
 </dd>
 <dt>Gamma<span class="classifier">list</span></dt><dd><p>Gyromagnetic ratios of spins.</p>
 </dd>
