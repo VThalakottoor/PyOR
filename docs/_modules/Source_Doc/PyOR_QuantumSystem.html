@@ -203,6 +203,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SpinList</span><span class="p">,</span> <span class="n">PrintDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">PrintDefault</span> <span class="o">=</span> <span class="n">PrintDefault</span>
+        
         <span class="c1"># Spin system definition</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SpinList</span> <span class="o">=</span> <span class="n">SpinList</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SpinDic</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">SpinList</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -581,16 +584,17 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">AcqFS</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">AcqDT</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rotating frame frequencies:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OMEGA_RF</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Offset frequencies:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial spin temperatures:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">I_spintemp</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final spin temperatures:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_spintemp</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Radiation damping gain:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RD_xi</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Radiation damping phase:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RD_phase</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Rprocess = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Rprocess</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RelaxParDipole_tau = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_tau</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DipolePairs = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Dipole_Pairs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RelaxParDipole_bIS = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_bIS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PrintDefault</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rotating frame frequencies:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OMEGA_RF</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Offset frequencies:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial spin temperatures:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">I_spintemp</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final spin temperatures:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_spintemp</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Radiation damping gain:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RD_xi</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Radiation damping phase:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RD_phase</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Rprocess = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Rprocess</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RelaxParDipole_tau = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_tau</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DipolePairs = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Dipole_Pairs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RelaxParDipole_bIS = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_bIS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">IndividualThermalDensityMatrix</span><span class="p">()</span>
 

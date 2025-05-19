@@ -114,6 +114,7 @@
 <span class="sd">            An instance of a quantum system (expected to contain spin information and operators).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span> <span class="o">=</span> <span class="n">class_QS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Return_KetState_Component</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="Basis.BasisChange_TransformationMatrix">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.BasisChange_TransformationMatrix">[docs]</a>
@@ -149,6 +150,60 @@
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
                 <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">((</span><span class="n">old</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">))</span> <span class="o">@</span> <span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">QunObj</span><span class="p">(</span><span class="n">U</span><span class="p">)</span> </div>
+
+
+<div class="viewcode-block" id="Basis.BasisChange_HamiltonianEigenStates">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.BasisChange_HamiltonianEigenStates">[docs]</a>
+    <span class="k">def</span> <span class="nf">BasisChange_HamiltonianEigenStates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transform the basis to the eigenbasis of a given Hamiltonian.</span>
+
+<span class="sd">        This method computes the eigenvectors of the input Hamiltonian `H` and</span>
+<span class="sd">        expresses them in the Zeeman basis. It stores the resulting transformation</span>
+<span class="sd">        matrix in the quantum system, updates the operator basis, and returns</span>
+<span class="sd">        the eigenvectors and their symbolic representations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        H : QunObj or np.ndarray</span>
+<span class="sd">            The Hamiltonian for which the eigenbasis should be computed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        eigenvectors : np.ndarray</span>
+<span class="sd">            Eigenvectors of the Hamiltonian.</span>
+<span class="sd">        Dic : list of str</span>
+<span class="sd">            Symbolic expressions of the eigenvectors in the Zeeman basis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Dic</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Diagonalize the Hamiltonian</span>
+        <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">Eigen_Split</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+
+        <span class="c1"># Get Zeeman basis states and their labels</span>
+        <span class="n">Zstates</span><span class="p">,</span> <span class="n">DicZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zeeman_Basis</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Return_KetState_Component</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># Convert each eigenvector to a readable label</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">eigenvectors</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">Zstates</span><span class="p">,</span> <span class="n">DicZ</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Ket State =&quot;</span><span class="p">):</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;Ket State = &quot;</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="n">Dic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span> <span class="k">if</span> <span class="n">label</span> <span class="k">else</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Return_KetState_Component</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Transformation matrix</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_TransformationMatrix</span><span class="p">(</span><span class="n">Zstates</span><span class="p">,</span> <span class="n">eigenvectors</span><span class="p">)</span>
+
+        <span class="c1"># Store and update system basis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span> <span class="o">=</span> <span class="n">U</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">=</span> <span class="s2">&quot;Hamiltonian eigen states&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Update</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">eigenvectors</span><span class="p">,</span> <span class="n">Dic</span></div>
 
 
 <div class="viewcode-block" id="Basis.BasisChange_State">
@@ -309,8 +364,10 @@
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="si">}</span><span class="s2">j&quot;</span>
                 <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">comp_str</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> + &quot;</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output</span><span class="p">))[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span></div>
+        <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output</span><span class="p">))[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Return_KetState_Component</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Basis.CG_Coefficient">
@@ -423,6 +480,60 @@
                     
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">OP</span><span class="p">),</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span>        </div>
+
+
+<div class="viewcode-block" id="Basis.ProductOperators_SphericalTensor_Test">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SphericalTensor_Test">[docs]</a>
+    <span class="k">def</span> <span class="nf">ProductOperators_SphericalTensor_Test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;negative to positive&#39;</span><span class="p">,</span> <span class="n">Index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate spherical tensor basis for a multi-spin system.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sort : str, optional</span>
+<span class="sd">            Sorting option for coherence order (&#39;normal&#39;, &#39;negative to positive&#39;, &#39;zero to high&#39;).</span>
+<span class="sd">        Index : bool, optional</span>
+<span class="sd">            Whether to append index to labels.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of QunObj</span>
+<span class="sd">            List of spherical tensor operators for the multi-spin system.</span>
+<span class="sd">        list of int</span>
+<span class="sd">            Corresponding coherence orders.</span>
+<span class="sd">        list of str</span>
+<span class="sd">            Labels of each basis operator in the form SpinLabel(L,M).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">spin_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">slist</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">SpinLabels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">SpinDic</span>
+
+        <span class="c1"># First spin</span>
+        <span class="n">OP</span><span class="p">,</span> <span class="n">CO</span><span class="p">,</span> <span class="n">LM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Spherical_OpBasis</span><span class="p">(</span><span class="n">spin_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">DIC</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SpinLabels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">M</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="k">for</span> <span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span> <span class="ow">in</span> <span class="n">LM</span><span class="p">]</span>
+
+        <span class="c1"># Loop over remaining spins</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">spin_list</span><span class="p">)):</span>
+            <span class="n">OP_next</span><span class="p">,</span> <span class="n">CO_next</span><span class="p">,</span> <span class="n">LM_next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Spherical_OpBasis</span><span class="p">(</span><span class="n">spin_list</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">DIC_next</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SpinLabels</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">M</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="k">for</span> <span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span> <span class="ow">in</span> <span class="n">LM_next</span><span class="p">]</span>
+
+            <span class="n">OP</span><span class="p">,</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperator</span><span class="p">(</span>
+                <span class="n">OP</span><span class="p">,</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span><span class="p">,</span>
+                <span class="n">OP_next</span><span class="p">,</span> <span class="n">CO_next</span><span class="p">,</span> <span class="n">DIC_next</span><span class="p">,</span>
+                <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">Index</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Return based on propagation space</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Hilbert&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">OP</span><span class="p">,</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span>
+                    <span class="n">OP</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
+                <span class="p">),</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">OP</span><span class="p">),</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span></div>
 
 
 <div class="viewcode-block" id="Basis.ProductOperator">
@@ -557,6 +668,110 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">),</span> <span class="n">Dic_out</span></div>
 
 
+<div class="viewcode-block" id="Basis.ProductOperators_SpinHalf_Cartesian_Test">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_Cartesian_Test">[docs]</a>
+    <span class="k">def</span> <span class="nf">ProductOperators_SpinHalf_Cartesian_Test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Normal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate product operator basis in the Cartesian basis for spin-1/2 systems.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Index : bool, optional</span>
+<span class="sd">            Whether to include index in labels.</span>
+<span class="sd">        Normal : bool, optional</span>
+<span class="sd">            Whether to normalize the operators.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of QunObj</span>
+<span class="sd">            Product operators.</span>
+<span class="sd">        list of str</span>
+<span class="sd">            Corresponding labels.</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+        <span class="n">Dic_base</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">]</span>
+        <span class="n">SpinLabels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">SpinDic</span>
+
+        <span class="n">Single_OP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">SpinOperatorsSingleSpin</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+        <span class="n">Basis_SpinHalf</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span>
+            <span class="n">QunObj</span><span class="p">(</span><span class="n">Single_OP</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="n">QunObj</span><span class="p">(</span><span class="n">Single_OP</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="n">QunObj</span><span class="p">(</span><span class="n">Single_OP</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="p">]</span>
+
+        <span class="n">Dic</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SpinLabels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">op</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">Dic_base</span><span class="p">]</span>
+        <span class="n">Coherence_order_SpinHalf</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Dic_base</span><span class="p">)))</span>
+
+        <span class="n">Basis_SpinHalf_out</span> <span class="o">=</span> <span class="n">Basis_SpinHalf</span>
+        <span class="n">Dic_out</span> <span class="o">=</span> <span class="n">Dic</span>
+        <span class="n">Coherence_order_SpinHalf_out</span> <span class="o">=</span> <span class="n">Coherence_order_SpinHalf</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Nspins</span><span class="p">):</span>
+            <span class="n">Dic_next</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SpinLabels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}{</span><span class="n">op</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">Dic_base</span><span class="p">]</span>
+            <span class="n">indexing</span> <span class="o">=</span> <span class="n">Index</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Nspins</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>
+            <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperator</span><span class="p">(</span>
+                <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span><span class="p">,</span>
+                <span class="n">Basis_SpinHalf</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf</span><span class="p">,</span> <span class="n">Dic_next</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Clean Dic_out: robust spin-op parsing and cleanup</span>
+        <span class="n">cleaned_Dic_out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cleaned_Basis_out</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">valid_suffixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">}</span>
+        <span class="n">spin_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">SpinDic</span>
+
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Dic_out</span><span class="p">,</span> <span class="n">Basis_SpinHalf_out</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">parsed_terms</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+                <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">spin_label</span> <span class="ow">in</span> <span class="n">spin_labels</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">spin_label</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">valid_suffixes</span><span class="p">:</span>
+                            <span class="n">full_term</span> <span class="o">=</span> <span class="n">spin_label</span> <span class="o">+</span> <span class="n">suffix</span>
+                            <span class="k">if</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">full_term</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+                                <span class="n">parsed_terms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">full_term</span><span class="p">)</span>
+                                <span class="n">i</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">full_term</span><span class="p">)</span>
+                                <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="k">break</span>
+                        <span class="k">if</span> <span class="n">matched</span><span class="p">:</span>
+                            <span class="k">break</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># Skip unrecognized junk (should not happen)</span>
+
+            <span class="c1"># Remove &#39;id&#39; terms</span>
+            <span class="n">reduced_terms</span> <span class="o">=</span> <span class="p">[</span><span class="n">term</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">parsed_terms</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">term</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)]</span>
+
+            <span class="k">if</span> <span class="n">reduced_terms</span><span class="p">:</span>
+                <span class="n">new_label</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reduced_terms</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_label</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span>
+
+            <span class="n">cleaned_Dic_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_label</span><span class="p">)</span>
+            <span class="n">cleaned_Basis_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+
+        <span class="n">Dic_out</span> <span class="o">=</span> <span class="n">cleaned_Dic_out</span>
+        <span class="n">Basis_SpinHalf_out</span> <span class="o">=</span> <span class="n">cleaned_Basis_out</span>
+
+        <span class="k">if</span> <span class="n">Normal</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">)):</span>
+                <span class="n">Basis_SpinHalf_out</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Hilbert&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> 
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span>
+                    <span class="n">Basis_SpinHalf_out</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
+                <span class="p">),</span> <span class="n">Dic_out</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">),</span> <span class="n">Dic_out</span></div>
+
+
 <div class="viewcode-block" id="Basis.ProductOperators_SpinHalf_PMZ">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_PMZ">[docs]</a>
     <span class="k">def</span> <span class="nf">ProductOperators_SpinHalf_PMZ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;negative to positive&#39;</span><span class="p">,</span> <span class="n">Index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Normal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -630,6 +845,113 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span></div>
 
 
+<div class="viewcode-block" id="Basis.ProductOperators_SpinHalf_PMZ_Test">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_PMZ_Test">[docs]</a>
+    <span class="k">def</span> <span class="nf">ProductOperators_SpinHalf_PMZ_Test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;negative to positive&#39;</span><span class="p">,</span> <span class="n">Index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Normal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate product operators for spin-1/2 systems in the PMZ basis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sort : str, optional</span>
+<span class="sd">            Sorting method for coherence order.</span>
+<span class="sd">        Index : bool, optional</span>
+<span class="sd">            Whether to include index in labels.</span>
+<span class="sd">        Normal : bool, optional</span>
+<span class="sd">            Whether to normalize the operators.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of QunObj</span>
+<span class="sd">            Product operators.</span>
+<span class="sd">        list of int</span>
+<span class="sd">            Coherence orders.</span>
+<span class="sd">        list of str</span>
+<span class="sd">            Operator labels.</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+        <span class="n">Dic_base</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">]</span>
+        <span class="n">Coherence_order_SpinHalf</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">SpinLabels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">SpinDic</span>
+
+        <span class="c1"># Single-spin PMZ operators</span>
+        <span class="n">Single_OP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">SpinOperatorsSingleSpin</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+        <span class="n">Basis_SpinHalf</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">QunObj</span><span class="p">(</span><span class="n">Single_OP</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">Single_OP</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>              <span class="c1"># m</span>
+            <span class="n">QunObj</span><span class="p">(</span><span class="n">Single_OP</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>                                  <span class="c1"># z</span>
+            <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span>                                     <span class="c1"># id</span>
+            <span class="n">QunObj</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">Single_OP</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">Single_OP</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>        <span class="c1"># p</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Initial labels</span>
+        <span class="n">Dic</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SpinLabels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">op</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">Dic_base</span><span class="p">]</span>
+
+        <span class="c1"># Initialize outputs</span>
+        <span class="n">Basis_SpinHalf_out</span> <span class="o">=</span> <span class="n">Basis_SpinHalf</span>
+        <span class="n">Dic_out</span> <span class="o">=</span> <span class="n">Dic</span>
+        <span class="n">Coherence_order_SpinHalf_out</span> <span class="o">=</span> <span class="n">Coherence_order_SpinHalf</span>
+
+        <span class="c1"># Loop for multiple spins</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Nspins</span><span class="p">):</span>
+            <span class="n">Dic_next</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SpinLabels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}{</span><span class="n">op</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">Dic_base</span><span class="p">]</span>
+            <span class="n">indexing</span> <span class="o">=</span> <span class="n">Index</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Nspins</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>
+            <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperator</span><span class="p">(</span>
+                <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span><span class="p">,</span>
+                <span class="n">Basis_SpinHalf</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf</span><span class="p">,</span> <span class="n">Dic_next</span><span class="p">,</span> <span class="n">sort</span><span class="p">,</span> <span class="n">indexing</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Clean Dic_out: remove spin terms ending in &#39;id&#39;</span>
+        <span class="n">cleaned_Dic_out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cleaned_Basis_out</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">valid_suffixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Dic_out</span><span class="p">,</span> <span class="n">Basis_SpinHalf_out</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">parsed_terms</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+                <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">spin_label</span> <span class="ow">in</span> <span class="n">SpinLabels</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">valid_suffixes</span><span class="p">:</span>
+                        <span class="n">full_term</span> <span class="o">=</span> <span class="n">spin_label</span> <span class="o">+</span> <span class="n">suffix</span>
+                        <span class="k">if</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">full_term</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+                            <span class="n">parsed_terms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">full_term</span><span class="p">)</span>
+                            <span class="n">i</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">full_term</span><span class="p">)</span>
+                            <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">break</span>
+                    <span class="k">if</span> <span class="n">matched</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># Skip unrecognized part</span>
+
+            <span class="c1"># Remove terms ending in &#39;id&#39;</span>
+            <span class="n">reduced_terms</span> <span class="o">=</span> <span class="p">[</span><span class="n">term</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">parsed_terms</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">term</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)]</span>
+            <span class="n">new_label</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reduced_terms</span><span class="p">)</span> <span class="k">if</span> <span class="n">reduced_terms</span> <span class="k">else</span> <span class="s2">&quot;id&quot;</span>
+
+            <span class="n">cleaned_Dic_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_label</span><span class="p">)</span>
+            <span class="n">cleaned_Basis_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+
+        <span class="n">Dic_out</span> <span class="o">=</span> <span class="n">cleaned_Dic_out</span>
+        <span class="n">Basis_SpinHalf_out</span> <span class="o">=</span> <span class="n">cleaned_Basis_out</span>
+
+        <span class="c1"># Normalize</span>
+        <span class="k">if</span> <span class="n">Normal</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">)):</span>
+                <span class="n">Basis_SpinHalf_out</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">QunObj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+
+        <span class="c1"># Return based on propagation space</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Hilbert&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span>
+                    <span class="n">Basis_SpinHalf_out</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
+                <span class="p">),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span></div>
+
+
 <div class="viewcode-block" id="Basis.ProductOperators_SpinHalf_SphericalTensor">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_SphericalTensor">[docs]</a>
     <span class="k">def</span> <span class="nf">ProductOperators_SpinHalf_SphericalTensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;negative to positive&#39;</span><span class="p">,</span> <span class="n">Index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -687,6 +1009,99 @@
                         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span></div>
+
+
+<div class="viewcode-block" id="Basis.ProductOperators_SpinHalf_SphericalTensor_Test">
+<a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.ProductOperators_SpinHalf_SphericalTensor_Test">[docs]</a>
+    <span class="k">def</span> <span class="nf">ProductOperators_SpinHalf_SphericalTensor_Test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;negative to positive&#39;</span><span class="p">,</span> <span class="n">Index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate product operators for spin-1/2 systems in the spherical tensor basis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sort : str, optional</span>
+<span class="sd">            Sorting method for coherence order.</span>
+<span class="sd">        Index : bool, optional</span>
+<span class="sd">            Whether to include index in labels.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of QunObj</span>
+<span class="sd">            Product operators.</span>
+<span class="sd">        list of int</span>
+<span class="sd">            Coherence orders.</span>
+<span class="sd">        list of str</span>
+<span class="sd">            Operator labels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Dic_base</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">]</span>
+        <span class="n">SpinLabels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">SpinDic</span>
+
+        <span class="c1"># Get single-spin spherical tensor basis</span>
+        <span class="n">Basis_SpinHalf</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf</span><span class="p">,</span> <span class="n">LM_state_SpinHalf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Spherical_OpBasis</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># Build labels for the first spin</span>
+        <span class="n">Dic</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SpinLabels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">op</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">Dic_base</span><span class="p">]</span>
+
+        <span class="n">Basis_SpinHalf_out</span> <span class="o">=</span> <span class="n">Basis_SpinHalf</span>
+        <span class="n">Coherence_order_SpinHalf_out</span> <span class="o">=</span> <span class="n">Coherence_order_SpinHalf</span>
+        <span class="n">Dic_out</span> <span class="o">=</span> <span class="n">Dic</span>
+
+        <span class="c1"># Build product operators across spins</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Nspins</span><span class="p">):</span>
+            <span class="n">Dic_next</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SpinLabels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}{</span><span class="n">op</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">Dic_base</span><span class="p">]</span>
+            <span class="n">indexing</span> <span class="o">=</span> <span class="n">Index</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Nspins</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>
+            <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperator</span><span class="p">(</span>
+                <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span><span class="p">,</span>
+                <span class="n">Basis_SpinHalf</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf</span><span class="p">,</span> <span class="n">Dic_next</span><span class="p">,</span> <span class="n">sort</span><span class="p">,</span> <span class="n">indexing</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Clean Dic_out: remove &#39;id&#39; spin terms</span>
+        <span class="n">cleaned_Dic_out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cleaned_Basis_out</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">valid_suffixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Dic_out</span><span class="p">,</span> <span class="n">Basis_SpinHalf_out</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">parsed_terms</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+                <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">spin_label</span> <span class="ow">in</span> <span class="n">SpinLabels</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">valid_suffixes</span><span class="p">:</span>
+                        <span class="n">full_term</span> <span class="o">=</span> <span class="n">spin_label</span> <span class="o">+</span> <span class="n">suffix</span>
+                        <span class="k">if</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">full_term</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+                            <span class="n">parsed_terms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">full_term</span><span class="p">)</span>
+                            <span class="n">i</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">full_term</span><span class="p">)</span>
+                            <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">break</span>
+                    <span class="k">if</span> <span class="n">matched</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># Skip unrecognized part</span>
+
+            <span class="c1"># Remove &#39;id&#39; terms only</span>
+            <span class="n">reduced_terms</span> <span class="o">=</span> <span class="p">[</span><span class="n">term</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">parsed_terms</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">term</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)]</span>
+            <span class="n">new_label</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reduced_terms</span><span class="p">)</span> <span class="k">if</span> <span class="n">reduced_terms</span> <span class="k">else</span> <span class="s2">&quot;id&quot;</span>
+
+            <span class="n">cleaned_Dic_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_label</span><span class="p">)</span>
+            <span class="n">cleaned_Basis_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+
+        <span class="n">Dic_out</span> <span class="o">=</span> <span class="n">cleaned_Dic_out</span>
+        <span class="n">Basis_SpinHalf_out</span> <span class="o">=</span> <span class="n">cleaned_Basis_out</span>
+
+        <span class="c1"># Return based on propagation space</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Hilbert&quot;</span><span class="p">:</span>   
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>     
+                <span class="k">return</span> <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>     
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span>
+                    <span class="n">Basis_SpinHalf_out</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
+                <span class="p">),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span>
+                            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span></div>
+
 
 
 <div class="viewcode-block" id="Basis.String_to_Matrix">

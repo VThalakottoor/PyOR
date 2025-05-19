@@ -59,6 +59,7 @@ Liquid State NMR 1D
 
 - `1D Pulse Acquisition <Examples/Liquid_State_NMR_1D/1D_Pulse_Acquisition.ipynb>`_
 - `1D Pulse Acquisition with user defined Hamiltonians <Examples/Liquid_State_NMR_1D/1D_Pulse_Acquisition_UserDefinedHamiltonian.ipynb>`_
+- `1D Pulse Acquisition with user defined Hamiltonians (Basis change to Hamiltonian eigen states) <Examples/Liquid_State_NMR_1D/1D_Pulse_Acquisition_UserDefinedHamiltonian_Basis_HamiltonianEigenStates.ipynb>`_
 - `1D Pulse Acquisition with singlet triplet basis <Examples/Liquid_State_NMR_1D/1D_Pulse_Acquisition_SingletTriplet.ipynb>`_
 
 Nonlinear NMR Maser Data Analysis

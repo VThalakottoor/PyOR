@@ -122,6 +122,9 @@ class QuantumSystem:
     """
 
     def __init__(self, SpinList, PrintDefault=True):
+
+        self.PrintDefault = PrintDefault
+        
         # Spin system definition
         self.SpinList = SpinList
         self.SpinDic = list(SpinList.keys())
@@ -480,16 +483,17 @@ class QuantumSystem:
 
         self.AcqFS = 1.0 / self.AcqDT
 
-        print("Rotating frame frequencies:", self.OMEGA_RF)
-        print("Offset frequencies:", self.OFFSET)
-        print("Initial spin temperatures:", self.I_spintemp)
-        print("Final spin temperatures:", self.F_spintemp)
-        print("Radiation damping gain:", self.RD_xi)
-        print("Radiation damping phase:", self.RD_phase)
-        print(f"\nRprocess = {self.Rprocess}")
-        print(f"RelaxParDipole_tau = {self.RelaxParDipole_tau}")
-        print(f"DipolePairs = {self.Dipole_Pairs}")
-        print(f"RelaxParDipole_bIS = {self.RelaxParDipole_bIS}")
+        if self.PrintDefault:
+            print("Rotating frame frequencies:", self.OMEGA_RF)
+            print("Offset frequencies:", self.OFFSET)
+            print("Initial spin temperatures:", self.I_spintemp)
+            print("Final spin temperatures:", self.F_spintemp)
+            print("Radiation damping gain:", self.RD_xi)
+            print("Radiation damping phase:", self.RD_phase)
+            print(f"\nRprocess = {self.Rprocess}")
+            print(f"RelaxParDipole_tau = {self.RelaxParDipole_tau}")
+            print(f"DipolePairs = {self.Dipole_Pairs}")
+            print(f"RelaxParDipole_bIS = {self.RelaxParDipole_bIS}")
 
         self.IndividualThermalDensityMatrix()
 

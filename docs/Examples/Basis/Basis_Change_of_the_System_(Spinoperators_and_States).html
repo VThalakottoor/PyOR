@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Example: Basis Change of the System (Spin operators and States) &mdash; PyOR 1.0.0 documentation</title>
+  <title>Basis Change of the System (Spin operators and States) &mdash; PyOR 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -70,7 +70,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Example: Basis Change of the System (Spin operators and States)</li>
+      <li class="breadcrumb-item active">Basis Change of the System (Spin operators and States)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/Examples/Basis/Basis_Change_of_the_System_(Spinoperators_and_States).ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -80,13 +80,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="Example:-Basis-Change-of-the-System-(Spin-operators-and-States)">
-<h1>Example: Basis Change of the System (Spin operators and States)<a class="headerlink" href="#Example:-Basis-Change-of-the-System-(Spin-operators-and-States)" title="Link to this heading"></a></h1>
-<section id="Author:-Vineeth-Francis-Thalakottoor">
-<h2>Author: Vineeth Francis Thalakottoor<a class="headerlink" href="#Author:-Vineeth-Francis-Thalakottoor" title="Link to this heading"></a></h2>
-</section>
-<section id="Email:-vineeth.thalakottoor&#64;ens.psl.eu-or-vineethfrancis.physics&#64;gmail.com">
-<h2>Email: <a class="reference external" href="mailto:vineeth&#46;thalakottoor&#37;&#52;&#48;ens&#46;psl&#46;eu">vineeth<span>&#46;</span>thalakottoor<span>&#64;</span>ens<span>&#46;</span>psl<span>&#46;</span>eu</a> or <a class="reference external" href="mailto:vineethfrancis&#46;physics&#37;&#52;&#48;gmail&#46;com">vineethfrancis<span>&#46;</span>physics<span>&#64;</span>gmail<span>&#46;</span>com</a><a class="headerlink" href="#Email:-vineeth.thalakottoor@ens.psl.eu-or-vineethfrancis.physics@gmail.com" title="Link to this heading"></a></h2>
+  <section id="Basis-Change-of-the-System-(Spin-operators-and-States)">
+<h1>Basis Change of the System (Spin operators and States)<a class="headerlink" href="#Basis-Change-of-the-System-(Spin-operators-and-States)" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>Author: Vineeth Francis Thalakottoor</p></li>
+<li><p>Email: <a class="reference external" href="mailto:vineeth&#46;thalakottoor&#37;&#52;&#48;ens&#46;psl&#46;eu">vineeth<span>&#46;</span>thalakottoor<span>&#64;</span>ens<span>&#46;</span>psl<span>&#46;</span>eu</a> or <a class="reference external" href="mailto:vineethfrancis&#46;physics&#37;&#52;&#48;gmail&#46;com">vineethfrancis<span>&#46;</span>physics<span>&#64;</span>gmail<span>&#46;</span>com</a></p></li>
+</ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -129,17 +128,39 @@
 </pre></div>
 </div>
 </div>
-<section id="Set-parameters">
-<h3>Set parameters<a class="headerlink" href="#Set-parameters" title="Link to this heading"></a></h3>
+<section id="Spin-Operators">
+<h2>Spin Operators<a class="headerlink" href="#Spin-Operators" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>After (first) QS.Initialize(), spin operators are always in Zeeman basis</p></li>
+</ul>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Ax</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0.5 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0.5\\0.5 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0.5 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+</section>
+<section id="Set-parameters">
+<h2>Set parameters<a class="headerlink" href="#Set-parameters" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Master Equation</span>
-<span class="n">QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">=</span> <span class="s2">&quot;Liouville&quot;</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">=</span> <span class="s2">&quot;Hilbert&quot;</span>
 <span class="n">QS</span><span class="o">.</span><span class="n">MasterEquation</span> <span class="o">=</span> <span class="s2">&quot;Redfield&quot;</span>
 
-<span class="c1"># Operator Basis (testing)</span>
+<span class="c1"># Operator Basis</span>
 <span class="n">QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">=</span> <span class="s2">&quot;Singlet Triplet&quot;</span> <span class="c1"># or</span>
 <span class="c1">#QS.Basis_SpinOperators_Hilbert = &quot;Zeeman&quot;</span>
 
@@ -192,22 +213,23 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 </div>
 </section>
 <section id="Generate-Hamiltonians">
-<h3>Generate Hamiltonians<a class="headerlink" href="#Generate-Hamiltonians" title="Link to this heading"></a></h3>
+<h2>Generate Hamiltonians<a class="headerlink" href="#Generate-Hamiltonians" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate Larmor Frequencies</span>
-<span class="n">QS</span><span class="o">.</span><span class="n">print_Larmor</span> <span class="o">=</span> <span class="kc">True</span>
+
 <span class="n">Ham</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="n">QS</span><span class="p">)</span>
-<span class="n">COMM</span> <span class="o">=</span> <span class="n">Commutators</span><span class="p">()</span>
+<span class="n">COMM</span> <span class="o">=</span> <span class="n">Commutators</span><span class="p">(</span><span class="n">QS</span><span class="p">)</span>
+
+<span class="c1"># Zeeman Hamiltonian in rotating frame</span>
 <span class="n">Hz</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">Zeeman_RotFrame</span><span class="p">()</span>
 
 <span class="c1"># J coupling Hamiltonian</span>
 <span class="n">Hj</span> <span class="o">=</span> <span class="n">Ham</span><span class="o">.</span><span class="n">Jcoupling</span><span class="p">()</span>
 
 <span class="c1"># Generating the commutation superoperator</span>
-<span class="n">QS</span><span class="o">.</span><span class="n">RowColOrder</span> <span class="o">=</span> <span class="s1">&#39;C&#39;</span>
 <span class="n">QLib</span> <span class="o">=</span> <span class="n">QuantumLibrary</span><span class="p">(</span><span class="n">QS</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -221,7 +243,7 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hz</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span>
@@ -229,7 +251,7 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -237,7 +259,7 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 $\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 20.0000008601147 &amp; 0\\0 &amp; -30.0000000759161 &amp; 0 &amp; 0\\20.0000008601147 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 30.0000000759161\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hj</span><span class="o">.</span><span class="n">Inverse2PI</span><span class="p">()</span><span class="o">.</span><span class="n">Tolarence</span><span class="p">(</span><span class="mf">1.0e-5</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
@@ -245,7 +267,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 20.0000008601147 &amp; 0\\0 &
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -253,10 +275,13 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 20.0000008601147 &amp; 0\\0 &
 $\displaystyle \left[\begin{matrix}-3.75000000948952 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 1.24999997786618 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 1.24999982608419 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1.24999997786618\end{matrix}\right]$</div></div>
 </div>
 </section>
-<section id="Calling-Hamiltonina-class-from-QunautmSystem-class">
-<h3>Calling Hamiltonina class from QunautmSystem class<a class="headerlink" href="#Calling-Hamiltonina-class-from-QunautmSystem-class" title="Link to this heading"></a></h3>
+<section id="Calling-Hamiltonian-class-from-QunautmSystem-class">
+<h2>Calling Hamiltonian class from QunautmSystem class<a class="headerlink" href="#Calling-Hamiltonian-class-from-QunautmSystem-class" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Alternate way of calling Hamiltonian class from QuantuSystem class</p></li>
+</ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hj1</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">Class_hamiltonian</span><span class="o">.</span><span class="n">Jcoupling</span><span class="p">()</span>
@@ -265,7 +290,7 @@ $\displaystyle \left[\begin{matrix}-3.75000000948952 &amp; 0 &amp; 0 &amp; 0\\0 
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -273,10 +298,13 @@ $\displaystyle \left[\begin{matrix}-3.75000000948952 &amp; 0 &amp; 0 &amp; 0\\0 
 $\displaystyle \left[\begin{matrix}-3.75000000948952 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 1.24999997786618 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 1.24999982608419 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1.24999997786618\end{matrix}\right]$</div></div>
 </div>
 </section>
-<section id="Change-Basis-of-all-Operators">
-<h3>Change Basis of all Operators<a class="headerlink" href="#Change-Basis-of-all-Operators" title="Link to this heading"></a></h3>
+<section id="Spin-operators">
+<h2>Spin operators<a class="headerlink" href="#Spin-operators" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>After QS.Update, all the spin operators will be in the new basis</p></li>
+</ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Ax</span><span class="o">.</span><span class="n">matrix</span>
@@ -284,7 +312,7 @@ $\displaystyle \left[\begin{matrix}-3.75000000948952 &amp; 0 &amp; 0 &amp; 0\\0 
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -292,27 +320,35 @@ $\displaystyle \left[\begin{matrix}-3.75000000948952 &amp; 0 &amp; 0 &amp; 0\\0 
 $\displaystyle \left[\begin{matrix}0 &amp; -0.353553384542465 &amp; 0 &amp; 0.353553384542465\\-0.353553384542465 &amp; 0 &amp; 0.353553384542465 &amp; 0\\0 &amp; 0.353553384542465 &amp; 0 &amp; 0.353553384542465\\0.353553384542465 &amp; 0 &amp; 0.353553384542465 &amp; 0\end{matrix}\right]$</div></div>
 </div>
 </section>
-<section id="States">
-<h3>States<a class="headerlink" href="#States" title="Link to this heading"></a></h3>
+<section id="Basis-states">
+<h2>Basis states<a class="headerlink" href="#Basis-states" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Singlet and triplet</p></li>
+<li><p>Zeeman</p></li>
+</ul>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ST_B</span><span class="p">,</span> <span class="n">dic_ST</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">SingletTriplet_Basis</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Singlet Triplet states</span>
+<span class="n">ST_B</span><span class="p">,</span> <span class="n">dic_ST</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">SingletTriplet_Basis</span><span class="p">()</span>
+
+<span class="c1"># Zeeman states</span>
 <span class="n">Z_B</span><span class="p">,</span> <span class="n">dic_Z</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">Zeeman_Basis</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dic_ST</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Singlet triplet states dictionary</span>
+<span class="n">dic_ST</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -321,7 +357,28 @@ $\displaystyle \left[\begin{matrix}0 &amp; -0.353553384542465 &amp; 0 &amp; 0.35
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Zeeman states dictionary</span>
+<span class="n">dic_Z</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;|1/2,1/2⟩|1/2,1/2⟩&#39;,
+ &#39;|1/2,1/2⟩|1/2,-1/2⟩&#39;,
+ &#39;|1/2,-1/2⟩|1/2,1/2⟩&#39;,
+ &#39;|1/2,-1/2⟩|1/2,-1/2⟩&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ST_B</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">matrix</span>
@@ -329,7 +386,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; -0.353553384542465 &amp; 0 &amp; 0.35
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -337,26 +394,27 @@ $\displaystyle \left[\begin{matrix}0 &amp; -0.353553384542465 &amp; 0 &amp; 0.35
 $\displaystyle \left[\begin{matrix}1.0\\0\\0\\0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Z_B</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">matrix</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Z_B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}0\\0\\0\\1.0\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}0.707106781186547\\0\\0.707106781186547\\0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">ST_B</span><span class="p">,</span> <span class="n">dic_ST</span><span class="p">,</span><span class="n">Z_B</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Decompose the states in basis states</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">ST_B</span><span class="p">,</span> <span class="n">dic_ST</span><span class="p">,</span><span class="n">Z_B</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -369,16 +427,17 @@ Ket State = 1.0 Tm
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X1</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a stat with magnetic quantum number</span>
+<span class="n">X1</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
 <span class="n">X1</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -386,7 +445,7 @@ Ket State = 1.0 Tm
 $\displaystyle \left[\begin{matrix}0.707106781186547\\0\\0.707106781186547\\0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">ST_B</span><span class="p">,</span> <span class="n">dic_ST</span><span class="p">,</span><span class="n">X1</span><span class="p">)</span>
@@ -402,7 +461,7 @@ Ket State = 0.70711 S0  + 0.70711 T0
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">Z_B</span><span class="p">,</span> <span class="n">dic_Z</span><span class="p">,</span><span class="n">X1</span><span class="p">)</span>
@@ -417,7 +476,22 @@ Ket State = 0.70711 S0  + 0.70711 T0
 Ket State = 1.0 |1/2,1/2⟩|1/2,-1/2⟩
 </pre></div></div>
 </div>
-</section>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">Z_B</span><span class="p">,</span> <span class="n">dic_Z</span><span class="p">,</span><span class="n">ST_B</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Ket State = 0.70711 |1/2,1/2⟩|1/2,-1/2⟩ + -0.70711 |1/2,-1/2⟩|1/2,1/2⟩
+</pre></div></div>
+</div>
 </section>
 </section>
 

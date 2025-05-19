@@ -111,7 +111,7 @@
     {
      "data": {
       "text/plain": [
-       "<PyOR_QuantumObject.QunObj at 0x7f8433d23110>"
+       "<PyOR_QuantumObject.QunObj at 0x7ff94b272ab0>"
       ]
      },
      "execution_count": 4,
@@ -181,7 +181,7 @@
     {
      "data": {
       "text/plain": [
-       "<PyOR_QuantumObject.QunObj at 0x7f84333d4bf0>"
+       "<PyOR_QuantumObject.QunObj at 0x7ff942ee5610>"
       ]
      },
      "execution_count": 7,
@@ -409,7 +409,7 @@
      "output_type": "stream",
      "text": [
       "Larmor Frequency in MHz:  [-400.22801765 -400.22801765]\n",
-      "Total time = 3.077040672302246 seconds \n"
+      "Total time = 3.1590614318847656 seconds \n"
      ]
     }
    ],
@@ -485,7 +485,7 @@
      "data": {
       "text/plain": [
        "(<Figure size 1000x500 with 1 Axes>,\n",
-       " <matplotlib.widgets.SpanSelector at 0x7f8433458aa0>)"
+       " <matplotlib.widgets.SpanSelector at 0x7ff942d75310>)"
       ]
      },
      "execution_count": 17,
@@ -495,7 +495,7 @@
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "cf3cabc7078a4d90a8002dcc24a51d75",
+       "model_id": "74c7962fd7b24c72b8a10c74ec57f39a",
        "version_major": 2,
        "version_minor": 0
       },
@@ -533,7 +533,7 @@
      "data": {
       "text/plain": [
        "(<Figure size 1000x500 with 1 Axes>,\n",
-       " <matplotlib.widgets.SpanSelector at 0x7f843138f4d0>)"
+       " <matplotlib.widgets.SpanSelector at 0x7ff940ca0080>)"
       ]
      },
      "execution_count": 18,
@@ -543,7 +543,7 @@
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "406dbf0574fa449d958a4106405f4314",
+       "model_id": "649f5fd52adf4687b2e85d6b713edc40",
        "version_major": 2,
        "version_minor": 0
       },
@@ -598,7 +598,7 @@
      "data": {
       "text/plain": [
        "(<Figure size 1000x500 with 1 Axes>,\n",
-       " <matplotlib.widgets.SpanSelector at 0x7f84302400e0>)"
+       " <matplotlib.widgets.SpanSelector at 0x7ff940358a40>)"
       ]
      },
      "execution_count": 20,
@@ -608,7 +608,7 @@
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "05bc9064c00e4dec838ef0057ba1feb5",
+       "model_id": "c7c52c5233114c32a07030fd955c43a6",
        "version_major": 2,
        "version_minor": 0
       },

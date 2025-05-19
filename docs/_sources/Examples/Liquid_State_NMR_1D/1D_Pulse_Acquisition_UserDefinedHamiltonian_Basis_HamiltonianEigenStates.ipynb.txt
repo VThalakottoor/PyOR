@@ -65,17 +65,6 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Rotating frame frequencies: {'A': -2514706800.0, 'B': -2514706800.0}\n",
-      "Offset frequencies: {'A': 0, 'B': 0}\n",
-      "Initial spin temperatures: {'A': 300, 'B': 300}\n",
-      "Final spin temperatures: {'A': 300, 'B': 300}\n",
-      "Radiation damping gain: {'A': 0, 'B': 0}\n",
-      "Radiation damping phase: {'A': 0, 'B': 0}\n",
-      "\n",
-      "Rprocess = Phenomenological\n",
-      "RelaxParDipole_tau = 0.0\n",
-      "DipolePairs = []\n",
-      "RelaxParDipole_bIS = []\n",
       "Larmor Frequency in MHz:  [-400.22801765 -400.22801765]\n"
      ]
     }
@@ -111,7 +100,7 @@
     {
      "data": {
       "text/plain": [
-       "<PyOR_QuantumObject.QunObj at 0x7ff94b272ab0>"
+       "<PyOR_QuantumObject.QunObj at 0x7fcd2d1dcb00>"
       ]
      },
      "execution_count": 4,
@@ -181,7 +170,7 @@
     {
      "data": {
       "text/plain": [
-       "<PyOR_QuantumObject.QunObj at 0x7ff942ee5610>"
+       "<PyOR_QuantumObject.QunObj at 0x7fcd23171280>"
       ]
      },
      "execution_count": 7,
@@ -287,6 +276,221 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Change basis to Hamiltonian eigen states"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Ket State = 0.70711 |1/2,1/2⟩|1/2,-1/2⟩ + 0.70711 |1/2,-1/2⟩|1/2,1/2⟩\n",
+      "Ket State = 0.70711 |1/2,1/2⟩|1/2,-1/2⟩ + -0.70711 |1/2,-1/2⟩|1/2,1/2⟩\n",
+      "Ket State = 1.0 |1/2,1/2⟩|1/2,1/2⟩\n",
+      "Ket State = 1.0 |1/2,-1/2⟩|1/2,-1/2⟩\n",
+      "Larmor Frequency in MHz:  [-400.22801765 -400.22801765]\n"
+     ]
+    }
+   ],
+   "source": [
+    "eigenvectors, Dic = QS.Class_basis.BasisChange_HamiltonianEigenStates(Hj)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['0.70711 |1/2,1/2⟩|1/2,-1/2⟩ + 0.70711 |1/2,-1/2⟩|1/2,1/2⟩',\n",
+       " '0.70711 |1/2,1/2⟩|1/2,-1/2⟩ + -0.70711 |1/2,-1/2⟩|1/2,1/2⟩',\n",
+       " '1.0 |1/2,1/2⟩|1/2,1/2⟩',\n",
+       " '1.0 |1/2,-1/2⟩|1/2,-1/2⟩']"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Dic"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}0\\\\0.707106781186547\\\\0.707106781186547\\\\0\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[                0],\n",
+       "[0.707106781186547],\n",
+       "[0.707106781186547],\n",
+       "[                0]])"
+      ]
+     },
+     "execution_count": 28,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "eigenvectors[0].matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hamiltonian eigen states'"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "QS.Basis_SpinOperators_Hilbert"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}0 & 0 & 1.0 & 0\\\\0.707106781186547 & 0.707106781186547 & 0 & 0\\\\0.707106781186547 & -0.707106781186547 & 0 & 0\\\\0 & 0 & 0 & 1.0\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[                0,                  0, 1.0,   0],\n",
+       "[0.707106781186547,  0.707106781186547,   0,   0],\n",
+       "[0.707106781186547, -0.707106781186547,   0,   0],\n",
+       "[                0,                  0,   0, 1.0]])"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "QS.Basis_SpinOperators_TransformationMatrix.matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}0 & 0.5 & 0 & 0\\\\0.5 & 0 & 0 & 0\\\\0 & 0 & 0.5 & 0\\\\0 & 0 & 0 & -0.5\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[  0, 0.5,   0,    0],\n",
+       "[0.5,   0,   0,    0],\n",
+       "[  0,   0, 0.5,    0],\n",
+       "[  0,   0,   0, -0.5]])"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "QS.Az.matrix"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Generate Hamiltonians in new basis state"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}0 & -20.0 & 0 & 0\\\\-20.0 & 0 & 0 & 0\\\\0 & 0 & 30.0 & 0\\\\0 & 0 & 0 & -30.0\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[    0, -20.0,    0,     0],\n",
+       "[-20.0,     0,    0,     0],\n",
+       "[    0,     0, 30.0,     0],\n",
+       "[    0,     0,    0, -30.0]])"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Hz = 2.0 * np.pi * 10 * QS.Az + 2.0 * np.pi * 50 * QS.Bz\n",
+    "Hz.Inverse2PI().matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}1.24999991442865 & 0 & 0 & 0\\\\0 & -3.74999991442865 & 0 & 0\\\\0 & 0 & 1.25 & 0\\\\0 & 0 & 0 & 1.25\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[1.24999991442865,                 0,    0,    0],\n",
+       "[               0, -3.74999991442865,    0,    0],\n",
+       "[               0,                 0, 1.25,    0],\n",
+       "[               0,                 0,    0, 1.25]])"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Hj = 2.0 * np.pi * 5 * (QS.Ax * QS.Bx + QS.Ay * QS.By + QS.Az * QS.Bz)\n",
+    "Hj.Inverse2PI().matrix"
+   ]
+  },
+  {
    "attachments": {},
    "cell_type": "markdown",
    "metadata": {},
@@ -296,23 +500,23 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 11,
+   "execution_count": 18,
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/latex": [
-       "$\\displaystyle \\left[\\begin{matrix}1.0 & 0 & 0 & 0\\\\0 & 0 & 0 & 0\\\\0 & 0 & 0 & 0\\\\0 & 0 & 0 & -1.0\\end{matrix}\\right]$"
+       "$\\displaystyle \\left[\\begin{matrix}0 & 0 & 0 & 0\\\\0 & 0 & 0 & 0\\\\0 & 0 & 1.0 & 0\\\\0 & 0 & 0 & -1.0\\end{matrix}\\right]$"
       ],
       "text/plain": [
        "Matrix([\n",
-       "[1.0, 0, 0,    0],\n",
-       "[  0, 0, 0,    0],\n",
-       "[  0, 0, 0,    0],\n",
-       "[  0, 0, 0, -1.0]])"
+       "[0, 0,   0,    0],\n",
+       "[0, 0,   0,    0],\n",
+       "[0, 0, 1.0,    0],\n",
+       "[0, 0,   0, -1.0]])"
       ]
      },
-     "execution_count": 11,
+     "execution_count": 18,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -325,23 +529,23 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": 19,
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/latex": [
-       "$\\displaystyle \\left[\\begin{matrix}1.0 & 0 & 0 & 0\\\\0 & 0 & 0 & 0\\\\0 & 0 & 0 & 0\\\\0 & 0 & 0 & -1.0\\end{matrix}\\right]$"
+       "$\\displaystyle \\left[\\begin{matrix}0 & 0 & 0 & 0\\\\0 & 0 & 0 & 0\\\\0 & 0 & 1.0 & 0\\\\0 & 0 & 0 & -1.0\\end{matrix}\\right]$"
       ],
       "text/plain": [
        "Matrix([\n",
-       "[1.0, 0, 0,    0],\n",
-       "[  0, 0, 0,    0],\n",
-       "[  0, 0, 0,    0],\n",
-       "[  0, 0, 0, -1.0]])"
+       "[0, 0,   0,    0],\n",
+       "[0, 0,   0,    0],\n",
+       "[0, 0, 1.0,    0],\n",
+       "[0, 0,   0, -1.0]])"
       ]
      },
-     "execution_count": 12,
+     "execution_count": 19,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -362,23 +566,23 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": 20,
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/latex": [
-       "$\\displaystyle \\left[\\begin{matrix}0 & 0.5 & 0.5 & 0\\\\0.5 & 0 & 0 & 0.5\\\\0.5 & 0 & 0 & 0.5\\\\0 & 0.5 & 0.5 & 0\\end{matrix}\\right]$"
+       "$\\displaystyle \\left[\\begin{matrix}0 & 0 & 0.707106781186547 & 0.707106781186547\\\\0 & 0 & 0 & 0\\\\0.707106781186547 & 0 & 0 & 0\\\\0.707106781186547 & 0 & 0 & 0\\end{matrix}\\right]$"
       ],
       "text/plain": [
        "Matrix([\n",
-       "[  0, 0.5, 0.5,   0],\n",
-       "[0.5,   0,   0, 0.5],\n",
-       "[0.5,   0,   0, 0.5],\n",
-       "[  0, 0.5, 0.5,   0]])"
+       "[                0, 0, 0.707106781186547, 0.707106781186547],\n",
+       "[                0, 0,                 0,                 0],\n",
+       "[0.707106781186547, 0,                 0,                 0],\n",
+       "[0.707106781186547, 0,                 0,                 0]])"
       ]
      },
-     "execution_count": 13,
+     "execution_count": 20,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -401,7 +605,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
+   "execution_count": 21,
    "metadata": {},
    "outputs": [
     {
@@ -409,7 +613,7 @@
      "output_type": "stream",
      "text": [
       "Larmor Frequency in MHz:  [-400.22801765 -400.22801765]\n",
-      "Total time = 3.1590614318847656 seconds \n"
+      "Total time = 3.4684464931488037 seconds \n"
      ]
     }
    ],
@@ -438,7 +642,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 15,
+   "execution_count": 22,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -459,7 +663,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 16,
+   "execution_count": 23,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -468,7 +672,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 17,
+   "execution_count": 24,
    "metadata": {},
    "outputs": [
     {
@@ -485,17 +689,17 @@
      "data": {
       "text/plain": [
        "(<Figure size 1000x500 with 1 Axes>,\n",
-       " <matplotlib.widgets.SpanSelector at 0x7ff942d75310>)"
+       " <matplotlib.widgets.SpanSelector at 0x7fcd22496210>)"
       ]
      },
-     "execution_count": 17,
+     "execution_count": 24,
      "metadata": {},
      "output_type": "execute_result"
     },
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "74c7962fd7b24c72b8a10c74ec57f39a",
+       "model_id": "c0c5d9ff82074d3fa70ecfc88286ae97",
        "version_major": 2,
        "version_minor": 0
       },
@@ -526,24 +730,24 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 18,
+   "execution_count": 25,
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/plain": [
        "(<Figure size 1000x500 with 1 Axes>,\n",
-       " <matplotlib.widgets.SpanSelector at 0x7ff940ca0080>)"
+       " <matplotlib.widgets.SpanSelector at 0x7fcd20f60ad0>)"
       ]
      },
-     "execution_count": 18,
+     "execution_count": 25,
      "metadata": {},
      "output_type": "execute_result"
     },
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "649f5fd52adf4687b2e85d6b713edc40",
+       "model_id": "b71386de038d456c9984d83ee014b9a9",
        "version_major": 2,
        "version_minor": 0
       },
@@ -582,7 +786,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 19,
+   "execution_count": 26,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -591,24 +795,24 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 20,
+   "execution_count": 27,
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/plain": [
        "(<Figure size 1000x500 with 1 Axes>,\n",
-       " <matplotlib.widgets.SpanSelector at 0x7ff940358a40>)"
+       " <matplotlib.widgets.SpanSelector at 0x7fcd205e91f0>)"
       ]
      },
-     "execution_count": 20,
+     "execution_count": 27,
      "metadata": {},
      "output_type": "execute_result"
     },
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "c7c52c5233114c32a07030fd955c43a6",
+       "model_id": "83ffe9edd93e40a8b815af0d3e3cbc0e",
        "version_major": 2,
        "version_minor": 0
       },

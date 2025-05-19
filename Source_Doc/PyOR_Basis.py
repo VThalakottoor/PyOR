@@ -33,6 +33,7 @@ class Basis:
             An instance of a quantum system (expected to contain spin information and operators).
         """
         self.class_QS = class_QS
+        self.Return_KetState_Component = False
 
     def BasisChange_TransformationMatrix(self, old, new):
         r"""
@@ -66,6 +67,57 @@ class Basis:
             for j in range(dim):
                 U[i][j] = self.Adjoint((old[i].data)) @ (new[j].data)
         return QunObj(U) 
+
+    def BasisChange_HamiltonianEigenStates(self, H):
+        """
+        Transform the basis to the eigenbasis of a given Hamiltonian.
+
+        This method computes the eigenvectors of the input Hamiltonian `H` and
+        expresses them in the Zeeman basis. It stores the resulting transformation
+        matrix in the quantum system, updates the operator basis, and returns
+        the eigenvectors and their symbolic representations.
+
+        Parameters
+        ----------
+        H : QunObj or np.ndarray
+            The Hamiltonian for which the eigenbasis should be computed.
+
+        Returns
+        -------
+        eigenvectors : np.ndarray
+            Eigenvectors of the Hamiltonian.
+        Dic : list of str
+            Symbolic expressions of the eigenvectors in the Zeeman basis.
+        """
+        Dic = []
+
+        # Diagonalize the Hamiltonian
+        eigenvalues, eigenvectors = self.class_QS.Class_quantumlibrary.Eigen_Split(H)
+
+        # Get Zeeman basis states and their labels
+        Zstates, DicZ = self.Zeeman_Basis()
+
+        self.Return_KetState_Component = True
+        # Convert each eigenvector to a readable label
+        for i in eigenvectors:
+            label = self.KetState_Components(Zstates, DicZ, i)
+
+            if isinstance(label, str) and label.startswith("Ket State ="):
+                label = label[len("Ket State = "):].strip()
+
+            Dic.append(label if label else "undefined")
+
+        self.Return_KetState_Component = False
+
+        # Transformation matrix
+        U = self.BasisChange_TransformationMatrix(Zstates, eigenvectors)
+
+        # Store and update system basis
+        self.class_QS.Basis_SpinOperators_TransformationMatrix = U
+        self.class_QS.Basis_SpinOperators_Hilbert = "Hamiltonian eigen states"
+        self.class_QS.Update()
+
+        return eigenvectors, Dic
 
     def BasisChange_State(self, state, U):
         """
@@ -213,6 +265,8 @@ class Basis:
 
         print((''.join(output))[:-3])
 
+        if self.Return_KetState_Component:
+            return ''.join(output)[:-3]
 
     def CG_Coefficient(self, j1, m1, j2, m2, J, M):
         """
@@ -316,6 +370,57 @@ class Basis:
                     
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(OP), CO, DIC        
+
+    def ProductOperators_SphericalTensor_Test(self, sort='negative to positive', Index=False):
+        """
+        Generate spherical tensor basis for a multi-spin system.
+
+        Parameters
+        ----------
+        sort : str, optional
+            Sorting option for coherence order ('normal', 'negative to positive', 'zero to high').
+        Index : bool, optional
+            Whether to append index to labels.
+
+        Returns
+        -------
+        list of QunObj
+            List of spherical tensor operators for the multi-spin system.
+        list of int
+            Corresponding coherence orders.
+        list of str
+            Labels of each basis operator in the form SpinLabel(L,M).
+        """
+        spin_list = self.class_QS.slist.tolist()
+        SpinLabels = self.class_QS.SpinDic
+
+        # First spin
+        OP, CO, LM = self.Spherical_OpBasis(spin_list[0])
+        DIC = [f"{SpinLabels[0]}({L},{M})" for (L, M) in LM]
+
+        # Loop over remaining spins
+        for idx in range(1, len(spin_list)):
+            OP_next, CO_next, LM_next = self.Spherical_OpBasis(spin_list[idx])
+            DIC_next = [f"{SpinLabels[idx]}({L},{M})" for (L, M) in LM_next]
+
+            OP, CO, DIC = self.ProductOperator(
+                OP, CO, DIC,
+                OP_next, CO_next, DIC_next,
+                sort=sort, indexing=Index
+            )
+
+        # Return based on propagation space
+        if self.class_QS.PropagationSpace == "Hilbert":
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
+                return OP, CO, DIC
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+                return self.BasisChange_SpinOperators(
+                    OP,
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()
+                ), CO, DIC
+
+        if self.class_QS.PropagationSpace == "Liouville":
+            return self.ProductOperators_ConvertToLiouville(OP), CO, DIC
 
     def ProductOperator(self, OP1, CO1, DIC1, OP2, CO2, DIC2, sort, indexing):
         """
@@ -443,6 +548,107 @@ class Basis:
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Dic_out
 
+    def ProductOperators_SpinHalf_Cartesian_Test(self, Index=False, Normal=True):
+        """
+        Generate product operator basis in the Cartesian basis for spin-1/2 systems.
+
+        Parameters
+        ----------
+        Index : bool, optional
+            Whether to include index in labels.
+        Normal : bool, optional
+            Whether to normalize the operators.
+
+        Returns
+        -------
+        list of QunObj
+            Product operators.
+        list of str
+            Corresponding labels.
+        """ 
+        Dic_base = ["id", "x", "y", "z"]
+        SpinLabels = self.class_QS.SpinDic
+
+        Single_OP = self.class_QS.SpinOperatorsSingleSpin(1/2).astype(np.complex64)
+        Basis_SpinHalf = [
+            QunObj(np.eye(2)),
+            QunObj(Single_OP[0]),
+            QunObj(Single_OP[1]),
+            QunObj(Single_OP[2])
+        ]
+
+        Dic = [f"{SpinLabels[0]}{op}" for op in Dic_base]
+        Coherence_order_SpinHalf = list(range(len(Dic_base)))
+
+        Basis_SpinHalf_out = Basis_SpinHalf
+        Dic_out = Dic
+        Coherence_order_SpinHalf_out = Coherence_order_SpinHalf
+
+        for i in range(1, self.class_QS.Nspins):
+            Dic_next = [f"{SpinLabels[i]}{op}" for op in Dic_base]
+            indexing = Index if i == self.class_QS.Nspins - 1 else False
+            Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out = self.ProductOperator(
+                Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out,
+                Basis_SpinHalf, Coherence_order_SpinHalf, Dic_next, sort='normal', indexing=indexing
+            )
+
+        # Clean Dic_out: robust spin-op parsing and cleanup
+        cleaned_Dic_out = []
+        cleaned_Basis_out = []
+
+        valid_suffixes = {"id", "x", "y", "z"}
+        spin_labels = self.class_QS.SpinDic
+
+        for label, op in zip(Dic_out, Basis_SpinHalf_out):
+            i = 0
+            parsed_terms = []
+
+            while i < len(label):
+                matched = False
+                for spin_label in spin_labels:
+                    if label.startswith(spin_label, i):
+                        for suffix in valid_suffixes:
+                            full_term = spin_label + suffix
+                            if label.startswith(full_term, i):
+                                parsed_terms.append(full_term)
+                                i += len(full_term)
+                                matched = True
+                                break
+                        if matched:
+                            break
+                if not matched:
+                    i += 1  # Skip unrecognized junk (should not happen)
+
+            # Remove 'id' terms
+            reduced_terms = [term for term in parsed_terms if not term.endswith("id")]
+
+            if reduced_terms:
+                new_label = ''.join(reduced_terms)
+            else:
+                new_label = "id"
+
+            cleaned_Dic_out.append(new_label)
+            cleaned_Basis_out.append(op)
+
+        Dic_out = cleaned_Dic_out
+        Basis_SpinHalf_out = cleaned_Basis_out
+
+        if Normal:
+            for j in range(len(Basis_SpinHalf_out)):
+                Basis_SpinHalf_out[j] = QunObj(self.Normalize(Basis_SpinHalf_out[j].data))
+
+        if self.class_QS.PropagationSpace == "Hilbert":
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
+                return Basis_SpinHalf_out, Dic_out 
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+                return self.BasisChange_SpinOperators(
+                    Basis_SpinHalf_out,
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()
+                ), Dic_out
+
+        if self.class_QS.PropagationSpace == "Liouville":
+            return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Dic_out
+
     def ProductOperators_SpinHalf_PMZ(self, sort='negative to positive', Index=False, Normal=True):
         """
         Generate product operators for spin-1/2 systems in the PMZ basis.
@@ -513,6 +719,110 @@ class Basis:
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
 
+    def ProductOperators_SpinHalf_PMZ_Test(self, sort='negative to positive', Index=False, Normal=True):
+        """
+        Generate product operators for spin-1/2 systems in the PMZ basis.
+
+        Parameters
+        ----------
+        sort : str, optional
+            Sorting method for coherence order.
+        Index : bool, optional
+            Whether to include index in labels.
+        Normal : bool, optional
+            Whether to normalize the operators.
+
+        Returns
+        -------
+        list of QunObj
+            Product operators.
+        list of int
+            Coherence orders.
+        list of str
+            Operator labels.
+        """ 
+        Dic_base = ["m", "z", "id", "p"]
+        Coherence_order_SpinHalf = [-1, 0, 0, 1]
+        SpinLabels = self.class_QS.SpinDic
+
+        # Single-spin PMZ operators
+        Single_OP = self.class_QS.SpinOperatorsSingleSpin(1/2).astype(np.complex64)
+        Basis_SpinHalf = [
+            QunObj(Single_OP[0] - 1j * Single_OP[1]),              # m
+            QunObj(Single_OP[2]),                                  # z
+            QunObj(np.eye(2)),                                     # id
+            QunObj(-1 * (Single_OP[0] + 1j * Single_OP[1]))        # p
+        ]
+
+        # Initial labels
+        Dic = [f"{SpinLabels[0]}{op}" for op in Dic_base]
+
+        # Initialize outputs
+        Basis_SpinHalf_out = Basis_SpinHalf
+        Dic_out = Dic
+        Coherence_order_SpinHalf_out = Coherence_order_SpinHalf
+
+        # Loop for multiple spins
+        for i in range(1, self.class_QS.Nspins):
+            Dic_next = [f"{SpinLabels[i]}{op}" for op in Dic_base]
+            indexing = Index if i == self.class_QS.Nspins - 1 else False
+            Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out = self.ProductOperator(
+                Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out,
+                Basis_SpinHalf, Coherence_order_SpinHalf, Dic_next, sort, indexing
+            )
+
+        # Clean Dic_out: remove spin terms ending in 'id'
+        cleaned_Dic_out = []
+        cleaned_Basis_out = []
+
+        valid_suffixes = {"m", "z", "id", "p"}
+
+        for label, op in zip(Dic_out, Basis_SpinHalf_out):
+            i = 0
+            parsed_terms = []
+            while i < len(label):
+                matched = False
+                for spin_label in SpinLabels:
+                    for suffix in valid_suffixes:
+                        full_term = spin_label + suffix
+                        if label.startswith(full_term, i):
+                            parsed_terms.append(full_term)
+                            i += len(full_term)
+                            matched = True
+                            break
+                    if matched:
+                        break
+                if not matched:
+                    i += 1  # Skip unrecognized part
+
+            # Remove terms ending in 'id'
+            reduced_terms = [term for term in parsed_terms if not term.endswith("id")]
+            new_label = ''.join(reduced_terms) if reduced_terms else "id"
+
+            cleaned_Dic_out.append(new_label)
+            cleaned_Basis_out.append(op)
+
+        Dic_out = cleaned_Dic_out
+        Basis_SpinHalf_out = cleaned_Basis_out
+
+        # Normalize
+        if Normal:
+            for j in range(len(Basis_SpinHalf_out)):
+                Basis_SpinHalf_out[j] = QunObj(self.Normalize(Basis_SpinHalf_out[j].data))
+
+        # Return based on propagation space
+        if self.class_QS.PropagationSpace == "Hilbert":
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
+                return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+                return self.BasisChange_SpinOperators(
+                    Basis_SpinHalf_out,
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()
+                ), Coherence_order_SpinHalf_out, Dic_out
+
+        if self.class_QS.PropagationSpace == "Liouville":
+            return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
+
     def ProductOperators_SpinHalf_SphericalTensor(self, sort='negative to positive', Index=False):
         """
         Generate product operators for spin-1/2 systems in the spherical tensor basis.
@@ -568,6 +878,96 @@ class Basis:
                         
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
+
+    def ProductOperators_SpinHalf_SphericalTensor_Test(self, sort='negative to positive', Index=False):
+        """
+        Generate product operators for spin-1/2 systems in the spherical tensor basis.
+
+        Parameters
+        ----------
+        sort : str, optional
+            Sorting method for coherence order.
+        Index : bool, optional
+            Whether to include index in labels.
+
+        Returns
+        -------
+        list of QunObj
+            Product operators.
+        list of int
+            Coherence orders.
+        list of str
+            Operator labels.
+        """
+        Dic_base = ["id", "m", "z", "p"]
+        SpinLabels = self.class_QS.SpinDic
+
+        # Get single-spin spherical tensor basis
+        Basis_SpinHalf, Coherence_order_SpinHalf, LM_state_SpinHalf = self.Spherical_OpBasis(1/2)
+
+        # Build labels for the first spin
+        Dic = [f"{SpinLabels[0]}{op}" for op in Dic_base]
+
+        Basis_SpinHalf_out = Basis_SpinHalf
+        Coherence_order_SpinHalf_out = Coherence_order_SpinHalf
+        Dic_out = Dic
+
+        # Build product operators across spins
+        for i in range(1, self.class_QS.Nspins):
+            Dic_next = [f"{SpinLabels[i]}{op}" for op in Dic_base]
+            indexing = Index if i == self.class_QS.Nspins - 1 else False
+            Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out = self.ProductOperator(
+                Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out,
+                Basis_SpinHalf, Coherence_order_SpinHalf, Dic_next, sort, indexing
+            )
+
+        # Clean Dic_out: remove 'id' spin terms
+        cleaned_Dic_out = []
+        cleaned_Basis_out = []
+
+        valid_suffixes = {"id", "m", "z", "p"}
+
+        for label, op in zip(Dic_out, Basis_SpinHalf_out):
+            i = 0
+            parsed_terms = []
+            while i < len(label):
+                matched = False
+                for spin_label in SpinLabels:
+                    for suffix in valid_suffixes:
+                        full_term = spin_label + suffix
+                        if label.startswith(full_term, i):
+                            parsed_terms.append(full_term)
+                            i += len(full_term)
+                            matched = True
+                            break
+                    if matched:
+                        break
+                if not matched:
+                    i += 1  # Skip unrecognized part
+
+            # Remove 'id' terms only
+            reduced_terms = [term for term in parsed_terms if not term.endswith("id")]
+            new_label = ''.join(reduced_terms) if reduced_terms else "id"
+
+            cleaned_Dic_out.append(new_label)
+            cleaned_Basis_out.append(op)
+
+        Dic_out = cleaned_Dic_out
+        Basis_SpinHalf_out = cleaned_Basis_out
+
+        # Return based on propagation space
+        if self.class_QS.PropagationSpace == "Hilbert":   
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":     
+                return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":     
+                return self.BasisChange_SpinOperators(
+                    Basis_SpinHalf_out,
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()
+                ), Coherence_order_SpinHalf_out, Dic_out
+                            
+        if self.class_QS.PropagationSpace == "Liouville":
+            return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
+
 
     def String_to_Matrix(self, dic, Basis):
         """
