@@ -5,9 +5,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# PyOR Quantum\n",
+    "# Introduction to 1D pulse acquisition (User defiend Hamiltonian)\n",
     "## Author: Vineeth Thalakottoor\n",
-    "## Introduction to 1D pulse acquisition"
+    "## Email: vineeth.thalakottoor@ens.psl.eu or vineethfrancis.physics@gmail.com# PyOR Quantum"
    ]
   },
   {
@@ -65,17 +65,6 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Rotating frame frequencies: {'A': -2514706800.0, 'B': -2514706800.0}\n",
-      "Offset frequencies: {'A': 0, 'B': 0}\n",
-      "Initial spin temperatures: {'A': 300, 'B': 300}\n",
-      "Final spin temperatures: {'A': 300, 'B': 300}\n",
-      "Radiation damping gain: {'A': 0, 'B': 0}\n",
-      "Radiation damping phase: {'A': 0, 'B': 0}\n",
-      "\n",
-      "Rprocess = Phenomenological\n",
-      "RelaxParDipole_tau = 0.0\n",
-      "DipolePairs = []\n",
-      "RelaxParDipole_bIS = []\n",
       "Larmor Frequency in MHz:  [-400.22801765 -400.22801765]\n"
      ]
     }
@@ -111,7 +100,7 @@
     {
      "data": {
       "text/plain": [
-       "<PyOR_QuantumObject.QunObj at 0x7ff94b272ab0>"
+       "<PyOR_QuantumObject.QunObj at 0x7f5b6494e1e0>"
       ]
      },
      "execution_count": 4,
@@ -160,8 +149,8 @@
       "text/plain": [
        "array([[ 0.5+0.j,  0. +0.j,  0. +0.j,  0. +0.j],\n",
        "       [ 0. +0.j,  0.5+0.j,  0. +0.j,  0. +0.j],\n",
-       "       [ 0. +0.j,  0. +0.j, -0.5+0.j,  0. +0.j],\n",
-       "       [ 0. +0.j,  0. +0.j,  0. +0.j, -0.5+0.j]])"
+       "       [ 0. +0.j,  0. +0.j, -0.5+0.j, -0. +0.j],\n",
+       "       [ 0. +0.j,  0. +0.j, -0. +0.j, -0.5+0.j]])"
       ]
      },
      "execution_count": 6,
@@ -181,7 +170,7 @@
     {
      "data": {
       "text/plain": [
-       "<PyOR_QuantumObject.QunObj at 0x7ff942ee5610>"
+       "<PyOR_QuantumObject.QunObj at 0x7f5b5b801d30>"
       ]
      },
      "execution_count": 7,
@@ -409,7 +398,7 @@
      "output_type": "stream",
      "text": [
       "Larmor Frequency in MHz:  [-400.22801765 -400.22801765]\n",
-      "Total time = 3.1590614318847656 seconds \n"
+      "Total time = 3.157172679901123 seconds \n"
      ]
     }
    ],
@@ -485,7 +474,7 @@
      "data": {
       "text/plain": [
        "(<Figure size 1000x500 with 1 Axes>,\n",
-       " <matplotlib.widgets.SpanSelector at 0x7ff942d75310>)"
+       " <matplotlib.widgets.SpanSelector at 0x7f5b5b6ad9d0>)"
       ]
      },
      "execution_count": 17,
@@ -495,7 +484,7 @@
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "74c7962fd7b24c72b8a10c74ec57f39a",
+       "model_id": "a1c0323bee914c1c80d1e2da8d514151",
        "version_major": 2,
        "version_minor": 0
       },
@@ -533,7 +522,7 @@
      "data": {
       "text/plain": [
        "(<Figure size 1000x500 with 1 Axes>,\n",
-       " <matplotlib.widgets.SpanSelector at 0x7ff940ca0080>)"
+       " <matplotlib.widgets.SpanSelector at 0x7f5b596108f0>)"
       ]
      },
      "execution_count": 18,
@@ -543,7 +532,7 @@
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "649f5fd52adf4687b2e85d6b713edc40",
+       "model_id": "b39aedef93cd4422825eac44fb002dee",
        "version_major": 2,
        "version_minor": 0
       },
@@ -598,7 +587,7 @@
      "data": {
       "text/plain": [
        "(<Figure size 1000x500 with 1 Axes>,\n",
-       " <matplotlib.widgets.SpanSelector at 0x7ff940358a40>)"
+       " <matplotlib.widgets.SpanSelector at 0x7f5b58495040>)"
       ]
      },
      "execution_count": 20,
@@ -608,7 +597,7 @@
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "c7c52c5233114c32a07030fd955c43a6",
+       "model_id": "f2e8f3d7e5ab437dac92ef9da090405f",
        "version_major": 2,
        "version_minor": 0
       },

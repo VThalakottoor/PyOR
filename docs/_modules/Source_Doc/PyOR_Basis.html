@@ -180,30 +180,83 @@
         <span class="c1"># Diagonalize the Hamiltonian</span>
         <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">Eigen_Split</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
 
-        <span class="c1"># Get Zeeman basis states and their labels</span>
-        <span class="n">Zstates</span><span class="p">,</span> <span class="n">DicZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zeeman_Basis</span><span class="p">()</span>
+        <span class="n">Zstates_</span><span class="p">,</span> <span class="n">DicZ_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zeeman_Basis</span><span class="p">(</span><span class="n">ZEEMAN</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">STstates_</span><span class="p">,</span> <span class="n">DicST_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SingletTriplet_Basis</span><span class="p">(</span><span class="n">SINGTRIP</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+            <span class="n">H_ST_Z</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">BasisChange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">())</span>
+            <span class="n">eigenvalues_ST_Z</span><span class="p">,</span> <span class="n">eigenvectors_ST_Z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">Eigen_Split</span><span class="p">(</span><span class="n">H_ST_Z</span><span class="p">)</span>
+
+            
+            <span class="n">U_Z_H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_TransformationMatrix</span><span class="p">(</span><span class="n">Zstates_</span><span class="p">,</span> <span class="n">eigenvectors_ST_Z</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates</span> <span class="o">=</span> <span class="n">U_Z_H</span>
+
+            <span class="n">U_Z_ST</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_TransformationMatrix</span><span class="p">(</span><span class="n">STstates_</span><span class="p">,</span> <span class="n">eigenvectors</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTripletToHamiltonianEigenStates</span> <span class="o">=</span> <span class="n">U_Z_ST</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
+            <span class="n">H_Z_ST</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">BasisChange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="p">)</span>
+            <span class="n">eigenvalues_Z_ST</span><span class="p">,</span> <span class="n">eigenvectors_Z_ST</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">Eigen_Split</span><span class="p">(</span><span class="n">H_Z_ST</span><span class="p">)</span>
+        
+            <span class="n">U_Z_ST</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_TransformationMatrix</span><span class="p">(</span><span class="n">STstates_</span><span class="p">,</span> <span class="n">eigenvectors_Z_ST</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTripletToHamiltonianEigenStates</span> <span class="o">=</span> <span class="n">U_Z_ST</span>
+
+            <span class="n">U_Z_H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_TransformationMatrix</span><span class="p">(</span><span class="n">Zstates_</span><span class="p">,</span> <span class="n">eigenvectors</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates</span> <span class="o">=</span> <span class="n">U_Z_H</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">Return_KetState_Component</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="c1"># Convert each eigenvector to a readable label</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">eigenvectors</span><span class="p">:</span>
-            <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">Zstates</span><span class="p">,</span> <span class="n">DicZ</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Ket State =&quot;</span><span class="p">):</span>
-                <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;Ket State = &quot;</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
 
-            <span class="n">Dic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span> <span class="k">if</span> <span class="n">label</span> <span class="k">else</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span>
+            <span class="c1"># Get Zeeman basis states and their labels</span>
+            <span class="n">Zstates</span><span class="p">,</span> <span class="n">DicZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zeeman_Basis</span><span class="p">()</span>
+
+            
+            <span class="c1"># Convert each eigenvector to a readable label</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">eigenvectors</span><span class="p">:</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Zstates</span><span class="p">,</span> <span class="n">DicZ</span><span class="p">,</span> <span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Ket State =&quot;</span><span class="p">):</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;Ket State = &quot;</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+                <span class="n">Dic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span> <span class="k">if</span> <span class="n">label</span> <span class="k">else</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Transformation matrix</span>
+            <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_TransformationMatrix</span><span class="p">(</span><span class="n">Zstates</span><span class="p">,</span> <span class="n">eigenvectors</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+
+            <span class="c1"># Get Zeeman basis states and their labels</span>
+            <span class="n">STstates</span><span class="p">,</span> <span class="n">DicST</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SingletTriplet_Basis</span><span class="p">()</span>
+
+            
+            <span class="c1"># Convert each eigenvector to a readable label</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">eigenvectors</span><span class="p">:</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">STstates</span><span class="p">,</span> <span class="n">DicST</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Ket State =&quot;</span><span class="p">):</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;Ket State = &quot;</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+                <span class="n">Dic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span> <span class="k">if</span> <span class="n">label</span> <span class="k">else</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Transformation matrix</span>
+            <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_TransformationMatrix</span><span class="p">(</span><span class="n">STstates</span><span class="p">,</span> <span class="n">eigenvectors</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">Return_KetState_Component</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Transformation matrix</span>
-        <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_TransformationMatrix</span><span class="p">(</span><span class="n">Zstates</span><span class="p">,</span> <span class="n">eigenvectors</span><span class="p">)</span>
+        <span class="n">Basis_States</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_States</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">,</span><span class="n">U</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">())</span>
 
         <span class="c1"># Store and update system basis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span> <span class="o">=</span> <span class="n">U</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">=</span> <span class="s2">&quot;Hamiltonian eigen states&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Update</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">eigenvectors</span><span class="p">,</span> <span class="n">Dic</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">=</span> <span class="s2">&quot;Zeeman to Hamiltonian eigen states&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">=</span> <span class="s2">&quot;Singlet Triplet to Hamiltonian eigen states&quot;</span>            
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">HamiltonianEigenState</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1">#return eigenvectors, Dic</span>
+        <span class="k">return</span> <span class="n">Basis_States</span><span class="p">,</span> <span class="n">Dic</span></div>
 
 
 <div class="viewcode-block" id="Basis.BasisChange_State">
@@ -325,7 +378,7 @@
 
 <div class="viewcode-block" id="Basis.KetState_Components">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.KetState_Components">[docs]</a>
-    <span class="k">def</span> <span class="nf">KetState_Components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">ketQ</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.0e-10</span><span class="p">,</span> <span class="n">roundto</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">KetState_Components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ketQ</span><span class="p">,</span> <span class="n">AQ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ProjectionState</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.0e-10</span><span class="p">,</span> <span class="n">roundto</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decompose a ket (state vector) into a linear combination of basis vectors.</span>
 
@@ -361,17 +414,28 @@
 <span class="sd">            also returns the string representation of the decomposition.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Ensure AQ is a list of QunObj instances</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">AQ</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a list.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">AQ</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All elements must be instances of QunObj.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ProjectionState</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Ensure AQ is a list of QunObj instances</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">AQ</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a list.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">QunObj</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">AQ</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All elements must be instances of QunObj.&quot;</span><span class="p">)</span>
+
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ProjectionState</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
+                <span class="n">AQ</span><span class="p">,</span> <span class="n">dic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zeeman_Basis</span><span class="p">(</span><span class="n">ZEEMAN</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">ketQ</span> <span class="o">=</span> <span class="n">ketQ</span><span class="o">.</span><span class="n">BasisChange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ProjectionState</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+                <span class="n">AQ</span><span class="p">,</span> <span class="n">dic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SingletTriplet_Basis</span><span class="p">(</span><span class="n">SINGTRIP</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">ketQ</span> <span class="o">=</span> <span class="n">ketQ</span><span class="o">.</span><span class="n">BasisChange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTripletToHamiltonianEigenStates</span><span class="p">)</span>
 
         <span class="c1"># Extract column vector from ketQ</span>
         <span class="n">psi</span> <span class="o">=</span> <span class="n">ketQ</span><span class="o">.</span><span class="n">data</span>
         <span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input state must be a column vector (ket).&quot;</span><span class="p">)</span>
-
+            
         <span class="c1"># Project ket onto each basis vector to compute components</span>
         <span class="n">components</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">InnerProduct</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">psi</span><span class="p">)</span> <span class="k">for</span> <span class="n">A</span> <span class="ow">in</span> <span class="n">AQ</span><span class="p">])</span>
 
@@ -508,7 +572,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">OP</span><span class="p">,</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span><span class="n">OP</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span>    
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span><span class="n">OP</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span>    
                     
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">OP</span><span class="p">),</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span>        </div>
@@ -561,7 +625,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span>
                     <span class="n">OP</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
                 <span class="p">),</span> <span class="n">CO</span><span class="p">,</span> <span class="n">DIC</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
@@ -694,7 +758,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Dic_out</span> 
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Dic_out</span> 
                         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">),</span> <span class="n">Dic_out</span></div>
@@ -797,7 +861,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span>
                     <span class="n">Basis_SpinHalf_out</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
                 <span class="p">),</span> <span class="n">Dic_out</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
@@ -871,7 +935,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> 
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> 
                         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span></div>
@@ -977,7 +1041,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span>
                     <span class="n">Basis_SpinHalf_out</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
                 <span class="p">),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
@@ -1037,7 +1101,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>     
                 <span class="k">return</span> <span class="n">Basis_SpinHalf_out</span><span class="p">,</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>     
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> 
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span> 
                         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ProductOperators_ConvertToLiouville</span><span class="p">(</span><span class="n">Basis_SpinHalf_out</span><span class="p">),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span></div>
@@ -1128,7 +1192,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>     
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_SpinOperators</span><span class="p">(</span>
                     <span class="n">Basis_SpinHalf_out</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()</span>
                 <span class="p">),</span> <span class="n">Coherence_order_SpinHalf_out</span><span class="p">,</span> <span class="n">Dic_out</span>
                             
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">PropagationSpace</span> <span class="o">==</span> <span class="s2">&quot;Liouville&quot;</span><span class="p">:</span>
@@ -1205,7 +1269,7 @@
     
 <div class="viewcode-block" id="Basis.Zeeman_Basis">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.Zeeman_Basis">[docs]</a>
-    <span class="k">def</span> <span class="nf">Zeeman_Basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Zeeman_Basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ZEEMAN</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute eigenbasis of the total Sz operator (Zeeman basis).</span>
 
@@ -1220,20 +1284,23 @@
         <span class="n">Dic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">ZeemanBasis_Ket</span><span class="p">()</span>
 
         <span class="n">B_Zeeman</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">lina</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">Sz</span><span class="p">)</span> 
+        <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Vdim</span><span class="p">)</span> 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Vdim</span><span class="p">):</span>
-            <span class="n">B_Zeeman</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QunObj</span><span class="p">((</span><span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">real</span><span class="p">))</span>   
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>          
-            <span class="k">return</span> <span class="n">B_Zeeman</span><span class="p">,</span> <span class="n">Dic</span>  
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_States</span><span class="p">(</span><span class="n">B_Zeeman</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Dic</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Hamiltonian eigen states&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_States</span><span class="p">(</span><span class="n">B_Zeeman</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="p">),</span> <span class="n">Dic</span></div>
+            <span class="n">B_Zeeman</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QunObj</span><span class="p">((</span><span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">real</span><span class="p">))</span> 
 
-                
+        <span class="k">if</span> <span class="n">ZEEMAN</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">B_Zeeman</span><span class="p">,</span> <span class="n">Dic</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>   
+                <span class="k">return</span> <span class="n">B_Zeeman</span><span class="p">,</span> <span class="n">Dic</span>  
+                                      
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_States</span><span class="p">(</span><span class="n">B_Zeeman</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Dic</span></div>
+
+                                                        
 <div class="viewcode-block" id="Basis.SingletTriplet_Basis">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.SingletTriplet_Basis">[docs]</a>
-    <span class="k">def</span> <span class="nf">SingletTriplet_Basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="nf">SingletTriplet_Basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SINGTRIP</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span> 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate singlet-triplet basis for two spin-1/2 particles.</span>
 
@@ -1253,17 +1320,21 @@
         <span class="k">if</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Nspins</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> 
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">slist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> 
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">slist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)):</span>
-            <span class="n">B_Zeeman</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zeeman_Basis</span><span class="p">()</span>
             <span class="n">B_ST</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)),</span>
                 <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)),</span>
                 <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)],</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">))</span> <span class="p">,</span>
                 <span class="n">QunObj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">))</span>                
             <span class="p">]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">B_ST</span><span class="p">,</span> <span class="n">Dic</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_States</span><span class="p">(</span><span class="n">B_ST</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Dic</span>
+
+            <span class="k">if</span> <span class="n">SINGTRIP</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_States</span><span class="p">(</span><span class="n">B_ST</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Dic</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">B_ST</span><span class="p">,</span> <span class="n">Dic</span>      
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BasisChange_States</span><span class="p">(</span><span class="n">B_ST</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">Adjoint</span><span class="p">()),</span> <span class="n">Dic</span>
+                        
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Two spin half system only&quot;</span><span class="p">)</span></div>
 

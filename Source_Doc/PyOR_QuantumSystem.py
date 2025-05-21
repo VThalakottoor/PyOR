@@ -178,7 +178,9 @@ class QuantumSystem:
         self.Basis_SpinOperators_Hilbert = "Zeeman"
         self.Basis_SpinOperators_Liouville = "Zeeman"
         self.Basis_SpinOperators_TransformationMatrix = None # Unitary transformation matrix should be QunObj
-        self.Basis_SpinOperators_TransformationMatrix_SingletTriplet = QunObj([[0, 1, 0, 0], [1/np.sqrt(2), 0, 1/np.sqrt(2),0], [-1/np.sqrt(2), 0, 1/np.sqrt(2),0], [0, 0, 0, 1]])
+        self.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates = None
+        self.Basis_SpinOperators_TransformationMatrix_SingletTripletToHamiltonianEigenStates = None
+        self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet = QunObj([[0, 1, 0, 0], [1/np.sqrt(2), 0, 1/np.sqrt(2),0], [-1/np.sqrt(2), 0, 1/np.sqrt(2),0], [0, 0, 0, 1]])
 
         # ----------------- Temperature -----------------
         self.I_spintemp = {key: 300 for key in self.SpinList} # Kelvin
@@ -612,7 +614,10 @@ class QuantumSystem:
             Sp[i] = Sx[i] + 1j * Sy[i]
             Sm[i] = Sx[i] - 1j * Sy[i]
 
-        if self.Basis_SpinOperators_Hilbert == "Hamiltonian eigen states":
+        if self.Basis_SpinOperators_Hilbert == "Zeeman":
+            pass
+
+        if self.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
             Sx = self.BasisChange_SpinOperators_Local(Sx,self.Basis_SpinOperators_TransformationMatrix)
             Sy = self.BasisChange_SpinOperators_Local(Sy,self.Basis_SpinOperators_TransformationMatrix)
             Sz = self.BasisChange_SpinOperators_Local(Sz,self.Basis_SpinOperators_TransformationMatrix)
@@ -620,11 +625,24 @@ class QuantumSystem:
             Sm = self.BasisChange_SpinOperators_Local(Sm,self.Basis_SpinOperators_TransformationMatrix)
 
         if self.Basis_SpinOperators_Hilbert == "Singlet Triplet":
-            Sx = self.BasisChange_SpinOperators_Local(Sx,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
-            Sy = self.BasisChange_SpinOperators_Local(Sy,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
-            Sz = self.BasisChange_SpinOperators_Local(Sz,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
-            Sp = self.BasisChange_SpinOperators_Local(Sp,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
-            Sm = self.BasisChange_SpinOperators_Local(Sm,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
+            Sx = self.BasisChange_SpinOperators_Local(Sx,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+            Sy = self.BasisChange_SpinOperators_Local(Sy,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+            Sz = self.BasisChange_SpinOperators_Local(Sz,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+            Sp = self.BasisChange_SpinOperators_Local(Sp,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+            Sm = self.BasisChange_SpinOperators_Local(Sm,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+
+        if self.Basis_SpinOperators_Hilbert == "Singlet Triplet to Hamiltonian eigen states":
+            Sx = self.BasisChange_SpinOperators_Local(Sx,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+            Sy = self.BasisChange_SpinOperators_Local(Sy,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+            Sz = self.BasisChange_SpinOperators_Local(Sz,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+            Sp = self.BasisChange_SpinOperators_Local(Sp,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+            Sm = self.BasisChange_SpinOperators_Local(Sm,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+
+            Sx = self.BasisChange_SpinOperators_Local(Sx,self.Basis_SpinOperators_TransformationMatrix)
+            Sy = self.BasisChange_SpinOperators_Local(Sy,self.Basis_SpinOperators_TransformationMatrix)
+            Sz = self.BasisChange_SpinOperators_Local(Sz,self.Basis_SpinOperators_TransformationMatrix)
+            Sp = self.BasisChange_SpinOperators_Local(Sp,self.Basis_SpinOperators_TransformationMatrix)
+            Sm = self.BasisChange_SpinOperators_Local(Sm,self.Basis_SpinOperators_TransformationMatrix)
 
         # Save operators
         self.Sx_ = Sx
@@ -639,11 +657,18 @@ class QuantumSystem:
             np.matmul(np.sum(Sz, axis=0), np.sum(Sz, axis=0))
         )
 
-        if self.Basis_SpinOperators_Hilbert == "Hamiltonian eigen states":
+        if self.Basis_SpinOperators_Hilbert == "Zeeman":
+            pass
+
+        if self.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
             Jsq = self.BasisChange_Operator_Local(Jsq,self.Basis_SpinOperators_TransformationMatrix)
 
         if self.Basis_SpinOperators_Hilbert == "Singlet Triplet":
-            Jsq = self.BasisChange_Operator_Local(Jsq,self.Basis_SpinOperators_TransformationMatrix_SingletTriplet)
+            Jsq = self.BasisChange_Operator_Local(Jsq,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+
+        if self.Basis_SpinOperators_Hilbert == "Singlet Triplet to Hamiltonian eigen states":
+            Jsq = self.BasisChange_Operator_Local(Jsq,self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+            Jsq = self.BasisChange_Operator_Local(Jsq,self.Basis_SpinOperators_TransformationMatrix)
 
         self.Jsq_ = Jsq
         setattr(self, "Jsq", QunObj(Jsq, PrintDefault=PrintDefault))
@@ -809,9 +834,7 @@ class QuantumSystem:
             if self.Basis_SpinOperators_Hilbert == "Zeeman":  
                 return EV
             if self.Basis_SpinOperators_Hilbert == "Singlet Triplet":
-                return EV.BasisChange(self.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint())   
-            if self.Basis_SpinOperators_Hilbert == "Hamiltonian eigen states":  # testing
-                return EV.BasisChange(self.Basis_SpinOperators_TransformationMatrix.Adjoint()) 
+                return EV.BasisChange(self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint())
             
     def States_Coupled(self, DicList):
         """

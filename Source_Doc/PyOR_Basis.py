@@ -94,30 +94,83 @@ class Basis:
         # Diagonalize the Hamiltonian
         eigenvalues, eigenvectors = self.class_QS.Class_quantumlibrary.Eigen_Split(H)
 
-        # Get Zeeman basis states and their labels
-        Zstates, DicZ = self.Zeeman_Basis()
+        Zstates_, DicZ_ = self.Zeeman_Basis(ZEEMAN = True)
+        STstates_, DicST_ = self.SingletTriplet_Basis(SINGTRIP = True)
+        if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+            H_ST_Z = H.BasisChange(self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint())
+            eigenvalues_ST_Z, eigenvectors_ST_Z = self.class_QS.Class_quantumlibrary.Eigen_Split(H_ST_Z)
+
+            
+            U_Z_H = self.BasisChange_TransformationMatrix(Zstates_, eigenvectors_ST_Z)
+            self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates = U_Z_H
+
+            U_Z_ST = self.BasisChange_TransformationMatrix(STstates_, eigenvectors)
+            self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTripletToHamiltonianEigenStates = U_Z_ST
+
+        if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
+            H_Z_ST = H.BasisChange(self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet)
+            eigenvalues_Z_ST, eigenvectors_Z_ST = self.class_QS.Class_quantumlibrary.Eigen_Split(H_Z_ST)
+        
+            U_Z_ST = self.BasisChange_TransformationMatrix(STstates_, eigenvectors_Z_ST)
+            self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTripletToHamiltonianEigenStates = U_Z_ST
+
+            U_Z_H = self.BasisChange_TransformationMatrix(Zstates_, eigenvectors)
+            self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates = U_Z_H
 
         self.Return_KetState_Component = True
-        # Convert each eigenvector to a readable label
-        for i in eigenvectors:
-            label = self.KetState_Components(Zstates, DicZ, i)
 
-            if isinstance(label, str) and label.startswith("Ket State ="):
-                label = label[len("Ket State = "):].strip()
+        if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
 
-            Dic.append(label if label else "undefined")
+            # Get Zeeman basis states and their labels
+            Zstates, DicZ = self.Zeeman_Basis()
+
+            
+            # Convert each eigenvector to a readable label
+            for i in eigenvectors:
+                label = self.KetState_Components(i, Zstates, DicZ, )
+
+                if isinstance(label, str) and label.startswith("Ket State ="):
+                    label = label[len("Ket State = "):].strip()
+
+                Dic.append(label if label else "undefined")
+
+            # Transformation matrix
+            U = self.BasisChange_TransformationMatrix(Zstates, eigenvectors)
+
+        if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+
+            # Get Zeeman basis states and their labels
+            STstates, DicST = self.SingletTriplet_Basis()
+
+            
+            # Convert each eigenvector to a readable label
+            for i in eigenvectors:
+                label = self.KetState_Components(i, STstates, DicST)
+
+                if isinstance(label, str) and label.startswith("Ket State ="):
+                    label = label[len("Ket State = "):].strip()
+
+                Dic.append(label if label else "undefined")
+
+            # Transformation matrix
+            U = self.BasisChange_TransformationMatrix(STstates, eigenvectors)
 
         self.Return_KetState_Component = False
 
-        # Transformation matrix
-        U = self.BasisChange_TransformationMatrix(Zstates, eigenvectors)
+        Basis_States = self.BasisChange_States(eigenvectors,U.Adjoint())
 
         # Store and update system basis
         self.class_QS.Basis_SpinOperators_TransformationMatrix = U
-        self.class_QS.Basis_SpinOperators_Hilbert = "Hamiltonian eigen states"
-        self.class_QS.Update()
 
-        return eigenvectors, Dic
+        if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
+            self.class_QS.Basis_SpinOperators_Hilbert = "Zeeman to Hamiltonian eigen states"
+        if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+            self.class_QS.Basis_SpinOperators_Hilbert = "Singlet Triplet to Hamiltonian eigen states"            
+        self.class_QS.Update()
+        self.class_QS.HamiltonianEigenState = True
+
+        #return eigenvectors, Dic
+        return Basis_States, Dic
 
     def BasisChange_State(self, state, U):
         """
@@ -224,7 +277,7 @@ class Basis:
         return Sop_N
 
 
-    def KetState_Components(self, AQ, dic, ketQ, tol=1.0e-10, roundto=5):
+    def KetState_Components(self, ketQ, AQ=None, dic=None, ProjectionState=None, tol=1.0e-10, roundto=5):
         """
         Decompose a ket (state vector) into a linear combination of basis vectors.
 
@@ -260,17 +313,28 @@ class Basis:
             also returns the string representation of the decomposition.
         """
 
-        # Ensure AQ is a list of QunObj instances
-        if not isinstance(AQ, list):
-            raise TypeError("Input must be a list.")
-        if not all(isinstance(item, QunObj) for item in AQ):
-            raise TypeError("All elements must be instances of QunObj.")
+        if ProjectionState is None:
+            # Ensure AQ is a list of QunObj instances
+            if not isinstance(AQ, list):
+                raise TypeError("Input must be a list.")
+            if not all(isinstance(item, QunObj) for item in AQ):
+                raise TypeError("All elements must be instances of QunObj.")
+
+
+        else:
+            if ProjectionState == "Zeeman":
+                AQ, dic = self.Zeeman_Basis(ZEEMAN = True)
+                ketQ = ketQ.BasisChange(self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates)
+
+            if ProjectionState == "Singlet Triplet":
+                AQ, dic = self.SingletTriplet_Basis(SINGTRIP = True)
+                ketQ = ketQ.BasisChange(self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTripletToHamiltonianEigenStates)
 
         # Extract column vector from ketQ
         psi = ketQ.data
         if psi.shape[1] != 1:
             raise ValueError("Input state must be a column vector (ket).")
-
+            
         # Project ket onto each basis vector to compute components
         components = np.array([self.InnerProduct(A.data, psi) for A in AQ])
 
@@ -398,7 +462,7 @@ class Basis:
             if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
                 return OP, CO, DIC
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
-                return self.BasisChange_SpinOperators(OP,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), CO, DIC    
+                return self.BasisChange_SpinOperators(OP,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), CO, DIC    
                     
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(OP), CO, DIC        
@@ -448,7 +512,7 @@ class Basis:
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
                 return self.BasisChange_SpinOperators(
                     OP,
-                    self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()
                 ), CO, DIC
 
         if self.class_QS.PropagationSpace == "Liouville":
@@ -575,7 +639,7 @@ class Basis:
             if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
                 return Basis_SpinHalf_out, Dic_out 
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
-                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), Dic_out 
+                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), Dic_out 
                         
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Dic_out
@@ -675,7 +739,7 @@ class Basis:
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
                 return self.BasisChange_SpinOperators(
                     Basis_SpinHalf_out,
-                    self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()
                 ), Dic_out
 
         if self.class_QS.PropagationSpace == "Liouville":
@@ -746,7 +810,7 @@ class Basis:
             if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
                 return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out 
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
-                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), Coherence_order_SpinHalf_out, Dic_out 
+                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), Coherence_order_SpinHalf_out, Dic_out 
                         
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
@@ -849,7 +913,7 @@ class Basis:
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
                 return self.BasisChange_SpinOperators(
                     Basis_SpinHalf_out,
-                    self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()
                 ), Coherence_order_SpinHalf_out, Dic_out
 
         if self.class_QS.PropagationSpace == "Liouville":
@@ -906,7 +970,7 @@ class Basis:
             if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":     
                 return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out 
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":     
-                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), Coherence_order_SpinHalf_out, Dic_out 
+                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), Coherence_order_SpinHalf_out, Dic_out 
                         
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
@@ -994,7 +1058,7 @@ class Basis:
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":     
                 return self.BasisChange_SpinOperators(
                     Basis_SpinHalf_out,
-                    self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()
                 ), Coherence_order_SpinHalf_out, Dic_out
                             
         if self.class_QS.PropagationSpace == "Liouville":
@@ -1062,7 +1126,7 @@ class Basis:
         if self.class_QS.PropagationSpace == "Liouville":  
             return self.ProductOperators_ConvertToLiouville(B), dic, coh, self.class_QS.Class_quantumlibrary.DMToVec(QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim)))) 
     
-    def Zeeman_Basis(self):
+    def Zeeman_Basis(self,ZEEMAN = False):
         """
         Compute eigenbasis of the total Sz operator (Zeeman basis).
 
@@ -1077,17 +1141,20 @@ class Basis:
         Dic = self.class_QS.ZeemanBasis_Ket()
 
         B_Zeeman = []
-        eigenvalues, eigenvectors = lina.eig(Sz) 
+        eigenvectors = np.eye(self.class_QS.Vdim) 
         for i in range(self.class_QS.Vdim):
-            B_Zeeman.append(QunObj((eigenvectors[:, i].reshape(-1, 1)).real))   
-        if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":          
-            return B_Zeeman, Dic  
-        if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
-            return self.BasisChange_States(B_Zeeman,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), Dic
-        if self.class_QS.Basis_SpinOperators_Hilbert == "Hamiltonian eigen states":
-            return self.BasisChange_States(B_Zeeman,self.class_QS.Basis_SpinOperators_TransformationMatrix), Dic
-                
-    def SingletTriplet_Basis(self): 
+            B_Zeeman.append(QunObj((eigenvectors[:, i].reshape(-1, 1)).real)) 
+
+        if ZEEMAN:
+            return B_Zeeman, Dic
+        else:
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":   
+                return B_Zeeman, Dic  
+                                      
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+                return self.BasisChange_States(B_Zeeman,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), Dic
+                                                        
+    def SingletTriplet_Basis(self, SINGTRIP = False): 
         """
         Generate singlet-triplet basis for two spin-1/2 particles.
 
@@ -1107,17 +1174,21 @@ class Basis:
         if ((self.class_QS.Nspins == 2) and 
             (self.class_QS.slist[0] == 1/2) and 
             (self.class_QS.slist[1] == 1/2)):
-            B_Zeeman, _ = self.Zeeman_Basis()
             B_ST = [
                 QunObj(np.array([[0], [1/np.sqrt(2)], [-1/np.sqrt(2)], [0]], dtype=complex)),
                 QunObj(np.array([[1], [0], [0], [0]], dtype=complex)),
                 QunObj(np.array([[0], [1/np.sqrt(2)], [1/np.sqrt(2)], [0]], dtype=complex)) ,
                 QunObj(np.array([[0], [0], [0], [1]], dtype=complex))                
             ]
-            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
-                return B_ST, Dic
-            if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
-                return self.BasisChange_States(B_ST,self.class_QS.Basis_SpinOperators_TransformationMatrix_SingletTriplet.Adjoint()), Dic
+
+            if SINGTRIP:
+                return self.BasisChange_States(B_ST,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), Dic
+            else:
+                if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
+                        return B_ST, Dic      
+                if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
+                    return self.BasisChange_States(B_ST,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), Dic
+                        
         else:
             print("Two spin half system only")
 

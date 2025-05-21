@@ -161,8 +161,8 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0.5 &amp; 0\\0 &amp; 0 &amp; 
 <span class="n">QS</span><span class="o">.</span><span class="n">MasterEquation</span> <span class="o">=</span> <span class="s2">&quot;Redfield&quot;</span>
 
 <span class="c1"># Operator Basis</span>
-<span class="n">QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">=</span> <span class="s2">&quot;Singlet Triplet&quot;</span> <span class="c1"># or</span>
-<span class="c1">#QS.Basis_SpinOperators_Hilbert = &quot;Zeeman&quot;</span>
+<span class="c1">#QS.Basis_SpinOperators_Hilbert = &quot;Singlet Triplet&quot; # or</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">=</span> <span class="s2">&quot;Zeeman&quot;</span>
 
 <span class="c1"># B0 Field in Tesla, Static Magnetic field (B0) along Z</span>
 <span class="n">QS</span><span class="o">.</span><span class="n">B0</span> <span class="o">=</span> <span class="mf">9.4</span>
@@ -245,7 +245,7 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}-4.47422858446941 \cdot 10^{-16} &amp; 0 &amp; 20.0000008601147 &amp; 0\\0 &amp; -30.0000000759161 &amp; 0 &amp; 0\\20.0000008601147 &amp; 0 &amp; -4.47422858446941 \cdot 10^{-16} &amp; 0\\0 &amp; 0 &amp; 0 &amp; 30.0000000759161\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}-30.0000000759161 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 20.0000008601147 &amp; 0 &amp; 0\\0 &amp; 0 &amp; -20.0000008601147 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 30.0000000759161\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -261,7 +261,7 @@ $\displaystyle \left[\begin{matrix}-4.47422858446941 \cdot 10^{-16} &amp; 0 &amp
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}-3.75000000948952 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 1.24999997786618 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 1.24999982608419 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1.24999997786618\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}1.24999997786618 &amp; 0 &amp; 0 &amp; 0\\0 &amp; -1.24999997786618 &amp; 2.49999995573235 &amp; 0\\0 &amp; 2.49999995573235 &amp; -1.24999997786618 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1.24999997786618\end{matrix}\right]$</div></div>
 </div>
 </section>
 <section id="Calling-Hamiltonian-class-from-QunautmSystem-class">
@@ -284,7 +284,7 @@ $\displaystyle \left[\begin{matrix}-3.75000000948952 &amp; 0 &amp; 0 &amp; 0\\0 
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}-3.75000000948952 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 1.24999997786618 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 1.24999982608419 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1.24999997786618\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}1.24999997786618 &amp; 0 &amp; 0 &amp; 0\\0 &amp; -1.24999997786618 &amp; 2.49999995573235 &amp; 0\\0 &amp; 2.49999995573235 &amp; -1.24999997786618 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1.24999997786618\end{matrix}\right]$</div></div>
 </div>
 </section>
 <section id="Spin-operators">
@@ -306,7 +306,7 @@ $\displaystyle \left[\begin{matrix}-3.75000000948952 &amp; 0 &amp; 0 &amp; 0\\0 
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}0 &amp; -0.353553384542465 &amp; 0 &amp; 0.353553384542465\\-0.353553384542465 &amp; 0 &amp; 0.353553384542465 &amp; 0\\0 &amp; 0.353553384542465 &amp; 0 &amp; 0.353553384542465\\0.353553384542465 &amp; 0 &amp; 0.353553384542465 &amp; 0\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0.5 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0.5\\0.5 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0.5 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
 </div>
 </section>
 <section id="Basis-states">
@@ -380,7 +380,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; -0.353553384542465 &amp; 0 &amp; 0.35
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}1.0\\0\\0\\0\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}0\\0.707106781186547\\-0.707106781186547\\0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
@@ -396,14 +396,14 @@ $\displaystyle \left[\begin{matrix}1.0\\0\\0\\0\end{matrix}\right]$</div></div>
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}0.707106781186547\\0\\0.707106781186547\\0\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}0\\1.0\\0\\0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Decompose the states in basis states</span>
-<span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">ST_B</span><span class="p">,</span> <span class="n">dic_ST</span><span class="p">,</span><span class="n">Z_B</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">Z_B</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">ST_B</span><span class="p">,</span> <span class="n">dic_ST</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -416,28 +416,28 @@ Ket State = 1.0 Tm
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a stat with magnetic quantum number</span>
-<span class="n">X1</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
+<span class="n">X1</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">State</span><span class="p">({</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">})</span>
 <span class="n">X1</span><span class="o">.</span><span class="n">matrix</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}0.707106781186547\\0\\0.707106781186547\\0\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}0\\0\\0\\1.0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">ST_B</span><span class="p">,</span> <span class="n">dic_ST</span><span class="p">,</span><span class="n">X1</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">ST_B</span><span class="p">,</span> <span class="n">dic_ST</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -446,14 +446,14 @@ $\displaystyle \left[\begin{matrix}0.707106781186547\\0\\0.707106781186547\\0\en
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Ket State = 0.70711 S0  + 0.70711 T0
+Ket State = 1.0 Tm
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">Z_B</span><span class="p">,</span> <span class="n">dic_Z</span><span class="p">,</span><span class="n">X1</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">Z_B</span><span class="p">,</span> <span class="n">dic_Z</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -462,14 +462,14 @@ Ket State = 0.70711 S0  + 0.70711 T0
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Ket State = 1.0 |1/2,1/2⟩|1/2,-1/2⟩
+Ket State = 1.0 |1/2,-1/2⟩|1/2,-1/2⟩
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">Z_B</span><span class="p">,</span> <span class="n">dic_Z</span><span class="p">,</span><span class="n">ST_B</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">ST_B</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Z_B</span><span class="p">,</span> <span class="n">dic_Z</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -480,6 +480,14 @@ Ket State = 1.0 |1/2,1/2⟩|1/2,-1/2⟩
 <div class="highlight"><pre>
 Ket State = 0.70711 |1/2,1/2⟩|1/2,-1/2⟩ + -0.70711 |1/2,-1/2⟩|1/2,1/2⟩
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 </section>

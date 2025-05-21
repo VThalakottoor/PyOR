@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PyOR Quantum &mdash; PyOR 1.0.0 documentation</title>
+  <title>Introduction to 1D pulse acquisition (Singlet Triplet) &mdash; PyOR 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -70,7 +70,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">PyOR Quantum</li>
+      <li class="breadcrumb-item active">Introduction to 1D pulse acquisition (Singlet Triplet)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/Examples/Liquid_State_NMR_1D/1D_Pulse_Acquisition_SingletTriplet.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -80,13 +80,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="PyOR-Quantum">
-<h1>PyOR Quantum<a class="headerlink" href="#PyOR-Quantum" title="Link to this heading"></a></h1>
+  <section id="Introduction-to-1D-pulse-acquisition-(Singlet-Triplet)">
+<h1>Introduction to 1D pulse acquisition (Singlet Triplet)<a class="headerlink" href="#Introduction-to-1D-pulse-acquisition-(Singlet-Triplet)" title="Link to this heading"></a></h1>
 <section id="Author:-Vineeth-Thalakottoor">
 <h2>Author: Vineeth Thalakottoor<a class="headerlink" href="#Author:-Vineeth-Thalakottoor" title="Link to this heading"></a></h2>
 </section>
-<section id="Introduction-to-1D-pulse-acquisition">
-<h2>Introduction to 1D pulse acquisition<a class="headerlink" href="#Introduction-to-1D-pulse-acquisition" title="Link to this heading"></a></h2>
+<section id="Email:-vineeth.thalakottoor&#64;ens.psl.eu-or-vineethfrancis.physics&#64;gmail.com">
+<h2>Email: <a class="reference external" href="mailto:vineeth&#46;thalakottoor&#37;&#52;&#48;ens&#46;psl&#46;eu">vineeth<span>&#46;</span>thalakottoor<span>&#64;</span>ens<span>&#46;</span>psl<span>&#46;</span>eu</a> or <a class="reference external" href="mailto:vineethfrancis&#46;physics&#37;&#52;&#48;gmail&#46;com">vineethfrancis<span>&#46;</span>physics<span>&#64;</span>gmail<span>&#46;</span>com</a><a class="headerlink" href="#Email:-vineeth.thalakottoor@ens.psl.eu-or-vineethfrancis.physics@gmail.com" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -169,17 +169,6 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Rotating frame frequencies: {&#39;A&#39;: -2514706800.0, &#39;B&#39;: -2514706800.0}
-Offset frequencies: {&#39;A&#39;: 10.0, &#39;B&#39;: 50.0}
-Initial spin temperatures: {&#39;A&#39;: 300.0, &#39;B&#39;: 300.0}
-Final spin temperatures: {&#39;A&#39;: 300.0, &#39;B&#39;: 300.0}
-Radiation damping gain: {&#39;A&#39;: 0, &#39;B&#39;: 0}
-Radiation damping phase: {&#39;A&#39;: 0, &#39;B&#39;: 0}
-
-Rprocess = Phenomenological
-RelaxParDipole_tau = 0.0
-DipolePairs = []
-RelaxParDipole_bIS = []
 Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 </pre></div></div>
 </div>
@@ -219,7 +208,7 @@ Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
 </div>
 <div class="output_area docutils container">
 <div class="math notranslate nohighlight">
-$\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 20.0000008601147 &amp; 0\\0 &amp; -30.0000000759161 &amp; 0 &amp; 0\\20.0000008601147 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 30.0000000759161\end{matrix}\right]$</div></div>
+$\displaystyle \left[\begin{matrix}-4.47422858446941 \cdot 10^{-16} &amp; 0 &amp; 20.0000008601147 &amp; 0\\0 &amp; -30.0000000759161 &amp; 0 &amp; 0\\20.0000008601147 &amp; 0 &amp; -4.47422858446941 \cdot 10^{-16} &amp; 0\\0 &amp; 0 &amp; 0 &amp; 30.0000000759161\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -477,7 +466,7 @@ Density Matrix = 0.5 |1/2,1/2⟩|1/2,1/2⟩⟨1/2,1/2|⟨1/2,-1/2| + 0.5 |1/2,1/
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Larmor Frequency in MHz:  [-400.22802765 -400.22806765]
-Total time = 2.3348488807678223 seconds
+Total time = 2.3800466060638428 seconds
 </pre></div></div>
 </div>
 </section>
@@ -527,14 +516,14 @@ Total time = 2.3348488807678223 seconds
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 (&lt;Figure size 1000x500 with 1 Axes&gt;,
- &lt;matplotlib.widgets.SpanSelector at 0x7ff6c4b035c0&gt;)
+ &lt;matplotlib.widgets.SpanSelector at 0x7fd8121a8680&gt;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f7c37719bcb34ffdbcaa4da065f5da95", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e33ba0ad10b64668927f55f58dd45252", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
@@ -553,14 +542,14 @@ Total time = 2.3348488807678223 seconds
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 (&lt;Figure size 1000x500 with 1 Axes&gt;,
- &lt;matplotlib.widgets.SpanSelector at 0x7ff6c2a27dd0&gt;)
+ &lt;matplotlib.widgets.SpanSelector at 0x7fd81010d310&gt;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "0db7d671df2841c3b2d806c38dead64a", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "606687a10d744ba2a45b7e1585d10f16", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 <section id="Fourier-Transform">
@@ -592,14 +581,14 @@ Total time = 2.3348488807678223 seconds
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 (&lt;Figure size 1000x500 with 1 Axes&gt;,
- &lt;matplotlib.widgets.SpanSelector at 0x7ff6c10e9e50&gt;)
+ &lt;matplotlib.widgets.SpanSelector at 0x7fd80e78de80&gt;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "5c71f259474e4a9390351f6f34973368", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "4325483245094075b160a26293c1b30a", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 </section>
