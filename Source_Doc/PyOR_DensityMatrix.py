@@ -186,7 +186,7 @@ class DensityMatrix:
         """Return a normalized operator with unit inner product."""
         return A / np.sqrt(self.InnerProduct(A, A))
 
-    def DensityMatrix_Components(self, AQ, dic, rhoQ, tol=1.0e-10, roundto=5):
+    def DensityMatrix_Components(self, rhoQ, AQ, dic, tol=1.0e-10, roundto=5):
         """
         Decompose a density matrix into a linear combination of a given operator basis.
 
@@ -196,12 +196,12 @@ class DensityMatrix:
 
         Parameters
         ----------
+        rhoQ : QunObj
+            The density matrix (or state vector) to be decomposed.
         AQ : list of QunObj
             List of basis operator objects that define the decomposition space.
         dic : dict
             Dictionary mapping indices to basis labels for readable output.
-        rhoQ : QunObj
-            The density matrix (or state vector) to be decomposed.
         tol : float, optional
             Tolerance level for treating small component values as zero. Default is 1.0e-10.
         roundto : int, optional

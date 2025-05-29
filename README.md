@@ -1,8 +1,6 @@
 # PyOR (Python on Resonance)
 Dedicated to Jean Jeener, whom I never had the chance to meet, but whose scientific work continues to inspire me. 
 
-If you find PyOR beautiful, you have Gauri to thank, she's the true catalyst behind this project. 
-
 "The confusion and solitude I went through became the building blocks of the modules you're using now. PyOR isn’t just a simulator; it’s my way of holding on to my passion and finding peace through it."
 
 Motto: "Everybody can simulate Magnetic Resonance"

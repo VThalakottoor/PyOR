@@ -44,7 +44,7 @@ class Plotting:
         self.PlotLinwidth = class_QS.PlotLinwidth
         self.fig_counter = 1
 
-    def MatrixPlot(self, M, xlabel, ylabel, saveplt = False):
+    def MatrixPlot(self, M, xlabel, ylabel, saveplt = False, savename= "plot"):
         """
         Plot a 2D color map of a matrix with labels.
 
@@ -75,7 +75,7 @@ class Plotting:
 
         plt.tight_layout()
         if saveplt:
-            plt.savefig("plot_MatrixPlot.pdf", format='pdf')
+            plt.savefig(savename + ".pdf", format='pdf')
         plt.show()
 
     def MatrixPlot_slider(self, t, rho_t, xlabel, ylabel):
@@ -123,7 +123,7 @@ class Plotting:
         index_slider.on_changed(update)       
         plt.show()
 
-    def MatrixPlot3D(self, rho, xlabel, ylabel, saveplt=False):
+    def MatrixPlot3D(self, rho, xlabel, ylabel, saveplt=False, savename= "plot"):
         """
         Create a 3D bar plot of matrix values.
 
@@ -161,10 +161,10 @@ class Plotting:
         ax.grid(False)
 
         if saveplt:
-            plt.savefig("plot_MatrixPlot3D.pdf", format='pdf')        
+            plt.savefig(savename + ".pdf", format='pdf')        
         plt.show()
 
-    def Plotting(self, x, y, xlab, ylab, col, saveplt=False):
+    def Plotting(self, x, y, xlab, ylab, col, saveplt=False, savename= "plot"):
         """
         Plot a simple 2D line graph.
 
@@ -199,10 +199,10 @@ class Plotting:
         ax1.set_ylim(*self.PlotYlimt)
 
         if saveplt:
-            plt.savefig("plot_Plotting.pdf", format='pdf')        
+            plt.savefig(savename + ".pdf", format='pdf')        
         plt.show()
 
-    def Plotting_SpanSelector(self, x, y, xlab, ylab, col, saveplt=False):
+    def Plotting_SpanSelector(self, x, y, xlab, ylab, col, saveplt=False, savename= "plot"):
         """
         Plot signal with span selector for interactive region selection.
 
@@ -248,7 +248,7 @@ class Plotting:
         ax1.set_ylim(yli, ylf)
 
         if saveplt:
-            plt.savefig("plot_Plotting_SpanSelector.pdf", format='pdf')
+            plt.savefig(savename + ".pdf", format='pdf')
 
         vline_left = ax1.axvline(0, color='red', linestyle='--', visible=False)
         vline_right = ax1.axvline(0, color='red', linestyle='--', visible=False)
@@ -273,7 +273,7 @@ class Plotting:
         
         return fig, span_selector
 
-    def PlottingTwin(self, x, y1, y2, xlab, ylab1, ylab2, col1, col2, saveplt=False):
+    def PlottingTwin(self, x, y1, y2, xlab, ylab1, ylab2, col1, col2, saveplt=False, savename= "plot"):
         """
         Plot two signals with twin Y-axes.
 
@@ -327,11 +327,11 @@ class Plotting:
         ax2.grid(True, linestyle='-.')
 
         if saveplt:
-            plt.savefig("plot_PlottingTwin.pdf", format='pdf')
+            plt.savefig(savename + ".pdf", format='pdf')
 
         plt.show()
 
-    def PlottingTwin_SpanSelector(self, x, y1, y2, xlab, ylab1, ylab2, col1, col2, saveplt=False):
+    def PlottingTwin_SpanSelector(self, x, y1, y2, xlab, ylab1, ylab2, col1, col2, saveplt=False, savename= "plot"):
         """
         Plot two signals with twin Y-axes and a horizontal span selector.
 
@@ -386,7 +386,7 @@ class Plotting:
         ax2.grid(True, linestyle='-.')
 
         if saveplt:
-            plt.savefig("plot_PlottingTwin_SpanSelector.pdf", format='pdf')
+            plt.savefig(savename + ".pdf", format='pdf')
 
         # Add interactive span selector and vertical lines
         vline_left = ax2.axvline(0, color='red', linestyle='--', visible=False)
@@ -407,7 +407,7 @@ class Plotting:
 
         return fig, span_selector
 
-    def PlottingMulti(self, x, y, xlab, ylab, col, saveplt=False):
+    def PlottingMulti(self, x, y, xlab, ylab, col, saveplt=False, savename= "plot"):
         """
         Plot multiple signals on a single set of axes.
 
@@ -445,11 +445,11 @@ class Plotting:
         ax1.grid(True, linestyle='-.')
 
         if saveplt:
-            plt.savefig("plot_PlottingMulti.pdf", format='pdf')
+            plt.savefig(savename + ".pdf", format='pdf')
 
         plt.show()
 
-    def PlottingMulti_SpanSelector(self, x, y, xlab, ylab, col, saveplt=False):
+    def PlottingMulti_SpanSelector(self, x, y, xlab, ylab, col, saveplt=False, savename= "plot"):
         """
         Plot multiple signals with a horizontal span selector for interactive range selection.
 
@@ -493,7 +493,7 @@ class Plotting:
         vline_right = ax1.axvline(0, color='red', linestyle='--', visible=False)
 
         if saveplt:
-            plt.savefig("plot_PlottingMulti_SpanSelector.pdf", format='pdf')
+            plt.savefig(savename + ".pdf", format='pdf')
 
         span_text = ax1.text(0.05, 0.95, "", transform=ax1.transAxes,
                             fontsize=self.PlotFontSize, verticalalignment='top')
@@ -510,7 +510,7 @@ class Plotting:
 
         return fig, span_selector
 
-    def Plotting3DWire(self, x, y, z, xlab, ylab, title, upL, loL, saveplt=False):
+    def Plotting3DWire(self, x, y, z, xlab, ylab, title, upL, loL, saveplt=False, savename= "plot"):
         """
         Plot a 3D wireframe surface using meshgrid data.
 
@@ -556,11 +556,11 @@ class Plotting:
         ax1.set_ylim3d(loL, upL)
 
         if saveplt:
-            plt.savefig("plot_Plotting3DWire.pdf", format='pdf')
+            plt.savefig(savename + ".pdf", format='pdf')
 
         plt.show()
 
-    def PlottingContour(self, x, y, z, xlab, ylab, title, saveplt=False):
+    def PlottingContour(self, x, y, z, xlab, ylab, title, saveplt=False, savename= "plot"):
         """
         Generate a contour plot of a 2D scalar field.
 
@@ -597,7 +597,7 @@ class Plotting:
         fig.colorbar(plotC)
 
         if saveplt:
-            plt.savefig("plot_PlottingContour.pdf", format='pdf')
+            plt.savefig(savename + ".pdf", format='pdf')
 
         plt.show()
 
@@ -621,7 +621,7 @@ class Plotting:
         """
         return np.trace(np.matmul(A.T.conj(), B))
     
-    def PlottingSphere(self, Mx, My, Mz, rho_eqQ, plot_vector, scale_datapoints, saveplt=False):
+    def PlottingSphere(self, Mx, My, Mz, rho_eqQ, plot_vector, scale_datapoints, saveplt=False, savename= "plot"):
         """
         Plot the evolution of magnetization on a Bloch sphere.
 
@@ -676,11 +676,11 @@ class Plotting:
         ax.set_zlabel('Mz')
 
         if saveplt:
-            plt.savefig("plot_PlottingSphere.pdf", format='pdf')
+            plt.savefig(savename + ".pdf", format='pdf')
 
         plt.show()
 
-    def PlottingMultimodeAnalyzer(self, t, freq, sig, spec, saveplt=False):
+    def PlottingMultimodeAnalyzer(self, t, freq, sig, spec, saveplt=False, savename= "plot"):
         """
         Multimode Fourier Analyzer with interactive plot linking time and frequency domains.
 
@@ -736,7 +736,7 @@ class Plotting:
         ax[1, 1].grid()
 
         if saveplt:
-            plt.savefig("plot_PlottingMultimodeAnalyzer.pdf", format='pdf')
+            plt.savefig(savename + ".pdf", format='pdf')
 
         # Attach interactivity
         fourier = Fanalyzer(sig.real, sig.imag, ax, fig, line1, line2, line3, line4,

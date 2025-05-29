@@ -177,6 +177,8 @@ class QuantumSystem:
         # ----------------- Basis of the Spin Operators -----------------
         self.Basis_SpinOperators_Hilbert = "Zeeman"
         self.Basis_SpinOperators_Liouville = "Zeeman"
+        self.Basis_SpinOperators_Hilbert_Logic = True
+        self.Basis_SpinOperators_Hilbert_First = None
         self.Basis_SpinOperators_TransformationMatrix = None # Unitary transformation matrix should be QunObj
         self.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates = None
         self.Basis_SpinOperators_TransformationMatrix_SingletTripletToHamiltonianEigenStates = None
@@ -494,6 +496,10 @@ class QuantumSystem:
             print(f"RelaxParDipole_bIS = {self.RelaxParDipole_bIS}")
 
         self.IndividualThermalDensityMatrix()
+
+        if self.Basis_SpinOperators_Hilbert_Logic:
+            self.Basis_SpinOperators_Hilbert_First = self.Basis_SpinOperators_Hilbert
+            self.Basis_SpinOperators_Hilbert_Logic = False
 
         # Calling other classes from other modules (testing)
 

@@ -91,6 +91,12 @@ class Basis:
         """
         Dic = []
 
+        if self.class_QS.Basis_SpinOperators_Hilbert != "Singlet Triplet" and self.class_QS.Basis_SpinOperators_Hilbert != "Zeeman":
+            #self.class_QS.Basis_SpinOperators_Hilbert = self.class_QS.Basis_SpinOperators_Hilbert_First
+            #self.class_QS.Update()
+            print("Invalid Basis_SpinOperators_Hilbert: not 'Singlet Triplet' or 'Zeeman'. Reinitialize simulation.")
+            return None, None
+
         # Diagonalize the Hamiltonian
         eigenvalues, eigenvectors = self.class_QS.Class_quantumlibrary.Eigen_Split(H)
 
@@ -167,9 +173,8 @@ class Basis:
         if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
             self.class_QS.Basis_SpinOperators_Hilbert = "Singlet Triplet to Hamiltonian eigen states"            
         self.class_QS.Update()
-        self.class_QS.HamiltonianEigenState = True
+        self.class_QS.HamiltonianEigenState = True # Required??
 
-        #return eigenvectors, Dic
         return Basis_States, Dic
 
     def BasisChange_State(self, state, U):
@@ -279,38 +284,47 @@ class Basis:
 
     def KetState_Components(self, ketQ, AQ=None, dic=None, ProjectionState=None, tol=1.0e-10, roundto=5):
         """
-        Decompose a ket (state vector) into a linear combination of basis vectors.
+        Decomposes a quantum state (ket vector) into a linear combination of orthonormal basis vectors.
 
-        This method projects a given ket vector onto an orthonormal basis and prints
-        the resulting decomposition in a readable form. Optionally, it can return 
-        the string representation of the decomposition if the instance attribute 
-        `Return_KetState_Component` is set to True.
+        This method projects the input ket vector onto a specified orthonormal basis and constructs
+        a readable string representation of the resulting decomposition. It can also optionally return 
+        this string if the instance attribute `Return_KetState_Component` is set to True.
 
         Parameters
         ----------
-        AQ : list of QunObj
-            List of orthonormal basis vectors as QunObj instances.
-        dic : dict
-            Dictionary mapping basis indices to readable basis labels.
         ketQ : QunObj
-            The ket vector to decompose (must be a column vector).
+            The quantum state to be decomposed, represented as a column vector.
+        AQ : list of QunObj, optional
+            A list of orthonormal basis vectors as `QunObj` instances. Required unless `ProjectionState` is specified.
+        dic : dict, optional
+            A dictionary mapping basis indices to human-readable labels for the basis vectors.
+        ProjectionState : str or None, optional
+            If provided, sets the projection basis. Supported options:
+            - "Zeeman": Uses the Zeeman basis.
+            - "Singlet Triplet": Uses the singlet-triplet basis.
         tol : float, optional
-            Numerical tolerance below which component values are considered zero. Default is 1.0e-10.
+            Numerical tolerance below which component values are treated as zero. Default is 1.0e-10.
         roundto : int, optional
-            Number of decimal places to round each component. Default is 5.
+            Number of decimal places to round each nonzero component. Default is 5.
 
         Raises
         ------
         TypeError
-            If `AQ` is not a list or contains non-QunObj elements.
+            If `AQ` is not a list or contains non-`QunObj` elements when required.
         ValueError
-            If `ketQ` is not a column vector (i.e., shape mismatch).
+            If `ketQ` is not a column vector.
 
         Returns
         -------
         None or str
-            Prints the decomposition of the ket. If `self.Return_KetState_Component` is True,
+            Prints the decomposition of the ket vector. If `self.Return_KetState_Component` is True,
             also returns the string representation of the decomposition.
+
+        Notes
+        -----
+        - If `ProjectionState` is specified, the method selects the appropriate basis and transforms 
+          the input state accordingly before decomposition.
+        - Very small real or imaginary parts (below `tol`) are set to zero for cleaner output.
         """
 
         if ProjectionState is None:
