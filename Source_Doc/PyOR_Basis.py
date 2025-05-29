@@ -476,7 +476,9 @@ class Basis:
             if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
                 return OP, CO, DIC
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
-                return self.BasisChange_SpinOperators(OP,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), CO, DIC    
+                return self.BasisChange_SpinOperators(OP,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), CO, DIC  
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
+                return self.BasisChange_SpinOperators(OP,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates.Adjoint()), CO, DIC  
                     
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(OP), CO, DIC        
@@ -527,6 +529,11 @@ class Basis:
                 return self.BasisChange_SpinOperators(
                     OP,
                     self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()
+                ), CO, DIC
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
+                return self.BasisChange_SpinOperators(
+                    OP,
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates.Adjoint()
                 ), CO, DIC
 
         if self.class_QS.PropagationSpace == "Liouville":
@@ -654,6 +661,8 @@ class Basis:
                 return Basis_SpinHalf_out, Dic_out 
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
                 return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), Dic_out 
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
+                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates.Adjoint()), Dic_out 
                         
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Dic_out
@@ -755,6 +764,11 @@ class Basis:
                     Basis_SpinHalf_out,
                     self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()
                 ), Dic_out
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
+                return self.BasisChange_SpinOperators(
+                    Basis_SpinHalf_out,
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates.Adjoint()
+                ), Dic_out
 
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Dic_out
@@ -825,7 +839,9 @@ class Basis:
                 return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out 
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
                 return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), Coherence_order_SpinHalf_out, Dic_out 
-                        
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
+                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates.Adjoint()), Coherence_order_SpinHalf_out, Dic_out 
+
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
 
@@ -929,6 +945,11 @@ class Basis:
                     Basis_SpinHalf_out,
                     self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()
                 ), Coherence_order_SpinHalf_out, Dic_out
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
+                return self.BasisChange_SpinOperators(
+                    Basis_SpinHalf_out,
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates.Adjoint()
+                ), Coherence_order_SpinHalf_out, Dic_out
 
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
@@ -985,7 +1006,9 @@ class Basis:
                 return Basis_SpinHalf_out, Coherence_order_SpinHalf_out, Dic_out 
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":     
                 return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), Coherence_order_SpinHalf_out, Dic_out 
-                        
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
+                return self.BasisChange_SpinOperators(Basis_SpinHalf_out,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates.Adjoint()), Coherence_order_SpinHalf_out, Dic_out 
+
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
 
@@ -1074,6 +1097,11 @@ class Basis:
                     Basis_SpinHalf_out,
                     self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()
                 ), Coherence_order_SpinHalf_out, Dic_out
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
+                return self.BasisChange_SpinOperators(
+                    Basis_SpinHalf_out,
+                    self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates.Adjoint()
+                ), Coherence_order_SpinHalf_out, Dic_out
                             
         if self.class_QS.PropagationSpace == "Liouville":
             return self.ProductOperators_ConvertToLiouville(Basis_SpinHalf_out), Coherence_order_SpinHalf_out, Dic_out
@@ -1117,7 +1145,7 @@ class Basis:
         QunObj
             Coherence order as a 2D matrix.
         """
-        B_Z, dic_dummy = self.Zeeman_Basis()
+        B_Z, dic_dummy = self.Zeeman_Basis(ZEEMAN = True)
         Kets = self.class_QS.ZeemanBasis_Ket()
         Bras = self.class_QS.ZeemanBasis_Bra()
         dic = []
@@ -1135,7 +1163,9 @@ class Basis:
             if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman":
                 return B, dic, coh, QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim))) 
             if self.class_QS.Basis_SpinOperators_Hilbert == "Singlet Triplet":
-                return B, dic, coh, QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim))) 
+                return self.BasisChange_SpinOperators(B,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet.Adjoint()), dic, coh, QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim))) 
+            if self.class_QS.Basis_SpinOperators_Hilbert == "Zeeman to Hamiltonian eigen states":
+                return self.BasisChange_SpinOperators(B,self.class_QS.Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates.Adjoint()), dic, coh, QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim)))
                         
         if self.class_QS.PropagationSpace == "Liouville":  
             return self.ProductOperators_ConvertToLiouville(B), dic, coh, self.class_QS.Class_quantumlibrary.DMToVec(QunObj(np.asarray(coh).reshape((self.class_QS.Vdim, self.class_QS.Vdim)))) 

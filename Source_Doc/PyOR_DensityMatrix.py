@@ -34,7 +34,7 @@ QLib = QuantumLibrary()
 
 
 class DensityMatrix:
-    def __init__(self, class_QS, class_HAM):
+    def __init__(self, class_QS, class_HAM=None):
         self.class_QS = class_QS
         self.class_HAM = class_HAM
         self.hbar = PyOR_PhysicalConstants.constants("hbar")
