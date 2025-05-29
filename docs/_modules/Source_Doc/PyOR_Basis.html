@@ -177,6 +177,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Dic</span> <span class="o">=</span> <span class="p">[]</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">!=</span> <span class="s2">&quot;Singlet Triplet&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">!=</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">:</span>
+            <span class="c1">#self.class_QS.Basis_SpinOperators_Hilbert = self.class_QS.Basis_SpinOperators_Hilbert_First</span>
+            <span class="c1">#self.class_QS.Update()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid Basis_SpinOperators_Hilbert: not &#39;Singlet Triplet&#39; or &#39;Zeeman&#39;. Reinitialize simulation.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
         <span class="c1"># Diagonalize the Hamiltonian</span>
         <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Class_quantumlibrary</span><span class="o">.</span><span class="n">Eigen_Split</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
 
@@ -253,9 +259,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">==</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">=</span> <span class="s2">&quot;Singlet Triplet to Hamiltonian eigen states&quot;</span>            
         <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">Update</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">HamiltonianEigenState</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_QS</span><span class="o">.</span><span class="n">HamiltonianEigenState</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># Required??</span>
 
-        <span class="c1">#return eigenvectors, Dic</span>
         <span class="k">return</span> <span class="n">Basis_States</span><span class="p">,</span> <span class="n">Dic</span></div>
 
 
@@ -380,38 +385,47 @@
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_Basis.Basis.KetState_Components">[docs]</a>
     <span class="k">def</span> <span class="nf">KetState_Components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ketQ</span><span class="p">,</span> <span class="n">AQ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ProjectionState</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.0e-10</span><span class="p">,</span> <span class="n">roundto</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Decompose a ket (state vector) into a linear combination of basis vectors.</span>
+<span class="sd">        Decomposes a quantum state (ket vector) into a linear combination of orthonormal basis vectors.</span>
 
-<span class="sd">        This method projects a given ket vector onto an orthonormal basis and prints</span>
-<span class="sd">        the resulting decomposition in a readable form. Optionally, it can return </span>
-<span class="sd">        the string representation of the decomposition if the instance attribute </span>
-<span class="sd">        `Return_KetState_Component` is set to True.</span>
+<span class="sd">        This method projects the input ket vector onto a specified orthonormal basis and constructs</span>
+<span class="sd">        a readable string representation of the resulting decomposition. It can also optionally return </span>
+<span class="sd">        this string if the instance attribute `Return_KetState_Component` is set to True.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        AQ : list of QunObj</span>
-<span class="sd">            List of orthonormal basis vectors as QunObj instances.</span>
-<span class="sd">        dic : dict</span>
-<span class="sd">            Dictionary mapping basis indices to readable basis labels.</span>
 <span class="sd">        ketQ : QunObj</span>
-<span class="sd">            The ket vector to decompose (must be a column vector).</span>
+<span class="sd">            The quantum state to be decomposed, represented as a column vector.</span>
+<span class="sd">        AQ : list of QunObj, optional</span>
+<span class="sd">            A list of orthonormal basis vectors as `QunObj` instances. Required unless `ProjectionState` is specified.</span>
+<span class="sd">        dic : dict, optional</span>
+<span class="sd">            A dictionary mapping basis indices to human-readable labels for the basis vectors.</span>
+<span class="sd">        ProjectionState : str or None, optional</span>
+<span class="sd">            If provided, sets the projection basis. Supported options:</span>
+<span class="sd">            - &quot;Zeeman&quot;: Uses the Zeeman basis.</span>
+<span class="sd">            - &quot;Singlet Triplet&quot;: Uses the singlet-triplet basis.</span>
 <span class="sd">        tol : float, optional</span>
-<span class="sd">            Numerical tolerance below which component values are considered zero. Default is 1.0e-10.</span>
+<span class="sd">            Numerical tolerance below which component values are treated as zero. Default is 1.0e-10.</span>
 <span class="sd">        roundto : int, optional</span>
-<span class="sd">            Number of decimal places to round each component. Default is 5.</span>
+<span class="sd">            Number of decimal places to round each nonzero component. Default is 5.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TypeError</span>
-<span class="sd">            If `AQ` is not a list or contains non-QunObj elements.</span>
+<span class="sd">            If `AQ` is not a list or contains non-`QunObj` elements when required.</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If `ketQ` is not a column vector (i.e., shape mismatch).</span>
+<span class="sd">            If `ketQ` is not a column vector.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        None or str</span>
-<span class="sd">            Prints the decomposition of the ket. If `self.Return_KetState_Component` is True,</span>
+<span class="sd">            Prints the decomposition of the ket vector. If `self.Return_KetState_Component` is True,</span>
 <span class="sd">            also returns the string representation of the decomposition.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - If `ProjectionState` is specified, the method selects the appropriate basis and transforms </span>
+<span class="sd">          the input state accordingly before decomposition.</span>
+<span class="sd">        - Very small real or imaginary parts (below `tol`) are set to zero for cleaner output.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">ProjectionState</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

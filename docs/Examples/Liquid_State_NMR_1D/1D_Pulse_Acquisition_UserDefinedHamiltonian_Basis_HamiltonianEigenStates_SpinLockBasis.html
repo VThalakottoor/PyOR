@@ -171,7 +171,7 @@ Larmor Frequency in MHz:  [-400.22801765 -400.22801765]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;PyOR_QuantumObject.QunObj at 0x7f601d3717c0&gt;
+&lt;PyOR_QuantumObject.QunObj at 0x7fd5853e68a0&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -204,7 +204,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0.5 &amp; 0\\0 &amp; 0.5 &amp
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;PyOR_QuantumObject.QunObj at 0x7f601d061a30&gt;
+&lt;PyOR_QuantumObject.QunObj at 0x7fd57d59dc40&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -291,12 +291,62 @@ Larmor Frequency in MHz:  [-400.22801765 -400.22801765]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Dic</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert_First</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;Singlet Triplet&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;Singlet Triplet to Hamiltonian eigen states&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Az</span><span class="o">.</span><span class="n">Tolarence</span><span class="p">(</span><span class="mf">1.0e-5</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="math notranslate nohighlight">
+$\displaystyle \left[\begin{matrix}0 &amp; 0.353553384542465 &amp; 0 &amp; 0.353553384542465\\0.353553384542465 &amp; 0 &amp; -0.353553384542465 &amp; 0\\0 &amp; -0.353553384542465 &amp; 0 &amp; 0.353553384542465\\0.353553384542465 &amp; 0 &amp; 0.353553384542465 &amp; 0\end{matrix}\right]$</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Dic</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -308,10 +358,10 @@ Larmor Frequency in MHz:  [-400.22801765 -400.22801765]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ProjectionState</span> <span class="o">=</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">ProjectionState</span> <span class="o">=</span> <span class="s2">&quot;Zeeman&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -320,11 +370,11 @@ Larmor Frequency in MHz:  [-400.22801765 -400.22801765]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Ket State = 0.5 |1/2,1/2⟩|1/2,1/2⟩ + 0.5 |1/2,1/2⟩|1/2,-1/2⟩ + 0.5 |1/2,-1/2⟩|1/2,1/2⟩ + 0.5 |1/2,-1/2⟩|1/2,-1/2⟩
+Ket State = 0.0 |1/2,1/2⟩|1/2,1/2⟩ + 0.70711 |1/2,1/2⟩|1/2,-1/2⟩ + -0.70711 |1/2,-1/2⟩|1/2,1/2⟩ + -0.0 |1/2,-1/2⟩|1/2,-1/2⟩
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet</span><span class="o">.</span><span class="n">matrix</span>
@@ -332,7 +382,7 @@ Ket State = 0.5 |1/2,1/2⟩|1/2,1/2⟩ + 0.5 |1/2,1/2⟩|1/2,-1/2⟩ + 0.5 |1/2,
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -340,7 +390,7 @@ Ket State = 0.5 |1/2,1/2⟩|1/2,1/2⟩ + 0.5 |1/2,1/2⟩|1/2,-1/2⟩ + 0.5 |1/2,
 $\displaystyle \left[\begin{matrix}0 &amp; 1.0 &amp; 0 &amp; 0\\0.707106781186547 &amp; 0 &amp; 0.707106781186547 &amp; 0\\-0.707106781186547 &amp; 0 &amp; 0.707106781186547 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 1.0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Class_basis</span><span class="o">.</span><span class="n">KetState_Components</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">ProjectionState</span> <span class="o">=</span> <span class="s2">&quot;Singlet Triplet&quot;</span><span class="p">)</span>
@@ -356,7 +406,7 @@ Ket State = 1.0 S0
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">HamiltonianEigenState</span>
@@ -364,7 +414,7 @@ Ket State = 1.0 S0
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -373,7 +423,7 @@ True
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span>
@@ -381,7 +431,7 @@ True
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -390,7 +440,7 @@ True
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span><span class="o">.</span><span class="n">Tolarence</span><span class="p">(</span><span class="mf">1.0e-5</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
@@ -398,7 +448,7 @@ True
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -406,7 +456,7 @@ True
 $\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 1.0\\0.5 &amp; 0.707106781186548 &amp; -0.5 &amp; 0\\0.707106781186547 &amp; 0 &amp; 0.707106781186547 &amp; 0\\0.5 &amp; -0.707106781186547 &amp; -0.5 &amp; 0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">Az</span><span class="o">.</span><span class="n">Tolarence</span><span class="p">(</span><span class="mf">1.0e-5</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
@@ -414,7 +464,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0 &amp; 0 &amp; 1.0\\0.5 &amp; 0.7071
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -425,7 +475,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0.353553384542465 &amp; 0 &amp; 0.353
 <section id="Generate-Hamiltonians-in-new-basis-state">
 <h3>Generate Hamiltonians in new basis state<a class="headerlink" href="#Generate-Hamiltonians-in-new-basis-state" title="Link to this heading"></a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hz</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">QS</span><span class="o">.</span><span class="n">Az</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">QS</span><span class="o">.</span><span class="n">Bz</span>
@@ -434,7 +484,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0.353553384542465 &amp; 0 &amp; 0.353
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -442,7 +492,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0.353553384542465 &amp; 0 &amp; 0.353
 $\displaystyle \left[\begin{matrix}0 &amp; 21.2132030725479 &amp; 0 &amp; -14.1421353816986\\21.2132030725479 &amp; 0 &amp; -21.2132030725479 &amp; 0\\0 &amp; -21.2132030725479 &amp; 0 &amp; -14.1421353816986\\-14.1421353816986 &amp; 0 &amp; -14.1421353816986 &amp; 0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Hj</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">QS</span><span class="o">.</span><span class="n">Ax</span> <span class="o">*</span> <span class="n">QS</span><span class="o">.</span><span class="n">Bx</span> <span class="o">+</span> <span class="n">QS</span><span class="o">.</span><span class="n">Ay</span> <span class="o">*</span> <span class="n">QS</span><span class="o">.</span><span class="n">By</span> <span class="o">+</span> <span class="n">QS</span><span class="o">.</span><span class="n">Az</span> <span class="o">*</span> <span class="n">QS</span><span class="o">.</span><span class="n">Bz</span><span class="p">)</span>
@@ -451,7 +501,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 21.2132030725479 &amp; 0 &amp; -14.14
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -459,7 +509,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 21.2132030725479 &amp; 0 &amp; -14.14
 $\displaystyle \left[\begin{matrix}1.25 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 1.24999991442865 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 1.25 &amp; 0\\0 &amp; 0 &amp; 0 &amp; -3.74999991442865\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">Hz</span> <span class="o">+</span> <span class="n">Hj</span><span class="p">)</span><span class="o">.</span><span class="n">Tolarence</span><span class="p">(</span><span class="mf">1.0e-5</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span>
@@ -467,7 +517,7 @@ $\displaystyle \left[\begin{matrix}1.25 &amp; 0 &amp; 0 &amp; 0\\0 &amp; 1.24999
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -479,7 +529,7 @@ $\displaystyle \left[\begin{matrix}7.85398163397444 &amp; 133.28648586365 &amp; 
 <section id="Initialize-density-matrix">
 <h2>Initialize density matrix<a class="headerlink" href="#Initialize-density-matrix" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initial Density Matrix</span>
@@ -489,7 +539,7 @@ $\displaystyle \left[\begin{matrix}7.85398163397444 &amp; 133.28648586365 &amp; 
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -497,7 +547,7 @@ $\displaystyle \left[\begin{matrix}7.85398163397444 &amp; 133.28648586365 &amp; 
 $\displaystyle \left[\begin{matrix}0 &amp; 0.70710676908493 &amp; 0 &amp; 0\\0.70710676908493 &amp; 0 &amp; -0.70710676908493 &amp; 0\\0 &amp; -0.70710676908493 &amp; 0 &amp; 0\\0 &amp; 0 &amp; 0 &amp; 0\end{matrix}\right]$</div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Final Density Matrix</span>
@@ -507,7 +557,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0.70710676908493 &amp; 0 &amp; 0\\0.7
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -518,7 +568,7 @@ $\displaystyle \left[\begin{matrix}-2.22044604925031 \cdot 10^{-16} &amp; 0.7071
 <section id="Hard-Pulse">
 <h2>Hard Pulse<a class="headerlink" href="#Hard-Pulse" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">HardP</span> <span class="o">=</span> <span class="n">HardPulse</span><span class="p">(</span><span class="n">QS</span><span class="p">)</span>
@@ -530,7 +580,7 @@ $\displaystyle \left[\begin{matrix}-2.22044604925031 \cdot 10^{-16} &amp; 0.7071
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -541,7 +591,7 @@ $\displaystyle \left[\begin{matrix}0.999999982885729 &amp; 0 &amp; 0 &amp; 0\\0 
 <section id="Evolution">
 <h2>Evolution<a class="headerlink" href="#Evolution" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">QS</span><span class="o">.</span><span class="n">AcqDT</span> <span class="o">=</span> <span class="mf">0.0001</span>
@@ -565,14 +615,14 @@ $\displaystyle \left[\begin{matrix}0.999999982885729 &amp; 0 &amp; 0 &amp; 0\\0 
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Larmor Frequency in MHz:  [-400.22801765 -400.22801765]
-Total time = 2.9659154415130615 seconds
+Total time = 3.0756287574768066 seconds
 </pre></div></div>
 </div>
 </section>
 <section id="Expectation">
 <h2>Expectation<a class="headerlink" href="#Expectation" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">det_Mt</span> <span class="o">=</span> <span class="n">QS</span><span class="o">.</span><span class="n">Ap</span> <span class="o">+</span> <span class="n">QS</span><span class="o">.</span><span class="n">Bp</span>
@@ -587,7 +637,7 @@ Total time = 2.9659154415130615 seconds
 <section id="Plotting">
 <h2>Plotting<a class="headerlink" href="#Plotting" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span> <span class="o">=</span> <span class="n">Plotting</span><span class="p">(</span><span class="n">QS</span><span class="p">)</span>
@@ -595,7 +645,7 @@ Total time = 2.9659154415130615 seconds
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="o">.</span><span class="n">PlotFigureSize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
@@ -616,23 +666,23 @@ Total time = 2.9659154415130615 seconds
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 (&lt;Figure size 1000x500 with 1 Axes&gt;,
- &lt;matplotlib.widgets.SpanSelector at 0x7f601cefaba0&gt;)
+ &lt;matplotlib.widgets.SpanSelector at 0x7fd57b487bf0&gt;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "fe7919d252884b05aac3efadb3428357", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "fa3be1a2cf9c41d1b8827e0a8189ca42", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="o">.</span><span class="n">PlotFigureSize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
@@ -642,26 +692,26 @@ Total time = 2.9659154415130615 seconds
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 (&lt;Figure size 1000x500 with 1 Axes&gt;,
- &lt;matplotlib.widgets.SpanSelector at 0x7f601cefb680&gt;)
+ &lt;matplotlib.widgets.SpanSelector at 0x7fd579b99b50&gt;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "01288c158c304f7c8bf41a8f9e5eb442", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b08efe5d0d8d4894b1fb1d19c62f9a72", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 <section id="Fourier-Transform">
 <h2>Fourier Transform<a class="headerlink" href="#Fourier-Transform" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">freq</span><span class="p">,</span> <span class="n">spectrum</span> <span class="o">=</span> <span class="n">Spro</span><span class="o">.</span><span class="n">FourierTransform</span><span class="p">(</span><span class="n">Mt</span><span class="p">,</span><span class="n">QS</span><span class="o">.</span><span class="n">AcqFS</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
@@ -669,7 +719,7 @@ Total time = 2.9659154415130615 seconds
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="o">.</span><span class="n">PlotFigureSize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
@@ -681,20 +731,20 @@ Total time = 2.9659154415130615 seconds
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 (&lt;Figure size 1000x500 with 1 Axes&gt;,
- &lt;matplotlib.widgets.SpanSelector at 0x7f60194e9cd0&gt;)
+ &lt;matplotlib.widgets.SpanSelector at 0x7fd579c1e8d0&gt;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e5819cee11b14ef08995d523be27c70b", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "af693e2b94254a169f988b1219436314", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 </section>

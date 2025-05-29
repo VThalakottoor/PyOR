@@ -302,7 +302,7 @@
 
 <div class="viewcode-block" id="DensityMatrix.DensityMatrix_Components">
 <a class="viewcode-back" href="../../modules.html#Source_Doc.PyOR_DensityMatrix.DensityMatrix.DensityMatrix_Components">[docs]</a>
-    <span class="k">def</span> <span class="nf">DensityMatrix_Components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">rhoQ</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.0e-10</span><span class="p">,</span> <span class="n">roundto</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">DensityMatrix_Components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhoQ</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.0e-10</span><span class="p">,</span> <span class="n">roundto</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decompose a density matrix into a linear combination of a given operator basis.</span>
 
@@ -312,12 +312,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        rhoQ : QunObj</span>
+<span class="sd">            The density matrix (or state vector) to be decomposed.</span>
 <span class="sd">        AQ : list of QunObj</span>
 <span class="sd">            List of basis operator objects that define the decomposition space.</span>
 <span class="sd">        dic : dict</span>
 <span class="sd">            Dictionary mapping indices to basis labels for readable output.</span>
-<span class="sd">        rhoQ : QunObj</span>
-<span class="sd">            The density matrix (or state vector) to be decomposed.</span>
 <span class="sd">        tol : float, optional</span>
 <span class="sd">            Tolerance level for treating small component values as zero. Default is 1.0e-10.</span>
 <span class="sd">        roundto : int, optional</span>

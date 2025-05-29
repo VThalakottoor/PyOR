@@ -170,7 +170,7 @@ Larmor Frequency in MHz:  [-400.22801765 -400.22801765]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;PyOR_QuantumObject.QunObj at 0x7f5b6494e1e0&gt;
+&lt;PyOR_QuantumObject.QunObj at 0x7f2f6159e5d0&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -223,7 +223,7 @@ array([[ 0.5+0.j,  0. +0.j,  0. +0.j,  0. +0.j],
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;PyOR_QuantumObject.QunObj at 0x7f5b5b801d30&gt;
+&lt;PyOR_QuantumObject.QunObj at 0x7f2f61d3b200&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -374,7 +374,7 @@ $\displaystyle \left[\begin{matrix}0 &amp; 0.5 &amp; 0.5 &amp; 0\\0.5 &amp; 0 &a
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Larmor Frequency in MHz:  [-400.22801765 -400.22801765]
-Total time = 3.157172679901123 seconds
+Total time = 3.014617443084717 seconds
 </pre></div></div>
 </div>
 </section>
@@ -404,12 +404,14 @@ Total time = 3.157172679901123 seconds
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="o">.</span><span class="n">PlotFigureSize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">plot</span><span class="o">.</span><span class="n">PlotFontSize</span> <span class="o">=</span> <span class="mi">20</span>
-<span class="n">plot</span><span class="o">.</span><span class="n">Plotting_SpanSelector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Mt</span><span class="p">,</span><span class="s2">&quot;time (s)&quot;</span><span class="p">,</span><span class="s2">&quot;Mt&quot;</span><span class="p">,</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">PlotXlimt</span><span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">PlotYlimt</span><span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">Plotting_SpanSelector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Mt</span><span class="p">,</span><span class="s2">&quot;time (s)&quot;</span><span class="p">,</span><span class="sa">r</span><span class="s2">&quot;$M_T$&quot;</span><span class="p">,</span><span class="s2">&quot;red&quot;</span><span class="p">,</span><span class="n">saveplt</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">savename</span><span class="o">=</span><span class="s2">&quot;Transverse Magnetization&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -425,46 +427,48 @@ Total time = 3.157172679901123 seconds
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 (&lt;Figure size 1000x500 with 1 Axes&gt;,
- &lt;matplotlib.widgets.SpanSelector at 0x7f5b5b6ad9d0&gt;)
+ &lt;matplotlib.widgets.SpanSelector at 0x7f2f51ddac60&gt;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "a1c0323bee914c1c80d1e2da8d514151", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "54706058314147cdaa039e91b9709f12", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="o">.</span><span class="n">PlotFigureSize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">plot</span><span class="o">.</span><span class="n">PlotFontSize</span> <span class="o">=</span> <span class="mi">20</span>
-<span class="n">plot</span><span class="o">.</span><span class="n">Plotting_SpanSelector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Mz</span><span class="p">,</span><span class="s2">&quot;time (s)&quot;</span><span class="p">,</span><span class="s2">&quot;Mz&quot;</span><span class="p">,</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">PlotXlimt</span><span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">PlotYlimt</span><span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">Plotting_SpanSelector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Mz</span><span class="p">,</span><span class="s2">&quot;time (s)&quot;</span><span class="p">,</span><span class="sa">r</span><span class="s2">&quot;$M_Z$&quot;</span><span class="p">,</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 (&lt;Figure size 1000x500 with 1 Axes&gt;,
- &lt;matplotlib.widgets.SpanSelector at 0x7f5b596108f0&gt;)
+ &lt;matplotlib.widgets.SpanSelector at 0x7f2f538657c0&gt;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b39aedef93cd4422825eac44fb002dee", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "6fe202193ba54ca08ef3fd7c444e8c3c", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 <section id="Fourier-Transform">
@@ -496,14 +500,14 @@ Total time = 3.157172679901123 seconds
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 (&lt;Figure size 1000x500 with 1 Axes&gt;,
- &lt;matplotlib.widgets.SpanSelector at 0x7f5b58495040&gt;)
+ &lt;matplotlib.widgets.SpanSelector at 0x7f2f51e97020&gt;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f2e8f3d7e5ab437dac92ef9da090405f", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e6eb8926e1a24797a44ddad81593b0e0", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 </section>

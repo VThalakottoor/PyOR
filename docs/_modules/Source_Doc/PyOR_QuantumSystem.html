@@ -258,6 +258,8 @@
         <span class="c1"># ----------------- Basis of the Spin Operators -----------------</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span> <span class="o">=</span> <span class="s2">&quot;Zeeman&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_Liouville</span> <span class="o">=</span> <span class="s2">&quot;Zeeman&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert_Logic</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert_First</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Unitary transformation matrix should be QunObj</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_ZeemanToHamiltonianEigenStates</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_TransformationMatrix_SingletTripletToHamiltonianEigenStates</span> <span class="o">=</span> <span class="kc">None</span>
@@ -595,6 +597,10 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RelaxParDipole_bIS = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RelaxParDipole_bIS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">IndividualThermalDensityMatrix</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert_Logic</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert_First</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Basis_SpinOperators_Hilbert_Logic</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Calling other classes from other modules (testing)</span>
 
