@@ -114,6 +114,12 @@ class MaserDataAnalyzer:
         self.abs_spectrum = abs_spectrum
         self.simulation = simulation
         self.Xlimt = None
+        self.Ylimt = None
+        self.PlotFontSize = 20
+        self.XaxisVissible = True
+        self.YaxisVissible = True
+        self.Grid = True
+        self.Legend = True
 
         self.Load_Data()
         self.Prepare_Signal()
@@ -210,19 +216,31 @@ class MaserDataAnalyzer:
         """Plots the time-domain signal only."""
         plt.figure(figsize=(10, 4))
         plt.plot(self.tpoints, self.signal.real, label="Real Part")
-        plt.plot(self.tpoints, self.signal.imag, label="Imaginary Part", linestyle='--')
-        plt.title("Time-Domain Signal")
-        plt.xlabel("Time [s]")
-        plt.ylabel("Amplitude")
-        plt.grid()
-        plt.legend()
+        #plt.plot(self.tpoints, self.signal.imag, label="Imaginary Part", linestyle='--')
+        #plt.title("Time-Domain Signal")
+        plt.xlabel("Time [s]",fontsize=self.PlotFontSize, fontweight='bold')
+        plt.ylabel("Amplitude",fontsize=self.PlotFontSize, fontweight='bold')
+        plt.xlim(self.Xlimt)
+        plt.ylim(self.Ylimt)
+        plt.tick_params(axis='x', labelsize=self.PlotFontSize)
+        plt.tick_params(axis='y', labelsize=self.PlotFontSize)
+
+        # Remove X or Y-axis
+        plt.gca().axes.get_yaxis().set_visible(self.YaxisVissible)
+        plt.gca().axes.get_xaxis().set_visible(self.XaxisVissible)
+
+        if self.Grid:
+            plt.grid()
+        if self.Legend:
+            plt.legend()
+
         plt.tight_layout()
         plt.show()
 
         # Save the figure to the same directory
         directory = os.path.dirname(self.filepath)
-        output_path = os.path.join(directory, "Signal.svg")
-        plt.savefig(output_path, format='svg')
+        output_path = os.path.join(directory, "Signal.jpg")
+        plt.savefig(output_path, format='jpg')
 
     def Plot_FFT(self):
         """Plots the frequency-domain spectrum only."""
