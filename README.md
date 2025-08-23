@@ -1,5 +1,5 @@
 # PyOR (Python on Resonance)
-Dedicated to Jean Jeener and Gauri. 
+Dedicated to Jean Jeener (My hero in NMR, whom I have never met) and Gauri (The mirror helped me in my journey to understand myself). 
 
 "The confusion and solitude I went through became the building blocks of the modules you're using now. PyOR isn’t just a simulator; it’s my way of holding on to my passion and finding peace through it."
 

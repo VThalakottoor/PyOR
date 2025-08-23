@@ -738,7 +738,8 @@ class Hamiltonian:
                 A20 * T20 - (A21 * T2m1 + A2m1 * T21) + A22 * T2m2 + A2m2 * T22
             )))
         if approx == "secular + pseudosecular":
-            return QunObj(A0 * T0 + A10 * T10 + A20 * T20)
+            #return QunObj(A0 * T0 + A10 * T10 + A20 * T20)
+            return QunObj(A0 * T0  + A20 * T20)
         
     def Interaction_Hamiltonian_LAB_CSA_Secular(self, X, ApasQ, theta, phi):
         """
@@ -1267,7 +1268,7 @@ class Hamiltonian:
 
     def MASSpectrum(self, EVol, rhoI, rhoeq, X, IT_PAF, Y, string, approx,
                     alpha, beta, gamma, weighted=True, weight=None,
-                    MagicAngle=0.0, RotortFrequency=0.0, ncores=-2, apodization = 0.0):
+                    MagicAngle=0.0, RotortFrequency=0.0, ncores=-2, apodization = 0.0, Return = "Spectra"):
         """
         Computes the Magic Angle Spinning (MAS) powder-averaged spectrum.
 
@@ -1365,7 +1366,7 @@ class Hamiltonian:
 
             # Fourier transform to obtain the spectrum
             freq, spectrum_single = Spro.FourierTransform(Mt, self.class_QS.AcqFS, 5)
-            return freq, np.abs(spectrum_single)
+            return freq, np.abs(spectrum_single), Mt
 
         # Compute the spectrum for each orientation in parallel
         results = Parallel(n_jobs=ncores)(
@@ -1373,7 +1374,7 @@ class Hamiltonian:
             for alpha_i, beta_i, gamma_i in alpha_beta_gamma_pairs
         )
 
-        freq_list, spectra = zip(*results)
+        freq_list, spectra, signals = zip(*results)
         freq = freq_list[0]
 
         # Perform weighted or unweighted averaging
@@ -1384,11 +1385,19 @@ class Hamiltonian:
                 weights = np.sin(np.radians(beta))
             weights = weights / np.sum(weights)
             spectrum = np.sum([w * s for w, s in zip(weights, spectra)], axis=0)
+            signal = np.sum([w * s for w, s in zip(weights, signals)], axis=0)
         else:
             spectrum = np.sum(spectra, axis=0)
+            signal = np.sum(signals, axis=0)
 
-        return freq, spectrum
 
+        if Return == "Spectra":
+            return freq, spectrum
+        if Return == "Signal":
+            return t, signal
+        if Return == "Signal and Spectra":
+            return t, signal, freq, spectrum
+        
     def ShapedPulse_Bruker(self, file_path, pulseLength, RotationAngle):
         """
         Load and process a shaped pulse from a Bruker shape file.
