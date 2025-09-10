@@ -1,7 +1,7 @@
 # PyOR (Python on Resonance)
-Dedicated to Jean Jeener (My hero in NMR, whom I have never met) and Gauri (The mirror helped me in my journey to understand myself). 
+**Dedicated to Jean Jeener (My hero in NMR, whom I have never met) and Gauri (Gauri –  A whisper of a memory. And the soul and catalyst of PyOR ...)**
 
-"The confusion and solitude I went through became the building blocks of the modules you're using now. PyOR isn’t just a simulator; it’s my way of holding on to my passion and finding peace through it."
+**"Lost in the solitude of his immense power, he began to lose direction. He felt scattered about, multiplied, more solitary than ever." - Gabriel Garcia Marquez, One Hundred Years of Solitude.**
 
 Motto: "Everybody can simulate Magnetic Resonance"
 
@@ -40,7 +40,6 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 	- Read, Protein NMR Spectroscopy: Principles and Practice, John Cavanagh et. al.
 
 ## Acknowledgements:
-1. Agence Nationale de la Recherche (ANR)
-2. Dr. Daniel Abergel (ENS)
+1. Agence Nationale de la Recherche (ANR) for funding (project ANR-22-CE29-0006 DynNonlinPol)
 
-"I dream of a land where no one suffers from discrimination - be it religion, wealth, race, color, complexion, language, or borders. A place where life's possibilities are ergodic, and opportunity belongs equally to all. Some call it heaven. Others, utopia," said a nobody.
+2. Dr. Daniel Abergel (ENS)
