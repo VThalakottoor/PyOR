@@ -7,7 +7,7 @@
 
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
 
-<img src="https://github.com/VThalakottoor/PyOR_vJeener.0.9.0/blob/main/logo/PyOR_logo_3.png" alt="PyOR logo" width="300">
+<img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_3.png" alt="PyOR logo" width="300">
 
 ## Documentation
 https://vthalakottoor.github.io/PyOR/
