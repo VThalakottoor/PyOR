@@ -3,7 +3,7 @@
 
 **"Lost in the solitude of his immense power, he began to lose direction. He felt scattered about, multiplied, more solitary than ever." - Gabriel Garcia Marquez, One Hundred Years of Solitude.**
 
-Motto: "Everybody can simulate Magnetic Resonance"
+**Motto: "Everybody can simulate Magnetic Resonance"**
 
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
 
