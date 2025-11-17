@@ -1,5 +1,5 @@
 # PyOR (Python on Resonance)
-**Dedicated to Jean Jeener (My hero in NMR, whom I have never met) and Gauri (A whisper of a memory. And the soul and catalyst of PyOR ...)**
+**Dedicated to Jean Jeener (My hero in NMR, whom I have never met) and Gauri (My inner chaos, the birthplace of confusion, envy, and jealousy - the soul and catalyst of PyOR)**
 
 **_"Lost in the solitude of his immense power, he began to lose direction. He felt scattered about, multiplied, more solitary than ever." - Gabriel Garcia Marquez, One Hundred Years of Solitude._**
 
