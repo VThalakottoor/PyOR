@@ -210,12 +210,12 @@ class MaxwellBloch:
 
         ax1 = fig.add_subplot(spec[0, 0])
 
-        ax1.plot(self.Freq,self.Spectrum,linewidth=3.0,color='black',label = "Mabs" )
+        ax1.plot(self.Freq,self.Spectrum,linewidth=3.0,color='black')
         ax1.set_xlabel(r'Frequency (Hz)', fontsize=25, color='green',fontweight='bold')
         ax1.set_ylabel(r'Spectrum (AU)', fontsize=25, color='black',fontweight='bold')
-        ax1.legend(fontsize=25,frameon=False)
+        #ax1.legend(fontsize=25,frameon=False)
         ax1.tick_params(axis='both',labelsize=14)
         ax1.grid(True, linestyle='-.')
-        #ax1.set_xlim(8,13)
+        ax1.set_xlim(-10,30)
         #ax1.text(0.05, 200000, '(a)', ha='center', fontsize=25, color='black',fontweight='bold')
         #plt.savefig(folder + '/pic4.pdf',bbox_inches='tight')
