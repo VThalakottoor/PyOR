@@ -18,6 +18,7 @@ Description:
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import signal as SIGNAL
 import os
 
 def Bruker1Ddata(filepath, outname):
@@ -241,6 +242,109 @@ class MaserDataAnalyzer:
         directory = os.path.dirname(self.filepath)
         output_path = os.path.join(directory, "Signal.jpg")
         plt.savefig(output_path, format='jpg')
+
+    def Plot_Stft(self,segments):
+        """Plots the short time Fourier Transform."""
+        fs = 1.0/self.dt
+        f, t, Zxx = SIGNAL.stft(self.signal.real, fs, nperseg=segments)
+
+        plt.figure(figsize=(10, 4))
+        plt.pcolormesh(t, f, np.abs(Zxx), vmin=0, vmax=np.percentile(np.abs(Zxx), 99), shading='gouraud')
+        
+        plt.xlabel("Time [s]",fontsize=self.PlotFontSize, fontweight='bold')
+        plt.ylabel("Frequency [Hz]",fontsize=self.PlotFontSize, fontweight='bold')
+        plt.xlim(self.Xlimt)
+        plt.ylim(self.Ylimt)
+        plt.tick_params(axis='x', labelsize=self.PlotFontSize)
+        plt.tick_params(axis='y', labelsize=self.PlotFontSize)
+
+        # Remove X or Y-axis
+        plt.gca().axes.get_yaxis().set_visible(self.YaxisVissible)
+        plt.gca().axes.get_xaxis().set_visible(self.XaxisVissible)
+
+        if self.Grid:
+            plt.grid()
+
+        plt.tight_layout()
+        plt.show()
+
+        # Save the figure to the same directory
+        directory = os.path.dirname(self.filepath)
+        output_path = os.path.join(directory, "Stft.jpg")
+        plt.savefig(output_path, format='jpg')
+
+    def Plot_LPFilter(self, cutoff_hz=1e4, order=4):
+        """
+        Plot signal and FFT after applying a low-pass Butterworth filter.
+
+        Parameters
+        ----------
+        cutoff_hz : float
+            Cutoff frequency of the low-pass filter in Hz.
+        order : int
+            Order of the Butterworth filter.
+        """
+        # Original real signal (don't shadow scipy.signal)
+        sig = self.signal
+
+        # Design Butterworth low-pass filter
+        nyq = 0.5 * self.fs              # Nyquist frequency
+        wn = cutoff_hz / nyq             # Normalized cutoff (0..1)
+        b, a = SIGNAL.butter(order, wn, btype='low', analog=False)
+
+        # Apply zero-phase filtering
+        sig_filt = SIGNAL.filtfilt(b, a, sig)
+
+        # FFT of filtered signal
+        Spectrum = np.fft.fft(sig_filt)
+        Spectrum = np.fft.fftshift(Spectrum)
+        freq = np.linspace(-self.fs / 2, self.fs / 2, Spectrum.shape[-1]) + self.offset
+        spectrum_data = np.abs(Spectrum) if self.abs_spectrum else Spectrum
+
+        # ---- Plot time + frequency ----
+        fig, ax = plt.subplots(2, 1, figsize=(10, 8))
+
+        # Time-domain: original vs filtered
+        ax[0].plot(self.tpoints, sig, label="Original", alpha=0.5)
+        ax[0].plot(self.tpoints, sig_filt, label="Low-pass filtered")
+        ax[0].set_xlabel("Time [s]", fontsize=self.PlotFontSize, fontweight='bold')
+        ax[0].set_ylabel("Amplitude", fontsize=self.PlotFontSize, fontweight='bold')
+        ax[0].tick_params(axis='x', labelsize=self.PlotFontSize)
+        ax[0].tick_params(axis='y', labelsize=self.PlotFontSize)
+        if self.Xlimt is not None:
+            ax[0].set_xlim(self.Xlimt)
+        if self.Ylimt is not None:
+            ax[0].set_ylim(self.Ylimt)
+        ax[0].grid(self.Grid)
+        if self.Legend:
+            ax[0].legend()
+
+        # Frequency-domain of filtered signal
+        ax[1].plot(freq, spectrum_data)
+        ax[1].set_xlabel("Frequency [Hz]", fontsize=self.PlotFontSize, fontweight='bold')
+        ax[1].set_ylabel("Magnitude" if self.abs_spectrum else "Complex value",
+                         fontsize=self.PlotFontSize, fontweight='bold')
+        ax[1].tick_params(axis='x', labelsize=self.PlotFontSize)
+        ax[1].tick_params(axis='y', labelsize=self.PlotFontSize)
+        if self.Xlimt is not None:
+            ax[1].set_xlim(self.Xlimt)
+        if self.Ylimt is not None:
+            ax[1].set_ylim(self.Ylimt)
+        ax[1].grid(self.Grid)
+
+        # Apply axis visibility flags (same style as other methods)
+        for axi in ax:
+            axi.axes.get_xaxis().set_visible(self.XaxisVissible)
+            axi.axes.get_yaxis().set_visible(self.YaxisVissible)
+
+        plt.tight_layout()
+        plt.show()
+
+        # Save figure to same directory
+        directory = os.path.dirname(self.filepath)
+        output_path = os.path.join(directory, "LPFilter_TimeFreq.jpg")
+        fig.savefig(output_path, format='jpg')
+
 
     def Plot_FFT(self):
         """Plots the frequency-domain spectrum only."""
