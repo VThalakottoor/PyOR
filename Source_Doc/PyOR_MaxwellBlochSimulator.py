@@ -63,13 +63,14 @@ class MaxwellBloch:
 
         # Acquisition
         self.AQTime = 10.0
-        self.DT = 0.001
+        self.DT = 0.0001
         self.ODEMethod = 'DOP853'
 
         # Plotting
         self.Plot_Xlim = None
         self.Plot_Ylim = None
         self.Plot_Save = False
+        self.fig_counter = 1
 
     def Initialize(self):
         # Frequency
@@ -105,9 +106,9 @@ class MaxwellBloch:
             self.Mo[i, :] = self.Magnetization[i] #* Iso_base_gauss
 
         for i in range(self.ChemicalShifts):
-            self.M[i, 0::3] = self.Mo[i,:] * np.sin(self.FlipAngle_Theta) * np.cos(self.FlipAngle_Phi)
-            self.M[i, 1::3] = self.Mo[i,:] * np.sin(self.FlipAngle_Theta) * np.sin(self.FlipAngle_Phi)
-            self.M[i, 2::3] = self.Mo[i,:] * np.cos(self.FlipAngle_Theta)
+            self.M[i, 0::3] = np.absolute(self.Mo[i,:]) * np.sin(self.FlipAngle_Theta) * np.cos(self.FlipAngle_Phi)
+            self.M[i, 1::3] = np.absolute(self.Mo[i,:]) * np.sin(self.FlipAngle_Theta) * np.sin(self.FlipAngle_Phi)
+            self.M[i, 2::3] = np.absolute(self.Mo[i,:]) * np.cos(self.FlipAngle_Theta)
 
         tol = 1e-16
         self.M[np.abs(self.M) < tol] = 0.0 # zero anything smaller than tol.
@@ -196,9 +197,9 @@ class MaxwellBloch:
     def Ploting_MxMyMz(self):
 
         rc('font', weight='bold')
-        fig = plt.figure(1,constrained_layout=True, figsize=(15, 5))
+        fig = plt.figure(self.fig_counter,constrained_layout=True, figsize=(15, 5))
         spec = fig.add_gridspec(1, 1)
-
+        self.fig_counter += 1
         ax1 = fig.add_subplot(spec[0, 0])
 
         ax1.plot(self.tpoints,self.Mx,linewidth=3.0,color='blue',label = "Mx")
@@ -225,8 +226,9 @@ class MaxwellBloch:
             plt.savefig('MxMyMz.pdf',bbox_inches='tight')        
         
     def Ploting_Spectrum(self):
-        fig = plt.figure(3,constrained_layout=True, figsize=(15, 5))
+        fig = plt.figure(self.fig_counter,constrained_layout=True, figsize=(15, 5))
         spec = fig.add_gridspec(1, 1)
+        self.fig_counter += 1
 
         ax1 = fig.add_subplot(spec[0, 0])
 
@@ -240,3 +242,33 @@ class MaxwellBloch:
         ax1.set_ylim(self.Plot_Ylim)
         if self.Plot_Save:
             plt.savefig('Spectrum.pdf',bbox_inches='tight')     
+
+    def Plotting_Sphere(self):
+        S_phi = np.linspace(0, np.pi, 20)
+        S_theta = np.linspace(0, 2*np.pi, 20)
+        S_phi, S_theta = np.meshgrid(S_phi, S_theta)
+        S_x = np.sum(self.Magnetization) * np.sin(S_phi) * np.cos(S_theta)
+        S_y = np.sum(self.Magnetization) * np.sin(S_phi) * np.sin(S_theta)
+        S_z = np.sum(self.Magnetization) * np.cos(S_phi)
+
+        tlim1 = 0 #-10000
+        tlim2 = -1
+        ax = plt.figure(self.fig_counter,figsize=(10,10)).add_subplot(projection='3d')
+        self.fig_counter += 1
+        ax.plot_wireframe(S_x,S_y,S_z, color="cyan",linewidth=1.0)
+
+        ax.plot(self.Mx[tlim1:tlim2],self.My[tlim1:tlim2],self.Mz[tlim1:tlim2], color="black",linewidth=1.0)
+        #ax.plot(Mpoints[0,tlim1:tlim2],Mpoints[1,tlim1:tlim2],Mpoints[2,tlim1:tlim2], color="green",linewidth=1.0) 
+        #ax.plot(Mpoints[3,tlim1:tlim2],Mpoints[4,tlim1:tlim2],Mpoints[5,tlim1:tlim2], color="blue",linewidth=1.0) 
+        ax.view_init(10, 20)
+        ax.set_xlabel(r'My', fontsize=14, color='black',fontweight='bold')
+        ax.set_ylabel(r'Mx', fontsize=14, color='black',fontweight='bold')
+        ax.set_zlabel(r'Mz', fontsize=14, color='black',fontweight='bold')
+        ax.tick_params(axis='both',labelsize=10)
+        ax.grid(True, linestyle='-.')
+        if self.Plot_Save:
+            plt.savefig('Sphere.pdf',bbox_inches='tight') 
+
+        plt.show() 
+
+ 
