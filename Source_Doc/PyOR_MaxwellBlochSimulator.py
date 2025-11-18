@@ -61,6 +61,20 @@ class MaxwellBloch:
         self.B1_Frequency = 0.0
         self.B1_Phase = 0.0
 
+        # Mean Field Dipolar Field
+        self.Mean_Dipolar_On = False
+        self.Mean_Dipolar_Strength = 0.0
+
+        # Secular Field Dipolar Field
+        self.Secular_Dipolar_On = False
+        self.Secular_Dipolar_Strength = 0.0
+        self.Secular_Dipolar_Axis = np.array([0.0, 0.0, 1.0], dtype=self.DTYPE)
+
+        # Pair wise Dipolar interaction
+        self.Positions = None  # shape (N, 3)
+        self.Pair_Dipolar_On = False
+        self.Pair_Dipolar_Strength = 0.0
+
         # Acquisition
         self.AQTime = 10.0
         self.DT = 0.0001
@@ -133,6 +147,268 @@ class MaxwellBloch:
         self.B1_Frequency = 2.0 * np.pi * self.B1_Frequency
         self.B1_Phase = (np.pi/180.0) * self.B1_Phase
 
+    def Mean_DipolarField(self,Mx,My,Mz):
+        """
+        Simple mean-field dipolar term:
+        returns (Wdx, Wdy, Wdz) in rad/s for each spin.
+
+        For now:
+            Wdz = D * <Mz>
+            Wdx = Wdy = 0
+        where <Mz> is the average over all spins.
+        """
+        if (not self.Mean_Dipolar_On) or (self.Mean_Dipolar_Strength == 0.0):
+            return 0.0, 0.0, 0.0
+
+        # Global average magnetization (bulk)
+        Mz_avg = np.mean(Mz)
+
+        # Effective dipolar frequency along z for *all* spins
+        Wdz = self.Mean_Dipolar_Strength * Mz_avg
+
+        # If you later want transverse parts, you can add them here:
+        Wdx = 0.0
+        Wdy = 0.0
+
+        return Wdx, Wdy, Wdz     
+
+    def Secular_dipolar_field(self, Mx, My, Mz):
+        """
+        Secular dipolar mean-field term.
+
+        W_dip = D * T * <M>
+
+        Returns scalar (Wdx, Wdy, Wdz) in rad/s to be added
+        to the effective precession frequencies for all spins.
+        """
+        if (not self.Secular_Dipolar_On) or (self.Secular_Dipolar_Strength == 0.0):
+            return 0.0, 0.0, 0.0
+
+        # Bulk magnetization
+        M_avg = np.array([np.mean(Mx), np.mean(My), np.mean(Mz)], dtype=self.DTYPE)
+
+        # Ensure axis is unit length
+        n = np.array(self.Secular_Dipolar_Axis, dtype=self.DTYPE)
+        n_norm = np.linalg.norm(n)
+        if n_norm == 0.0:
+            # fallback: no dipolar field if axis is invalid
+            return 0.0, 0.0, 0.0
+        n /= n_norm
+
+        # Secular dipolar tensor T_ij = 3 n_i n_j - delta_ij
+        T = 3.0 * np.outer(n, n) - np.eye(3, dtype=self.DTYPE)
+
+        # Dipolar frequency vector in rad/s
+        W_dip = self.Secular_Dipolar_Strength * (T @ M_avg)
+
+        return W_dip[0], W_dip[1], W_dip[2]
+
+    def Pairwise_DipolarField(self, Mx, My, Mz):
+        """
+        Compute classical pairwise dipolar field at each spin (no FFT).
+
+        Uses:
+            B_i = C * sum_{j!=i} [ (3 (m_j·ê_ij) ê_ij - m_j) / r_ij^3 ]
+
+        Returns:
+            Wx, Wy, Wz  (arrays of length N) in rad/s
+        """
+        if (not getattr(self, "Pair_Dipolar_On", False)) or (self.Pair_Dipolar_Strength == 0.0):
+            # Return zeros matching the shape of Mx/My/Mz
+            zeros = np.zeros_like(Mx, dtype=self.DTYPE)
+            return zeros, zeros, zeros
+
+        if self.Positions is None:
+            raise ValueError("Pairwise_DipolarField: self.Positions is not set.")
+
+        # Flatten positions to (N, 3)
+        r = np.asarray(self.Positions, dtype=self.DTYPE)
+        if r.shape[0] != Mx.shape[0] or r.shape[1] != 3:
+            raise ValueError("Positions must have shape (N, 3) with N = len(Mx).")
+
+        N = Mx.shape[0]
+
+        # Magnetic moment vectors from magnetization components
+        M_vec = np.stack((Mx, My, Mz), axis=1)  # shape (N, 3)
+
+        # Output arrays (local dipolar angular frequencies at each spin)
+        Wx = np.zeros(N, dtype=self.DTYPE)
+        Wy = np.zeros(N, dtype=self.DTYPE)
+        Wz = np.zeros(N, dtype=self.DTYPE)
+
+        C = self.Pair_Dipolar_Strength  # absorbs mu0, gamma^2, etc.
+
+        for i in range(N):
+            # Vector from all j to i
+            dr = r[i] - r         # shape (N, 3)
+            # Avoid self-interaction
+            dr[i] = 0.0
+
+            # Squared distances
+            r2 = np.einsum("ij,ij->i", dr, dr)  # shape (N,)
+
+            # Mask out i and any zero-distance pairs
+            mask = r2 > 0.0
+            if not np.any(mask):
+                continue
+
+            dr_valid = dr[mask]              # (N_valid, 3)
+            Mj_valid = M_vec[mask]           # (N_valid, 3)
+            r2_valid = r2[mask]              # (N_valid,)
+
+            r_valid = np.sqrt(r2_valid)      # |r_ij|
+            inv_r3 = 1.0 / (r2_valid * r_valid)  # 1/r^3
+
+            # Unit vectors ê_ij
+            e = dr_valid / r_valid[:, None]  # (N_valid, 3)
+
+            # m_j · ê_ij
+            mdot_e = np.einsum("ij,ij->i", Mj_valid, e)   # (N_valid,)
+
+            # 3(m_j·ê) ê - m_j
+            term = 3.0 * mdot_e[:, None] * e - Mj_valid   # (N_valid, 3)
+
+            # Sum over j: Σ_j ( term_j / r_ij^3 )
+            Bi = C * np.sum(term * inv_r3[:, None], axis=0)  # (3,)
+
+            # Convert to angular freq (if C already includes -gamma, then this is W directly)
+            Wx[i], Wy[i], Wz[i] = Bi[0], Bi[1], Bi[2]
+
+        return Wx, Wy, Wz
+
+    def Build_Line_Positions(self, spacing=1.0, axis='z'):
+        """
+        Build positions for spins on a 1D line, centered at 0.
+
+        Parameters
+        ----------
+        spacing : float
+            Distance between neighboring spins (arbitrary units or meters).
+        axis : str
+            Which axis to put the line along: 'x', 'y', or 'z'.
+
+        Sets
+        ----
+        self.Positions : ndarray, shape (N, 3)
+        """
+        N = self.ChemicalShifts * self.Isochromats
+
+        # Coordinates along the chosen axis, centered at zero
+        idx = np.arange(N, dtype=self.DTYPE)
+        center = 0.5 * (N - 1)
+        coord = (idx - center) * spacing  # shape (N,)
+
+        # Initialize all positions to zero
+        pos = np.zeros((N, 3), dtype=self.DTYPE)
+
+        if axis.lower() == 'x':
+            pos[:, 0] = coord
+        elif axis.lower() == 'y':
+            pos[:, 1] = coord
+        elif axis.lower() == 'z':
+            pos[:, 2] = coord
+        else:
+            raise ValueError("axis must be 'x', 'y', or 'z'")
+
+        self.Positions = pos
+
+    def Build_3D_Lattice_Positions(self, nx, ny, nz, spacing=1.0):
+        """
+        Build positions for spins on a 3D rectangular lattice, centered at 0.
+
+        Parameters
+        ----------
+        nx, ny, nz : int
+            Number of spins along x, y, z.
+            Must satisfy nx * ny * nz == ChemicalShifts * Isochromats.
+        spacing : float
+            Lattice spacing (same in x, y, z).
+
+        Sets
+        ----
+        self.Positions : ndarray, shape (N, 3)
+        """
+        N = self.ChemicalShifts * self.Isochromats
+        if nx * ny * nz != N:
+            raise ValueError(
+                f"nx*ny*nz = {nx*ny*nz} must equal N = {N} "
+                "(ChemicalShifts * Isochromats)."
+            )
+
+        # Index ranges, centered at zero
+        x_idx = np.arange(nx, dtype=self.DTYPE)
+        y_idx = np.arange(ny, dtype=self.DTYPE)
+        z_idx = np.arange(nz, dtype=self.DTYPE)
+
+        x_center = 0.5 * (nx - 1)
+        y_center = 0.5 * (ny - 1)
+        z_center = 0.5 * (nz - 1)
+
+        x = (x_idx - x_center) * spacing
+        y = (y_idx - y_center) * spacing
+        z = (z_idx - z_center) * spacing
+
+        # 3D meshgrid -> lattice
+        X, Y, Z = np.meshgrid(x, y, z, indexing='ij')  # shape (nx, ny, nz)
+
+        # Flatten to (N, 3), consistent with your flattening of M
+        pos = np.column_stack((
+            X.ravel(order='C'),
+            Y.ravel(order='C'),
+            Z.ravel(order='C')
+        ))
+
+        self.Positions = pos
+
+    def Build_Sphere_Volume_Positions(self, radius=1.0):
+        """
+        Places N spins uniformly inside a sphere (volume).
+        Rejection-free method using radius^(1/3).
+        """
+        N = self.ChemicalShifts * self.Isochromats
+        
+        # random directions
+        u = np.random.uniform(0, 1, N)
+        v = np.random.uniform(0, 1, N)
+        w = np.random.uniform(0, 1, N)
+
+        theta = 2*np.pi*u
+        phi = np.arccos(2*v - 1)
+
+        # correct radial distribution: r ∝ (random)^(1/3)
+        r = radius * (w ** (1/3))
+
+        x = r * np.sin(phi) * np.cos(theta)
+        y = r * np.sin(phi) * np.sin(theta)
+        z = r * np.cos(phi)
+
+        self.Positions = np.column_stack((x, y, z))
+
+    def Build_Cylinder_Volume_Positions(self, radius=1.0, height=1.0):
+        """
+        Places N spins uniformly inside a solid cylinder.
+
+        Uniform in:
+            - r  (correct distribution = sqrt(u))
+            - θ
+            - z
+        """
+        N = self.ChemicalShifts * self.Isochromats
+
+        # Random angles
+        theta = 2*np.pi * np.random.rand(N)
+
+        # Correct radial distribution: r ~ sqrt(u)
+        r = radius * np.sqrt(np.random.rand(N))
+
+        # Uniform z
+        z = height * (np.random.rand(N) - 0.5)
+
+        x = r * np.cos(theta)
+        y = r * np.sin(theta)
+
+        self.Positions = np.column_stack((x, y, z))
+
     def Evolution(self):
 
         M = self.M
@@ -161,9 +437,23 @@ class MaxwellBloch:
 
             B1_Field = B1_Amplitude * np.exp(1j * (B1_Frequency * t + B1_Phase)) 
 
-            Wx = Omega_X + omega_RD.real + B1_Field.real
-            Wy = Omega_Y + omega_RD.imag + B1_Field.imag
-            Wz = Omega_Z
+            # Mean-field part
+            Wdx1, Wdy1, Wdz1 = self.Mean_DipolarField(Mx, My, Mz)
+
+            # Secular tensor part
+            Wdx2, Wdy2, Wdz2 = self.Secular_dipolar_field(Mx, My, Mz)
+
+            # Pairwise classical dipolar field (arrays)
+            Wdx3, Wdy3, Wdz3 = self.Pairwise_DipolarField(Mx, My, Mz)
+
+            # Total dipolar contributions (arrays)
+            Wdx = Wdx1 + Wdx2 + Wdx3
+            Wdy = Wdy1 + Wdy2 + Wdy3
+            Wdz = Wdz1 + Wdz2 + Wdz3           
+
+            Wx = Omega_X + omega_RD.real + B1_Field.real + Wdx
+            Wy = Omega_Y + omega_RD.imag + B1_Field.imag + Wdy
+            Wz = Omega_Z + Wdz
 
             # Equation 13 of https://doi.org/10.1063/1.470468
             Mdot = np.zeros((3 * Isochromats * ChemicalShifts))
@@ -331,6 +621,73 @@ class MaxwellBloch:
 
         self.fig.canvas.mpl_connect("button_press_event", self.fourier.button_press)
         self.fig.canvas.mpl_connect("button_release_event", self.fourier.button_release)
+
+    def Plot_Lattice(self, elev=20, azim=30, figsize=(8, 8), color_by='z'):
+        """
+        Visualize the spin positions stored in self.Positions as a 3D scatter plot.
+
+        Parameters
+        ----------
+        elev, azim : float
+            Elevation and azimuth angles for 3D view.
+        figsize : tuple
+            Figure size passed to plt.figure.
+        color_by : {'z', 'index', None}
+            How to color the points:
+                'z'      -> color by z-coordinate
+                'index'  -> color by spin index
+                None     -> single color
+        """
+        if self.Positions is None:
+            raise ValueError("self.Positions is None. Build geometry first (line, lattice, sphere, cylinder, ...)")
+
+        pos = np.asarray(self.Positions, dtype=self.DTYPE)
+        if pos.ndim != 2 or pos.shape[1] != 3:
+            raise ValueError("self.Positions must have shape (N, 3).")
+
+        x, y, z = pos[:, 0], pos[:, 1], pos[:, 2]
+        N = pos.shape[0]
+
+        # Choose coloring
+        if color_by == 'z':
+            c = z
+        elif color_by == 'index':
+            c = np.arange(N)
+        else:
+            c = 'b'  # single color
+
+        fig = plt.figure(self.fig_counter, figsize=figsize)
+        self.fig_counter += 1
+        ax = fig.add_subplot(111, projection='3d')
+
+        sc = ax.scatter(x, y, z, c=c, s=10)
+
+        if color_by in ('z', 'index'):
+            fig.colorbar(sc, ax=ax, shrink=0.7, label=color_by)
+
+        ax.set_xlabel('x', fontsize=12)
+        ax.set_ylabel('y', fontsize=12)
+        ax.set_zlabel('z', fontsize=12)
+        ax.set_title('Spin Lattice / Positions', fontsize=14)
+
+        # Make axes equal
+        max_range = np.array([x.max()-x.min(),
+                              y.max()-y.min(),
+                              z.max()-z.min()]).max() / 2.0
+        mid_x = 0.5*(x.max()+x.min())
+        mid_y = 0.5*(y.max()+y.min())
+        mid_z = 0.5*(z.max()+z.min())
+
+        ax.set_xlim(mid_x - max_range, mid_x + max_range)
+        ax.set_ylim(mid_y - max_range, mid_y + max_range)
+        ax.set_zlim(mid_z - max_range, mid_z + max_range)
+
+        ax.view_init(elev=elev, azim=azim)
+        ax.grid(True, linestyle='-.')
+
+        plt.tight_layout()
+        plt.show()
+
 
 class Fourier:
     """
