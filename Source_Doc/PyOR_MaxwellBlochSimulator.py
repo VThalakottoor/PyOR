@@ -56,6 +56,10 @@ class MaxwellBloch:
         self.RD_Xi = 0.0
         self.RD_Phase = 0.0
 
+        # B1 Field
+        self.B1_Amplitude = 0.0
+        self.B1_Frequency = 0.0
+        self.B1_Phase = 0.0
 
         # Acquisition
         self.AQTime = 10.0
@@ -117,6 +121,11 @@ class MaxwellBloch:
         # Radiation Damping
         self.RD_Phase = (np.pi/180.0) * self.RD_Phase       
 
+        # B1 Field
+        self.B1_Amplitude = 2.0 * np.pi * self.B1_Amplitude
+        self.B1_Frequency = 2.0 * np.pi * self.B1_Frequency
+        self.B1_Phase = (np.pi/180.0) * self.B1_Phase
+
     def Evolution(self):
 
         M = self.M
@@ -130,8 +139,11 @@ class MaxwellBloch:
         Omega_Z = self.Omega_Z
         R1 = self.Relaxation_R1
         R2 = self.Relaxation_R2
+        B1_Amplitude = self.B1_Amplitude
+        B1_Frequency = self.B1_Frequency
+        B1_Phase = self.B1_Phase
 
-        def MDOT(t,M,Isochromats,ChemicalShifts,RD_Xi,RD_Phase,Omega_X,Omega_Y,Omega_Z,R1,R2):
+        def MDOT(t,M,Isochromats,ChemicalShifts,RD_Xi,RD_Phase,Omega_X,Omega_Y,Omega_Z,R1,R2,B1_Amplitude,B1_Frequency,B1_Phase):
 
             Mx = M[0::3]
             My = M[1::3]
@@ -140,8 +152,10 @@ class MaxwellBloch:
             Omega_RD = np.zeros((Isochromats * ChemicalShifts))
             omega_RD = 1j * RD_Xi * (np.average(Mx) + 1j * np.average(My)) * np.exp(-1j * RD_Phase)
 
-            Wx = Omega_X + omega_RD.real
-            Wy = Omega_Y + omega_RD.imag
+            B1_Field = B1_Amplitude * np.exp(1j * (B1_Frequency * t + B1_Phase)) 
+
+            Wx = Omega_X + omega_RD.real + B1_Field.real
+            Wy = Omega_Y + omega_RD.imag + B1_Field.imag
             Wz = Omega_Z
 
             # Equation 13 of https://doi.org/10.1063/1.470468
@@ -154,7 +168,7 @@ class MaxwellBloch:
             return Mdot
 
         start_time = time.time()
-        Msol = solve_ivp(MDOT,[0,self.AQTime],M,method=self.ODEMethod,t_eval=self.tpoints,args=(Isochromats,ChemicalShifts,RD_Xi,RD_Phase,Omega_X,Omega_Y,Omega_Z,R1,R2),atol = 1e-10, rtol = 1e-10)
+        Msol = solve_ivp(MDOT,[0,self.AQTime],M,method=self.ODEMethod,t_eval=self.tpoints,args=(Isochromats,ChemicalShifts,RD_Xi,RD_Phase,Omega_X,Omega_Y,Omega_Z,R1,R2,B1_Amplitude,B1_Frequency,B1_Phase),atol = 1e-10, rtol = 1e-10)
         end_time = time.time()
         timetaken = end_time - start_time
         print(f"Total time = {timetaken}")
