@@ -49,8 +49,8 @@ class MaxwellBloch:
         self.Mo = np.zeros((self.ChemicalShifts,self.Isochromats), dtype = self.DTYPE)
 
         # Flip angle
-        self.FlipAngle_Theta = 0.0
-        self.FlipAngle_Phi = 0.0
+        self.FlipAngle_Theta = np.zeros(self.ChemicalShifts, dtype = self.DTYPE)
+        self.FlipAngle_Phi = np.zeros(self.ChemicalShifts, dtype = self.DTYPE)
 
         # Radiation Damping
         self.RD_Xi = 0.0
@@ -106,9 +106,9 @@ class MaxwellBloch:
             self.Mo[i, :] = self.Magnetization[i] * Iso_base_gauss
 
         for i in range(self.ChemicalShifts):
-            self.M[i, 0::3] = np.absolute(self.Mo[i,:]) * np.sin(self.FlipAngle_Theta) * np.cos(self.FlipAngle_Phi)
-            self.M[i, 1::3] = np.absolute(self.Mo[i,:]) * np.sin(self.FlipAngle_Theta) * np.sin(self.FlipAngle_Phi)
-            self.M[i, 2::3] = np.absolute(self.Mo[i,:]) * np.cos(self.FlipAngle_Theta)
+            self.M[i, 0::3] = np.absolute(self.Mo[i,:]) * np.sin(self.FlipAngle_Theta[i]) * np.cos(self.FlipAngle_Phi[i])
+            self.M[i, 1::3] = np.absolute(self.Mo[i,:]) * np.sin(self.FlipAngle_Theta[i]) * np.sin(self.FlipAngle_Phi[i])
+            self.M[i, 2::3] = np.absolute(self.Mo[i,:]) * np.cos(self.FlipAngle_Theta[i])
 
         tol = 1e-16
         self.M[np.abs(self.M) < tol] = 0.0 # zero anything smaller than tol.
