@@ -66,6 +66,11 @@ class MaxwellBloch:
         self.DT = 0.001
         self.ODEMethod = 'DOP853'
 
+        # Plotting
+        self.Plot_Xlim = None
+        self.Plot_Ylim = None
+        self.Plot_Save = False
+
     def Initialize(self):
         # Frequency
         self.Omega_X = 2.0 * np.pi * self.Omega_X
@@ -204,7 +209,8 @@ class MaxwellBloch:
         ax1.legend(fontsize=25,frameon=False)
         ax1.tick_params(axis='both',labelsize=14)
         ax1.grid(True, linestyle='-.')
-        #ax1.set_xlim(0,0.02)
+        ax1.set_xlim(self.Plot_Xlim)
+        ax1.set_ylim(self.Plot_Ylim)
         #ax1.text(0.05, 200000, '(a)', ha='center', fontsize=25, color='black',fontweight='bold')
 
         ax10 = ax1.twinx()
@@ -213,10 +219,10 @@ class MaxwellBloch:
         ax10.set_ylabel(r'$M_{Z}$ (AU)', fontsize=30, color='red',fontweight='bold')
         ax10.legend(fontsize=30,frameon=False)
         ax10.tick_params(axis='both',labelsize=20)
-        #ax10.grid(False, linestyle='-.')
-        #ax10.set_xlim(0,0.02)
-        # plt.savefig('block_relax_hypo_2b.pdf',bbox_inches='tight')
-        #plt.savefig(folder + '/pic1.pdf',bbox_inches='tight')        
+        ax1.set_xlim(self.Plot_Xlim)
+        ax1.set_ylim(self.Plot_Ylim)
+        if self.Plot_Save:
+            plt.savefig('MxMyMz.pdf',bbox_inches='tight')        
         
     def Ploting_Spectrum(self):
         fig = plt.figure(3,constrained_layout=True, figsize=(15, 5))
@@ -230,6 +236,7 @@ class MaxwellBloch:
         #ax1.legend(fontsize=25,frameon=False)
         ax1.tick_params(axis='both',labelsize=14)
         ax1.grid(True, linestyle='-.')
-        ax1.set_xlim(-10,30)
-        #ax1.text(0.05, 200000, '(a)', ha='center', fontsize=25, color='black',fontweight='bold')
-        #plt.savefig(folder + '/pic4.pdf',bbox_inches='tight')
+        ax1.set_xlim(self.Plot_Xlim)
+        ax1.set_ylim(self.Plot_Ylim)
+        if self.Plot_Save:
+            plt.savefig('Spectrum.pdf',bbox_inches='tight')     
