@@ -103,7 +103,7 @@ class MaxwellBloch:
         Iso_base_gauss = Iso_base_gauss / Iso_base_gauss.sum()   # normalize to sum = 1
 
         for i in range(self.ChemicalShifts):
-            self.Mo[i, :] = self.Magnetization[i] #* Iso_base_gauss
+            self.Mo[i, :] = self.Magnetization[i] * Iso_base_gauss
 
         for i in range(self.ChemicalShifts):
             self.M[i, 0::3] = np.absolute(self.Mo[i,:]) * np.sin(self.FlipAngle_Theta) * np.cos(self.FlipAngle_Phi)
