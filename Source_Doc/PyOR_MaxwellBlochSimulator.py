@@ -75,6 +75,15 @@ class MaxwellBloch:
         self.Pair_Dipolar_On = False
         self.Pair_Dipolar_Strength = 0.0
 
+        # FFT-based (continuum) dipolar field
+        self.FFT_Dipolar_On = False
+        self.FFT_Dipolar_Strength = 0.0   # absorbs mu0, gamma^2, etc.
+        self.FFT_Padding = (0, 0, 0)      # (paddx, paddy, paddz)
+        self.LatticeShape = None          # (nx, ny, nz) for 3D lattice
+        self.FFT_Dxx = None
+        self.FFT_Dyy = None
+        self.FFT_Dzz = None
+
         # Acquisition
         self.AQTime = 10.0
         self.DT = 0.0001
@@ -276,6 +285,209 @@ class MaxwellBloch:
 
         return Wx, Wy, Wz
 
+    def FFT_DipolarField(self, Mx, My, Mz):
+        """
+        Compute dipolar field using FFT-based convolution on a regular 3D lattice.
+
+        Assumes:
+        - self.LatticeShape = (nx, ny, nz) and nx*ny*nz == len(Mx)
+        - self.FFT_Dxx, FFT_Dyy, FFT_Dzz have been built
+          by Build_Dipolar_Kernel_FFT(padding=...)
+        - If self.GeometryMask or self.CylinderMask is present, magnetization
+          outside the mask is set to zero before convolution.
+
+        Parameters
+        ----------
+        Mx, My, Mz : 1D arrays of length N
+            Magnetization components at each lattice site.
+
+        Returns
+        -------
+        Wx, Wy, Wz : 1D arrays of length N
+            Dipolar contributions to angular frequency (rad/s) at each site.
+        """
+        if (not self.FFT_Dipolar_On) or (self.FFT_Dipolar_Strength == 0.0):
+            zeros = np.zeros_like(Mx, dtype=self.DTYPE)
+            return zeros, zeros, zeros
+
+        if self.LatticeShape is None:
+            raise ValueError(
+                "FFT_DipolarField: self.LatticeShape is None. "
+                "Call Build_3D_Lattice_Positions or a lattice builder first."
+            )
+        if self.FFT_Dxx is None or self.FFT_Dyy is None or self.FFT_Dzz is None:
+            raise ValueError(
+                "FFT_DipolarField: FFT kernels not built. "
+                "Call Build_Dipolar_Kernel_FFT(padding=...) first."
+            )
+
+        nx, ny, nz = self.LatticeShape
+        N_expected = nx * ny * nz
+        if Mx.shape[0] != N_expected:
+            raise ValueError(
+                f"FFT_DipolarField: len(Mx)={Mx.shape[0]} but nx*ny*nz={N_expected}."
+            )
+
+        paddx, paddy, paddz = self.FFT_Padding
+        Nx = nx + paddx
+        Ny = ny + paddy
+        Nz = nz + paddz
+
+        # reshape to 3D lattice
+        Mx3 = Mx.reshape((nx, ny, nz), order='C')
+        My3 = My.reshape((nx, ny, nz), order='C')
+        Mz3 = Mz.reshape((nx, ny, nz), order='C')
+
+        # ------------------------------------------------------------------
+        # Apply geometry masks: GeometryMask (sphere) takes priority,
+        # otherwise CylinderMask if available. Outside mask -> magnetization = 0.
+        # ------------------------------------------------------------------
+        mask3 = None
+
+        # Sphere/geometry mask (3D)
+        geom_mask = getattr(self, "GeometryMask", None)
+        if geom_mask is not None:
+            mask3 = np.asarray(geom_mask, dtype=bool)
+            if mask3.shape != (nx, ny, nz):
+                raise ValueError(
+                    f"GeometryMask shape {mask3.shape} inconsistent with "
+                    f"LatticeShape {(nx, ny, nz)}."
+                )
+        else:
+            # Cylinder mask (1D flattened)
+            cyl_mask = getattr(self, "CylinderMask", None)
+            if cyl_mask is not None:
+                cyl_mask = np.asarray(cyl_mask, dtype=bool)
+                if cyl_mask.shape != (N_expected,):
+                    raise ValueError(
+                        f"CylinderMask shape {cyl_mask.shape} inconsistent with "
+                        f"N = {N_expected}."
+                    )
+                mask3 = cyl_mask.reshape((nx, ny, nz), order='C')
+
+        if mask3 is not None:
+            Mx3 = np.where(mask3, Mx3, 0.0)
+            My3 = np.where(mask3, My3, 0.0)
+            Mz3 = np.where(mask3, Mz3, 0.0)
+
+        # zero padding on high side
+        Mx_pad = np.pad(Mx3, ((0, paddx), (0, paddy), (0, paddz)), mode='constant')
+        My_pad = np.pad(My3, ((0, paddx), (0, paddy), (0, paddz)), mode='constant')
+        Mz_pad = np.pad(Mz3, ((0, paddx), (0, paddy), (0, paddz)), mode='constant')
+
+        # FFT
+        Mx_k = np.fft.fftn(Mx_pad)
+        My_k = np.fft.fftn(My_pad)
+        Mz_k = np.fft.fftn(Mz_pad)
+
+        # Shift so that k=0 is in the center (to match constructed kernels)
+        Mx_k = np.fft.fftshift(Mx_k)
+        My_k = np.fft.fftshift(My_k)
+        Mz_k = np.fft.fftshift(Mz_k)
+
+        Dxx = self.FFT_Dxx
+        Dyy = self.FFT_Dyy
+        Dzz = self.FFT_Dzz
+
+        if Dxx.shape != (Nx, Ny, Nz):
+            raise ValueError(
+                f"FFT_Dxx shape {Dxx.shape} inconsistent with padded grid {(Nx, Ny, Nz)}."
+            )
+
+        c = self.FFT_Dipolar_Strength  # overall scaling (physics constants)
+
+        # Apply kernel component-wise in k-space
+        Wx_k = c * Dxx * Mx_k
+        Wy_k = c * Dyy * My_k
+        Wz_k = c * Dzz * Mz_k
+
+        # Back to real space
+        Wx_k = np.fft.ifftshift(Wx_k)
+        Wy_k = np.fft.ifftshift(Wy_k)
+        Wz_k = np.fft.ifftshift(Wz_k)
+
+        Wx_pad = np.fft.ifftn(Wx_k).real
+        Wy_pad = np.fft.ifftn(Wy_k).real
+        Wz_pad = np.fft.ifftn(Wz_k).real
+
+        # crop back to original lattice
+        Wx3 = Wx_pad[0:nx, 0:ny, 0:nz]
+        Wy3 = Wy_pad[0:nx, 0:ny, 0:nz]
+        Wz3 = Wz_pad[0:nx, 0:ny, 0:nz]
+
+        # flatten to 1D
+        Wx = Wx3.ravel(order='C')
+        Wy = Wy3.ravel(order='C')
+        Wz = Wz3.ravel(order='C')
+
+        return Wx, Wy, Wz
+
+
+    def Build_Dipolar_Kernel_FFT(self, padding=(0, 0, 0)):
+        """
+        Build the k-space dipolar kernel Dxx, Dyy, Dzz for FFT-based dipolar field.
+
+        Works on a regular 3D lattice defined by self.LatticeShape = (nx, ny, nz).
+        The kernel is the usual demagnetization tensor in k-space:
+            D_ij(k) ∝ (δ_ij / 3 - k_i k_j / k^2)
+        Here we keep only the diagonal elements (xx, yy, zz).
+
+        Parameters
+        ----------
+        padding : tuple of 3 ints
+            Extra zeros along x, y, z (on the high side) to reduce wrap-around
+            artefacts in the FFT convolution.
+
+        Sets
+        ----
+        self.FFT_Padding : (paddx, paddy, paddz)
+        self.FFT_Dxx, FFT_Dyy, FFT_Dzz : ndarrays of shape (Nx, Ny, Nz)
+        """
+        if self.LatticeShape is None:
+            raise ValueError(
+                "Build_Dipolar_Kernel_FFT: self.LatticeShape is None. "
+                "Call Build_3D_Lattice_Positions first."
+            )
+
+        nx, ny, nz = self.LatticeShape
+        paddx, paddy, paddz = padding
+
+        Nx = nx + paddx
+        Ny = ny + paddy
+        Nz = nz + paddz
+
+        self.FFT_Padding = (paddx, paddy, paddz)
+
+        # Dimensionless k-grid from -0.5 to +0.5 (like in MASER)
+        kx = np.linspace(-0.5, 0.5, Nx, endpoint=True, dtype=self.DTYPE)
+        ky = np.linspace(-0.5, 0.5, Ny, endpoint=True, dtype=self.DTYPE)
+        kz = np.linspace(-0.5, 0.5, Nz, endpoint=True, dtype=self.DTYPE)
+
+        KX, KY, KZ = np.meshgrid(kx, ky, kz, indexing='ij')
+        K2 = KX**2 + KY**2 + KZ**2
+
+        # Avoid division by zero at k = 0
+        K2_safe = np.where(K2 == 0.0, 1.0, K2)
+
+        # Unit-vector components k_i / |k|
+        KX_hat = np.where(K2 > 0.0, KX / np.sqrt(K2_safe), 0.0)
+        KY_hat = np.where(K2 > 0.0, KY / np.sqrt(K2_safe), 0.0)
+        KZ_hat = np.where(K2 > 0.0, KZ / np.sqrt(K2_safe), 0.0)
+
+        # Demagnetization tensor diagonal: D_ii ∝ 1/3 - k_i^2 / k^2
+        Dxx = (1.0 / 3.0) - (KX_hat**2)
+        Dyy = (1.0 / 3.0) - (KY_hat**2)
+        Dzz = (1.0 / 3.0) - (KZ_hat**2)
+
+        # At k = 0, define kernel to be 0 (no global offset field)
+        Dxx[K2 == 0.0] = 0.0
+        Dyy[K2 == 0.0] = 0.0
+        Dzz[K2 == 0.0] = 0.0
+
+        self.FFT_Dxx = Dxx
+        self.FFT_Dyy = Dyy
+        self.FFT_Dzz = Dzz
+
     def Build_Line_Positions(self, spacing=1.0, axis='z'):
         """
         Build positions for spins on a 1D line, centered at 0.
@@ -334,6 +546,8 @@ class MaxwellBloch:
                 f"nx*ny*nz = {nx*ny*nz} must equal N = {N} "
                 "(ChemicalShifts * Isochromats)."
             )
+        
+        self.LatticeShape = (nx, ny, nz)
 
         # Index ranges, centered at zero
         x_idx = np.arange(nx, dtype=self.DTYPE)
@@ -360,54 +574,136 @@ class MaxwellBloch:
 
         self.Positions = pos
 
-    def Build_Sphere_Volume_Positions(self, radius=1.0):
+    def Build_Sphere_Volume_Positions(self, radius=1.0, spacing=1.0):
         """
-        Places N spins uniformly inside a sphere (volume).
-        Rejection-free method using radius^(1/3).
-        """
-        N = self.ChemicalShifts * self.Isochromats
-        
-        # random directions
-        u = np.random.uniform(0, 1, N)
-        v = np.random.uniform(0, 1, N)
-        w = np.random.uniform(0, 1, N)
+        Define a spherical sample on a regular 3D grid, suitable for FFT-based dipolar fields.
 
-        theta = 2*np.pi*u
-        phi = np.arccos(2*v - 1)
+        - If self.LatticeShape is already defined (e.g. via Build_3D_Lattice_Positions),
+        we reuse that grid and only build a spherical mask.
 
-        # correct radial distribution: r ∝ (random)^(1/3)
-        r = radius * (w ** (1/3))
+        - Otherwise, we build a cubic grid nx = ny = nz such that nx^3 = N,
+        where N = ChemicalShifts * Isochromats. This only works if N is a perfect cube.
 
-        x = r * np.sin(phi) * np.cos(theta)
-        y = r * np.sin(phi) * np.sin(theta)
-        z = r * np.cos(phi)
-
-        self.Positions = np.column_stack((x, y, z))
-
-    def Build_Cylinder_Volume_Positions(self, radius=1.0, height=1.0):
-        """
-        Places N spins uniformly inside a solid cylinder.
-
-        Uniform in:
-            - r  (correct distribution = sqrt(u))
-            - θ
-            - z
+        Sets
+        ----
+        self.Positions   : (N, 3) array of grid coordinates
+        self.LatticeShape: (nx, ny, nz)
+        self.GeometryMask: (nx, ny, nz) array, 1 inside sphere, 0 outside
         """
         N = self.ChemicalShifts * self.Isochromats
 
-        # Random angles
-        theta = 2*np.pi * np.random.rand(N)
+        # If no lattice grid yet, try to build a cubic one
+        if self.LatticeShape is None:
+            n = int(round(N ** (1.0 / 3.0)))
+            if n**3 != N:
+                raise ValueError(
+                    f"For FFT sphere with automatic grid, N = {N} must be a perfect cube. "
+                    "Either choose N = nx*ny*nz with nx=ny=nz, or call "
+                    "Build_3D_Lattice_Positions(nx, ny, nz, spacing) first."
+                )
+            # This will set self.LatticeShape and self.Positions
+            self.Build_3D_Lattice_Positions(n, n, n, spacing=spacing)
 
-        # Correct radial distribution: r ~ sqrt(u)
-        r = radius * np.sqrt(np.random.rand(N))
+        # Use the existing lattice
+        nx, ny, nz = self.LatticeShape
+        pos = np.asarray(self.Positions, dtype=self.DTYPE)
+        if pos.shape != (nx*ny*nz, 3):
+            raise ValueError(
+                f"Positions shape {pos.shape} is inconsistent with LatticeShape {self.LatticeShape}."
+            )
 
-        # Uniform z
-        z = height * (np.random.rand(N) - 0.5)
+        # Reshape positions to (nx, ny, nz, 3)
+        pos_4d = pos.reshape((nx, ny, nz, 3), order='C')
+        x = pos_4d[..., 0]
+        y = pos_4d[..., 1]
+        z = pos_4d[..., 2]
 
-        x = r * np.cos(theta)
-        y = r * np.sin(theta)
+        r2 = x**2 + y**2 + z**2
 
-        self.Positions = np.column_stack((x, y, z))
+        # Spherical mask: 1 inside radius, 0 outside
+        mask = (r2 <= radius**2).astype(self.DTYPE)
+
+        # Store geometry mask
+        self.GeometryMask = mask
+
+    def Build_Cylinder_Lattice_Positions(self,
+                                        nx, ny, nz,
+                                        spacing=1.0,
+                                        radius=None,
+                                        height=None):
+        """
+        Build a 3D rectangular lattice (nx × ny × nz) suitable for FFT-based
+        dipolar convolution, and mark which sites lie inside a cylinder
+        aligned with the z-axis.
+
+        The cylinder is defined by:
+            x^2 + y^2 <= radius^2
+            |z| <= height/2
+
+        Parameters
+        ----------
+        nx, ny, nz : int
+            Number of lattice points along x, y, z.
+            Must satisfy nx * ny * nz == ChemicalShifts * Isochromats.
+        spacing : float
+            Lattice spacing (same in x, y, z).
+        radius : float or None
+            Cylinder radius. If None, it is chosen to fit inside the lattice:
+                radius = 0.5 * min(nx, ny) * spacing
+        height : float or None
+            Cylinder height (along z). If None, use full lattice height:
+                height = nz * spacing
+
+        Sets
+        ----
+        self.Positions    : ndarray, shape (N, 3), regular lattice coordinates
+        self.LatticeShape : (nx, ny, nz)
+        self.CylinderMask : ndarray, shape (N,), boolean mask for cylinder sites
+        """
+        N = self.ChemicalShifts * self.Isochromats
+        if nx * ny * nz != N:
+            raise ValueError(
+                f"nx*ny*nz = {nx*ny*nz} must equal N = {N} "
+                "(ChemicalShifts * Isochromats)."
+            )
+
+        self.LatticeShape = (nx, ny, nz)
+
+        # Default radius/height if not specified
+        if radius is None:
+            radius = 0.5 * min(nx, ny) * spacing
+        if height is None:
+            height = nz * spacing
+
+        # Index ranges (0..nx-1 etc.), then center at 0 in real units
+        x_idx = np.arange(nx, dtype=self.DTYPE)
+        y_idx = np.arange(ny, dtype=self.DTYPE)
+        z_idx = np.arange(nz, dtype=self.DTYPE)
+
+        x_center = 0.5 * (nx - 1)
+        y_center = 0.5 * (ny - 1)
+        z_center = 0.5 * (nz - 1)
+
+        x = (x_idx - x_center) * spacing
+        y = (y_idx - y_center) * spacing
+        z = (z_idx - z_center) * spacing
+
+        # 3D meshgrid -> lattice coordinates
+        X, Y, Z = np.meshgrid(x, y, z, indexing='ij')  # (nx, ny, nz)
+
+        # Cylinder condition: x^2 + y^2 <= R^2, |z| <= height/2
+        cyl_mask_3d = (X**2 + Y**2 <= radius**2) & (np.abs(Z) <= 0.5 * height)
+
+        # Flatten for consistency with M flattening (C order)
+        pos = np.column_stack((
+            X.ravel(order='C'),
+            Y.ravel(order='C'),
+            Z.ravel(order='C')
+        ))
+        self.Positions = pos
+
+        # Boolean mask, same ordering as flattened positions / M
+        self.CylinderMask = cyl_mask_3d.ravel(order='C')
 
     def Evolution(self):
 
@@ -446,10 +742,14 @@ class MaxwellBloch:
             # Pairwise classical dipolar field (arrays)
             Wdx3, Wdy3, Wdz3 = self.Pairwise_DipolarField(Mx, My, Mz)
 
+            # FFT-based dipolar field on a regular lattice (if enabled)
+            Wdx4, Wdy4, Wdz4 = self.FFT_DipolarField(Mx, My, Mz)
+
             # Total dipolar contributions (arrays)
-            Wdx = Wdx1 + Wdx2 + Wdx3
-            Wdy = Wdy1 + Wdy2 + Wdy3
-            Wdz = Wdz1 + Wdz2 + Wdz3           
+            # Total dipolar contributions (arrays)
+            Wdx = Wdx1 + Wdx2 + Wdx3 + Wdx4
+            Wdy = Wdy1 + Wdy2 + Wdy3 + Wdy4
+            Wdz = Wdz1 + Wdz2 + Wdz3 + Wdz4           
 
             Wx = Omega_X + omega_RD.real + B1_Field.real + Wdx
             Wy = Omega_Y + omega_RD.imag + B1_Field.imag + Wdy
