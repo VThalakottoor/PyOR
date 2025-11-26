@@ -627,83 +627,143 @@ class MaxwellBloch:
         self.GeometryMask = mask
 
     def Build_Cylinder_Lattice_Positions(self,
-                                        nx, ny, nz,
-                                        spacing=1.0,
-                                        radius=None,
-                                        height=None):
+                                        radius=1.0,
+                                        height=None,
+                                        spacing=1.0):
         """
-        Build a 3D rectangular lattice (nx × ny × nz) suitable for FFT-based
-        dipolar convolution, and mark which sites lie inside a cylinder
-        aligned with the z-axis.
+        Define a cylindrical sample on a regular 3D grid, suitable for FFT-based
+        dipolar fields.
 
-        The cylinder is defined by:
+        - If self.LatticeShape is already defined (e.g. via Build_3D_Lattice_Positions),
+        we reuse that grid and only build a cylindrical mask.
+
+        - Otherwise, we build a cubic grid nx = ny = nz such that nx^3 = N,
+        where N = ChemicalShifts * Isochromats. This only works if N is a perfect cube.
+
+        Cylinder is aligned with z-axis:
             x^2 + y^2 <= radius^2
             |z| <= height/2
 
-        Parameters
-        ----------
-        nx, ny, nz : int
-            Number of lattice points along x, y, z.
-            Must satisfy nx * ny * nz == ChemicalShifts * Isochromats.
-        spacing : float
-            Lattice spacing (same in x, y, z).
-        radius : float or None
-            Cylinder radius. If None, it is chosen to fit inside the lattice:
-                radius = 0.5 * min(nx, ny) * spacing
-        height : float or None
-            Cylinder height (along z). If None, use full lattice height:
-                height = nz * spacing
-
         Sets
         ----
-        self.Positions    : ndarray, shape (N, 3), regular lattice coordinates
+        self.Positions    : (N, 3) array of grid coordinates
         self.LatticeShape : (nx, ny, nz)
-        self.CylinderMask : ndarray, shape (N,), boolean mask for cylinder sites
+        self.CylinderMask : (N,) boolean mask (True inside cylinder)
         """
         N = self.ChemicalShifts * self.Isochromats
-        if nx * ny * nz != N:
+
+        # If no lattice grid yet, try to build a cubic one
+        if self.LatticeShape is None:
+            n = int(round(N ** (1.0 / 3.0)))
+            if n**3 != N:
+                raise ValueError(
+                    f"For FFT cylinder with automatic grid, N = {N} must be a perfect cube. "
+                    "Either choose N = nx*ny*nz with nx=ny=nz, or call "
+                    "Build_3D_Lattice_Positions(nx, ny, nz, spacing) first."
+                )
+            # This sets self.LatticeShape and self.Positions
+            self.Build_3D_Lattice_Positions(n, n, n, spacing=spacing)
+
+        # Use existing lattice
+        nx, ny, nz = self.LatticeShape
+        pos = np.asarray(self.Positions, dtype=self.DTYPE)
+        if pos.shape != (nx*ny*nz, 3):
             raise ValueError(
-                f"nx*ny*nz = {nx*ny*nz} must equal N = {N} "
-                "(ChemicalShifts * Isochromats)."
+                f"Positions shape {pos.shape} is inconsistent with LatticeShape {self.LatticeShape}."
             )
 
-        self.LatticeShape = (nx, ny, nz)
+        # Reshape to (nx, ny, nz, 3)
+        pos_4d = pos.reshape((nx, ny, nz, 3), order='C')
+        X = pos_4d[..., 0]
+        Y = pos_4d[..., 1]
+        Z = pos_4d[..., 2]
 
-        # Default radius/height if not specified
-        if radius is None:
-            radius = 0.5 * min(nx, ny) * spacing
+        # Default height = full lattice extent in z
         if height is None:
-            height = nz * spacing
-
-        # Index ranges (0..nx-1 etc.), then center at 0 in real units
-        x_idx = np.arange(nx, dtype=self.DTYPE)
-        y_idx = np.arange(ny, dtype=self.DTYPE)
-        z_idx = np.arange(nz, dtype=self.DTYPE)
-
-        x_center = 0.5 * (nx - 1)
-        y_center = 0.5 * (ny - 1)
-        z_center = 0.5 * (nz - 1)
-
-        x = (x_idx - x_center) * spacing
-        y = (y_idx - y_center) * spacing
-        z = (z_idx - z_center) * spacing
-
-        # 3D meshgrid -> lattice coordinates
-        X, Y, Z = np.meshgrid(x, y, z, indexing='ij')  # (nx, ny, nz)
+            z_min = Z.min()
+            z_max = Z.max()
+            height = float(z_max - z_min)
 
         # Cylinder condition: x^2 + y^2 <= R^2, |z| <= height/2
         cyl_mask_3d = (X**2 + Y**2 <= radius**2) & (np.abs(Z) <= 0.5 * height)
 
-        # Flatten for consistency with M flattening (C order)
-        pos = np.column_stack((
-            X.ravel(order='C'),
-            Y.ravel(order='C'),
-            Z.ravel(order='C')
-        ))
-        self.Positions = pos
-
-        # Boolean mask, same ordering as flattened positions / M
+        # Flatten mask to 1D, same order as M flattening / Positions
         self.CylinderMask = cyl_mask_3d.ravel(order='C')
+
+
+    def Apply_GeometryMask_To_Magnetization(self):
+        """
+        Use GeometryMask (sphere) or CylinderMask (cylinder) to zero out
+        magnetization outside the sample, for *pairwise* and other dipolar terms.
+
+        Assumes:
+            - self.Mo and self.M are already flattened (after Initialize)
+            - N = ChemicalShifts * Isochromats = product of self.LatticeShape
+        """
+        N = self.ChemicalShifts * self.Isochromats
+
+        # Decide which mask to use (sphere first, then cylinder)
+        mask_flat = None
+
+        geom_mask = getattr(self, "GeometryMask", None)
+        if geom_mask is not None:
+            # GeometryMask is (nx, ny, nz)
+            if self.LatticeShape is None:
+                raise ValueError("GeometryMask present but LatticeShape is None.")
+            nx, ny, nz = self.LatticeShape
+            if geom_mask.shape != (nx, ny, nz):
+                raise ValueError(
+                    f"GeometryMask shape {geom_mask.shape} inconsistent with "
+                    f"LatticeShape {self.LatticeShape}."
+                )
+            mask_flat = geom_mask.ravel(order='C').astype(bool)
+
+        if mask_flat is None:
+            cyl_mask = getattr(self, "CylinderMask", None)
+            if cyl_mask is not None:
+                cyl_mask = np.asarray(cyl_mask, dtype=bool)
+                if cyl_mask.shape != (N,):
+                    raise ValueError(
+                        f"CylinderMask shape {cyl_mask.shape} inconsistent with N={N}."
+                    )
+                mask_flat = cyl_mask
+
+        if mask_flat is None:
+            # No mask defined, nothing to do
+            return
+
+        if self.Mo.shape[0] != N:
+            raise ValueError(
+                f"Mo length {self.Mo.shape[0]} inconsistent with N={N}. "
+                "Call Initialize before applying geometry mask."
+            )
+        if self.M.shape[0] != 3 * N:
+            raise ValueError(
+                f"M length {self.M.shape[0]} inconsistent with 3*N={3*N}. "
+                "Call Initialize before applying geometry mask."
+            )
+
+        # Zero equilibrium M outside the sample
+        self.Mo *= mask_flat
+
+        # Zero all components of M outside the sample
+        mask_vec3 = np.repeat(mask_flat, 3)  # (3N,)
+        self.M *= mask_vec3
+
+    def Count_Masked_Spins(self):
+        """
+        Returns number of spins inside the geometry mask (sphere or cylinder).
+        """
+        if hasattr(self, "GeometryMask") and self.GeometryMask is not None:
+            mask = self.GeometryMask
+            return int(mask.sum())
+
+        if hasattr(self, "CylinderMask") and self.CylinderMask is not None:
+            mask = self.CylinderMask
+            return int(mask.sum())
+
+        # no mask → all spins active
+        return self.ChemicalShifts * self.Isochromats
 
     def Evolution(self):
 
@@ -922,45 +982,74 @@ class MaxwellBloch:
         self.fig.canvas.mpl_connect("button_press_event", self.fourier.button_press)
         self.fig.canvas.mpl_connect("button_release_event", self.fourier.button_release)
 
-    def Plot_Lattice(self, elev=20, azim=30, figsize=(8, 8), color_by='z'):
+    def Plot_Lattice(self, elev=20, azim=30, figsize=(8, 8), color_by='z',
+                    show_outside=False):
         """
-        Visualize the spin positions stored in self.Positions as a 3D scatter plot.
+        Visualize the spin positions as a 3D scatter plot.
+
+        Now respects GeometryMask (sphere) or CylinderMask (cylinder):
+            - inside-sample spins shown normally
+            - outside spins hidden (default) or shown faintly if show_outside=True
 
         Parameters
         ----------
-        elev, azim : float
-            Elevation and azimuth angles for 3D view.
-        figsize : tuple
-            Figure size passed to plt.figure.
+        elev, azim : view angles
+        figsize : figure size
         color_by : {'z', 'index', None}
-            How to color the points:
-                'z'      -> color by z-coordinate
-                'index'  -> color by spin index
-                None     -> single color
+        show_outside : bool
+            If True, spins outside mask are shown in light gray.
+            If False (default), outside spins are hidden.
         """
+
         if self.Positions is None:
-            raise ValueError("self.Positions is None. Build geometry first (line, lattice, sphere, cylinder, ...)")
+            raise ValueError("self.Positions is None. Build geometry first.")
 
         pos = np.asarray(self.Positions, dtype=self.DTYPE)
-        if pos.ndim != 2 or pos.shape[1] != 3:
-            raise ValueError("self.Positions must have shape (N, 3).")
-
-        x, y, z = pos[:, 0], pos[:, 1], pos[:, 2]
         N = pos.shape[0]
+        x, y, z = pos[:, 0], pos[:, 1], pos[:, 2]
 
-        # Choose coloring
-        if color_by == 'z':
-            c = z
-        elif color_by == 'index':
-            c = np.arange(N)
+        # ------------------------------------------------------
+        # Determine which spins are inside geometry
+        # ------------------------------------------------------
+        mask_flat = None
+
+        if getattr(self, "GeometryMask", None) is not None:
+            nx, ny, nz = self.LatticeShape
+            mask_flat = self.GeometryMask.ravel(order='C').astype(bool)
+
+        elif getattr(self, "CylinderMask", None) is not None:
+            mask_flat = self.CylinderMask.astype(bool)
+
         else:
-            c = 'b'  # single color
+            mask_flat = np.ones(N, dtype=bool)  # no geometry → show all
 
+        inside = mask_flat
+        outside = ~mask_flat
+
+        # ------------------------------------------------------
+        # Prepare coloring
+        # ------------------------------------------------------
+        if color_by == 'z':
+            c_inside = z[inside]
+        elif color_by == 'index':
+            c_inside = np.arange(N)[inside]
+        else:
+            c_inside = 'b'
+
+        # ------------------------------------------------------
+        # Plot
+        # ------------------------------------------------------
         fig = plt.figure(self.fig_counter, figsize=figsize)
         self.fig_counter += 1
         ax = fig.add_subplot(111, projection='3d')
 
-        sc = ax.scatter(x, y, z, c=c, s=10)
+        # Inside-sample points
+        sc = ax.scatter(x[inside], y[inside], z[inside], c=c_inside, s=20)
+
+        # Outside points (optional)
+        if show_outside:
+            ax.scatter(x[outside], y[outside], z[outside],
+                    c='lightgray', s=10, alpha=0.2)
 
         if color_by in ('z', 'index'):
             fig.colorbar(sc, ax=ax, shrink=0.7, label=color_by)
@@ -968,12 +1057,12 @@ class MaxwellBloch:
         ax.set_xlabel('x', fontsize=12)
         ax.set_ylabel('y', fontsize=12)
         ax.set_zlabel('z', fontsize=12)
-        ax.set_title('Spin Lattice / Positions', fontsize=14)
+        ax.set_title('Spin Lattice / Positions (Masked)', fontsize=14)
 
-        # Make axes equal
+        # Axis equalization
         max_range = np.array([x.max()-x.min(),
-                              y.max()-y.min(),
-                              z.max()-z.min()]).max() / 2.0
+                            y.max()-y.min(),
+                            z.max()-z.min()]).max() / 2.0
         mid_x = 0.5*(x.max()+x.min())
         mid_y = 0.5*(y.max()+y.min())
         mid_z = 0.5*(z.max()+z.min())
@@ -984,9 +1073,9 @@ class MaxwellBloch:
 
         ax.view_init(elev=elev, azim=azim)
         ax.grid(True, linestyle='-.')
-
         plt.tight_layout()
         plt.show()
+
 
 
 class Fourier:
