@@ -90,6 +90,8 @@ dependencies:
   - mysql-libs=9.3.0=h797a5cd_3
   - ncurses=6.5=h7934f7d_0
   - nest-asyncio=1.6.0=py311h06a4308_0
+  - numpy=2.3.5=py311h08c6c3d_0
+  - numpy-base=2.3.5=py311h00548fb_0
   - openldap=2.6.10=he9288cc_1
   - openssl=3.0.18=hd6dcaed_0
   - packaging=25.0=py311h06a4308_1
@@ -172,7 +174,6 @@ dependencies:
       - jupyterlab-widgets==3.0.16
       - lineax==0.0.8
       - ml-dtypes==0.5.4
-      - numpy==2.3.5
       - nvidia-cublas-cu12==12.9.1.4
       - nvidia-cuda-cupti-cu12==12.9.79
       - nvidia-cuda-nvcc-cu12==12.9.86

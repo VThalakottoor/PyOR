@@ -1,7 +1,7 @@
 # This file may be used to create an environment using:
 # $ conda create --name <env> --file <this file>
 # platform: linux-64
-# created-by: conda 24.9.2
+# created-by: conda 25.11.0
 _libgcc_mutex=0.1=main
 _openmp_mutex=5.1=1_gnu
 aom=3.12.1=h7934f7d_0
@@ -98,7 +98,8 @@ mysql-common=9.3.0=h0021b1a_3
 mysql-libs=9.3.0=h797a5cd_3
 ncurses=6.5=h7934f7d_0
 nest-asyncio=1.6.0=py311h06a4308_0
-numpy=2.3.5=pypi_0
+numpy=2.3.5=py311h08c6c3d_0
+numpy-base=2.3.5=py311h00548fb_0
 nvidia-cublas-cu12=12.9.1.4=pypi_0
 nvidia-cuda-cupti-cu12=12.9.79=pypi_0
 nvidia-cuda-nvcc-cu12=12.9.86=pypi_0
