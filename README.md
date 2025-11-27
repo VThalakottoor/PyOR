@@ -35,6 +35,13 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 	
 3. Ipympl (Enables using the interactive features of matplotlib)
 	pip install ipympl 
+	
+4. Jax
+	- If you do not have a GPU or you only want CPU: pip install --upgrade "jax[cpu]" diffrax
+	- If you have an NVIDIA GPU and want full acceleration (Cuda 12): pip install --upgrade "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
+5. Diffrax
+	pip install diffrax 
 
 ## Prerequisite
 1. Basic knowledge of Python (Scipy, Numpy) and Object-oriented programming
