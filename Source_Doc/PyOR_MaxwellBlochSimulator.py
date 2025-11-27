@@ -7,14 +7,14 @@ Author:
 Email:
     vineethfrancis.physics@gmail.com
 
-Description: **Testing**
-    This module provides the `MaxwellBloch` class for simulating Maxwell-Bloch equations.
+Description:
+    Maxwell-Bloch with FFT dipolar field (PCCP-style) + optional JAX backend.
 """
 
 from math import sin, cos
 import time
 import numpy as np
-from numpy import array, arange, pi, fft
+from numpy import pi
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 from matplotlib import rc
@@ -28,51 +28,153 @@ try:
 except ImportError:
     JAX_AVAILABLE = False
 
-# --------------------------------------------------------------------------- #
-# Optional JAX RHS for Diffrax
-# --------------------------------------------------------------------------- #
+
 def MDOT_Jax(t, M, args):
     """
-    JAX-compatible right-hand side for the Maxwell–Bloch equations.
+    JAX-compatible right-hand side for Maxwell–Bloch with
+    FFT dipolar field + uniform demag term + mean dipole field.
+
     Parameters
     ----------
     t : float
         Time (scalar).
-    M : jnp.ndarray, shape (3 * Isochromats * ChemicalShifts,)
+    M : jnp.ndarray, shape (3 * Nspin,)
         State vector: [Mx0, My0, Mz0, Mx1, My1, Mz1, ...].
     args : tuple
-        (Isochromats, ChemicalShifts, RD_Xi, RD_Phase,
-         Omega_X, Omega_Y, Omega_Z, R1, R2,
+        (Isochromats, ChemicalShifts,
+         RD_Xi, RD_Phase,
+         Omega_X, Omega_Y, Omega_Z,
+         R1, R2,
          B1_Amplitude, B1_Frequency, B1_Phase,
-         Mo, mean_dipolar_on, mean_dipolar_strength)
+         Mo_flat,
+         Dipolar_On, Demag_Coefficient,
+         Mean_Dipolar_On, Mean_Dipolar_Strength,
+         Lattice_Nx, Lattice_Ny, Lattice_Nz,
+         Padd_X, Padd_Y, Padd_Z,
+         Gamma, Permeability,
+         Mask_flat, KTensor_z2)
     """
-    (Isochromats, ChemicalShifts, RD_Xi, RD_Phase, Omega_X, Omega_Y, Omega_Z, R1, R2, B1_Amplitude, B1_Frequency, B1_Phase, Mo, mean_dipolar_on, mean_dipolar_strength) = args
+    (Isochromats, ChemicalShifts,
+     RD_Xi, RD_Phase,
+     Omega_X, Omega_Y, Omega_Z,
+     R1, R2,
+     B1_Amplitude, B1_Frequency, B1_Phase,
+     Mo_flat,
+     Dipolar_On, Demag_Coefficient,
+     Mean_Dipolar_On, Mean_Dipolar_Strength,
+     Lattice_Nx, Lattice_Ny, Lattice_Nz,
+     Padd_X, Padd_Y, Padd_Z,
+     Gamma, Permeability,
+     Mask_flat, KTensor_z2) = args
+
+    Nspin = Isochromats * ChemicalShifts
     Mx = M[0::3]
     My = M[1::3]
     Mz = M[2::3]
-    omega_RD = 1j * RD_Xi * (Mx.mean() + 1j * My.mean()) * jnp.exp(-1j * RD_Phase)
+
+    # Radiation damping (macroscopic)
+    mx_avg = jnp.mean(Mx)
+    my_avg = jnp.mean(My)
+    omega_RD = 1j * RD_Xi * (mx_avg + 1j * my_avg) * jnp.exp(-1j * RD_Phase)
+
+    # RF field
     B1_Field = B1_Amplitude * jnp.exp(1j * (B1_Frequency * t + B1_Phase))
-    if mean_dipolar_on and (mean_dipolar_strength != 0.0):
-        Mz_avg = Mz.mean()
-        Wdz = mean_dipolar_strength * Mz_avg
-        Wdx = 0.0
-        Wdy = 0.0
-    else:
-        Wdx = 0.0
-        Wdy = 0.0
-        Wdz = 0.0
-    Wx = Omega_X + omega_RD.real + B1_Field.real + Wdx
-    Wy = Omega_Y + omega_RD.imag + B1_Field.imag + Wdy
-    Wz = Omega_Z + Wdz
+
+    # --- Dipolar field via FFT (PCCP style) + demag ------------------------
+    Wx_dp = jnp.zeros_like(Mx)
+    Wy_dp = jnp.zeros_like(My)
+    Wz_dp = jnp.zeros_like(Mz)
+
+    if Dipolar_On != 0:
+        Nx = Lattice_Nx
+        Ny = Lattice_Ny
+        Nz = Lattice_Nz
+        px = Padd_X
+        py = Padd_Y
+        pz = Padd_Z
+
+        # reshape to 3D lattice
+        Mx_grid = jnp.reshape(Mx, (Nx, Ny, Nz))
+        My_grid = jnp.reshape(My, (Nx, Ny, Nz))
+        Mz_grid = jnp.reshape(Mz, (Nx, Ny, Nz))
+
+        # zero padding
+        pad_cfg = ((0, px), (0, py), (0, pz))
+        Mx_p = jnp.pad(Mx_grid, pad_cfg, mode="constant", constant_values=0.0)
+        My_p = jnp.pad(My_grid, pad_cfg, mode="constant", constant_values=0.0)
+        Mz_p = jnp.pad(Mz_grid, pad_cfg, mode="constant", constant_values=0.0)
+
+        # FFT
+        Mx_k = jnp.fft.fftn(Mx_p)
+        My_k = jnp.fft.fftn(My_p)
+        Mz_k = jnp.fft.fftn(Mz_p)
+        Mx_k = jnp.fft.fftshift(Mx_k)
+        My_k = jnp.fft.fftshift(My_k)
+        Mz_k = jnp.fft.fftshift(Mz_k)
+
+        # dipolar kernel (same as PCCP_program: (1/6)(1 - 3 kz^2), (2/6)(3 kz^2 - 1))
+        Kz2 = KTensor_z2
+        Cx = (1.0 / 6.0) * (1.0 - 3.0 * Kz2) * Permeability
+        Cy = (1.0 / 6.0) * (1.0 - 3.0 * Kz2) * Permeability
+        Cz = (2.0 / 6.0) * (3.0 * Kz2 - 1.0) * Permeability
+
+        Mx_k = Cx * Mx_k
+        My_k = Cy * My_k
+        Mz_k = Cz * Mz_k
+
+        Mx_k = jnp.fft.ifftshift(Mx_k)
+        My_k = jnp.fft.ifftshift(My_k)
+        Mz_k = jnp.fft.ifftshift(Mz_k)
+
+        Mx_d = jnp.fft.ifftn(Mx_k).real
+        My_d = jnp.fft.ifftn(My_k).real
+        Mz_d = jnp.fft.ifftn(Mz_k).real
+
+        Mx_d = Mx_d[0:Nx, 0:Ny, 0:Nz]
+        My_d = My_d[0:Nx, 0:Ny, 0:Nz]
+        Mz_d = Mz_d[0:Nx, 0:Ny, 0:Nz]
+
+        Bx_flat = jnp.reshape(Mx_d, (Nspin,))
+        By_flat = jnp.reshape(My_d, (Nspin,))
+        Bz_flat = jnp.reshape(Mz_d, (Nspin,))
+
+        Wx_dp = -Gamma * Bx_flat * Mask_flat
+        Wy_dp = -Gamma * By_flat * Mask_flat
+        Wz_dp = -Gamma * Bz_flat * Mask_flat
+
+        # demag-like uniform term with user-defined coefficient
+        Mx_avg_dp = jnp.mean(Mx)
+        My_avg_dp = jnp.mean(My)
+        Mz_avg_dp = jnp.mean(Mz)
+
+        factor = -Gamma * Permeability * Demag_Coefficient
+
+        Wx_dp = Wx_dp + factor * (-Mx_avg_dp)
+        Wy_dp = Wy_dp + factor * (-My_avg_dp)
+        Wz_dp = Wz_dp + factor * (2.0 * Mz_avg_dp)
+
+    # --- Mean dipole field (independent of FFT dipole) ----------------------
+    Wx_mean = jnp.zeros_like(Mx)
+    Wy_mean = jnp.zeros_like(My)
+    Wz_mean = jnp.zeros_like(Mz)
+    if (Mean_Dipolar_On != 0) and (Mean_Dipolar_Strength != 0.0):
+        Mz_avg_mean = jnp.mean(Mz)
+        Wz_mean = Mean_Dipolar_Strength * Mz_avg_mean * jnp.ones_like(Mz)
+
+    # total effective fields
+    Wx = Omega_X + omega_RD.real + B1_Field.real + Wx_dp + Wx_mean
+    Wy = Omega_Y + omega_RD.imag + B1_Field.imag + Wy_dp + Wy_mean
+    Wz = Omega_Z + Wz_dp + Wz_mean
+
     Mdot = jnp.zeros_like(M)
     Mdot = Mdot.at[0::3].set(-R2 * Mx - Wz * My - Wy * Mz)
     Mdot = Mdot.at[1::3].set(Wz * Mx - R2 * My + Wx * Mz)
-    Mdot = Mdot.at[2::3].set(Wy * Mx - Wx * My - R1 * Mz + R1 * Mo)
+    Mdot = Mdot.at[2::3].set(Wy * Mx - Wx * My - R1 * Mz + R1 * Mo_flat)
     return Mdot
+
 
 class MaxwellBloch:
     def __init__(self, ChemicalShifts, Isochromats):
-
         self.DTYPE = np.float64
 
         self.ChemicalShifts = ChemicalShifts
@@ -82,45 +184,65 @@ class MaxwellBloch:
         self.Relaxation_R1 = 0.0
         self.Relaxation_R2 = 0.0
 
-         # Chemical Shift value
+        # Chemical shifts
         self.Omega_X = 0.0
         self.Omega_Y = 0.0
         self.Omega_Z_CS = np.zeros(self.ChemicalShifts, dtype=self.DTYPE)
-
-         # Isochromats Frequency Bins
         self.FrequencySeparation = 0.0
 
-        # Magnetization at each chemical shifts
+        # Magnetization per chemical shift
         self.Magnetization = np.zeros(self.ChemicalShifts, dtype=self.DTYPE)
         self.M = np.zeros((self.ChemicalShifts, 3 * self.Isochromats), dtype=self.DTYPE)
         self.Mo = np.zeros((self.ChemicalShifts, self.Isochromats), dtype=self.DTYPE)
 
-        # Flip angle
+        # Flip angles
         self.FlipAngle_Theta = np.zeros(self.ChemicalShifts, dtype=self.DTYPE)
         self.FlipAngle_Phi = np.zeros(self.ChemicalShifts, dtype=self.DTYPE)
 
-        # Radiation Damping
+        # Radiation damping
         self.RD_Xi = 0.0
         self.RD_Phase = 0.0
 
-        # B1 Field
+        # B1 RF field
         self.B1_Amplitude = 0.0
         self.B1_Frequency = 0.0
         self.B1_Phase = 0.0
 
-        # Mean Field Dipolar Field
-        self.Mean_Dipolar_On = False
-        self.Mean_Dipolar_Strength = 0.0
-
         # Acquisition
         self.AQTime = 10.0
         self.DT = 0.0001
-        self.ODEMethod = 'DOP853'
-        self.ODE_Backend = 'scipy' # 'scipy' (default) or 'jax'
-        self.ODE_Stiff = False     # For JAX backend: treat system as stiff or not
-        self.JAX_ODEMethod = 'tsit5' # Optional: name of JAX solver ('tsit5', 'bdf2', etc., currently just used for info)
-        self.JAX_Device = "cpu"  # or "gpu"
+        self.ODEMethod = "DOP853"
+        self.ODE_Backend = "scipy"  # "scipy" or "jax"
+        self.ODE_Stiff = False
+        self.JAX_ODEMethod = "tsit5"
+        self.JAX_Device = "cpu"
         self.JAX_MaxSteps = 200000
+
+        # Dipolar field parameters (FFT + demag, PCCP-style)
+        self.Dipolar_On = False
+        # Generic demag coefficient: factor = -Gamma * mu0 * Demag_Coefficient
+        self.Demag_Coefficient = 0.0
+        self.Permeability = 4.0 * np.pi * 1.0e-7
+        self.Gamma = 2.675e8
+
+        # Mean dipole (independent of FFT dipole)
+        # Effective field: Wz_mean = Mean_Dipolar_Strength * <Mz>
+        self.Mean_Dipolar_On = False
+        self.Mean_Dipolar_Strength = 0.0
+
+        # 3D lattice
+        self.Lattice_Nx = 1
+        self.Lattice_Ny = 1
+        self.Lattice_Nz = self.ChemicalShifts * self.Isochromats
+        self.Padd_X = 0
+        self.Padd_Y = 0
+        self.Padd_Z = 0
+        self.Mask3D = None
+        self.Mask = None
+        self.KTensor = None  # last index: [0,1,2]; we use [:,:,:,2]
+
+        # Shape of the sample inside lattice: "full", "sphere", "cylinder"
+        self.Lattice_Shape = "full"
 
         # Plotting
         self.Plot_Xlim = None
@@ -129,11 +251,74 @@ class MaxwellBloch:
         self.fig_counter = 1
         self.abs_spectrum = True
 
+    def BuildShapeMask(self):
+        Nx = int(self.Lattice_Nx)
+        Ny = int(self.Lattice_Ny)
+        Nz = int(self.Lattice_Nz)
+        Nspin = self.ChemicalShifts * self.Isochromats
+        if Nx * Ny * Nz != Nspin:
+            raise ValueError("Lattice_Nx * Lattice_Ny * Lattice_Nz must equal ChemicalShifts * Isochromats")
+        if self.Mask3D is not None:
+            return
+
+        shape = str(self.Lattice_Shape).lower()
+
+        # Coordinates centered around zero
+        x = np.arange(Nx, dtype=self.DTYPE) - 0.5 * (Nx - 1)
+        y = np.arange(Ny, dtype=self.DTYPE) - 0.5 * (Ny - 1)
+        z = np.arange(Nz, dtype=self.DTYPE) - 0.5 * (Nz - 1)
+        X, Y, Z = np.meshgrid(x, y, z, indexing="ij")
+
+        if shape == "sphere":
+            a = 0.5 * (Nx - 1) if Nx > 1 else 0.5
+            b = 0.5 * (Ny - 1) if Ny > 1 else 0.5
+            c = 0.5 * (Nz - 1) if Nz > 1 else 0.5
+            a = max(a, 0.5)
+            b = max(b, 0.5)
+            c = max(c, 0.5)
+            maskc = (X**2 / (a**2)) + (Y**2 / (b**2)) + (Z**2 / (c**2)) <= 1.0
+            self.Mask3D = maskc.astype(self.DTYPE)
+        elif shape == "cylinder":
+            a = 0.5 * (Nx - 1) if Nx > 1 else 0.5
+            b = 0.5 * (Ny - 1) if Ny > 1 else 0.5
+            a = max(a, 0.5)
+            b = max(b, 0.5)
+            maskc = (X**2 / (a**2)) + (Y**2 / (b**2)) <= 1.0
+            self.Mask3D = maskc.astype(self.DTYPE)
+        else:
+            self.Mask3D = np.ones((Nx, Ny, Nz), dtype=self.DTYPE)
+
+        self.Mask = self.Mask3D.reshape(Nspin)
+
+    def BuildKSpaceLattice(self):
+        if not self.Dipolar_On:
+            return
+        if self.KTensor is not None:
+            return
+        Nx = int(self.Lattice_Nx)
+        Ny = int(self.Lattice_Ny)
+        Nz = int(self.Lattice_Nz)
+        px = int(self.Padd_X)
+        py = int(self.Padd_Y)
+        pz = int(self.Padd_Z)
+        kx = np.linspace(-0.5, 0.5, Nx + px, endpoint=True, dtype=self.DTYPE)
+        ky = np.linspace(-0.5, 0.5, Ny + py, endpoint=True, dtype=self.DTYPE)
+        kz = np.linspace(-0.5, 0.5, Nz + pz, endpoint=True, dtype=self.DTYPE)
+        KX, KY, KZ = np.meshgrid(kx, ky, kz, indexing="ij")
+        Kmag = np.sqrt(KX**2 + KY**2 + KZ**2)
+        eps = 1.0e-15
+        Kmag = np.where(Kmag < eps, 1.0, Kmag)
+        KZ_unit = KZ / Kmag
+        KTensor = np.zeros(KX.shape + (3,), dtype=self.DTYPE)
+        KTensor[:, :, :, 2] = KZ_unit * KZ_unit
+        self.KTensor = KTensor
+
     def Initialize(self):
         self.Omega_X = 2.0 * np.pi * self.Omega_X
         self.Omega_Y = 2.0 * np.pi * self.Omega_Y
         self.Omega_Z_CS = 2.0 * np.pi * self.Omega_Z_CS
         self.FrequencySeparation = 2.0 * np.pi * self.FrequencySeparation
+
         self.Omega_Z_Band = np.zeros((self.ChemicalShifts, self.Isochromats), dtype=self.DTYPE)
         for i in range(self.ChemicalShifts):
             if self.Isochromats % 2 == 0:
@@ -143,41 +328,148 @@ class MaxwellBloch:
                 Nhalf = int((self.Isochromats - 1) / 2)
                 self.Omega_Z_Band[i] = np.linspace(self.Omega_Z_CS[i] - Nhalf * self.FrequencySeparation, self.Omega_Z_CS[i] + Nhalf * self.FrequencySeparation, self.Isochromats, endpoint=True, dtype=self.DTYPE)
         self.Omega_Z = np.reshape(self.Omega_Z_Band, self.ChemicalShifts * self.Isochromats)
+
         self.FlipAngle_Theta = (np.pi / 180.0) * self.FlipAngle_Theta
         self.FlipAngle_Phi = (np.pi / 180.0) * self.FlipAngle_Phi
+
         Iso_idx = np.arange(self.Isochromats, dtype=self.DTYPE)
         Iso_center = 0.5 * (self.Isochromats - 1)
         Iso_sigma = self.Isochromats / 6.0
         Iso_base_gauss = np.exp(-0.5 * ((Iso_idx - Iso_center) / Iso_sigma) ** 2)
         Iso_base_gauss = Iso_base_gauss / Iso_base_gauss.sum()
+
         for i in range(self.ChemicalShifts):
             self.Mo[i, :] = self.Magnetization[i] * Iso_base_gauss
+
         for i in range(self.ChemicalShifts):
-            self.M[i, 0::3] = np.absolute(self.Mo[i, :]) * np.sin(self.FlipAngle_Theta[i]) * np.cos(self.FlipAngle_Phi[i])
-            self.M[i, 1::3] = np.absolute(self.Mo[i, :]) * np.sin(self.FlipAngle_Theta[i]) * np.sin(self.FlipAngle_Phi[i])
-            self.M[i, 2::3] = np.absolute(self.Mo[i, :]) * np.cos(self.FlipAngle_Theta[i])
-        tol = 1e-16
+            self.M[i, 0::3] = np.abs(self.Mo[i, :]) * np.sin(self.FlipAngle_Theta[i]) * np.cos(self.FlipAngle_Phi[i])
+            self.M[i, 1::3] = np.abs(self.Mo[i, :]) * np.sin(self.FlipAngle_Theta[i]) * np.sin(self.FlipAngle_Phi[i])
+            self.M[i, 2::3] = np.abs(self.Mo[i, :]) * np.cos(self.FlipAngle_Theta[i])
+
+        tol = 1.0e-16
         self.M[np.abs(self.M) < tol] = 0.0
+
         self.M_Band = self.M.copy()
         self.Mo_Band = self.Mo.copy()
+
         self.M = np.reshape(self.M, 3 * self.Isochromats * self.ChemicalShifts)
         self.Mo = np.reshape(self.Mo, self.Isochromats * self.ChemicalShifts)
+
         self.AQPoints = int(self.AQTime / self.DT)
         self.FS = 1.0 / self.DT
         self.tpoints = np.linspace(0.0, self.AQTime, self.AQPoints, endpoint=True)
+
         self.RD_Phase = (np.pi / 180.0) * self.RD_Phase
         self.B1_Amplitude = 2.0 * np.pi * self.B1_Amplitude
         self.B1_Frequency = 2.0 * np.pi * self.B1_Frequency
         self.B1_Phase = (np.pi / 180.0) * self.B1_Phase
 
-    def Mean_DipolarField(self, Mx, My, Mz):
-        if (not self.Mean_Dipolar_On) or (self.Mean_Dipolar_Strength == 0.0):
-            return 0.0, 0.0, 0.0
-        Mz_avg = np.mean(Mz)
-        Wdz = self.Mean_Dipolar_Strength * Mz_avg
-        Wdx = 0.0
-        Wdy = 0.0
+        self.BuildShapeMask()
+        self.BuildKSpaceLattice()
+
+    def DipolarFieldScipy(self, Mvec):
+        """
+        FFT dipolar field + uniform demag term, SciPy version.
+        """
+        if not self.Dipolar_On:
+            Nspin = self.ChemicalShifts * self.Isochromats
+            zeros = np.zeros(Nspin, dtype=self.DTYPE)
+            return zeros, zeros, zeros
+
+        Nx = int(self.Lattice_Nx)
+        Ny = int(self.Lattice_Ny)
+        Nz = int(self.Lattice_Nz)
+        px = int(self.Padd_X)
+        py = int(self.Padd_Y)
+        pz = int(self.Padd_Z)
+        mask = self.Mask
+        K = self.KTensor
+        Gamma = self.Gamma
+        mu0 = self.Permeability
+
+        Nspin = Nx * Ny * Nz
+        Mx_flat = Mvec[0::3]
+        My_flat = Mvec[1::3]
+        Mz_flat = Mvec[2::3]
+
+        M4 = np.zeros((Nx, Ny, Nz, 3), dtype=self.DTYPE)
+        M4[:, :, :, 0] = Mx_flat.reshape(Nx, Ny, Nz)
+        M4[:, :, :, 1] = My_flat.reshape(Nx, Ny, Nz)
+        M4[:, :, :, 2] = Mz_flat.reshape(Nx, Ny, Nz)
+
+        Mx = M4[:, :, :, 0]
+        My = M4[:, :, :, 1]
+        Mz = M4[:, :, :, 2]
+
+        if px > 0 or py > 0 or pz > 0:
+            Mx = np.pad(Mx, ((0, px), (0, py), (0, pz)), mode="constant", constant_values=0.0)
+            My = np.pad(My, ((0, px), (0, py), (0, pz)), mode="constant", constant_values=0.0)
+            Mz = np.pad(Mz, ((0, px), (0, py), (0, pz)), mode="constant", constant_values=0.0)
+
+        Mx_k = np.fft.fftn(Mx)
+        My_k = np.fft.fftn(My)
+        Mz_k = np.fft.fftn(Mz)
+        Mx_k = np.fft.fftshift(Mx_k)
+        My_k = np.fft.fftshift(My_k)
+        Mz_k = np.fft.fftshift(Mz_k)
+
+        Kz2 = K[:, :, :, 2]
+        Cx = (1.0 / 6.0) * (1.0 - 3.0 * Kz2) * mu0
+        Cy = (1.0 / 6.0) * (1.0 - 3.0 * Kz2) * mu0
+        Cz = (2.0 / 6.0) * (3.0 * Kz2 - 1.0) * mu0
+
+        Mx_k = Cx * Mx_k
+        My_k = Cy * My_k
+        Mz_k = Cz * Mz_k
+
+        Mx_k = np.fft.ifftshift(Mx_k)
+        My_k = np.fft.ifftshift(My_k)
+        Mz_k = np.fft.ifftshift(Mz_k)
+
+        Mx_d = np.fft.ifftn(Mx_k).real
+        My_d = np.fft.ifftn(My_k).real
+        Mz_d = np.fft.ifftn(Mz_k).real
+
+        Mx_d = Mx_d[0:Nx, 0:Ny, 0:Nz]
+        My_d = My_d[0:Nx, 0:Ny, 0:Nz]
+        Mz_d = Mz_d[0:Nx, 0:Ny, 0:Nz]
+
+        Bx_flat = Mx_d.reshape(Nspin)
+        By_flat = My_d.reshape(Nspin)
+        Bz_flat = Mz_d.reshape(Nspin)
+
+        Wdx = -Gamma * Bx_flat * mask
+        Wdy = -Gamma * By_flat * mask
+        Wdz = -Gamma * Bz_flat * mask
+
+        Mx_avg_dp = np.average(Mx_flat)
+        My_avg_dp = np.average(My_flat)
+        Mz_avg_dp = np.average(Mz_flat)
+
+        coef = float(self.Demag_Coefficient)
+        if abs(coef) > 0.0:
+            factor = -Gamma * mu0 * coef
+            Wdx = Wdx + factor * (-Mx_avg_dp)
+            Wdy = Wdy + factor * (-My_avg_dp)
+            Wdz = Wdz + factor * (2.0 * Mz_avg_dp)
+
         return Wdx, Wdy, Wdz
+
+    def MeanDipolarFieldScipy(self, Mx_flat, My_flat, Mz_flat):
+        """
+        Mean dipole field (independent of FFT dipole), SciPy version.
+        For now only z-component: Wz_mean = Mean_Dipolar_Strength * <Mz>.
+        """
+        if (not self.Mean_Dipolar_On) or (self.Mean_Dipolar_Strength == 0.0):
+            Nspin = self.ChemicalShifts * self.Isochromats
+            zeros = np.zeros(Nspin, dtype=self.DTYPE)
+            return zeros, zeros, zeros
+        Nspin = self.ChemicalShifts * self.Isochromats
+        Mz_avg_mean = np.average(Mz_flat)
+        Wdx_mean = np.zeros(Nspin, dtype=self.DTYPE)
+        Wdy_mean = np.zeros(Nspin, dtype=self.DTYPE)
+        Wdz_mean = self.Mean_Dipolar_Strength * Mz_avg_mean * np.ones(Nspin, dtype=self.DTYPE)
+        return Wdx_mean, Wdy_mean, Wdz_mean
 
     def SelectJaxDevice(self):
         devices = jax.devices()
@@ -190,21 +482,19 @@ class MaxwellBloch:
         else:
             return jax.devices("cpu")[0]
 
-
     def Evolution(self):
         backend = str(self.ODE_Backend).lower()
-        if backend == 'scipy':
+        if backend == "scipy":
             self.EvolutionScipy()
-        elif backend == 'jax':
+        elif backend == "jax":
             if not JAX_AVAILABLE:
-                raise RuntimeError("JAX / Diffrax backend selected but not available. Install 'jax' and 'diffrax', or set ODE_Backend='scipy'.")
+                raise RuntimeError("JAX / Diffrax backend selected but not available.")
             self.EvolutionJax()
         else:
-            raise ValueError("Unknown ODE_Backend '" + str(self.ODE_Backend) + "'. Use 'scipy' or 'jax'.")
+            raise ValueError("Unknown ODE_Backend '" + str(self.ODE_Backend) + "'")
 
     def EvolutionScipy(self):
-        M = self.M
-        Mo = self.Mo
+        M0 = self.M
         Isochromats = self.Isochromats
         ChemicalShifts = self.ChemicalShifts
         RD_Xi = self.RD_Xi
@@ -217,50 +507,87 @@ class MaxwellBloch:
         B1_Amplitude = self.B1_Amplitude
         B1_Frequency = self.B1_Frequency
         B1_Phase = self.B1_Phase
-        def MDOT(t, Mvec, Isochromats_local, ChemicalShifts_local, RD_Xi_local, RD_Phase_local, Omega_X_local, Omega_Y_local, Omega_Z_local, R1_local, R2_local, B1_Amplitude_local, B1_Frequency_local, B1_Phase_local):
+        Mo_flat = self.Mo
+
+        def MDOT(t, Mvec):
             Mx_local = Mvec[0::3]
             My_local = Mvec[1::3]
             Mz_local = Mvec[2::3]
-            omega_RD_local = 1j * RD_Xi_local * (np.average(Mx_local) + 1j * np.average(My_local)) * np.exp(-1j * RD_Phase_local)
-            B1_Field_local = B1_Amplitude_local * np.exp(1j * (B1_Frequency_local * t + B1_Phase_local))
-            (Wdx1, Wdy1, Wdz1) = self.Mean_DipolarField(Mx_local, My_local, Mz_local)
-            Wx_local = Omega_X_local + omega_RD_local.real + B1_Field_local.real + Wdx1
-            Wy_local = Omega_Y_local + omega_RD_local.imag + B1_Field_local.imag + Wdy1
-            Wz_local = Omega_Z_local + Wdz1
-            Mdot_local = np.zeros((3 * Isochromats_local * ChemicalShifts_local))
-            Mdot_local[0::3] = -R2_local * Mx_local - Wz_local * My_local - Wy_local * Mz_local
-            Mdot_local[1::3] = Wz_local * Mx_local - R2_local * My_local + Wx_local * Mz_local
-            Mdot_local[2::3] = Wy_local * Mx_local - Wx_local * My_local - R1_local * Mz_local + R1_local * Mo
-            return Mdot_local
+            omega_RD = 1j * RD_Xi * (np.mean(Mx_local) + 1j * np.mean(My_local)) * np.exp(-1j * RD_Phase)
+            B1_Field = B1_Amplitude * np.exp(1j * (B1_Frequency * t + B1_Phase))
+            Wdx_dp, Wdy_dp, Wdz_dp = self.DipolarFieldScipy(Mvec)
+            Wdx_mean, Wdy_mean, Wdz_mean = self.MeanDipolarFieldScipy(Mx_local, My_local, Mz_local)
+            Wx = Omega_X + omega_RD.real + B1_Field.real + Wdx_dp + Wdx_mean
+            Wy = Omega_Y + omega_RD.imag + B1_Field.imag + Wdy_dp + Wdy_mean
+            Wz = Omega_Z + Wdz_dp + Wdz_mean
+            Mdot = np.zeros_like(Mvec)
+            Mdot[0::3] = -R2 * Mx_local - Wz * My_local - Wy * Mz_local
+            Mdot[1::3] = Wz * Mx_local - R2 * My_local + Wx * Mz_local
+            Mdot[2::3] = Wy * Mx_local - Wx * My_local - R1 * Mz_local + R1 * Mo_flat
+            return Mdot
+
         start_time = time.time()
-        Msol = solve_ivp(MDOT, [0, self.AQTime], M, method=self.ODEMethod, t_eval=self.tpoints, args=(Isochromats, ChemicalShifts, RD_Xi, RD_Phase, Omega_X, Omega_Y, Omega_Z, R1, R2, B1_Amplitude, B1_Frequency, B1_Phase), atol=1e-10, rtol=1e-10)
+        Msol = solve_ivp(MDOT, [0.0, self.AQTime], M0, method=self.ODEMethod, t_eval=self.tpoints, atol=1.0e-10, rtol=1.0e-10)
         end_time = time.time()
         timetaken = end_time - start_time
         print("[SciPy] Total time = " + format(timetaken, ".6f") + " s")
         self.PostprocessSolution(Msol.t, Msol.y)
         print("Simulation is completed (SciPy backend).")
 
-    def GetJaxSolver(self):
-        if self.ODE_Stiff:
-            return dfx.BDF2()
-        else:
-            return dfx.Tsit5()
-
     def EvolutionJax(self):
         device = self.SelectJaxDevice()
         y0 = jax.device_put(self.M, device=device)
-        Mo = jax.device_put(self.Mo, device=device)
+        Mo_flat = jax.device_put(self.Mo, device=device)
         Omega_Z = jax.device_put(self.Omega_Z, device=device)
-        args = (self.Isochromats, self.ChemicalShifts, self.RD_Xi, self.RD_Phase, self.Omega_X, self.Omega_Y, Omega_Z, self.Relaxation_R1, self.Relaxation_R2, self.B1_Amplitude, self.B1_Frequency, self.B1_Phase, Mo, self.Mean_Dipolar_On, self.Mean_Dipolar_Strength)
+
+        Mask_flat = jax.device_put(self.Mask, device=device)
+        Dipolar_On_flag = 1 if self.Dipolar_On else 0
+        Demag_Coefficient = float(self.Demag_Coefficient)
+
+        # Safe KTensor handling (works for mean dipole or FFT dipole)
+        if self.Dipolar_On:
+            if self.KTensor is None:
+                self.BuildKSpaceLattice()
+            KTensor_z2_np = self.KTensor[:, :, :, 2]
+        else:
+            # dummy array, never used when Dipolar_On_flag == 0
+            KTensor_z2_np = np.zeros((1,1,1), dtype=self.DTYPE)
+
+        KTensor_z2 = jax.device_put(KTensor_z2_np, device=device)
+
+        Mean_Dipolar_On_flag = 1 if self.Mean_Dipolar_On else 0
+        Mean_Dipolar_Strength_val = float(self.Mean_Dipolar_Strength)
+
+        args = (self.Isochromats, self.ChemicalShifts,
+                self.RD_Xi, self.RD_Phase,
+                self.Omega_X, self.Omega_Y, Omega_Z,
+                self.Relaxation_R1, self.Relaxation_R2,
+                self.B1_Amplitude, self.B1_Frequency, self.B1_Phase,
+                Mo_flat,
+                Dipolar_On_flag, Demag_Coefficient,
+                Mean_Dipolar_On_flag, Mean_Dipolar_Strength_val,
+                int(self.Lattice_Nx), int(self.Lattice_Ny), int(self.Lattice_Nz),
+                int(self.Padd_X), int(self.Padd_Y), int(self.Padd_Z),
+                self.Gamma, self.Permeability,
+                Mask_flat, KTensor_z2)
+
         term = dfx.ODETerm(MDOT_Jax)
-        solver = self.GetJaxSolver()
-        stepsize_controller = dfx.PIDController(rtol=1e-10, atol=1e-10)
+        solver = dfx.BDF2() if self.ODE_Stiff else dfx.Tsit5()
+        stepsize_controller = dfx.PIDController(rtol=1.0e-10, atol=1.0e-10)
         saveat = dfx.SaveAt(ts=jnp.array(self.tpoints))
+
         start_time = time.time()
-        sol = dfx.diffeqsolve(term, solver, t0=0.0, t1=float(self.AQTime), dt0=float(self.DT), y0=y0, args=args, saveat=saveat, stepsize_controller=stepsize_controller,max_steps=self.JAX_MaxSteps)
+        sol = dfx.diffeqsolve(term, solver,
+                              t0=0.0, t1=float(self.AQTime),
+                              dt0=float(self.DT),
+                              y0=y0, args=args,
+                              saveat=saveat,
+                              stepsize_controller=stepsize_controller,
+                              max_steps=self.JAX_MaxSteps)
         end_time = time.time()
         timetaken = end_time - start_time
         print("[JAX+Diffrax] Total time = " + format(timetaken, ".6f") + " s")
+
         ts = np.asarray(sol.ts, dtype=float)
         ys = np.asarray(sol.ys, dtype=float)
         ys = ys.T
@@ -279,70 +606,122 @@ class MaxwellBloch:
         self.FS = 1.0 / self.DT
         Spectrum = np.fft.fft(self.Signal)
         self.Spectrum = np.fft.fftshift(Spectrum)
-        self.Freq = np.linspace(-self.FS / 2, self.FS / 2, self.Signal.shape[-1])
+        self.Freq = np.linspace(-self.FS / 2.0, self.FS / 2.0, self.Signal.shape[-1])
 
     def Ploting_MxMyMz(self):
-        rc('font', weight='bold')
+        rc("font", weight="bold")
         fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=(15, 5))
         spec = fig.add_gridspec(1, 1)
         self.fig_counter = self.fig_counter + 1
         ax1 = fig.add_subplot(spec[0, 0])
-        ax1.plot(self.tpoints, self.Mx, linewidth=3.0, color='blue', label="Mx")
-        ax1.plot(self.tpoints, self.My, linewidth=3.0, color='green', label="My")
-        ax1.set_xlabel(r'Time (s)', fontsize=25, color='black', fontweight='bold')
-        ax1.set_ylabel(r'$M_{T}$ (AU)', fontsize=25, color='blue', fontweight='bold')
+        ax1.plot(self.tpoints, self.Mx, linewidth=3.0, color="blue", label="Mx")
+        ax1.plot(self.tpoints, self.My, linewidth=3.0, color="green", label="My")
+        ax1.set_xlabel("Time (s)", fontsize=25, color="black", fontweight="bold")
+        ax1.set_ylabel("$M_{T}$ (AU)", fontsize=25, color="blue", fontweight="bold")
         ax1.legend(fontsize=25, frameon=False)
-        ax1.tick_params(axis='both', labelsize=14)
-        ax1.grid(True, linestyle='-.')
+        ax1.tick_params(axis="both", labelsize=14)
+        ax1.grid(True, linestyle="-.")
         ax1.set_xlim(self.Plot_Xlim)
         ax1.set_ylim(self.Plot_Ylim)
         ax10 = ax1.twinx()
-        ax10.plot(self.tpoints, self.Mz, linewidth=3.0, color='red', label="Mz")
-        ax10.set_xlabel(r'Time (s)', fontsize=30, color='black', fontweight='bold')
-        ax10.set_ylabel(r'$M_{Z}$ (AU)', fontsize=30, color='red', fontweight='bold')
+        ax10.plot(self.tpoints, self.Mz, linewidth=3.0, color="red", label="Mz")
+        ax10.set_xlabel("Time (s)", fontsize=30, color="black", fontweight="bold")
+        ax10.set_ylabel("$M_{Z}$ (AU)", fontsize=30, color="red", fontweight="bold")
         ax10.legend(fontsize=30, frameon=False)
-        ax10.tick_params(axis='both', labelsize=20)
+        ax10.tick_params(axis="both", labelsize=20)
         ax1.set_xlim(self.Plot_Xlim)
         ax1.set_ylim(self.Plot_Ylim)
         if self.Plot_Save:
-            plt.savefig('MxMyMz.pdf', bbox_inches='tight')
+            plt.savefig("MxMyMz.pdf", bbox_inches="tight")
 
     def Ploting_Spectrum(self):
         fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=(15, 5))
         spec = fig.add_gridspec(1, 1)
         self.fig_counter = self.fig_counter + 1
         ax1 = fig.add_subplot(spec[0, 0])
-        ax1.plot(self.Freq, self.Spectrum, linewidth=3.0, color='black')
-        ax1.set_xlabel(r'Frequency (Hz)', fontsize=25, color='green', fontweight='bold')
-        ax1.set_ylabel(r'Spectrum (AU)', fontsize=25, color='black', fontweight='bold')
-        ax1.tick_params(axis='both', labelsize=14)
-        ax1.grid(True, linestyle='-.')
+        ax1.plot(self.Freq, self.Spectrum, linewidth=3.0, color="black")
+        ax1.set_xlabel("Frequency (Hz)", fontsize=25, color="green", fontweight="bold")
+        ax1.set_ylabel("Spectrum (AU)", fontsize=25, color="black", fontweight="bold")
+        ax1.tick_params(axis="both", labelsize=14)
+        ax1.grid(True, linestyle="-.")
         ax1.set_xlim(self.Plot_Xlim)
         ax1.set_ylim(self.Plot_Ylim)
         if self.Plot_Save:
-            plt.savefig('Spectrum.pdf', bbox_inches='tight')
+            plt.savefig("Spectrum.pdf", bbox_inches="tight")
 
     def Plotting_Sphere(self):
-        S_phi = np.linspace(0, np.pi, 20)
-        S_theta = np.linspace(0, 2 * np.pi, 20)
-        (S_phi, S_theta) = np.meshgrid(S_phi, S_theta)
+        S_phi = np.linspace(0.0, np.pi, 20)
+        S_theta = np.linspace(0.0, 2.0 * np.pi, 20)
+        S_phi, S_theta = np.meshgrid(S_phi, S_theta)
         S_x = np.sum(self.Magnetization) * np.sin(S_phi) * np.cos(S_theta)
         S_y = np.sum(self.Magnetization) * np.sin(S_phi) * np.sin(S_theta)
         S_z = np.sum(self.Magnetization) * np.cos(S_phi)
         tlim1 = 0
         tlim2 = -1
-        ax = plt.figure(self.fig_counter, figsize=(10, 10)).add_subplot(projection='3d')
+        ax = plt.figure(self.fig_counter, figsize=(10, 10)).add_subplot(projection="3d")
         self.fig_counter = self.fig_counter + 1
         ax.plot_wireframe(S_x, S_y, S_z, color="cyan", linewidth=1.0)
         ax.plot(self.Mx[tlim1:tlim2], self.My[tlim1:tlim2], self.Mz[tlim1:tlim2], color="black", linewidth=1.0)
         ax.view_init(10, 20)
-        ax.set_xlabel(r'My', fontsize=14, color='black', fontweight='bold')
-        ax.set_ylabel(r'Mx', fontsize=14, color='black', fontweight='bold')
-        ax.set_zlabel(r'Mz', fontsize=14, color='black', fontweight='bold')
-        ax.tick_params(axis='both', labelsize=10)
-        ax.grid(True, linestyle='-.')
+        ax.set_xlabel("My", fontsize=14, color="black", fontweight="bold")
+        ax.set_ylabel("Mx", fontsize=14, color="black", fontweight="bold")
+        ax.set_zlabel("Mz", fontsize=14, color="black", fontweight="bold")
+        ax.tick_params(axis="both", labelsize=10)
+        ax.grid(True, linestyle="-.")
         if self.Plot_Save:
-            plt.savefig('Sphere.pdf', bbox_inches='tight')
+            plt.savefig("Sphere.pdf", bbox_inches="tight")
+        plt.show()
+
+    def Plotting_Lattice(self, show_all_points=True):
+        from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+
+        Nx = int(self.Lattice_Nx)
+        Ny = int(self.Lattice_Ny)
+        Nz = int(self.Lattice_Nz)
+
+        if self.Mask3D is None:
+            self.BuildShapeMask()
+
+        mask = self.Mask3D
+
+        x = np.arange(Nx, dtype=self.DTYPE) - 0.5 * (Nx - 1)
+        y = np.arange(Ny, dtype=self.DTYPE) - 0.5 * (Ny - 1)
+        z = np.arange(Nz, dtype=self.DTYPE) - 0.5 * (Nz - 1)
+        X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
+
+        Xf = X.ravel()
+        Yf = Y.ravel()
+        Zf = Z.ravel()
+        Mf = mask.ravel()
+
+        X_in = Xf[Mf > 0.5]
+        Y_in = Yf[Mf > 0.5]
+        Z_in = Zf[Mf > 0.5]
+
+        fig = plt.figure(self.fig_counter, figsize=(8, 8))
+        self.fig_counter = self.fig_counter + 1
+        ax = fig.add_subplot(111, projection='3d')
+
+        if show_all_points:
+            ax.scatter(Xf, Yf, Zf, s=5, c='0.85', marker='o', alpha=0.4, label='Lattice')
+
+        ax.scatter(X_in, Y_in, Z_in, s=15, c='red', marker='o', alpha=0.9, label='Sample')
+
+        ax.set_xlabel('x (lattice units)', fontsize=12, fontweight='bold')
+        ax.set_ylabel('y (lattice units)', fontsize=12, fontweight='bold')
+        ax.set_zlabel('z (lattice units)', fontsize=12, fontweight='bold')
+
+        ax.set_xlim(x[0] - 0.5, x[-1] + 0.5)
+        ax.set_ylim(y[0] - 0.5, y[-1] + 0.5)
+        ax.set_zlim(z[0] - 0.5, z[-1] + 0.5)
+
+        shape_name = str(self.Lattice_Shape).capitalize()
+        ax.set_title('Lattice (' + shape_name + ')', fontsize=14, fontweight='bold')
+        ax.view_init(elev=20, azim=40)
+        ax.legend(frameon=False)
+
+        ax.grid(True, linestyle='-.')
+        plt.tight_layout()
         plt.show()
 
     def Plotting_FourierAnalyzer(self):
@@ -391,13 +770,11 @@ class MaxwellBloch:
         self.fig.canvas.mpl_connect("button_press_event", self.fourier.button_press)
         self.fig.canvas.mpl_connect("button_release_event", self.fourier.button_release)
 
+
 class Fourier:
     """
     Fourier handles interactive user selections and signal processing
     for visualizing and analyzing time-frequency domain relationships.
-    Supports:
-    - Selecting a time window and computing its FFT
-    - Selecting a frequency window and reconstructing signal via iFFT
     """
 
     def __init__(self, Mx, My, spectrum, ax, fig, line1, line2, line3, line4, vline1, vline2, vline3, vline4, text1, text2, Abs_Sp):
