@@ -33,16 +33,10 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 2. Visual Studio Code
 	https://code.visualstudio.com/
 	
-3. Ipympl (Enables using the interactive features of matplotlib)
-	pip install ipympl 
-	
-4. Jax
-	- If you do not have a GPU or you only want CPU: pip install --upgrade "jax[cpu]" diffrax
-	- If you have an NVIDIA GPU and want full acceleration (Cuda 12): pip install --upgrade "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
-
-5. Diffrax
-	pip install diffrax 
-
+3. Look the folder Python Conda Environment: 
+	- conda env create -f environment.yml (to install the conda environment)
+	- conda env update -f environment.yml (to update the conda environment)
+  
 ## Prerequisite
 1. Basic knowledge of Python (Scipy, Numpy) and Object-oriented programming
 
