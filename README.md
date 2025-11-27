@@ -34,8 +34,8 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 	https://code.visualstudio.com/
 	
 3. Look the folder Python Conda Environment: 
-	- conda env create -f environment.yml (to install the conda environment)
-	- conda env update -f environment.yml (to update the conda environment)
+	- conda env create -f pyor_environment.yml (to install the conda environment)
+	- conda env update -f pyor_environment.yml (to update the conda environment)
   
 ## Prerequisite
 1. Basic knowledge of Python (Scipy, Numpy) and Object-oriented programming
