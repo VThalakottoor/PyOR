@@ -8,7 +8,8 @@ Email:
     vineethfrancis.physics@gmail.com
 
 Description:
-    Maxwell-Bloch with FFT dipolar field (PCCP-style) + optional JAX backend.
+    Maxwell-Bloch with FFT dipolar field (PCCP-style) + optional JAX backend
+    + static Grandient in Omega_Z along X, Y, Z lattice directions.
 """
 
 from math import sin, cos
@@ -216,7 +217,7 @@ class MaxwellBloch:
         self.ODE_Stiff = False
         self.JAX_ODEMethod = "tsit5"
         self.JAX_Device = "cpu"
-        self.JAX_MaxSteps = 200000
+        self.JAX_MaxSteps = 2_000_000
 
         # Dipolar field parameters (FFT + demag, PCCP-style)
         self.Dipolar_On = False
@@ -240,6 +241,15 @@ class MaxwellBloch:
         self.Mask3D = None
         self.Mask = None
         self.KTensor = None  # last index: [0,1,2]; we use [:,:,:,2]
+
+        # ---- Grandient in Omega_Z (frequency bins between lattice layers) ----
+        # Grandient_* are in Hz per lattice step along each axis.
+        self.Grandient_On = False
+        self.Grandient_X = 0.0   # Hz per lattice step along x
+        self.Grandient_Y = 0.0   # Hz per lattice step along y
+        self.Grandient_Z = 0.0   # Hz per lattice step along z
+        # Omega_Z contribution from Grandient in rad/s (flattened, length Nspin)
+        self.Grandient_OmegaZ = None
 
         # Shape of the sample inside lattice: "full", "sphere", "cylinder"
         self.Lattice_Shape = "full"
@@ -313,6 +323,50 @@ class MaxwellBloch:
         KTensor[:, :, :, 2] = KZ_unit * KZ_unit
         self.KTensor = KTensor
 
+    def BuildGradientOmegaZ(self):
+        """
+        Build static Grandient contribution to Omega_Z (in rad/s).
+
+        Grandient_X, Grandient_Y, Grandient_Z are specified in Hz per
+        lattice step along x, y, z. Lattice coordinates are centered
+        around zero, same convention as in BuildShapeMask().
+        """
+        Nspin = self.ChemicalShifts * self.Isochromats
+
+        # If gradient is off or zero, store a zero field
+        if (not self.Grandient_On) or (
+            self.Grandient_X == 0.0 and
+            self.Grandient_Y == 0.0 and
+            self.Grandient_Z == 0.0
+        ):
+            self.Grandient_OmegaZ = np.zeros(Nspin, dtype=self.DTYPE)
+            return
+
+        Nx = int(self.Lattice_Nx)
+        Ny = int(self.Lattice_Ny)
+        Nz = int(self.Lattice_Nz)
+
+        if Nx * Ny * Nz != Nspin:
+            raise ValueError(
+                "For Grandient: Lattice_Nx * Lattice_Ny * Lattice_Nz must "
+                "equal ChemicalShifts * Isochromats"
+            )
+
+        # Lattice coordinates centered around 0 (same as BuildShapeMask)
+        x = np.arange(Nx, dtype=self.DTYPE) - 0.5 * (Nx - 1)
+        y = np.arange(Ny, dtype=self.DTYPE) - 0.5 * (Ny - 1)
+        z = np.arange(Nz, dtype=self.DTYPE) - 0.5 * (Nz - 1)
+        X, Y, Z = np.meshgrid(x, y, z, indexing="ij")
+
+        # Grandient_* are in Hz per step -> convert to rad/s per step
+        gx = 2.0 * np.pi * self.Grandient_X
+        gy = 2.0 * np.pi * self.Grandient_Y
+        gz = 2.0 * np.pi * self.Grandient_Z
+
+        # Linear gradient field in rad/s
+        dOmega = gx * X + gy * Y + gz * Z  # shape (Nx, Ny, Nz)
+        self.Grandient_OmegaZ = dOmega.reshape(Nspin)
+
     def Initialize(self):
         self.Omega_X = 2.0 * np.pi * self.Omega_X
         self.Omega_Y = 2.0 * np.pi * self.Omega_Y
@@ -323,15 +377,31 @@ class MaxwellBloch:
         for i in range(self.ChemicalShifts):
             if self.Isochromats % 2 == 0:
                 Nhalf = int(self.Isochromats / 2)
-                self.Omega_Z_Band[i] = np.linspace(self.Omega_Z_CS[i] - Nhalf * self.FrequencySeparation, self.Omega_Z_CS[i] + Nhalf * self.FrequencySeparation, self.Isochromats, endpoint=False, dtype=self.DTYPE)
+                self.Omega_Z_Band[i] = np.linspace(
+                    self.Omega_Z_CS[i] - Nhalf * self.FrequencySeparation,
+                    self.Omega_Z_CS[i] + Nhalf * self.FrequencySeparation,
+                    self.Isochromats,
+                    endpoint=False,
+                    dtype=self.DTYPE,
+                )
             else:
                 Nhalf = int((self.Isochromats - 1) / 2)
-                self.Omega_Z_Band[i] = np.linspace(self.Omega_Z_CS[i] - Nhalf * self.FrequencySeparation, self.Omega_Z_CS[i] + Nhalf * self.FrequencySeparation, self.Isochromats, endpoint=True, dtype=self.DTYPE)
+                self.Omega_Z_Band[i] = np.linspace(
+                    self.Omega_Z_CS[i] - Nhalf * self.FrequencySeparation,
+                    self.Omega_Z_CS[i] + Nhalf * self.FrequencySeparation,
+                    self.Isochromats,
+                    endpoint=True,
+                    dtype=self.DTYPE,
+                )
+
+        # Base Omega_Z from chemical shifts + inhomogeneous band (rad/s)
         self.Omega_Z = np.reshape(self.Omega_Z_Band, self.ChemicalShifts * self.Isochromats)
 
+        # Flip angles in radians
         self.FlipAngle_Theta = (np.pi / 180.0) * self.FlipAngle_Theta
         self.FlipAngle_Phi = (np.pi / 180.0) * self.FlipAngle_Phi
 
+        # Gaussian distribution over isochromats
         Iso_idx = np.arange(self.Isochromats, dtype=self.DTYPE)
         Iso_center = 0.5 * (self.Isochromats - 1)
         Iso_sigma = self.Isochromats / 6.0
@@ -366,6 +436,11 @@ class MaxwellBloch:
 
         self.BuildShapeMask()
         self.BuildKSpaceLattice()
+        self.BuildGradientOmegaZ()
+
+        # Add Grandient contribution (already in rad/s) to Omega_Z
+        if self.Grandient_OmegaZ is not None:
+            self.Omega_Z = self.Omega_Z + self.Grandient_OmegaZ
 
     def DipolarFieldScipy(self, Mvec):
         """
@@ -551,7 +626,7 @@ class MaxwellBloch:
             KTensor_z2_np = self.KTensor[:, :, :, 2]
         else:
             # dummy array, never used when Dipolar_On_flag == 0
-            KTensor_z2_np = np.zeros((1,1,1), dtype=self.DTYPE)
+            KTensor_z2_np = np.zeros((1, 1, 1), dtype=self.DTYPE)
 
         KTensor_z2 = jax.device_put(KTensor_z2_np, device=device)
 
@@ -766,7 +841,10 @@ class MaxwellBloch:
         self.ax[1, 1].grid()
 
     def ConnectEvents(self):
-        self.fourier = Fourier(self.Mx, self.My, self.Spectrum, self.ax, self.fig, self.line1, self.line2, self.line3, self.line4, self.vline1, self.vline2, self.vline3, self.vline4, self.text1, self.text2, self.abs_spectrum)
+        self.fourier = Fourier(self.Mx, self.My, self.Spectrum, self.ax, self.fig,
+                               self.line1, self.line2, self.line3, self.line4,
+                               self.vline1, self.vline2, self.vline3, self.vline4,
+                               self.text1, self.text2, self.abs_spectrum)
         self.fig.canvas.mpl_connect("button_press_event", self.fourier.button_press)
         self.fig.canvas.mpl_connect("button_release_event", self.fourier.button_release)
 
@@ -777,7 +855,8 @@ class Fourier:
     for visualizing and analyzing time-frequency domain relationships.
     """
 
-    def __init__(self, Mx, My, spectrum, ax, fig, line1, line2, line3, line4, vline1, vline2, vline3, vline4, text1, text2, Abs_Sp):
+    def __init__(self, Mx, My, spectrum, ax, fig, line1, line2, line3, line4,
+                 vline1, vline2, vline3, vline4, text1, text2, Abs_Sp):
         (self.x1, self.y1) = line1.get_data()
         (self.x2, self.y2) = line2.get_data()
         (self.x3, self.y3) = line3.get_data()
