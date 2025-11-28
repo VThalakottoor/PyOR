@@ -212,6 +212,8 @@ class MaxwellBloch:
         # Acquisition
         self.AQTime = 10.0
         self.DT = 0.0001
+        self.tpointsFull = None
+        self.SignalFull = None
         self.ODEMethod = "DOP853"
         self.ODE_Backend = "scipy"  # "scipy" or "jax"
         self.ODE_Stiff = False
@@ -442,6 +444,47 @@ class MaxwellBloch:
         if self.Grandient_OmegaZ is not None:
             self.Omega_Z = self.Omega_Z + self.Grandient_OmegaZ
 
+    def Update(self):
+        self.AQPoints = int(self.AQTime / self.DT)
+        self.FS = 1.0 / self.DT
+        self.tpoints = np.linspace(0.0, self.AQTime, self.AQPoints, endpoint=True)
+
+    def ApplyInstantPulse(self, angle_deg, axis='x'):
+        """
+        Apply an instantaneous hard pulse: rotate all spins by angle_deg
+        around axis 'x', 'y', or 'z'. Works on self.M (flattened).
+        """
+        theta = np.deg2rad(angle_deg)
+
+        # M is shape (3*Nspin,) = [Mx0,My0,Mz0,Mx1,My1,Mz1,...]
+        Mx = self.M[0::3].copy()
+        My = self.M[1::3].copy()
+        Mz = self.M[2::3].copy()
+
+        axis = axis.lower()
+        if axis == 'x':
+            # rotation around x: (Mx, My, Mz) -> (Mx, My cosθ - Mz sinθ, My sinθ + Mz cosθ)
+            My_new = My * np.cos(theta) - Mz * np.sin(theta)
+            Mz_new = My * np.sin(theta) + Mz * np.cos(theta)
+            Mx_new = Mx
+        elif axis == 'y':
+            # rotation around y: (Mx, My, Mz) -> (Mx cosθ + Mz sinθ, My, -Mx sinθ + Mz cosθ)
+            Mx_new = Mx * np.cos(theta) + Mz * np.sin(theta)
+            Mz_new = -Mx * np.sin(theta) + Mz * np.cos(theta)
+            My_new = My
+        elif axis == 'z':
+            # rotation around z: (Mx, My, Mz) -> (Mx cosθ - My sinθ, Mx sinθ + My cosθ, Mz)
+            Mx_new = Mx * np.cos(theta) - My * np.sin(theta)
+            My_new = Mx * np.sin(theta) + My * np.cos(theta)
+            Mz_new = Mz
+        else:
+            raise ValueError("axis must be 'x', 'y', or 'z'")
+
+        # write back into flattened M
+        self.M[0::3] = Mx_new
+        self.M[1::3] = My_new
+        self.M[2::3] = Mz_new
+       
     def DipolarFieldScipy(self, Mvec):
         """
         FFT dipolar field + uniform demag term, SciPy version.
@@ -558,6 +601,8 @@ class MaxwellBloch:
             return jax.devices("cpu")[0]
 
     def Evolution(self):
+        self.Update()
+
         backend = str(self.ODE_Backend).lower()
         if backend == "scipy":
             self.EvolutionScipy()
@@ -670,18 +715,111 @@ class MaxwellBloch:
         print("Simulation is completed (JAX backend).")
 
     def PostprocessSolution(self, t_array, M_array):
-        self.tpoints = t_array
-        self.Mpoints = M_array
-        self.Mx = np.sum(self.Mpoints[0::3, :], axis=0)
+        """
+        Post-process the ODE output.
+        Prints all key variable names and shapes,
+        and stores the final M for next-run initialization.
+        """
+
+        # -----------------------------
+        # Store solution
+        # -----------------------------
+        self.tpoints = t_array                    # shape (Nt,)
+        self.Mpoints = M_array                    # shape (3*Nspin, Nt)
+
+        # Compute summed magnetization components
+        self.Mx = np.sum(self.Mpoints[0::3, :], axis=0)   # (Nt,)
         self.My = np.sum(self.Mpoints[1::3, :], axis=0)
         self.Mz = np.sum(self.Mpoints[2::3, :], axis=0)
         self.Mabs = np.sqrt(self.Mx**2 + self.My**2)
+
+        # Complex transverse signal
         self.Signal = self.Mx + 1j * self.My
+
+        # Derived sampling params
         self.DT = self.tpoints[1] - self.tpoints[0]
         self.FS = 1.0 / self.DT
+
+        # FFT for spectrum
         Spectrum = np.fft.fft(self.Signal)
         self.Spectrum = np.fft.fftshift(Spectrum)
-        self.Freq = np.linspace(-self.FS / 2.0, self.FS / 2.0, self.Signal.shape[-1])
+        self.Freq = np.linspace(-self.FS / 2.0,
+                                self.FS / 2.0,
+                                self.Signal.shape[-1])
+
+        # -----------------------------
+        # STORE FINAL M FOR NEXT SIMULATION
+        # -----------------------------
+        # Last column of M_array is the final magnetization state.
+        self.M = self.Mpoints[:, -1].copy()
+
+        # -----------------------------
+        # PRINT VARIABLE SHAPES
+        # -----------------------------
+        print("\n========== POST-PROCESS VARIABLES ==========\n")
+
+        def p(name, arr):
+            try:
+                print(f"{name:20s} : shape = {np.shape(arr)}")
+            except:
+                print(f"{name:20s} : (not array)")
+
+        # Time domain quantities
+        p("tpoints", self.tpoints)
+        p("Mpoints", self.Mpoints)
+        p("Mx", self.Mx)
+        p("My", self.My)
+        p("Mz", self.Mz)
+        p("Mabs", self.Mabs)
+        p("Signal", self.Signal)
+
+        # Spectrum
+        p("Spectrum", self.Spectrum)
+        p("Freq", self.Freq)
+
+        # Lattice and dipole fields
+        p("Omega_Z", self.Omega_Z)
+        p("Mask", self.Mask)
+        if self.KTensor is not None:
+            p("KTensor", self.KTensor)
+
+        # Final magnetization
+        p("M", self.M)
+
+        print("\n============================================\n")
+
+        # -----------------------------
+        # APPEND TIME + SIGNAL SEQUENTIALLY
+        # -----------------------------
+        if self.tpointsFull is None:
+            # First acquisition → no time offset
+            self.tpointsFull = self.tpoints.copy()
+            self.SignalFull = self.Signal.copy()
+        else:
+            # Time offset = last time in the previous block + DT
+            offset = self.tpointsFull[-1] + self.DT
+            t_shifted = self.tpoints + offset
+
+            # Append
+            self.tpointsFull = np.concatenate((self.tpointsFull, t_shifted))
+            self.SignalFull = np.concatenate((self.SignalFull, self.Signal))
+
+    def Ploting_Signal(self):
+        rc("font", weight="bold")
+        fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=(15, 5))
+        spec = fig.add_gridspec(1, 1)
+        self.fig_counter = self.fig_counter + 1
+        ax1 = fig.add_subplot(spec[0, 0])
+        ax1.plot(self.tpointsFull, self.SignalFull, linewidth=3.0, color="blue", label="Signal")
+        ax1.set_xlabel("Time (s)", fontsize=25, color="black", fontweight="bold")
+        ax1.set_ylabel("$M_{T}$ (AU)", fontsize=25, color="blue", fontweight="bold")
+        ax1.legend(fontsize=25, frameon=False)
+        ax1.tick_params(axis="both", labelsize=14)
+        ax1.grid(True, linestyle="-.")
+        ax1.set_xlim(self.Plot_Xlim)
+        ax1.set_ylim(self.Plot_Ylim)
+        if self.Plot_Save:
+            plt.savefig("Signal.pdf", bbox_inches="tight")
 
     def Ploting_MxMyMz(self):
         rc("font", weight="bold")
