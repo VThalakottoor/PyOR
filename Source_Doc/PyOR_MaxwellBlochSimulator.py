@@ -369,6 +369,40 @@ class MaxwellBloch:
         dOmega = gx * X + gy * Y + gz * Z  # shape (Nx, Ny, Nz)
         self.Grandient_OmegaZ = dOmega.reshape(Nspin)
 
+    def ComputeGradientOmegaFlat(self, Gx_Hz, Gy_Hz, Gz_Hz):
+        """
+        Compute gradient-induced frequency offset dOmega(r) in rad/s,
+        flattened (length = Nspin).
+
+        Gx_Hz, Gy_Hz, Gz_Hz are in Hz per lattice step along x, y, z
+        (same convention as Grandient_X, Grandient_Y, Grandient_Z).
+        """
+
+        Nspin = self.ChemicalShifts * self.Isochromats
+        Nx = int(self.Lattice_Nx)
+        Ny = int(self.Lattice_Ny)
+        Nz = int(self.Lattice_Nz)
+
+        if Nx * Ny * Nz != Nspin:
+            raise ValueError(
+                "ComputeGradientOmegaFlat: Lattice_Nx * Lattice_Ny * Lattice_Nz "
+                "must equal ChemicalShifts * Isochromats"
+            )
+
+        # Lattice coordinates centered around 0 (same as BuildShapeMask)
+        x = np.arange(Nx, dtype=self.DTYPE) - 0.5 * (Nx - 1)
+        y = np.arange(Ny, dtype=self.DTYPE) - 0.5 * (Ny - 1)
+        z = np.arange(Nz, dtype=self.DTYPE) - 0.5 * (Nz - 1)
+        X, Y, Z = np.meshgrid(x, y, z, indexing="ij")
+
+        # Hz/step -> rad/s per step
+        gx = 2.0 * np.pi * Gx_Hz
+        gy = 2.0 * np.pi * Gy_Hz
+        gz = 2.0 * np.pi * Gz_Hz
+
+        dOmega = gx * X + gy * Y + gz * Z   # shape (Nx, Ny, Nz)
+        return dOmega.reshape(Nspin)        # flattened (rad/s)
+
     def Initialize(self):
         self.Omega_X = 2.0 * np.pi * self.Omega_X
         self.Omega_Y = 2.0 * np.pi * self.Omega_Y
@@ -484,7 +518,62 @@ class MaxwellBloch:
         self.M[0::3] = Mx_new
         self.M[1::3] = My_new
         self.M[2::3] = Mz_new
-       
+
+    def ApplyInstantGradient(self, duration,
+                             Gx_Hz=None, Gy_Hz=None, Gz_Hz=None):
+        """
+        Apply an instantaneous gradient pulse of duration [s] as a
+        position-dependent z-rotation on self.M (flattened).
+
+        Parameters
+        ----------
+        duration : float
+            Gradient duration in seconds.
+        Gx_Hz, Gy_Hz, Gz_Hz : float or None
+            Gradient strengths in Hz per lattice step along x, y, z.
+            If None, the stored Grandient_X/Y/Z values are used.
+
+        Effect
+        ------
+        For each spin i, we apply a rotation around z by
+            phi_i = dOmega_i * duration
+        where dOmega_i is the gradient-induced frequency [rad/s].
+        """
+        if duration == 0.0:
+            return
+
+        # Use stored gradient values if not explicitly provided
+        if Gx_Hz is None:
+            Gx_Hz = self.Grandient_X
+        if Gy_Hz is None:
+            Gy_Hz = self.Grandient_Y
+        if Gz_Hz is None:
+            Gz_Hz = self.Grandient_Z
+
+        # If everything is zero, nothing to do
+        if (Gx_Hz == 0.0) and (Gy_Hz == 0.0) and (Gz_Hz == 0.0):
+            return
+
+        # dOmega(r) in rad/s, then phase phi(r) = dOmega * duration
+        dOmega_flat = self.ComputeGradientOmegaFlat(Gx_Hz, Gy_Hz, Gz_Hz)
+        phi = dOmega_flat * duration        # rad
+
+        # Current magnetization, flattened
+        Mx = self.M[0::3].copy()
+        My = self.M[1::3].copy()
+        Mz = self.M[2::3].copy()  # unchanged
+
+        cphi = np.cos(phi)
+        sphi = np.sin(phi)
+
+        # z-rotation: (Mx, My) -> (Mx cosφ - My sinφ, Mx sinφ + My cosφ)
+        Mx_new = Mx * cphi - My * sphi
+        My_new = Mx * sphi + My * cphi
+
+        self.M[0::3] = Mx_new
+        self.M[1::3] = My_new
+        self.M[2::3] = Mz
+
     def DipolarFieldScipy(self, Mvec):
         """
         FFT dipolar field + uniform demag term, SciPy version.
