@@ -186,6 +186,74 @@ def FourierTransform2D_DirectDimension_COSY_STR(FID_array_C,
 
     return freqs_t2, Spectrum_over_t2
 
+def FourierTransform2D_DirectDimension_COSY_TPPI(FID_array,
+                                       t1_array,
+                                       t2_array,
+                                       zero_fill,
+                                       df_t1,
+                                       df_t2,
+                                       phase1_deg):
+    """
+    Fourier transform along t2 for a 2D FID array (COSY, etc.).
+
+    Applies 2D exponential apodization in t1 and t2, then performs a 1D FFT
+    along the direct dimension (t2) for each t1 point, and finally applies a
+    zero-order phase in the frequency domain.
+
+    Parameters
+    ----------
+    FID_array : ndarray, shape (N_t1, N_t2)
+        Complex time-domain FID array.
+    t1_array : 1D ndarray
+        Time axis for t1.
+    t2_array : 1D ndarray
+        Time axis for t2.
+    zero_fill : int
+        Zero-filling factor for t2.
+    df_t1, df_t2 : float
+        Line broadening (Hz) for t1 and t2 dimensions.
+    phase1_deg : float
+        Zero-order phase in degrees applied uniformly in the t2 spectrum.
+
+    Returns
+    -------
+    freqs_t2 : 1D ndarray
+        Frequency axis along t2 (direct dimension).
+    Spectrum_over_t2_phased : 2D ndarray, shape (N_t1, N_t2*zero_fill)
+        Phase-adjusted spectrum vs t2 for each t1 point.
+    Spectrum_over_t2 : 2D ndarray, shape (N_t1, N_t2*zero_fill)
+        Raw (unphased) spectrum vs t2 for each t1 point.
+    """
+    Npoints_t1, Npoints_t2 = FID_array.shape
+
+    # --- spectral width from dwell time in t2 ---
+    dt2 = t2_array[1] - t2_array[0]
+    SW_t2 = 1.0/dt2
+
+    # --- apodization times from line broadening ---
+    t1_apod = 1.0/(np.pi*df_t1)
+    t2_apod = 1.0/(np.pi*df_t2)
+
+    # 2D exponential window
+    decay_t1 = np.exp(-t1_array/t1_apod)[:,None]   # (N_t1, 1)
+    decay_t2 = np.exp(-t2_array/t2_apod)[None,:]   # (1, N_t2)
+    window_2d = decay_t1*decay_t2                  # (N_t1, N_t2)
+
+    FID_array_apod = FID_array*window_2d
+
+    # allocate spectra
+    Spectrum_over_t2 = np.zeros((Npoints_t1, Npoints_t2*zero_fill), dtype=complex)
+
+    # FFT along t2 for each t1 row
+    for i in range(Npoints_t1):
+        freqs_t2, Spectrum_over_t2[i,:] = FourierTransform(FID_array_apod[i,:], SW_t2, zero_fill)
+
+    # zero-order phase
+    phase_factor1 = np.exp(1j*2.0*np.pi*phase1_deg/360.0)
+    Spectrum_over_t2_phased = phase_factor1*Spectrum_over_t2
+
+    return freqs_t2, Spectrum_over_t2_phased
+
 def FourierTransform2D_IndirectDimension_COSY_STR(Spectrum_over_t2,
                                                   t1_array,
                                                   zero_fill,
@@ -230,6 +298,69 @@ def FourierTransform2D_IndirectDimension_COSY_STR(Spectrum_over_t2,
 
     return freqs_t1, Spectrum_2D_phased
 
+def FourierTransform2D_IndirectDimension_COSY_TPPI(Spectrum_over_t2,
+                                              t1_array,
+                                              zero_fill,
+                                              phase2_deg):
+    """
+    Perform Fourier transform along t1 (indirect dimension) on the REAL part
+    of a 2D spectrum (e.g. COSY STR result), with custom F1 windowing.
+
+    This follows the pattern:
+        - FFT over t1 on Spectrum_over_t2[:, i].real for each F2 column
+        - keep only the first half of F1 points
+        - define F1 frequencies in [-SW_t1/4, +SW_t1/4]
+        - apply a zero-order phase (phase2_deg)
+
+    Parameters
+    ----------
+    Spectrum_over_t2 : ndarray, shape (N_t1, N_f2)
+        Complex spectrum vs t2 for each t1 point.
+        (e.g. output from a direct-dimension COSY STR transform)
+    t1_array : 1D ndarray
+        Time axis for t1.
+    zero_fill : int
+        Zero filling factor along t1.
+    phase2_deg : float
+        Zero-order phase in degrees (e.g. 180 for best off-diagonal).
+
+    Returns
+    -------
+    freqs_t1 : 1D ndarray
+        Frequency axis for F1, in range [-SW_t1/4, +SW_t1/4].
+    Spectrum_2D_phased : 2D ndarray, shape (N_t1*zero_fill/2, N_f2)
+        Phased 2D spectrum (F1 x F2), truncated to half in F1.
+    Spectrum_2D_half : 2D ndarray, shape (N_t1*zero_fill/2, N_f2)
+        Unphased 2D spectrum (same truncation).
+    Spectrum_2D_full : 2D ndarray, shape (N_t1*zero_fill, N_f2)
+        Full unphased FFT along F1 (before truncation).
+    """
+    Npoints_t1, Nfreq_t2 = Spectrum_over_t2.shape
+
+    # Spectral width from dwell time in t1
+    dt1 = t1_array[1] - t1_array[0]
+    SW_t1 = 1.0/dt1
+
+    # Full F1 FFT size
+    nF1 = zero_fill * Npoints_t1
+    Spectrum_2D_full = np.zeros((nF1, Nfreq_t2), dtype=complex)
+
+    # FFT along t1 for each F2 column (on real part only)
+    for i in range(Nfreq_t2):
+        Spectrum_2D_full[:, i] = np.fft.fft(Spectrum_over_t2[:, i].real, n=nF1)
+
+    # Keep only first half of F1
+    half = nF1//2
+    Spectrum_2D_half = Spectrum_2D_full[0:half, :]
+
+    # F1 frequency axis: [-SW_t1/4, +SW_t1/4]
+    freqs_t1 = np.linspace(-SW_t1/4.0, SW_t1/4.0, half)
+
+    # Zero-order phase in F1
+    phase_factor2 = np.exp(1j*2.0*np.pi*phase2_deg/360.0)
+    Spectrum_2D_phased = phase_factor2 * Spectrum_2D_half
+
+    return freqs_t1, Spectrum_2D_phased
 
 def FourierTransform2D(signal, fs1, fs2, zeropoints):
     """
