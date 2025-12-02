@@ -10,6 +10,9 @@ Email:
 Description:
     This file contains the class `Evolutions`, which is used for simulating 
     time evolution of spin systems under different Hamiltonians and conditions.
+
+Acknowledgements:
+    John Price, Q Magnetics, suggestion on Dwell time.
 """
 
 
@@ -47,7 +50,8 @@ class Evolutions:
         self.OdeMethod = self.class_QS.OdeMethod
         self.AcqAQ = self.class_QS.AcqAQ
         self.AcqDT = self.class_QS.AcqDT
-        self.Npoints = int(self.AcqAQ/self.AcqDT)
+        #self.Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
+        self.Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
         self.ShapeParOmega = self.class_QS.ShapeParOmega
         self.ShapeParFreq = self.class_QS.ShapeParFreq
         self.ShapeParPhase = self.class_QS.ShapeParPhase
@@ -68,7 +72,8 @@ class Evolutions:
         self.OdeMethod = self.class_QS.OdeMethod
         self.AcqAQ = self.class_QS.AcqAQ
         self.AcqDT = self.class_QS.AcqDT
-        self.Npoints = int(self.AcqAQ/self.AcqDT)
+        #self.Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
+        self.Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
         self.ShapeParOmega = self.class_QS.ShapeParOmega
         self.ShapeParFreq = self.class_QS.ShapeParFreq
         self.ShapeParPhase = self.class_QS.ShapeParPhase
@@ -78,6 +83,7 @@ class Evolutions:
         self.ODE_rtol = self.class_QS.ODE_rtol
         self.ShapeFunc = self.class_QS.ShapeFunc
         self.Maser_TempGradient = self.class_QS.Maser_TempGradient
+        self.Lindblad_InitialInverseTemp = self.class_QS.Lindblad_InitialInverseTemp
         self.Lindblad_FinalInverseTemp = self.class_QS.Lindblad_FinalInverseTemp
         self.Lindblad_Temp = self.class_QS.Lindblad_Temp
 
@@ -108,7 +114,8 @@ class Evolutions:
         Pmethod = self.PropagationMethod
         ode_method = self.OdeMethod
         dt = self.AcqDT
-        Npoints = int(self.AcqAQ/self.AcqDT)
+        #Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
+        Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
 
         Sx = self.class_QS.Sx_
         Sy = self.class_QS.Sy_ 
@@ -138,7 +145,8 @@ class Evolutions:
             if Pmethod == "Unitary Propagator":
                 vec_ = rhoQ.data
                 vec_t = [vec_]
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
                 U = expm(-1j * Hamiltonian * dt)
                 
                 for i in range(Npoints):
@@ -149,15 +157,15 @@ class Evolutions:
                 vec_ = rhoQ.data
                 vec_t = []
 
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
 
                 Lvec = vec_.flatten().astype(complex)  # Ensure it's a 1D complex array
-                t = np.linspace(0, dt * Npoints, Npoints, endpoint=True)
 
                 def vecDOT(t, Lvec, Hamiltonian):
                     return -1j * Hamiltonian @ Lvec  # No need for redundant reshaping
             
-                vecSol = solve_ivp(vecDOT,[0,dt*Npoints],Lvec,method=self.OdeMethod,t_eval=t,args=(Hamiltonian,), atol = self.ODE_atol, rtol = self.ODE_rtol)   
+                vecSol = solve_ivp(vecDOT,[0,dt*(Npoints-1)],Lvec,method=self.OdeMethod,t_eval=t,args=(Hamiltonian,), atol = self.ODE_atol, rtol = self.ODE_rtol)   
                 t, vec_sol = vecSol.t, vecSol.y
 
                 for i in range(Npoints):
@@ -170,7 +178,8 @@ class Evolutions:
             
             if Pmethod == "Unitary Propagator":    
                 rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
                 U = expm(-1j * Hamiltonian * dt)
                 rho_t[0] = rho
                 for i in range(Npoints-1):
@@ -179,7 +188,9 @@ class Evolutions:
 
             if Pmethod == "Unitary Propagator Time Dependent":    
                 rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 rho_t[0] = rho
                 for i in range(Npoints-1):
                     U = expm(-1j * (Hamiltonian + HamiltonianArray[i]) * dt)
@@ -192,7 +203,9 @@ class Evolutions:
                 Integrators not supported: 'Radau' and LSODA
                 """
                 rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)                       
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) #Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 rhoi = rho.reshape(-1) + 0 * 1j
                 def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
                     rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
@@ -203,7 +216,7 @@ class Evolutions:
                     H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
                     rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
                     return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*Npoints],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
+                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
                 t, rho2d = rhoSol.t, rhoSol.y
                 for i in range(Npoints):          
                     rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
@@ -216,7 +229,9 @@ class Evolutions:
                 """
                 
                 rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)                       
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 rhoi = rho.reshape(-1) + 0 * 1j
                 def rhoDOT(t,rho,Hamiltonian,Sx,Sy,Sz,Sp,Sm):                    
                     rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
@@ -240,7 +255,7 @@ class Evolutions:
                     H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
                     rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
                     return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*Npoints],rhoi,method=ode_method,t_eval=t,args=(Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
+                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
                 t, rho2d = rhoSol.t, rhoSol.y
                 for i in range(Npoints):          
                     rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
@@ -252,7 +267,9 @@ class Evolutions:
                 Integrators not supported: 'Radau' and LSODA
                 """
                 rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)                       
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 rhoi = rho.reshape(-1) + 0 * 1j
                 def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
                     rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
@@ -265,7 +282,7 @@ class Evolutions:
                     H = H_shapePulse + Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag
                     rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
                     return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*Npoints],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
+                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
                 t, rho2d = rhoSol.t, rhoSol.y
                 for i in range(Npoints):          
                     rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
@@ -277,7 +294,9 @@ class Evolutions:
                 Integrators not supported: 'Radau' and LSODA
                 """
                 rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)                       
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 rhoi = rho.reshape(-1) + 0 * 1j
                 def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
                     rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
@@ -289,7 +308,7 @@ class Evolutions:
                     H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
                     rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
                     return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*Npoints],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
+                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
                 t, rho2d = rhoSol.t, rhoSol.y
                 for i in range(Npoints):          
                     rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
@@ -301,7 +320,9 @@ class Evolutions:
                 Integrators not supported: 'Radau' and LSODA
                 """
                 rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)                       
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 rhoi = rho.reshape(-1) + 0 * 1j
                 def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
                     rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
@@ -328,7 +349,7 @@ class Evolutions:
                     H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
                     rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
                     return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*Npoints],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
+                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
                 t, rho2d = rhoSol.t, rhoSol.y
                 for i in range(Npoints):          
                     rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
@@ -341,7 +362,9 @@ class Evolutions:
                 Remarks: 
                 """
                 rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)                       
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 rhoi = (rho.reshape(-1))
                 rho_RI = np.zeros((2*rhoi.shape[-1]))
                 rho_RI[0::2] = rhoi.real
@@ -357,7 +380,7 @@ class Evolutions:
                     rhodot[1::2] = (-1j * self.Commutator(H,rho) - Rso).reshape(-1).imag     
                     return rhodot 
                 
-                rhoSol = solve_ivp(rhoDOT,[0,dt*Npoints],rho_RI,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
+                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rho_RI,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
 
                 t, rho2d = rhoSol.t, rhoSol.y
                 rho2d_R =  rho2d[0::2]
@@ -393,7 +416,9 @@ class Evolutions:
 
             if Pmethod == "Unitary Propagator":    
                 rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 U = expm(-1j * Hamiltonian * dt)
                 rho_t[0] = rho
                 for i in range(Npoints-1):
@@ -402,7 +427,9 @@ class Evolutions:
 
             if Pmethod == "Unitary Propagator Sparse":  
                 rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 U = sparse.linalg.expm(-1j * Hamiltonian * dt) # LHamiltonian is sparse matrix
                 rho_t[0] = rho
                 for i in range(Npoints-1):
@@ -411,7 +438,9 @@ class Evolutions:
             
             if Pmethod == "Relaxation":    
                 rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 U = expm(-1j * Hamiltonian * dt - Relaxation * dt)
                 rho_t[0] = rho
                 for i in range(Npoints-1):
@@ -420,7 +449,9 @@ class Evolutions:
 
             if Pmethod == "Relaxation Sparse":   
                 rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 U = sparse.linalg.expm(-1j * Hamiltonian * dt - Relaxation * dt) # LHamiltonian and RsuperOP are sparse matrix 
                 rho_t[0] = rho          
                 for i in range(Npoints-1):
@@ -429,7 +460,9 @@ class Evolutions:
 
             if Pmethod == "Relaxation Lindblad":    
                 rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 U = expm(-1j * Hamiltonian * dt - Relaxation * dt)
                 rho_t[0] = rho
                 for i in range(Npoints-1):
@@ -438,7 +471,9 @@ class Evolutions:
 
             if Pmethod == "Relaxation Lindblad Sparse":    
                 rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 U = sparse.linalg.expm(-1j * Hamiltonian * dt - Relaxation * dt) # LHamiltonian and RsuperOP are sparse matrix
                 rho_t[0] = rho
                 for i in range(Npoints-1):
@@ -450,7 +485,9 @@ class Evolutions:
                 Reference: Equation 47, A liouville space formulation of wangsness-bloch-redfield theory of nuclear spin relaxation suitable for machine computation. I. fundamental aspects, Slawomir Szymanski et.al., https://doi.org/10.1016/0022-2364(86)90334-3
                 """
                 rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex) 
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 Lrho = np.reshape(rho,rho.shape[0]) + 0 * 1j            
                 Lrhoeq = np.reshape(rhoeq,rhoeq.shape[0])
                 
@@ -461,7 +498,7 @@ class Evolutions:
                     rhodot = -1j * np.matmul(LH,Lrho) - np.matmul(RsuperOP,Lrho-Lrhoeq)
                     rhodot = np.reshape(rhodot,rhodot.shape[0])
                     return rhodot
-                rhoSol = solve_ivp(rhoDOT,[0,dt*Npoints],Lrho,method=ode_method,t_eval=t,args=(Hamiltonian,Relaxation,Lrhoeq,Sx,Sy), atol = self.ODE_atol, rtol = self.ODE_rtol)   
+                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],Lrho,method=ode_method,t_eval=t,args=(Hamiltonian,Relaxation,Lrhoeq,Sx,Sy), atol = self.ODE_atol, rtol = self.ODE_rtol)   
                 t, rho_sol = rhoSol.t, rhoSol.y
                 print(rho_sol.shape)
                 for i in range(Npoints):
@@ -472,7 +509,9 @@ class Evolutions:
                 Reference: Equation 47, A liouville space formulation of wangsness-bloch-redfield theory of nuclear spin relaxation suitable for machine computation. I. fundamental aspects, Slawomir Szymanski et.al., https://doi.org/10.1016/0022-2364(86)90334-3
                 """
                 rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex) 
-                t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
                 Lrho = np.reshape(rho,rho.shape[0]) + 0 * 1j            
                 Lrhoeq = np.reshape(rhoeq,rhoeq.shape[0])
                 
@@ -483,7 +522,7 @@ class Evolutions:
                     rhodot = -1j * np.matmul(LH,Lrho) - np.matmul(RsuperOP,Lrho)
                     rhodot = np.reshape(rhodot,rhodot.shape[0])
                     return rhodot
-                rhoSol = solve_ivp(rhoDOT,[0,dt*Npoints],Lrho,method=ode_method,t_eval=t,args=(Hamiltonian,Relaxation,Sx,Sy), atol = self.ODE_atol, rtol = self.ODE_rtol)   
+                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],Lrho,method=ode_method,t_eval=t,args=(Hamiltonian,Relaxation,Sx,Sy), atol = self.ODE_atol, rtol = self.ODE_rtol)   
                 t, rho_sol = rhoSol.t, rhoSol.y
                 print(rho_sol.shape)
                 for i in range(Npoints):
@@ -494,12 +533,18 @@ class Evolutions:
     def Expectation(self,rho_t,detectionQ):
 
         dt = self.AcqDT
-        Npoints = int(self.AcqAQ/self.AcqDT)
+        #Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
+        Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
+
+        #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+        t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
         detection = detectionQ.data
 
         if self.PropagationSpace == "Schrodinger":
-            t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+            
             signal = np.zeros(Npoints,dtype=complex)
+
             for i in range(Npoints):
                 signal[i] = np.trace(np.matmul(rho_t[i].conj().T,np.matmul(detection,rho_t[i]))) 
             return t, signal                   
@@ -523,7 +568,7 @@ class Evolutions:
             """
 
             signal = np.zeros(Npoints,dtype=complex)
-            t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+
             for i in range(Npoints):
                 #signal[i] = np.trace(np.matmul(detection,rho_t[i]))
                 signal[i] = np.trace(np.matmul(rho_t[i],detection))
@@ -548,7 +593,7 @@ class Evolutions:
             """
             
             signal = np.zeros(Npoints,dtype=complex)
-            t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
+
             for i in range(Npoints):
                 signal[i] = np.trace(detection.T @ rho_t[i])
             return t, signal   
