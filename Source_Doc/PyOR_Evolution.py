@@ -149,7 +149,7 @@ class Evolutions:
                 t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
                 U = expm(-1j * Hamiltonian * dt)
                 
-                for i in range(Npoints):
+                for i in range(Npoints-1):
                     vec_ = np.matmul(U,vec_)
                     vec_t.append(vec_)
 
