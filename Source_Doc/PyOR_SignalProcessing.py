@@ -13,6 +13,9 @@ Description:
 
     Functions include Fourier transforms, filtering operations, phase corrections, 
     and signal normalization techniques tailored for NMR and EPR data.
+
+Acknowledgement:
+    John Price, Q Magnetics, suggestion on COSY 
 """
 
 
@@ -73,6 +76,16 @@ def FourierTransform(signal, fs, zeropoints):
     freq = np.linspace(-fs / 2, fs / 2, spectrum.shape[-1])
     return freq, spectrum
 
+def PhaseAdjust_FID(fid,PH0):
+    """
+    Docstring for PhaseAdjust_FID
+    
+    :param fid: Description
+    :param PH0: Description
+    """
+    spec = np.fft.fft(fid)    # phase shifted template FID is needed for PCOSY
+    spec = spec * np.exp(1j * np.deg2rad(PH0))
+    return np.fft.ifft(spec)
     
 def PhaseAdjust_PH0(spectrum, PH0):
     """
@@ -127,6 +140,95 @@ def PhaseAdjust_PH1(freq, spectrum, pivot, slope):
     PH1 = -1.0e-3 * slope * (freq_axis - pivot_index)  # in degrees
     phase_rad = np.deg2rad(PH1)  # convert to radians
     return spectrum * np.exp(1j * phase_rad)
+
+def FourierTransform2D_DirectDimension_COSY_STR(FID_array_C,
+                        FID_array_S,
+                        t1_array,
+                        t2_array,
+                        zero_fill,
+                        df_t1,
+                        df_t2,
+                        phase1_deg):
+
+    Npoints_t1, Npoints_t2 = FID_array_C.shape
+
+    dt1 = t1_array[1] - t1_array[0]
+    SW_t1 = 1.0/dt1
+    SW_t1_half = SW_t1/2.0
+
+    dt2 = t2_array[1] - t2_array[0]
+    SW_t2 = 1.0/dt2
+    SW_t2_half = SW_t2/2.0
+
+    t1_apod = 1.0/(np.pi*df_t1)
+    t2_apod = 1.0/(np.pi*df_t2)
+
+    decay_t1 = np.exp(-t1_array/t1_apod)[:,None]
+    decay_t2 = np.exp(-t2_array/t2_apod)[None,:]
+    window_2d = decay_t1*decay_t2
+
+    FID_array_C_apod = FID_array_C*window_2d
+    FID_array_S_apod = FID_array_S*window_2d
+
+    Spectrum_C_over_t2 = np.zeros((Npoints_t1,Npoints_t2*zero_fill),dtype=complex)
+    Spectrum_S_over_t2 = np.zeros_like(Spectrum_C_over_t2)
+
+    phase_factor1 = np.exp(1j*2.0*np.pi*phase1_deg/360.0)
+
+    for i in range(Npoints_t1):
+        freqs_t2, Spectrum_C_over_t2[i,:] = FourierTransform(FID_array_C_apod[i,:],SW_t2,zero_fill)
+        _,        Spectrum_S_over_t2[i,:] = FourierTransform(FID_array_S_apod[i,:],SW_t2,zero_fill)
+
+    Spectrum_C_over_t2_phased = phase_factor1*Spectrum_C_over_t2
+    Spectrum_S_over_t2_phased = phase_factor1*Spectrum_S_over_t2
+
+    Spectrum_over_t2 = Spectrum_C_over_t2_phased.real + 1j*Spectrum_S_over_t2_phased.real
+
+    return freqs_t2, Spectrum_over_t2
+
+def FourierTransform2D_IndirectDimension_COSY_STR(Spectrum_over_t2,
+                                                  t1_array,
+                                                  zero_fill,
+                                                  phase2_deg):
+    """
+    Perform Fourier transform along t1 (indirect dimension) on STR-processed COSY data.
+
+    Parameters
+    ----------
+    Spectrum_over_t2 : ndarray, shape (N_t1, N_f2)
+        Complex STR spectrum vs t2 for each t1 point (output from
+        FourierTransform2D_DirectDimension_COSY_STR).
+    t1_array : 1D array
+        Time axis for t1.
+    zero_fill : int
+        Zero-filling factor for t1.
+    phase2_deg : float
+        Zero-order phase in degrees applied to the final 2D spectrum
+        (typically 90° for best off-diagonals in COSY).
+
+    Returns
+    -------
+    freqs_t1 : 1D ndarray
+        Frequency axis along t1 (indirect dimension).
+    Spectrum_2D_phased : 2D ndarray, shape (N_t1*zero_fill, N_f2)
+        Fully phased 2D spectrum (F1 x F2).
+    Spectrum_2D : 2D ndarray, shape (N_t1*zero_fill, N_f2)
+        Unphased 2D spectrum before applying phase2_deg.
+    """
+    Npoints_t1, Nfreq_t2 = Spectrum_over_t2.shape
+
+    dt1 = t1_array[1] - t1_array[0]
+    SW_t1 = 1.0/dt1
+
+    Spectrum_2D = np.zeros((Npoints_t1*zero_fill, Nfreq_t2), dtype=complex)
+
+    for i in range(Nfreq_t2):
+        freqs_t1, Spectrum_2D[:,i] = FourierTransform(Spectrum_over_t2[:,i], SW_t1, zero_fill)
+
+    phase_factor2 = np.exp(1j*2.0*np.pi*phase2_deg/360.0)
+    Spectrum_2D_phased = phase_factor2*Spectrum_2D
+
+    return freqs_t1, Spectrum_2D_phased
 
 
 def FourierTransform2D(signal, fs1, fs2, zeropoints):

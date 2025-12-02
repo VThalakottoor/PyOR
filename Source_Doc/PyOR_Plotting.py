@@ -13,6 +13,9 @@ Description:
 
     The `Plotting` class includes functions for plotting time-domain signals, frequency spectra, 
     evolution of density matrices, and other data relevant to magnetic resonance experiments.
+
+Acknowledgement:
+    John Price, Q Magnetics, suggestion on 2D plotting 
 """
 
 
@@ -190,7 +193,7 @@ class Plotting:
         self.fig_counter += 1
         ax1 = fig.add_subplot(111)
 
-        ax1.plot(x, y, linewidth=3.0, color=col)
+        ax1.plot(x, y, linewidth=self.PlotLinwidth, color=col)
         ax1.set_xlabel(xlab, fontsize=self.PlotFontSize, color='black', fontweight='bold')
         ax1.set_ylabel(ylab, fontsize=self.PlotFontSize, color='black', fontweight='bold')
         ax1.tick_params(axis='both', labelsize=14)
@@ -236,7 +239,7 @@ class Plotting:
         spec = fig.add_gridspec(1, 1)
         ax1 = fig.add_subplot(spec[0, 0])
 
-        ax1.plot(x, y, linewidth=3.0, color=col)
+        ax1.plot(x, y, linewidth=self.PlotLinwidth, color=col)
         ax1.set_xlabel(xlab, fontsize=self.PlotFontSize, color='black', fontweight='bold')
         ax1.set_ylabel(ylab, fontsize=self.PlotFontSize, color='black', fontweight='bold')
         ax1.tick_params(axis='both', labelsize=14)
@@ -311,7 +314,7 @@ class Plotting:
         spec = fig.add_gridspec(1, 1)
 
         ax1 = fig.add_subplot(spec[0, 0])
-        ax1.plot(x, y1, linewidth=3.0, color=col1)
+        ax1.plot(x, y1, linewidth=self.PlotLinwidth, color=col1)
 
         ax1.set_xlabel(xlab, fontsize=self.PlotFontSize, color='black', fontweight='bold')
         ax1.set_ylabel(ylab1, fontsize=self.PlotFontSize, color='black', fontweight='bold')
@@ -370,7 +373,7 @@ class Plotting:
         spec = fig.add_gridspec(1, 1)
 
         ax1 = fig.add_subplot(spec[0, 0])
-        ax1.plot(x, y1, linewidth=3.0, color=col1)
+        ax1.plot(x, y1, linewidth=self.PlotLinwidth, color=col1)
 
         ax1.set_xlabel(xlab, fontsize=self.PlotFontSize, color='black', fontweight='bold')
         ax1.set_ylabel(ylab1, fontsize=self.PlotFontSize, color='black', fontweight='bold')
@@ -437,12 +440,17 @@ class Plotting:
         ax1 = fig.add_subplot(spec[0, 0])
         
         for i in range(len(x)):
-            ax1.plot(x[i], y[i], linewidth=3.0, color=col[i])
+            ax1.plot(x[i], y[i], linewidth=self.PlotLinwidth, color=col[i])
 
         ax1.set_xlabel(xlab, fontsize=self.PlotFontSize, color='black', fontweight='bold')
         ax1.set_ylabel(ylab, fontsize=self.PlotFontSize, color='black', fontweight='bold')
         ax1.tick_params(axis='both', labelsize=14)
         ax1.grid(True, linestyle='-.')
+
+        xli, xlf = self.PlotXlimt
+        yli, ylf = self.PlotYlimt
+        ax1.set_xlim(xli, xlf)
+        ax1.set_ylim(yli, ylf)
 
         if saveplt:
             plt.savefig(savename + ".pdf", format='pdf')
@@ -482,12 +490,17 @@ class Plotting:
         ax1 = fig.add_subplot(spec[0, 0])
         
         for i in range(len(x)):
-            ax1.plot(x[i], y[i], linewidth=3.0, color=col[i])
+            ax1.plot(x[i], y[i], linewidth=self.PlotLinwidth, color=col[i])
 
         ax1.set_xlabel(xlab, fontsize=self.PlotFontSize, color='black', fontweight='bold')
         ax1.set_ylabel(ylab, fontsize=self.PlotFontSize, color='black', fontweight='bold')
         ax1.tick_params(axis='both', labelsize=14)
         ax1.grid(True, linestyle='-.')
+
+        xli, xlf = self.PlotXlimt
+        yli, ylf = self.PlotYlimt
+        ax1.set_xlim(xli, xlf)
+        ax1.set_ylim(yli, ylf)
 
         vline_left = ax1.axvline(0, color='red', linestyle='--', visible=False)
         vline_right = ax1.axvline(0, color='red', linestyle='--', visible=False)
@@ -509,6 +522,42 @@ class Plotting:
         span_selector = SpanSelector(ax1, onselect, direction='horizontal', useblit=True)
 
         return fig, span_selector
+
+    def Plotting2DArray(self,
+                     t2_array,
+                     FID_array,
+                     xlabel,
+                     ylabel,
+                     color,
+                     saveplt=False,
+                     savename="plot",
+                     offset=2.0):
+        """
+        Plot an array of FIDs as an interferogram with vertical offsets.
+        """
+        rc('font', weight='bold')
+        fig = plt.figure(self.fig_counter, constrained_layout=True, figsize=self.PlotFigureSize)
+        self.fig_counter += 1
+        ax1 = fig.add_subplot(111)
+
+        n_traces = FID_array.shape[0]
+        for i in range(n_traces): 
+            ax1.plot(t2_array, FID_array[i].real + i*offset, linewidth=self.PlotLinwidth, color=color)
+
+        ax1.set_xlabel(xlabel, fontsize=self.PlotFontSize, color='black')
+        ax1.set_ylabel(ylabel, fontsize=self.PlotFontSize, color='black')
+        ax1.tick_params(axis='both', labelsize=12)
+        ax1.grid(True, linestyle='-.')
+
+        # ← Use class attributes for plot limits
+        ax1.set_xlim(*self.PlotXlimt)
+        ax1.set_ylim(*self.PlotYlimt)
+
+        if saveplt:
+            plt.savefig(savename + ".pdf", format='pdf')
+
+        plt.show()
+
 
     def Plotting3DWire(self, x, y, z, xlab, ylab, title, upL, loL, saveplt=False, savename= "plot"):
         """
@@ -595,6 +644,55 @@ class Plotting:
         ax1.set_ylabel(ylab)
         ax1.set_title(title)
         fig.colorbar(plotC)
+
+        if saveplt:
+            plt.savefig(savename + ".pdf", format='pdf')
+
+        plt.show()
+
+    def PlottingContour_COSY(self, x, y, z,
+                            xlab, ylab, title,
+                            nlevels=8, lift=2.5, scale=0.5,
+                            saveplt=False, savename="plot"):
+        """
+        COSY-style 2D contour plot with symmetry levels and diagonal line.
+        """
+
+        rc('font', weight='bold')
+        fig = plt.figure(self.fig_counter, constrained_layout=True,
+                        figsize=self.PlotFigureSize)
+        self.fig_counter += 1
+        ax1 = fig.add_subplot(111)
+
+        # ---- Diagonal (F1 vs F2 identity line) ----
+        Xmin, Xmax = self.PlotXlimt
+        Ymin, Ymax = self.PlotYlimt
+        ax1.plot([Xmin, Xmax], [Ymin, Ymax],color='black', linestyle='-', linewidth=0.5)
+
+
+        # ---- Level calculation ----
+        spec_max = np.abs(z).max()
+
+        plevels = (np.arange(1, nlevels+1) + lift) / nlevels
+        levels = np.concatenate([np.flip(-plevels), plevels]) * spec_max * scale
+
+        # ---- Contour plot ----
+        contour = ax1.contour(z, levels=levels,
+                            extent=[x.min(), x.max(), y.min(), y.max()],
+                            cmap=cm.seismic)
+
+        # ---- Labels / formatting ----
+        ax1.set_xlabel(xlab, fontsize=self.PlotFontSize, color='black')
+        ax1.set_ylabel(ylab, fontsize=self.PlotFontSize, color='black')
+        ax1.tick_params(axis='both', labelsize=12)
+        ax1.grid(True, linestyle='-.')
+
+        # ---- Apply X/Y limits from class attributes ----
+        ax1.set_xlim(*self.PlotXlimt)
+        ax1.set_ylim(*self.PlotYlimt)
+
+        fig.suptitle(title, fontsize=self.PlotFontSize)
+        fig.colorbar(contour)
 
         if saveplt:
             plt.savefig(savename + ".pdf", format='pdf')

@@ -51,7 +51,7 @@ class Evolutions:
         self.AcqAQ = self.class_QS.AcqAQ
         self.AcqDT = self.class_QS.AcqDT
         #self.Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
-        self.Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
+        #self.Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
         self.ShapeParOmega = self.class_QS.ShapeParOmega
         self.ShapeParFreq = self.class_QS.ShapeParFreq
         self.ShapeParPhase = self.class_QS.ShapeParPhase
@@ -73,7 +73,7 @@ class Evolutions:
         self.AcqAQ = self.class_QS.AcqAQ
         self.AcqDT = self.class_QS.AcqDT
         #self.Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
-        self.Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
+        #self.Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
         self.ShapeParOmega = self.class_QS.ShapeParOmega
         self.ShapeParFreq = self.class_QS.ShapeParFreq
         self.ShapeParPhase = self.class_QS.ShapeParPhase
@@ -109,6 +109,18 @@ class Evolutions:
             H_shape[i] = self.TimeDependent_Hamiltonian(t[i]).real
         return H_shape   
 
+    def Compute_Npoints(self,AQ,DT):
+        """
+        Docstring for Compute_Npoints
+        """
+        return round(AQ/DT)+1
+
+    def Compute_Tpoints(self,NPOINTS,DT):
+        """
+        Docstring for Compute_Tpoints
+        """
+        return np.linspace(0,DT*(NPOINTS-1),NPOINTS,endpoint=True)
+
     def Evolution(self,rhoQ,rhoeqQ,HamiltonianQ,RelaxationQ=None,HamiltonianArray=None):
 
         Pmethod = self.PropagationMethod
@@ -116,6 +128,7 @@ class Evolutions:
         dt = self.AcqDT
         #Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
         Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
+        #self.Npoints = round(self.AcqAQ/self.AcqDT)+1
 
         Sx = self.class_QS.Sx_
         Sy = self.class_QS.Sy_ 
