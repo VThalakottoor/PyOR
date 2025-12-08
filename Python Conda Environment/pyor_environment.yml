@@ -136,7 +136,6 @@ dependencies:
   - tornado=6.5.1=py311h5eee18b_0
   - traitlets=5.14.3=py311h06a4308_0
   - typing_extensions=4.15.0=py311h06a4308_0
-  - tzdata=2025b=h04d1e81_0
   - wayland=1.24.0=hdac8c69_0
   - wcwidth=0.2.13=py311h06a4308_0
   - wheel=0.45.1=py311h06a4308_0
@@ -164,16 +163,64 @@ dependencies:
   - zlib=1.3.1=hb25bd0a_0
   - zstd=1.5.7=h11fc155_0
   - pip:
+      - anyio==4.11.0
+      - appdirs==1.4.4
+      - argon2-cffi==25.1.0
+      - argon2-cffi-bindings==25.1.0
+      - arrow==1.4.0
+      - async-lru==2.0.5
+      - attrs==25.4.0
+      - babel==2.17.0
+      - beautifulsoup4==4.14.2
+      - bleach==6.3.0
+      - certifi==2025.11.12
+      - cffi==2.0.0
+      - charset-normalizer==3.4.4
+      - defusedxml==0.7.1
       - diffrax==0.7.0
       - equinox==0.13.2
+      - fastjsonschema==2.21.2
+      - fqdn==1.5.1
+      - h11==0.16.0
+      - httpcore==1.0.9
+      - httpx==0.28.1
+      - idna==3.11
+      - importlib-metadata==8.7.0
       - ipympl==0.9.8
       - ipywidgets==8.1.8
+      - isoduration==20.11.0
       - jax==0.8.1
       - jaxlib==0.8.1
       - jaxtyping==0.3.3
+      - jinja2==3.1.6
+      - joblib==1.5.2
+      - json5==0.12.1
+      - jsonpointer==3.0.0
+      - jsonschema==4.25.1
+      - jsonschema-specifications==2025.9.1
+      - jupyter==1.1.1
+      - jupyter-console==6.6.3
+      - jupyter-events==0.12.0
+      - jupyter-lsp==2.3.0
+      - jupyter-server==2.17.0
+      - jupyter-server-terminals==0.5.3
+      - jupyterlab==4.5.0
+      - jupyterlab-pygments==0.3.0
+      - jupyterlab-server==2.28.0
       - jupyterlab-widgets==3.0.16
+      - lark==1.3.1
       - lineax==0.0.8
+      - llvmlite==0.45.1
+      - markupsafe==3.0.3
+      - mistune==3.1.4
       - ml-dtypes==0.5.4
+      - mpmath==1.3.0
+      - nbclient==0.10.2
+      - nbconvert==7.16.6
+      - nbformat==5.10.4
+      - notebook==7.5.0
+      - notebook-shim==0.2.4
+      - numba==0.62.1
       - nvidia-cublas-cu12==12.9.1.4
       - nvidia-cuda-cupti-cu12==12.9.79
       - nvidia-cuda-nvcc-cu12==12.9.86
@@ -188,6 +235,35 @@ dependencies:
       - nvidia-nvshmem-cu12==3.4.5
       - opt-einsum==3.4.0
       - optimistix==0.0.11
+      - overrides==7.7.0
+      - pandocfilters==1.5.1
+      - prometheus-client==0.23.1
+      - pycparser==2.23
+      - pyee==11.1.1
+      - pyppeteer==2.0.0
+      - python-json-logger==4.0.0
+      - pyyaml==6.0.3
+      - referencing==0.37.0
+      - requests==2.32.5
+      - rfc3339-validator==0.1.4
+      - rfc3986-validator==0.1.1
+      - rfc3987-syntax==1.1.0
+      - rpds-py==0.29.0
+      - send2trash==1.8.3
+      - sniffio==1.3.1
+      - soupsieve==2.8
+      - sympy==1.14.0
+      - terminado==0.18.1
+      - tinycss2==1.4.0
+      - tqdm==4.67.1
+      - tzdata==2025.2
+      - uri-template==1.3.0
+      - urllib3==1.26.20
       - wadler-lindig==0.1.7
+      - webcolors==25.10.0
+      - webencodings==0.5.1
+      - websocket-client==1.9.0
+      - websockets==10.4
       - widgetsnbextension==4.0.15
+      - zipp==3.23.0
 prefix: /home/vineeth/.conda/envs/pyor

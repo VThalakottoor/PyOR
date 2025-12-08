@@ -146,8 +146,8 @@ def FourierTransform2D_DirectDimension_COSY_STR(FID_array_C,
                         t1_array,
                         t2_array,
                         zero_fill,
-                        df_t1,
-                        df_t2,
+                        lb_t1,
+                        lb_t2,
                         phase1_deg):
 
     Npoints_t1, Npoints_t2 = FID_array_C.shape
@@ -160,8 +160,8 @@ def FourierTransform2D_DirectDimension_COSY_STR(FID_array_C,
     SW_t2 = 1.0/dt2
     SW_t2_half = SW_t2/2.0
 
-    t1_apod = 1.0/(np.pi*df_t1)
-    t2_apod = 1.0/(np.pi*df_t2)
+    t1_apod = 1.0/(np.pi*lb_t1)
+    t2_apod = 1.0/(np.pi*lb_t2)
 
     decay_t1 = np.exp(-t1_array/t1_apod)[:,None]
     decay_t2 = np.exp(-t2_array/t2_apod)[None,:]
@@ -190,8 +190,8 @@ def FourierTransform2D_DirectDimension_COSY_TPPI(FID_array,
                                        t1_array,
                                        t2_array,
                                        zero_fill,
-                                       df_t1,
-                                       df_t2,
+                                       lb_t1,
+                                       lb_t2,
                                        phase1_deg):
     """
     Fourier transform along t2 for a 2D FID array (COSY, etc.).
@@ -210,7 +210,7 @@ def FourierTransform2D_DirectDimension_COSY_TPPI(FID_array,
         Time axis for t2.
     zero_fill : int
         Zero-filling factor for t2.
-    df_t1, df_t2 : float
+    lb_t1, lb_t2 : float
         Line broadening (Hz) for t1 and t2 dimensions.
     phase1_deg : float
         Zero-order phase in degrees applied uniformly in the t2 spectrum.
@@ -231,8 +231,8 @@ def FourierTransform2D_DirectDimension_COSY_TPPI(FID_array,
     SW_t2 = 1.0/dt2
 
     # --- apodization times from line broadening ---
-    t1_apod = 1.0/(np.pi*df_t1)
-    t2_apod = 1.0/(np.pi*df_t2)
+    t1_apod = 1.0/(np.pi*lb_t1)
+    t2_apod = 1.0/(np.pi*lb_t2)
 
     # 2D exponential window
     decay_t1 = np.exp(-t1_array/t1_apod)[:,None]   # (N_t1, 1)
