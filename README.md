@@ -2,7 +2,7 @@
 
 ## Dedicated to
 1. **Jean Jeener - My hero in NMR, whom I have never met.**
-2. **Gauri - My inner chaos, the birthplace of confusion, envy, and jealousy, the soul and catalyst of PyOR**
+2. **Gauri - My inner chaos, the birthplace of confusion, envy, and jealousy, the soul and catalyst of PyOR.**
 
 ## Motto
 **"Everybody can simulate Magnetic Resonance"**
