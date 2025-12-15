@@ -3,7 +3,7 @@
 
 <img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_4.png" alt="PyOR logo" width="300">
 
-## Dedicated to
+## For
 1. **Jean Jeener - My hero in NMR, whom I have never met.**
 2. **Gauri - My inner chaos, the birthplace of confusion, envy, and jealousy, the soul and catalyst of PyOR.**
 
