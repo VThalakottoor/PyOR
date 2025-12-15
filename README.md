@@ -1,4 +1,7 @@
 # PyOR (Python on Resonance)
+**Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)**
+
+<img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_4.png" alt="PyOR logo" width="300">
 
 ## Dedicated to
 1. **Jean Jeener - My hero in NMR, whom I have never met.**
@@ -6,10 +9,6 @@
 
 ## Motto
 **"Everybody can simulate Magnetic Resonance"**
-
-Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
-
-<img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_4.png" alt="PyOR logo" width="300">
 
 ## Documentation
 https://vthalakottoor.github.io/PyOR/
