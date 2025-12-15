@@ -1,8 +1,6 @@
 # PyOR (Python on Resonance)
 **Dedicated to Jean Jeener (My hero in NMR, whom I have never met) and Gauri (My inner chaos, the birthplace of confusion, envy, and jealousy - the soul and catalyst of PyOR)**
 
-**_"Lost in the solitude of his immense power, he began to lose direction. He felt scattered about, multiplied, more solitary than ever." - Gabriel Garcia Marquez, One Hundred Years of Solitude._**
-
 **Motto: "Everybody can simulate Magnetic Resonance"**
 
 Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)
@@ -47,3 +45,5 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 1. Agence Nationale de la Recherche (ANR) for funding (project ANR-22-CE29-0006 DynNonlinPol)
 
 2. Dr. Daniel Abergel (ENS)
+
+**_"She’s asking the same familiar questions, waiting in silence for answers. And in those silences, her loneliness feels too sharp, like it might slice her in half. It’s not loneliness for David or even Anthony. She’s not lonely for her old home or friends. She’s lonely for answers. Answers are the company she seeks." - Lisa Genova, Love Anthony._**
