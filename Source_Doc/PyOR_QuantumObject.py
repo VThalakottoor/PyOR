@@ -627,7 +627,7 @@ class QunObj():
         if self.type == "operator":
             return np.trace(self.data @ operator.data)
         elif self.type == "ket":
-            return np.trace(operator.data @ self.data)
+            return np.trace(operator.data.T @ self.data)
         else:
             raise ValueError("Unsupported QunObj type for expectation value.")
 
