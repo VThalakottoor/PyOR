@@ -11,7 +11,7 @@
 **"Everybody can simulate Magnetic Resonance"**
 
 ## Documentation
-https://vthalakottoor.github.io/PyOR/
+https://vthalakottoor.github.io/PyOR/ (A work in progress)
 
 ## How to cite and download PyOR
 Go to https://doi.org/10.5281/zenodo.15241169 and download any version, which will be stable. Do not download from GitHub, since I will be updating the examples and code.

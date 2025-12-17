@@ -474,7 +474,16 @@ class QuantumSystem:
         self.Fspintemp = [self.F_spintemp[key] for key in self.SpinList]
         self.RDxi = [self.RD_xi[key] for key in self.SpinList]
         self.RDphase = [self.RD_phase[key] for key in self.SpinList]
-
+        print("\nSetting derived parameters from dictionaries")
+        print("-------------------------------------------")
+        print("OmegaRF   <- OMEGA_RF  :", self.OmegaRF,   "from", self.OMEGA_RF)
+        print("Offset    <- OFFSET    :", self.Offset,    "from", self.OFFSET)
+        print("Ispintemp <- I_spintemp:", self.Ispintemp, "from", self.I_spintemp)
+        print("Fspintemp <- F_spintemp:", self.Fspintemp, "from", self.F_spintemp)
+        print("RDxi      <- RD_xi     :", self.RDxi,      "from", self.RD_xi)
+        print("RDphase   <- RD_phase  :", self.RDphase,   "from", self.RD_phase)
+        print("-------------------------------------------")
+                
         # Map Dipole_Pairs from label -> index
         self.DipolePairs = []
         for spin_pair in self.Dipole_Pairs:
