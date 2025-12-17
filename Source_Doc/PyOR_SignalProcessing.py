@@ -141,7 +141,7 @@ def PhaseAdjust_PH1(freq, spectrum, pivot, slope):
     phase_rad = np.deg2rad(PH1)  # convert to radians
     return spectrum * np.exp(1j * phase_rad)
 
-def FourierTransform2D_DirectDimension_COSY_STR(FID_array_C,
+def FourierTransform2D_DirectDimension_COSY_SHR(FID_array_C,
                         FID_array_S,
                         t1_array,
                         t2_array,
@@ -254,7 +254,7 @@ def FourierTransform2D_DirectDimension_COSY_TPPI(FID_array,
 
     return freqs_t2, Spectrum_over_t2_phased
 
-def FourierTransform2D_IndirectDimension_COSY_STR(Spectrum_over_t2,
+def FourierTransform2D_IndirectDimension_COSY_SHR(Spectrum_over_t2,
                                                   t1_array,
                                                   zero_fill,
                                                   phase2_deg):
