@@ -207,12 +207,7 @@ class QuantumSystem:
             self.R_Matrix = np.zeros((self.Ldim, self.Ldim), dtype=np.double)
         self.RelaxParDipole_tau = 0.0
         self.RelaxParDipole_bIS = []
-        self.Lindblad_Temp = 300
-        self.InverseSpinTemp = False
-        self.Maser_TempGradient = False
-        self.Lindblad_TempGradient = 0.0
-        self.Lindblad_InitialInverseTemp = 0.0
-        self.Lindblad_FinalInverseTemp = 0.0
+        self.Lindblad_Temp = None
 
         # ----------------- ODE Solver -----------------
         self.PropagationMethod = "ODE Solver"
@@ -295,14 +290,6 @@ class QuantumSystem:
         print("Dipolar relaxation tau_c: RelaxParDipole_tau =", self.RelaxParDipole_tau)
         print("Dipolar relaxation couplings: RelaxParDipole_bIS =", self.RelaxParDipole_bIS)
         print("Lindblad master equation temperature: Lindblad_Temp =", self.Lindblad_Temp)
-
-        print("\nLindblad special cases")
-        print("----------------------")
-        print("Inverse spin temperature: InverseSpinTemp =", self.InverseSpinTemp)
-        print("Maser temperature gradient active: Maser_TempGradient =", self.Maser_TempGradient)
-        print("Temperature gradient dT/dt: Lindblad_TempGradient =", self.Lindblad_TempGradient)
-        print("Initial inverse temp: Lindblad_InitialInverseTemp =", self.Lindblad_InitialInverseTemp)
-        print("Final inverse temp: Lindblad_FinalInverseTemp =", self.Lindblad_FinalInverseTemp)
 
         print("\nPropagation")
         print("-----------")

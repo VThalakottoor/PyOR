@@ -60,9 +60,6 @@ class Evolutions:
         self.ODE_atol = self.class_QS.ODE_atol
         self.ODE_rtol = self.class_QS.ODE_rtol
         self.ShapeFunc = self.class_QS.ShapeFunc
-        self.Maser_TempGradient = self.class_QS.Maser_TempGradient
-        self.Lindblad_FinalInverseTemp = self.class_QS.Lindblad_FinalInverseTemp
-        self.Lindblad_InitialInverseTemp = self.class_QS.Lindblad_InitialInverseTemp
         self.Lindblad_Temp = self.class_QS.Lindblad_Temp
 
 
@@ -82,9 +79,6 @@ class Evolutions:
         self.ODE_atol = self.class_QS.ODE_atol
         self.ODE_rtol = self.class_QS.ODE_rtol
         self.ShapeFunc = self.class_QS.ShapeFunc
-        self.Maser_TempGradient = self.class_QS.Maser_TempGradient
-        self.Lindblad_InitialInverseTemp = self.class_QS.Lindblad_InitialInverseTemp
-        self.Lindblad_FinalInverseTemp = self.class_QS.Lindblad_FinalInverseTemp
         self.Lindblad_Temp = self.class_QS.Lindblad_Temp
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -248,20 +242,7 @@ class Evolutions:
                 rhoi = rho.reshape(-1) + 0 * 1j
                 def rhoDOT(t,rho,Hamiltonian,Sx,Sy,Sz,Sp,Sm):                    
                     rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
-                    rhodot = np.zeros((rhoi.shape[-1]))
-                    if self.Maser_TempGradient:
-                        TempTemp = round(self.class_Relax.Lindblad_TemperatureGradient(t),6)
-                        if self.Lindblad_InitialInverseTemp < 0:
-                            if TempTemp <= self.Lindblad_FinalInverseTemp:
-                                self.class_QS.Lindblad_Temp = TempTemp
-                            else:
-                                self.class_QS.Lindblad_Temp = self.Lindblad_FinalInverseTemp
-                        else:
-                            if TempTemp >= self.Lindblad_FinalInverseTemp:
-                                self.class_QS.Lindblad_Temp = TempTemp
-                            else:
-                                self.class_QS.Lindblad_Temp = self.Lindblad_FinalInverseTemp
-                        print(f"\rt = {t:0.3f}  Temp = {TempTemp:0.3f}  Lindblad_Temp = {self.class_QS.Lindblad_Temp:0.3f}", end='')                        
+                    rhodot = np.zeros((rhoi.shape[-1]))                       
                     Rso_temp = self.class_Relax.Relaxation(rho_temp)
                     Brd = self.class_NonL.Radiation_Damping(rho_temp)
                     Bdipole = self.class_NonL.DipoleShift(rho_temp)
@@ -340,20 +321,6 @@ class Evolutions:
                 def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
                     rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
                     rhodot = np.zeros((rhoi.shape[-1]))
-
-                    if self.Maser_TempGradient:
-                        TempTemp = round(self.class_Relax.Lindblad_TemperatureGradient(t),6)
-                        if self.Lindblad_InitialInverseTemp < 0:
-                            if TempTemp <= self.Lindblad_FinalInverseTemp:
-                                self.class_QS.Lindblad_Temp = TempTemp
-                            else:
-                                self.class_QS.Lindblad_Temp = self.Lindblad_FinalInverseTemp
-                        else:
-                            if TempTemp >= self.Lindblad_FinalInverseTemp:
-                                self.class_QS.Lindblad_Temp = TempTemp
-                            else:
-                                self.class_QS.Lindblad_Temp = self.Lindblad_FinalInverseTemp
-                        print(f"\rt = {t:0.3f}  Temp = {TempTemp:0.3f}  Lindblad_Temp = {self.class_QS.Lindblad_Temp:0.3f}", end='')  
 
                     Rprocess2 = "Phenomenological Matrix"
                     Rso_temp = self.class_Relax.Relaxation(rho_temp) + self.class_Relax.Relaxation(rho_temp,Rprocess2)

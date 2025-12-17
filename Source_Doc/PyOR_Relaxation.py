@@ -108,22 +108,6 @@ class RelaxationProcess:
         """
         return 2 * tau / (1 + (W * tau)**2)
 
-    def Lindblad_TemperatureGradient(self, t):
-        """
-        Calculate the inverse temperature at time t for a linear temperature gradient.
-
-        Parameters:
-        -----------
-        t : float
-            Time (s)
-
-        Returns:
-        --------
-        float
-            Instantaneous inverse temperature
-        """
-        return self.class_QS.Lindblad_TempGradient * t + self.class_QS.Lindblad_InitialInverseTemp
-
     def SpectralDensity_Lb(self, W, tau):
         """
         Spectral density with thermal correction for Lindblad master equation.
@@ -143,11 +127,8 @@ class RelaxationProcess:
         float
             Thermally corrected spectral density J(ω)
         """
-        if self.class_QS.InverseSpinTemp:
-            # Inverse spin temperature formulation
-            return (2 * tau / (1 + (W * tau)**2)) * np.exp(-0.5 * W * self.class_QS.Lindblad_Temp * self.hbar / self.kb)
-        else:
-            return (2 * tau / (1 + (W * tau)**2)) * np.exp(-0.5 * W * self.hbar / (self.class_QS.Lindblad_Temp * self.kb))
+        return (2 * tau / (1 + (W * tau)**2)) * np.exp(-0.5 * W * self.hbar / (self.class_QS.Lindblad_Temp * self.kb))
+            
 
     def Spherical_Tensor(self, spin, Rank, m, Sx, Sy, Sz, Sp, Sm):
         """
