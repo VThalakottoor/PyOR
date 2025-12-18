@@ -171,93 +171,57 @@ class RelaxationProcess:
             if m == -1:
                 return (1 / np.sqrt(2)) * Sm[spin[0]]
 
-    def Spherical_Tensor_Ernst(self, spin, Rank, m, Sx, Sy, Sz, Sp, Sm):
+    def Spherical_Tensor_P(self, spin, Rank, m, Sx, Sy, Sz, Sp, Sm):
         """
-        Ernst-form spherical tensor operators for dipolar relaxation.
-
+        Spherical tensor components (Rank 1 and 2).
+        
         Reference:
-        Ernst et al., "Principles of Nuclear Magnetic Resonance in One and Two Dimensions", p. 56
+        S.J. Elliott, J. Chem. Phys. 150, 064315 (2019)
 
         Parameters:
         -----------
-        spin : list[int]
-            Spin indices [i, j]
+        spin : list of int
+            Spin indices (e.g. [0,1])
         Rank : int
-            Tensor rank (only Rank=2 supported here)
+            Tensor rank (1 or 2)
         m : int
-            Component index: -2, -1, 0, 1, 2
+            Tensor component (-Rank to +Rank)
 
         Returns:
         --------
         np.ndarray
-            Spherical tensor operator T(Rank, m)
+            Tensor operator T(Rank, m)
         """
         if Rank == 2:
-            if m == 0:
-                return np.sqrt(12/15) * (
-                    Sz[spin[0]] @ Sz[spin[1]] 
-                    - 0.25 * Sp[spin[0]] @ Sm[spin[1]] 
-                    - 0.25 * Sm[spin[0]] @ Sp[spin[1]]
-                )
-            if m == 1:
-                return np.sqrt(2/15) * (-1.5) * (
-                    Sz[spin[0]] @ Sp[spin[1]] + Sp[spin[0]] @ Sz[spin[1]]
-                )
-            if m == -1:
-                return np.sqrt(2/15) * (-1.5) * (
-                    Sz[spin[0]] @ Sm[spin[1]] + Sm[spin[0]] @ Sz[spin[1]]
-                )
-            if m == 2:
-                return np.sqrt(8/15) * (-0.75) * Sp[spin[0]] @ Sp[spin[1]]
-            if m == -2:
-                return np.sqrt(8/15) * (-0.75) * Sm[spin[0]] @ Sm[spin[1]]
-
-    def Spherical_Tensor_Ernst_P(self, spin, Rank, m, Sx, Sy, Sz, Sp, Sm):
-        """
-        Ernst spherical tensors with frequency label.
-
-        Used in relaxation models where each tensor component contributes at a specific Larmor frequency.
-
-        Returns both:
-            - Tensor operator T(Rank, m)
-            - Associated frequency (for spectral density calculation)
-
-        Parameters:
-        -----------
-        spin : list[int]
-            Spin indices
-        Rank : int
-            Tensor rank (2)
-        m : int
-            Component index or identifier (e.g. 10, 20, -11, etc.)
-
-        Returns:
-        --------
-        Tuple[np.ndarray, float]
-            Spherical tensor and its corresponding frequency in Hz
-        """
-        if Rank == 2:
-            if m == 10 or m == -10:
-                return np.sqrt(12/15) * (Sz[spin[0]] @ Sz[spin[1]]), 0.0
-            if m == 20 or m == -20:
-                return np.sqrt(12/15) * (-0.25 * Sp[spin[0]] @ Sm[spin[1]]), self.LarmorF[spin[0]] - self.LarmorF[spin[1]]
-            if m == 30 or m == -30:
-                return np.sqrt(12/15) * (-0.25 * Sm[spin[0]] @ Sp[spin[1]]), self.LarmorF[spin[1]] - self.LarmorF[spin[0]]
-
+            if m == 10 or m==-10:
+                return (4 * Sz[spin[0]] @ Sz[spin[1]]) / (2 * np.sqrt(6)), 0.0
+            if m == 20 or m==-20:
+                return (-1 * Sp[spin[0]] @ Sm[spin[1]]) / (2 * np.sqrt(6)), self.LarmorF[spin[0]] - self.LarmorF[spin[1]]
+            if m == 30 or m==-30:
+                return (-1 * Sm[spin[0]] @ Sp[spin[1]]) / (2 * np.sqrt(6)), self.LarmorF[spin[1]] - self.LarmorF[spin[0]]
+                        
             if m == 11:
-                return np.sqrt(2/15) * (-1.5) * Sz[spin[0]] @ Sp[spin[1]], self.LarmorF[spin[1]]
+                return -0.5 * (Sz[spin[0]] @ Sp[spin[1]]), self.LarmorF[spin[1]]
             if m == 12:
-                return np.sqrt(2/15) * (-1.5) * Sp[spin[0]] @ Sz[spin[1]], self.LarmorF[spin[0]]
-
+                return -0.5 * (Sp[spin[0]] @ Sz[spin[1]]), self.LarmorF[spin[0]]
+                        
             if m == -11:
-                return np.sqrt(2/15) * (-1.5) * Sz[spin[0]] @ Sm[spin[1]], -self.LarmorF[spin[1]]
+                return 0.5 * (Sz[spin[0]] @ Sm[spin[1]]), -self.LarmorF[spin[1]]
             if m == -12:
-                return np.sqrt(2/15) * (-1.5) * Sm[spin[0]] @ Sz[spin[1]], -self.LarmorF[spin[0]]
+                return 0.5 * (Sm[spin[0]] @ Sz[spin[1]]), -self.LarmorF[spin[0]]            
 
             if m == 2:
-                return np.sqrt(8/15) * (-0.75) * Sp[spin[0]] @ Sp[spin[1]], self.LarmorF[spin[0]] + self.LarmorF[spin[1]]
+                return 0.5 * (Sp[spin[0]] @ Sp[spin[1]]), self.LarmorF[spin[0]] + self.LarmorF[spin[1]]
             if m == -2:
-                return np.sqrt(8/15) * (-0.75) * Sm[spin[0]] @ Sm[spin[1]], -self.LarmorF[spin[0]] - self.LarmorF[spin[1]]
+                return 0.5 * (Sm[spin[0]] @ Sm[spin[1]]), -self.LarmorF[spin[0]] - self.LarmorF[spin[1]]
+
+        if Rank == 1:
+            if m == 0:
+                return Sz[spin[0]], 0.0
+            if m == 1:
+                return (-1 / np.sqrt(2)) * Sp[spin[0]], self.LarmorF[spin[0]]
+            if m == -1:
+                return (1 / np.sqrt(2)) * Sm[spin[0]], -self.LarmorF[spin[0]]
 
     def EigFreq_ProductOperator_L(self, Hz_L, opBasis_L):
         """
@@ -530,73 +494,73 @@ class RelaxationProcess:
                 dim = self.Vdim
                 Rso = np.zeros((dim,dim))
                 for i in range(self.Nspins):
-                    Rso = Rso + kz * self.class_COMM.DoubleCommutator(Sz[i],Sz[i],rho) + kxy * self.class_COMM.DoubleCommutator(Sp[i],Sm[i],rho) + kxy * self.class_COMM.DoubleCommutator(Sm[i],Sp[i],rho)
-                    
-            if Rprocess == "Auto-correlated Dipolar Heteronuclear Ernst":
+                    Rso = Rso + kz * self.class_COMM.DoubleCommutator(Sz[i],Sz[i],rho) + kxy * self.class_COMM.DoubleCommutator(Sp[i],Sm[i],rho) + kxy * self.class_COMM.DoubleCommutator(Sm[i],Sp[i],rho)                    
+
+            if Rprocess == "Auto-correlated Dipolar Heteronuclear":
                 """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Principles of Nuclear Magnetic Resonance in One and Two Dimensions, Richard R Ernst, et.al.
-                page: 56             
+                Heteronuclear auto-correlated dipolar relaxation (Redfield, Hilbert space)
+
+                Uses split tensors from Spherical_Tensor_P and ONLY auto-correlated partner pairs.
+                Includes adjoint phase consistent with T_{2m}† = (-1)^m T_{2,-m}.
                 """
-                Rso = np.zeros((self.Vdim,self.Vdim),dtype=np.cdouble)
+                Rso = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+
                 Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
-                DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS) 
+                DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [10,10,10,20,20,20,30,30,30,11,11,12,12,-11,-11,-12,-12,2,-2]
-                    n = [10,20,30,10,20,30,10,20,30,-11,-12,-11,-12,11,12,11,12,-2,2]
-                    for i,l in zip(m,n):
-                        StensorRank2, Eigen_Freq = self.Spherical_Tensor_Ernst_P([j,k],2,i,Sx,Sy,Sz,Sp,Sm)
-                        StensorRank2_Adjoint, Eigen_Freq_Adjoint = self.Spherical_Tensor_Ernst_P([j,k],2,l,Sx,Sy,Sz,Sp,Sm)
-                        Rso = Rso + DDC**2 * self.SpectralDensity(Eigen_Freq,self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutator(StensorRank2,StensorRank2_Adjoint,rho)
-                        
-                Rso = Rso   
+                # ONLY auto-correlated partner pairs (no cross terms)
+                pairs = [
+                    (10, 10),              # m=0 (SzSz)
+                    (20, 30), (30, 20),     # m=0 (SpSm <-> SmSp)
+                    (11, -11), (-11, 11),   # m=±1 (SzSp <-> SzSm) on spin 2
+                    (12, -12), (-12, 12),   # m=±1 (SpSz <-> SmSz) on spin 1
+                    (2, -2), (-2, 2),       # m=±2 (SpSp <-> SmSm)
+                ]
 
-            if Rprocess == "Auto-correlated Dipolar Homonuclear Ernst":
-                """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Principles of Nuclear Magnetic Resonance in One and Two Dimensions, Richard R Ernst, et.al.
-                page: 56             
-                """
-                Rso = np.zeros((self.Vdim,self.Vdim),dtype=np.cdouble)
-                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
-                DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS) 
+                # Phase for adjoint relation:
+                # |m|=1 parts -> -1 ; m=0 and |m|=2 -> +1
+                def phase(label):
+                    return -1.0 if label in (11, -11, 12, -12) else 1.0
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [-2,-1,0,1,2]
-                    for i in m:
-                        Rso = Rso + DDC**2 * self.SpectralDensity(i * self.LarmorF[0],self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutator(self.Spherical_Tensor_Ernst([j,k],2,i,Sx,Sy,Sz,Sp,Sm),self.Spherical_Tensor_Ernst([j,k],2,-i,Sx,Sy,Sz,Sp,Sm),rho)   
-                        
-                Rso = Rso       
+                for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                    for a_lbl, b_lbl in pairs:
+                        A, wA = self.Spherical_Tensor_P([j, k], 2, a_lbl, Sx, Sy, Sz, Sp, Sm)
+                        B, wB = self.Spherical_Tensor_P([j, k], 2, b_lbl, Sx, Sy, Sz, Sp, Sm)
+
+                        Jw = self.SpectralDensity(wA, self.RelaxParDipole_tau)
+
+                        Rso += (DDC**2) * phase(a_lbl) * Jw * self.class_COMM.DoubleCommutator(A, B, rho)
+
+                Rso = Rso * (6.0/5.0) * 0.5
 
             if Rprocess == "Auto-correlated Dipolar Homonuclear":
                 """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Nuclear singlet relaxation by scalar relaxation of the second kind in the slow-fluctuation regime, J. Chem. Phys. 150, 064315 (2019), S.J. Elliot
+                Homonuclear auto-correlated dipolar relaxation (Redfield, Hilbert space)
+
+                Conventions:
+                - self.LarmorF[...] is angular frequency ω (rad/s)
+                - pairing uses T_{2m} and T_{2,-m}
+                - adjoint handled via phase factor: T_{2m}† = (-1)^m T_{2,-m}
                 """
-                Rso = np.zeros((self.Vdim,self.Vdim),dtype=np.cdouble)
-                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T 
+                Rso = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+
+                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
                 DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [-2,-1,0,1,2]
-                    for i in m:
-                        Rso = Rso + DDC**2 * (-1)**i * self.SpectralDensity(i * self.LarmorF[0],self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutator(self.Spherical_Tensor([j,k],2,i,Sx,Sy,Sz,Sp,Sm),self.Spherical_Tensor([j,k],2,-i,Sx,Sy,Sz,Sp,Sm),rho)
-                        
-                Rso = Rso * (6/5) * 0.5                
-                    
+                mvals = [-2, -1, 0, 1, 2]
+
+                for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                    for m in mvals:
+                        Tm  = self.Spherical_Tensor([j, k], 2,  m, Sx, Sy, Sz, Sp, Sm)
+                        Tmn = self.Spherical_Tensor([j, k], 2, -m, Sx, Sy, Sz, Sp, Sm)
+
+                        w = m * self.LarmorF[0]  # keep your existing global ω0 choice
+                        Jw = self.SpectralDensity(w, self.RelaxParDipole_tau)
+
+                        Rso += (DDC**2) * ((-1)**m) * Jw * self.class_COMM.DoubleCommutator(Tm, Tmn, rho)
+
+                Rso = Rso * (6.0/5.0) * 0.5
+
             return 0.5 * Rso 
 
         # ==================================================
@@ -646,85 +610,79 @@ class RelaxationProcess:
                 omega_R = 1.0e11
                 Rso = np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble)
                 for i in range(self.Nspins):
-                    Rso = Rso + omega_R * (self.SpectralDensity(0,self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutationSuperoperator(Sz[i],Sz[i]) + self.SpectralDensity(self.LarmorF[i],self.RelaxParDipole_tau) * (self.class_COMM.DoubleCommutationSuperoperator(Sp[i],Sm[i]) + self.class_COMM.DoubleCommutationSuperoperator(Sm[i],Sp[i])))
+                    Rso = Rso + omega_R * (self.SpectralDensity(0,self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutationSuperoperator(Sz[i],Sz[i]) + self.SpectralDensity(self.LarmorF[i],self.RelaxParDipole_tau) * (self.class_COMM.DoubleCommutationSuperoperator(Sp[i],Sm[i]) + self.class_COMM.DoubleCommutationSuperoperator(Sm[i],Sp[i])))                  
 
-            if Rprocess == "Auto-correlated Dipolar Heteronuclear Ernst":
+            if Rprocess == "Auto-correlated Dipolar Heteronuclear":
                 """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Principles of Nuclear Magnetic Resonance in One and Two Dimensions, Richard R Ernst, et.al.
-                page: 56             
+                Heteronuclear auto-correlated dipolar relaxation (Redfield, Liouville space)
+
+                Uses split tensors from Spherical_Tensor_P and ONLY auto-correlated partner pairs.
+                Includes adjoint phase consistent with T_{2m}† = (-1)^m T_{2,-m}.
                 """
                 if self.SparseM:
-                    Rso = sparse.csc_matrix(np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble))
+                    Rso = sparse.csc_matrix(np.zeros((self.Ldim, self.Ldim), dtype=np.cdouble))
                 else:
-                    Rso = np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble)
+                    Rso = np.zeros((self.Ldim, self.Ldim), dtype=np.cdouble)
 
                 Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
                 DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [10,10,10,20,20,20,30,30,30,11,11,12,12,-11,-11,-12,-12,2,-2]
-                    n = [10,20,30,10,20,30,10,20,30,-11,-12,-11,-12,11,12,11,12,-2,2]
-                    for i,l in zip(m,n):
-                        StensorRank2, Eigen_Freq = self.Spherical_Tensor_Ernst_P([j,k],2,i,Sx,Sy,Sz,Sp,Sm)
-                        StensorRank2_Adjoint, Eigen_Freq_Adjoint = self.Spherical_Tensor_Ernst_P([j,k],2,l,Sx,Sy,Sz,Sp,Sm)
-                        Rso = Rso + DDC**2 * self.SpectralDensity(Eigen_Freq,self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutationSuperoperator(StensorRank2,StensorRank2_Adjoint)
-                        
-                Rso = Rso   
+                # ONLY auto-correlated partner pairs (no cross terms)
+                pairs = [
+                    (10, 10),              # m=0
+                    (20, 30), (30, 20),     # m=0 flip-flop parts
+                    (11, -11), (-11, 11),   # m=±1 (spin 2 SQ)
+                    (12, -12), (-12, 12),   # m=±1 (spin 1 SQ)
+                    (2, -2), (-2, 2),       # m=±2 (DQ)
+                ]
 
-            if Rprocess == "Auto-correlated Dipolar Homonuclear Ernst":
-                """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Principles of Nuclear Magnetic Resonance in One and Two Dimensions, Richard R Ernst, et.al.
-                page: 56             
-                """
-                if self.SparseM:
-                    Rso = sparse.csc_matrix(np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble))
-                else:
-                    Rso = np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble)
+                # Phase implementing adjoint relation for each label family
+                # |m|=1 components -> -1 ; m=0 and |m|=2 -> +1
+                def phase(label):
+                    return -1.0 if label in (11, -11, 12, -12) else 1.0
 
-                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T 
-                DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
+                for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                    for a_lbl, b_lbl in pairs:
+                        A, wA = self.Spherical_Tensor_P([j, k], 2, a_lbl, Sx, Sy, Sz, Sp, Sm)
+                        B, wB = self.Spherical_Tensor_P([j, k], 2, b_lbl, Sx, Sy, Sz, Sp, Sm)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [-2,-1,0,1,2]
-                    for i in m:
-                        Rso = Rso + DDC**2 * self.SpectralDensity(i * self.LarmorF[0],self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutationSuperoperator(self.Spherical_Tensor_Ernst([j,k],2,i,Sx,Sy,Sz,Sp,Sm),self.Spherical_Tensor_Ernst([j,k],2,-i,Sx,Sy,Sz,Sp,Sm))   
-                        
-                Rso = Rso       
+                        Jw = self.SpectralDensity(wA, self.RelaxParDipole_tau)
+
+                        Rso = Rso + (DDC**2) * phase(a_lbl) * Jw * self.class_COMM.DoubleCommutationSuperoperator(A, B)
+
+                Rso = Rso * (6.0/5.0) * 0.5
 
             if Rprocess == "Auto-correlated Dipolar Homonuclear":
                 """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Nuclear singlet relaxation by scalar relaxation of the second kind in the slow-fluctuation regime, J. Chem. Phys. 150, 064315 (2019), S.J. Elliot
+                Homonuclear auto-correlated dipolar relaxation (Redfield, Liouville space)
+
+                Conventions:
+                - self.LarmorF[...] is angular frequency ω (rad/s)
+                - pairing uses T_{2m} and T_{2,-m}
+                - adjoint handled via phase factor: T_{2m}† = (-1)^m T_{2,-m}
                 """
                 if self.SparseM:
-                    Rso = sparse.csc_matrix(np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble))
+                    Rso = sparse.csc_matrix(np.zeros((self.Ldim, self.Ldim), dtype=np.cdouble))
                 else:
-                    Rso = np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble)
+                    Rso = np.zeros((self.Ldim, self.Ldim), dtype=np.cdouble)
 
-                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T 
+                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
                 DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [-2,-1,0,1,2]
-                    for i in m:
-                        Rso = Rso + DDC**2 * (-1)**i * self.SpectralDensity(i * self.LarmorF[0],self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutationSuperoperator(self.Spherical_Tensor([j,k],2,i,Sx,Sy,Sz,Sp,Sm),self.Spherical_Tensor([j,k],2,-i,Sx,Sy,Sz,Sp,Sm))
-                        
-                Rso = Rso * (6/5) * 0.5                
-                    
+                mvals = [-2, -1, 0, 1, 2]
+
+                for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                    for m in mvals:
+                        Tm  = self.Spherical_Tensor([j, k], 2,  m, Sx, Sy, Sz, Sp, Sm)
+                        Tmn = self.Spherical_Tensor([j, k], 2, -m, Sx, Sy, Sz, Sp, Sm)
+
+                        w = m * self.LarmorF[0]  # keep your existing global ω0 choice
+                        Jw = self.SpectralDensity(w, self.RelaxParDipole_tau)
+
+                        Rso = Rso + (DDC**2) * ((-1)**m) * Jw * self.class_COMM.DoubleCommutationSuperoperator(Tm, Tmn)
+
+                Rso = Rso * (6.0/5.0) * 0.5
+
             return 0.5 * QunObj(Rso)
 
         # ==================================================
@@ -743,85 +701,95 @@ class RelaxationProcess:
                 Phenomenological Relaxation
                 """
                 Rso = np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble)
-                np.fill_diagonal(Rso, R1)
+                np.fill_diagonal(Rso, R1)      
 
-            if Rprocess == "Auto-correlated Dipolar Heteronuclear Ernst":
+            if Rprocess == "Auto-correlated Dipolar Heteronuclear":
                 """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Principles of Nuclear Magnetic Resonance in One and Two Dimensions, Richard R Ernst, et.al.
-                page: 56             
+                Heteronuclear auto-correlated dipolar relaxation (Lindblad, Liouville space)
+
+                - Uses Spherical_Tensor_P split components with their partner components.
+                - Uses thermally corrected spectral density SpectralDensity_Lb.
+                - Converts Hz -> rad/s for spectral density.
+                - Includes spherical-tensor adjoint phase consistent with T_{2m}† = (-1)^m T_{2,-m}.
                 """
+
                 if self.SparseM:
-                    Rso = sparse.csc_matrix(np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble))
+                    Rso = sparse.csc_matrix(np.zeros((self.Ldim, self.Ldim), dtype=np.cdouble))
                 else:
-                    Rso = np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble)
+                    Rso = np.zeros((self.Ldim, self.Ldim), dtype=np.cdouble)
 
                 Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
+
+                # Keep your existing convention (bIS in Hz -> convert to rad/s):
                 DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [10,10,10,20,20,20,30,30,30,11,11,12,12,-11,-11,-12,-12,2,-2]
-                    n = [10,20,30,10,20,30,10,20,30,-11,-12,-11,-12,11,12,11,12,-2,2]
-                    for i,l in zip(m,n):
-                        StensorRank2, Eigen_Freq = self.Spherical_Tensor_Ernst_P([j,k],2,i,Sx,Sy,Sz,Sp,Sm)
-                        StensorRank2_Adjoint, Eigen_Freq_Adjoint = self.Spherical_Tensor_Ernst_P([j,k],2,l,Sx,Sy,Sz,Sp,Sm)
-                        Rso = Rso + DDC**2 * self.SpectralDensity_Lb(Eigen_Freq,self.RelaxParDipole_tau) * self.Lindblad_Dissipator(StensorRank2,StensorRank2_Adjoint)
-                        
-                Rso = -1 * Rso   
+                # Partner pairs (auto-correlated)
+                pairs = [
+                    (10, 10),              # m = 0 part
+                    (20, 30), (30, 20),     # m = 0 flip-flop parts
+                    (11, -11), (-11, 11),   # m = ±1 parts
+                    (12, -12), (-12, 12),   # m = ±1 parts
+                    (2, -2), (-2, 2),       # m = ±2 parts
+                ]
 
-            if Rprocess == "Auto-correlated Dipolar Homonuclear Ernst":
-                """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Principles of Nuclear Magnetic Resonance in One and Two Dimensions, Richard R Ernst, et.al.
-                page: 56             
-                """
-                if self.SparseM:
-                    Rso = sparse.csc_matrix(np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble))
-                else:
-                    Rso = np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble)
+                # Phase factor implementing the adjoint relation
+                # rank-2: (-1)^m with m in {0, ±1, ±2}
+                def phase(label):
+                    if label in (2, -2):           # m = ±2
+                        return 1.0
+                    if label in (11, -11, 12, -12):  # m = ±1
+                        return -1.0
+                    # 10,20,30 are m=0 components
+                    return 1.0
 
-                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T 
-                DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
+                for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                    for i, l in pairs:
+                        A, fA = self.Spherical_Tensor_P([j, k], 2, i, Sx, Sy, Sz, Sp, Sm)
+                        B, fB = self.Spherical_Tensor_P([j, k], 2, l, Sx, Sy, Sz, Sp, Sm)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [-2,-1,0,1,2]
-                    for i in m:
-                        Rso = Rso + DDC**2 * self.SpectralDensity_Lb(i * self.LarmorF[0],self.RelaxParDipole_tau) * self.Lindblad_Dissipator(self.Spherical_Tensor_Ernst([j,k],2,i,Sx,Sy,Sz,Sp,Sm),self.Spherical_Tensor_Ernst([j,k],2,-i,Sx,Sy,Sz,Sp,Sm))   
-                        
-                Rso = -1 * Rso       
+                        Rso = Rso + (DDC**2) * phase(i) * self.SpectralDensity_Lb(fA, self.RelaxParDipole_tau) * self.Lindblad_Dissipator(A, B)
+
+                Rso = Rso * (-6.0/5.0) * 0.5                            
 
             if Rprocess == "Auto-correlated Dipolar Homonuclear":
                 """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Nuclear singlet relaxation by scalar relaxation of the second kind in the slow-fluctuation regime, J. Chem. Phys. 150, 064315 (2019), S.J. Elliot
-                """
-                if self.SparseM:
-                    Rso = sparse.csc_matrix(np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble))
-                else:
-                    Rso = np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble)
+                Homonuclear Auto-correlated Dipolar Relaxation (Lindblad, Liouville space)
 
-                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T 
+                This implementation is intentionally written to MATCH the existing
+                'Auto-correlated Dipolar Homonuclear test' block exactly:
+                - uses LarmorF[0] for all pairs
+                - uses DD_Coupling = 2π * RelaxParDipole_bIS
+                - includes (-1)**m factor
+                - uses Spherical_Tensor([j,k],2,m) with partner m->-m
+                - final scaling (-6/5)*0.5
+                """
+
+                if self.SparseM:
+                    Rso = sparse.csc_matrix(np.zeros((self.Ldim, self.Ldim), dtype=np.cdouble))
+                else:
+                    Rso = np.zeros((self.Ldim, self.Ldim), dtype=np.cdouble)
+
+                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
+
+                # Keep the SAME coupling convention as the test:
                 DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [-2,-1,0,1,2]
-                    for i in m:
-                        Rso = Rso + DDC**2 * (-1)**i * self.SpectralDensity_Lb(i * self.LarmorF[0],self.RelaxParDipole_tau) * self.Lindblad_Dissipator(self.Spherical_Tensor([j,k],2,i,Sx,Sy,Sz,Sp,Sm),self.Spherical_Tensor([j,k],2,-i,Sx,Sy,Sz,Sp,Sm))
-                        
-                Rso = Rso * (-6/5) * 0.5                
-                    
+                mvals = [-2, -1, 0, 1, 2]
+
+                # Keep the SAME frequency convention as the test:
+                w0 = self.LarmorF[0]   # (you said LarmorF is in rad/s)
+
+                for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                    for m in mvals:
+                        Tm  = self.Spherical_Tensor([j, k], 2,  m, Sx, Sy, Sz, Sp, Sm)
+                        Tmd = self.Spherical_Tensor([j, k], 2, -m, Sx, Sy, Sz, Sp, Sm)
+
+                        Jw = self.SpectralDensity_Lb(m * w0, self.RelaxParDipole_tau)
+
+                        Rso = Rso + (DDC**2) * ((-1)**m) * Jw * self.Lindblad_Dissipator(Tm, Tmd)
+
+                Rso = Rso * (-6.0/5.0) * 0.5
+
             return QunObj(Rso)   
 
         # ==================================================
@@ -853,73 +821,74 @@ class RelaxationProcess:
                 """
                 Rso = 2.0 * np.multiply(R_input,rho) 
 
-            if Rprocess == "Auto-correlated Dipolar Heteronuclear Ernst":
+            if Rprocess == "Auto-correlated Dipolar Heteronuclear":
                 """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Principles of Nuclear Magnetic Resonance in One and Two Dimensions, Richard R Ernst, et.al.
-                page: 56             
+                Heteronuclear auto-correlated dipolar relaxation (Lindblad, Hilbert space)
+
+                Uses split rank-2 tensor components from Spherical_Tensor_P and their partner components.
+                Keeps only auto-correlated pairings.
+                Includes the correct adjoint phase consistent with T_{2m}† = (-1)^m T_{2,-m}.
                 """
 
-                Rso = np.zeros((self.Vdim,self.Vdim),dtype=np.cdouble)
+                Rso = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
 
                 Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
                 DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [10,10,10,20,20,20,30,30,30,11,11,12,12,-11,-11,-12,-12,2,-2]
-                    n = [10,20,30,10,20,30,10,20,30,-11,-12,-11,-12,11,12,11,12,-2,2]
-                    for i,l in zip(m,n):
-                        StensorRank2, Eigen_Freq = self.Spherical_Tensor_Ernst_P([j,k],2,i,Sx,Sy,Sz,Sp,Sm)
-                        StensorRank2_Adjoint, Eigen_Freq_Adjoint = self.Spherical_Tensor_Ernst_P([j,k],2,l,Sx,Sy,Sz,Sp,Sm)
-                        Rso = Rso + DDC**2 * self.SpectralDensity_Lb(Eigen_Freq,self.RelaxParDipole_tau) * self.Lindblad_Dissipator_Hilbert(StensorRank2,StensorRank2_Adjoint,rho)
-                        
-                Rso = -1 * Rso   
+                # Auto-correlated partner pairs ONLY
+                pairs = [
+                    (10, 10),              # m = 0 (SzSz part)
+                    (20, 30), (30, 20),     # m = 0 (flip-flop parts)
+                    (11, -11), (-11, 11),   # m = ±1
+                    (12, -12), (-12, 12),   # m = ±1
+                    (2, -2), (-2, 2),       # m = ±2
+                ]
 
-            if Rprocess == "Auto-correlated Dipolar Homonuclear Ernst":
-                """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Principles of Nuclear Magnetic Resonance in One and Two Dimensions, Richard R Ernst, et.al.
-                page: 56             
-                """
-                Rso = np.zeros((self.Vdim,self.Vdim),dtype=np.cdouble)
+                # Phase that implements the adjoint relation for each label family
+                # m=0 -> +1, m=±1 -> -1, m=±2 -> +1
+                def phase(label):
+                    if label in (11, -11, 12, -12):  # corresponds to |m|=1
+                        return -1.0
+                    return 1.0
 
-                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T 
-                DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
+                for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                    for a_lbl, b_lbl in pairs:
+                        A, wA = self.Spherical_Tensor_P([j, k], 2, a_lbl, Sx, Sy, Sz, Sp, Sm)
+                        B, wB = self.Spherical_Tensor_P([j, k], 2, b_lbl, Sx, Sy, Sz, Sp, Sm)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [-2,-1,0,1,2]
-                    for i in m:
-                        Rso = Rso + DDC**2 * self.SpectralDensity_Lb(i * self.LarmorF[0],self.RelaxParDipole_tau) * self.Lindblad_Dissipator_Hilbert(self.Spherical_Tensor_Ernst([j,k],2,i,Sx,Sy,Sz,Sp,Sm),self.Spherical_Tensor_Ernst([j,k],2,-i,Sx,Sy,Sz,Sp,Sm),rho)   
-                        
-                Rso = -1 * Rso       
+                        Jw = self.SpectralDensity_Lb(wA, self.RelaxParDipole_tau)
+
+                        Rso += (DDC**2) * phase(a_lbl) * Jw * self.Lindblad_Dissipator_Hilbert(A, B, rho)
+
+                Rso = Rso * (-6.0/5.0) * 0.5
 
             if Rprocess == "Auto-correlated Dipolar Homonuclear":
                 """
-                Homonuclear Auto-correlated
-                Dipolar Relaxation
-                Extreme Narrowing
-                More than 2 spins
-                
-                Reference: Nuclear singlet relaxation by scalar relaxation of the second kind in the slow-fluctuation regime, J. Chem. Phys. 150, 064315 (2019), S.J. Elliot
-                """
-                Rso = np.zeros((self.Vdim,self.Vdim),dtype=np.cdouble)
+                Homonuclear auto-correlated dipolar relaxation (Lindblad, Hilbert space)
 
-                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T 
+                Conventions used in PyOR:
+                - self.LarmorF[...] is angular frequency ω (rad/s)
+                - pairing uses T_{2m} and T_{2,-m}
+                - adjoint handled via phase factor: T_{2m}† = (-1)^m T_{2,-m}
+                """
+
+                Rso = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+
+                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
                 DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
 
-                for j,k, DDC in zip(Spin_INDEX_1,Spin_INDEX_2,DD_Coupling):
-                    m = [-2,-1,0,1,2]
-                    for i in m:
-                        Rso = Rso + DDC**2 * (-1)**i * self.SpectralDensity_Lb(i * self.LarmorF[0],self.RelaxParDipole_tau) * self.Lindblad_Dissipator_Hilbert(self.Spherical_Tensor([j,k],2,i,Sx,Sy,Sz,Sp,Sm),self.Spherical_Tensor([j,k],2,-i,Sx,Sy,Sz,Sp,Sm),rho)
-                        
-                Rso = Rso * (-6/5) * 0.5                
-                    
+                mvals = [-2, -1, 0, 1, 2]
+
+                for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                    for m in mvals:
+                        Tm  = self.Spherical_Tensor([j, k], 2,  m, Sx, Sy, Sz, Sp, Sm)
+                        Tmn = self.Spherical_Tensor([j, k], 2, -m, Sx, Sy, Sz, Sp, Sm)
+
+                        w = m * self.LarmorF[0]  # keep your existing choice (global ω0)
+                        Jw = self.SpectralDensity_Lb(w, self.RelaxParDipole_tau)
+
+                        Rso += (DDC**2) * ((-1)**m) * Jw * self.Lindblad_Dissipator_Hilbert(Tm, Tmn, rho)
+
+                Rso = Rso * (-6.0/5.0) * 0.5
+
             return Rso
