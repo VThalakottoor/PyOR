@@ -151,25 +151,19 @@ class RelaxationProcess:
         np.ndarray
             Tensor operator T(Rank, m)
         """
-        if Rank == 2:
-            if m == 0:
-                return (4 * Sz[spin[0]] @ Sz[spin[1]] - Sp[spin[0]] @ Sm[spin[1]] - Sm[spin[0]] @ Sp[spin[1]]) / (2 * np.sqrt(6))
-            if m == 1:
-                return -0.5 * (Sz[spin[0]] @ Sp[spin[1]] + Sp[spin[0]] @ Sz[spin[1]])
-            if m == -1:
-                return 0.5 * (Sz[spin[0]] @ Sm[spin[1]] + Sm[spin[0]] @ Sz[spin[1]])
-            if m == 2:
-                return 0.5 * (Sp[spin[0]] @ Sp[spin[1]])
-            if m == -2:
-                return 0.5 * (Sm[spin[0]] @ Sm[spin[1]])
-
-        if Rank == 1:
-            if m == 0:
-                return Sz[spin[0]]
-            if m == 1:
-                return (-1 / np.sqrt(2)) * Sp[spin[0]]
-            if m == -1:
-                return (1 / np.sqrt(2)) * Sm[spin[0]]
+        Rprocess = self.Rprocess
+        if Rprocess == "Auto-correlated Dipolar Homonuclear":        
+            if Rank == 2:
+                if m == 0:
+                    return (4 * Sz[spin[0]] @ Sz[spin[1]] - Sp[spin[0]] @ Sm[spin[1]] - Sm[spin[0]] @ Sp[spin[1]]) / (2 * np.sqrt(6))
+                if m == 1:
+                    return -0.5 * (Sz[spin[0]] @ Sp[spin[1]] + Sp[spin[0]] @ Sz[spin[1]])
+                if m == -1:
+                    return 0.5 * (Sz[spin[0]] @ Sm[spin[1]] + Sm[spin[0]] @ Sz[spin[1]])
+                if m == 2:
+                    return 0.5 * (Sp[spin[0]] @ Sp[spin[1]])
+                if m == -2:
+                    return 0.5 * (Sm[spin[0]] @ Sm[spin[1]])
 
     def Spherical_Tensor_P(self, spin, Rank, m, Sx, Sy, Sz, Sp, Sm):
         """
@@ -192,36 +186,54 @@ class RelaxationProcess:
         np.ndarray
             Tensor operator T(Rank, m)
         """
-        if Rank == 2:
-            if m == 10 or m==-10:
-                return (4 * Sz[spin[0]] @ Sz[spin[1]]) / (2 * np.sqrt(6)), 0.0
-            if m == 20 or m==-20:
-                return (-1 * Sp[spin[0]] @ Sm[spin[1]]) / (2 * np.sqrt(6)), self.LarmorF[spin[0]] - self.LarmorF[spin[1]]
-            if m == 30 or m==-30:
-                return (-1 * Sm[spin[0]] @ Sp[spin[1]]) / (2 * np.sqrt(6)), self.LarmorF[spin[1]] - self.LarmorF[spin[0]]
-                        
-            if m == 11:
-                return -0.5 * (Sz[spin[0]] @ Sp[spin[1]]), self.LarmorF[spin[1]]
-            if m == 12:
-                return -0.5 * (Sp[spin[0]] @ Sz[spin[1]]), self.LarmorF[spin[0]]
-                        
-            if m == -11:
-                return 0.5 * (Sz[spin[0]] @ Sm[spin[1]]), -self.LarmorF[spin[1]]
-            if m == -12:
-                return 0.5 * (Sm[spin[0]] @ Sz[spin[1]]), -self.LarmorF[spin[0]]            
+        Rprocess = self.Rprocess
+        if Rprocess == "Auto-correlated Dipolar Heteronuclear":
+            if Rank == 2:
+                if m == 10 or m==-10:
+                    return (4 * Sz[spin[0]] @ Sz[spin[1]]) / (2 * np.sqrt(6)), 0.0
+                if m == 20 or m==-20:
+                    return (-1 * Sp[spin[0]] @ Sm[spin[1]]) / (2 * np.sqrt(6)), self.LarmorF[spin[0]] - self.LarmorF[spin[1]]
+                if m == 30 or m==-30:
+                    return (-1 * Sm[spin[0]] @ Sp[spin[1]]) / (2 * np.sqrt(6)), self.LarmorF[spin[1]] - self.LarmorF[spin[0]]
+                            
+                if m == 11:
+                    return -0.5 * (Sz[spin[0]] @ Sp[spin[1]]), self.LarmorF[spin[1]]
+                if m == 12:
+                    return -0.5 * (Sp[spin[0]] @ Sz[spin[1]]), self.LarmorF[spin[0]]
+                            
+                if m == -11:
+                    return 0.5 * (Sz[spin[0]] @ Sm[spin[1]]), -self.LarmorF[spin[1]]
+                if m == -12:
+                    return 0.5 * (Sm[spin[0]] @ Sz[spin[1]]), -self.LarmorF[spin[0]]            
 
-            if m == 2:
-                return 0.5 * (Sp[spin[0]] @ Sp[spin[1]]), self.LarmorF[spin[0]] + self.LarmorF[spin[1]]
-            if m == -2:
-                return 0.5 * (Sm[spin[0]] @ Sm[spin[1]]), -self.LarmorF[spin[0]] - self.LarmorF[spin[1]]
+                if m == 2:
+                    return 0.5 * (Sp[spin[0]] @ Sp[spin[1]]), self.LarmorF[spin[0]] + self.LarmorF[spin[1]]
+                if m == -2:
+                    return 0.5 * (Sm[spin[0]] @ Sm[spin[1]]), -self.LarmorF[spin[0]] - self.LarmorF[spin[1]]
 
-        if Rank == 1:
-            if m == 0:
-                return Sz[spin[0]], 0.0
-            if m == 1:
-                return (-1 / np.sqrt(2)) * Sp[spin[0]], self.LarmorF[spin[0]]
-            if m == -1:
-                return (1 / np.sqrt(2)) * Sm[spin[0]], -self.LarmorF[spin[0]]
+        if Rprocess == "Auto-correlated Quadrupole":
+            if Rank == 2:
+                if m == 0:
+                    return (3.0 * Sz[spin[0]] @ Sz[spin[0]] - 2) / (np.sqrt(6)), 0.0
+                            
+                if m == 1:
+                    return -0.5 * (Sz[spin[0]] @ Sp[spin[0]] + Sp[spin[0]] @ Sz[spin[0]]), self.LarmorF[spin[0]]
+                if m == -1:
+                    return 0.5 * (Sz[spin[0]] @ Sm[spin[0]] + Sm[spin[0]] @ Sz[spin[0]]), self.LarmorF[spin[0]]            
+
+                if m == 2:
+                    return 0.5 * (Sp[spin[0]] @ Sp[spin[0]]), 2.0 * self.LarmorF[spin[0]]
+                if m == -2:
+                    return 0.5 * (Sm[spin[0]] @ Sm[spin[0]]), -2.0 * self.LarmorF[spin[0]]
+                
+        if Rprocess == "Auto-correlated CSA":
+            if Rank == 1:
+                if m == 0:
+                    return (2.0/np.sqrt(6)) * Sz[spin[0]], 0.0
+                if m == 1:
+                    return (-1.0 / 2.0) * Sp[spin[0]], self.LarmorF[spin[0]]
+                if m == -1:
+                    return (1.0 / 2.0) * Sm[spin[0]], -self.LarmorF[spin[0]]
 
     def EigFreq_ProductOperator_L(self, Hz_L, opBasis_L):
         """
