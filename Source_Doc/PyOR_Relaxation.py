@@ -850,7 +850,7 @@ class RelaxationProcess:
                     if label in (11, -11, 12, -12):  # corresponds to |m|=1
                         return -1.0
                     return 1.0
-
+                
                 for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
                     for a_lbl, b_lbl in pairs:
                         A, wA = self.Spherical_Tensor_P([j, k], 2, a_lbl, Sx, Sy, Sz, Sp, Sm)
