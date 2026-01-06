@@ -16,6 +16,14 @@ Description:
     mechanisms relevant to spin dynamics.
 """
 
+from joblib import Parallel, delayed
+
+try:
+    from threadpoolctl import threadpool_limits
+    HAVE_THREADPOOLCTL = True
+except Exception:
+    HAVE_THREADPOOLCTL = False
+
 
 import numpy as np
 from numpy import linalg as lina
@@ -152,7 +160,7 @@ class RelaxationProcess:
             Tensor operator T(Rank, m)
         """
         Rprocess = self.Rprocess
-        if Rprocess == "Auto-correlated Dipolar Homonuclear":        
+        if Rprocess in ("Auto-correlated Dipolar Homonuclear", "Auto-correlated Dipolar Homonuclear Parallel"):        
             if Rank == 2:
                 if m == 0:
                     return (4 * Sz[spin[0]] @ Sz[spin[1]] - Sp[spin[0]] @ Sm[spin[1]] - Sm[spin[0]] @ Sp[spin[1]]) / (2 * np.sqrt(6))
@@ -187,7 +195,7 @@ class RelaxationProcess:
             Tensor operator T(Rank, m)
         """
         Rprocess = self.Rprocess
-        if Rprocess == "Auto-correlated Dipolar Heteronuclear":
+        if Rprocess in ("Auto-correlated Dipolar Heteronuclear", "Auto-correlated Dipolar Heteronuclear Parallel"):
             if Rank == 2:
                 if m == 10 or m==-10:
                     return (4 * Sz[spin[0]] @ Sz[spin[1]]) / (2 * np.sqrt(6)), 0.0
@@ -434,6 +442,7 @@ class RelaxationProcess:
 
         if Rprocess == None:
             Rprocess = self.Rprocess
+        self.Rprocess = Rprocess
 
         R1 = self.R1
         R2 = self.R2
@@ -463,7 +472,8 @@ class RelaxationProcess:
                 """
                 dim = self.Vdim
                 Rso = np.zeros((dim,dim))
-                
+                return 0.5 * Rso
+                            
             if Rprocess == "Phenomenological":
                 """
                 Phenomenological Relaxation
@@ -472,7 +482,8 @@ class RelaxationProcess:
                 Rso = R2 * np.ones((dim,dim))
                 np.fill_diagonal(Rso, R1) 
                 Rso = 2.0 * np.multiply(Rso,rho)               
-
+                return 0.5 * Rso
+            
             if Rprocess == "Phenomenological Matrix":
                 """
                 Phenomenological Relaxation
@@ -480,7 +491,8 @@ class RelaxationProcess:
                 see function, Relaxation_Phenomenological_Input(R)
                 """
                 Rso = 2.0 * np.multiply(R_input,rho) 
-                
+                return 0.5 * Rso
+                            
             if Rprocess == "Auto-correlated Random Field Fluctuation":
                 """
                 Auto-correlated
@@ -494,7 +506,8 @@ class RelaxationProcess:
                     #Rso = Rso + omega_R * (self.SpectralDensity(0,self.RelaxParDipole_tau) * self.class_COMMf.DoubleCommutator(Sz[i],Sz[i],rho) + 0.5 * self.SpectralDensity(self.LarmorF[i],self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutator(Sp[i],Sm[i],rho) + 0.5 * self.SpectralDensity(-1 * self.LarmorF[i],self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutator(Sm[i],Sp[i],rho)) 
                                 
                     Rso = Rso + omega_R * (self.SpectralDensity(0,self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutator(Sz[i],self.Adjoint(Sz[i]),rho) + 0.5 * self.SpectralDensity(self.LarmorF[i],self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutator(Sp[i],self.Adjoint(Sp[i]),rho) + 0.5 * self.SpectralDensity(-1 * self.LarmorF[i],self.RelaxParDipole_tau) * self.class_COMM.DoubleCommutator(Sm[i],self.Adjoint(Sm[i]),rho))
-
+                return 0.5 * Rso
+            
             if Rprocess == "Phenomenological Random Field Fluctuation":
                 """
                 Auto-correlated
@@ -507,7 +520,8 @@ class RelaxationProcess:
                 Rso = np.zeros((dim,dim))
                 for i in range(self.Nspins):
                     Rso = Rso + kz * self.class_COMM.DoubleCommutator(Sz[i],Sz[i],rho) + kxy * self.class_COMM.DoubleCommutator(Sp[i],Sm[i],rho) + kxy * self.class_COMM.DoubleCommutator(Sm[i],Sp[i],rho)                    
-
+                return 0.5 * Rso
+            
             if Rprocess == "Auto-correlated Dipolar Heteronuclear":
                 """
                 Heteronuclear auto-correlated dipolar relaxation (Redfield, Hilbert space)
@@ -544,6 +558,7 @@ class RelaxationProcess:
                         Rso += (DDC**2) * phase(a_lbl) * Jw * self.class_COMM.DoubleCommutator(A, B, rho)
 
                 Rso = Rso * (6.0/5.0) * 0.5
+                return 0.5 * Rso
 
             if Rprocess == "Auto-correlated Dipolar Homonuclear":
                 """
@@ -572,8 +587,97 @@ class RelaxationProcess:
                         Rso += (DDC**2) * ((-1)**m) * Jw * self.class_COMM.DoubleCommutator(Tm, Tmn, rho)
 
                 Rso = Rso * (6.0/5.0) * 0.5
+                return 0.5 * Rso
 
-            return 0.5 * Rso 
+            if Rprocess == "Auto-correlated Dipolar Heteronuclear Parallel":
+                """
+                Same model as 'Auto-correlated Dipolar Heteronuclear' but parallelized over DipolePairs using joblib.
+                Uses per-pair local accumulation and reduces at the end.
+                """
+
+                Rso = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+
+                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
+                DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
+
+                pairs = [
+                    (10, 10),              # m=0 (SzSz)
+                    (20, 30), (30, 20),     # m=0 (SpSm <-> SmSp)
+                    (11, -11), (-11, 11),   # m=±1 (SzSp <-> SzSm) on spin 2
+                    (12, -12), (-12, 12),   # m=±1 (SpSz <-> SmSz) on spin 1
+                    (2, -2), (-2, 2),       # m=±2 (SpSp <-> SmSm)
+                ]
+
+                def Phase(label):
+                    return -1.0 if label in (11, -11, 12, -12) else 1.0
+
+                def OnePairContribution(j, k, DDC):
+                    Rloc = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+                    for a_lbl, b_lbl in pairs:
+                        A, wA = self.Spherical_Tensor_P([j, k], 2, a_lbl, Sx, Sy, Sz, Sp, Sm)
+                        B, _  = self.Spherical_Tensor_P([j, k], 2, b_lbl, Sx, Sy, Sz, Sp, Sm)
+                        Jw = self.SpectralDensity(wA, self.RelaxParDipole_tau)
+                        Rloc += (DDC**2) * Phase(a_lbl) * Jw * self.class_COMM.DoubleCommutator(A, B, rho)
+                    return Rloc
+
+                if self.ParallelEnabled():
+                    with self.Blas1ThreadCtx():
+                        parts = Parallel(n_jobs=-1, prefer="processes")(
+                            delayed(OnePairContribution)(j, k, DDC)
+                            for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling)
+                        )
+                    Rso = np.sum(parts, axis=0)
+                else:
+                    for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                        Rso += OnePairContribution(j, k, DDC)
+
+                Rso = Rso * (6.0/5.0) * 0.5
+                return 0.5 * Rso
+
+            if Rprocess == "Auto-correlated Dipolar Homonuclear Parallel":
+                """
+                Homonuclear auto-correlated dipolar relaxation (Redfield, Hilbert space),
+                parallelized over DipolePairs using joblib.
+
+                Conventions kept identical to the non-parallel version:
+                - self.LarmorF[0] used as global ω0 (rad/s)
+                - DD_Coupling = 2π * RelaxParDipole_bIS
+                - pairing uses T_{2m} and T_{2,-m}
+                - adjoint handled via (-1)^m factor
+                """
+
+                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
+                DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
+
+                mvals = [-2, -1, 0, 1, 2]
+                w0 = self.LarmorF[0]
+
+                def OnePairContribution(j, k, DDC):
+                    Rloc = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+                    for m in mvals:
+                        Tm  = self.Spherical_Tensor([j, k], 2,  m, Sx, Sy, Sz, Sp, Sm)
+                        Tmn = self.Spherical_Tensor([j, k], 2, -m, Sx, Sy, Sz, Sp, Sm)
+
+                        w = m * w0
+                        Jw = self.SpectralDensity(w, self.RelaxParDipole_tau)
+
+                        Rloc += (DDC**2) * ((-1)**m) * Jw * self.class_COMM.DoubleCommutator(Tm, Tmn, rho)
+                    return Rloc
+
+                if self.ParallelEnabled():
+                    with self.Blas1ThreadCtx():
+                        parts = Parallel(n_jobs=-1, prefer="processes")(
+                            delayed(OnePairContribution)(j, k, DDC)
+                            for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling)
+                        )
+                    Rso = np.sum(parts, axis=0)
+                else:
+                    Rso = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+                    for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                        Rso += OnePairContribution(j, k, DDC)
+
+                Rso = Rso * (6.0/5.0) * 0.5
+                return 0.5 * Rso             
 
         # ==================================================
         # Redfield Equation - Liouville Space
@@ -695,7 +799,10 @@ class RelaxationProcess:
 
                 Rso = Rso * (6.0/5.0) * 0.5
 
-            return 0.5 * QunObj(Rso)
+            if self.SparseM:
+                return QunObj(Rso * 0.5)
+            else:
+                return QunObj(0.5 * Rso)
 
         # ==================================================
         # Lindblad Equation - Liouville Space
@@ -815,6 +922,7 @@ class RelaxationProcess:
                 """
                 dim = self.Vdim
                 Rso = np.zeros((dim,dim))
+                return Rso
                 
             if Rprocess == "Phenomenological":
                 """
@@ -823,7 +931,8 @@ class RelaxationProcess:
                 dim = self.Vdim 
                 Rso = R2 * np.ones((dim,dim))
                 np.fill_diagonal(Rso, R1) 
-                Rso = 2.0 * np.multiply(Rso,rho)               
+                Rso = 2.0 * np.multiply(Rso,rho) 
+                return Rso              
 
             if Rprocess == "Phenomenological Matrix":
                 """
@@ -832,6 +941,7 @@ class RelaxationProcess:
                 see function, Relaxation_Phenomenological_Input(R)
                 """
                 Rso = 2.0 * np.multiply(R_input,rho) 
+                return Rso
 
             if Rprocess == "Auto-correlated Dipolar Heteronuclear":
                 """
@@ -873,6 +983,7 @@ class RelaxationProcess:
                         Rso += (DDC**2) * phase(a_lbl) * Jw * self.Lindblad_Dissipator_Hilbert(A, B, rho)
 
                 Rso = Rso * (-6.0/5.0) * 0.5
+                return Rso
 
             if Rprocess == "Auto-correlated Dipolar Homonuclear":
                 """
@@ -902,5 +1013,128 @@ class RelaxationProcess:
                         Rso += (DDC**2) * ((-1)**m) * Jw * self.Lindblad_Dissipator_Hilbert(Tm, Tmn, rho)
 
                 Rso = Rso * (-6.0/5.0) * 0.5
+                return Rso
 
-            return Rso
+            if Rprocess == "Auto-correlated Dipolar Heteronuclear Parallel":
+                """
+                Heteronuclear auto-correlated dipolar relaxation (Lindblad, Hilbert space),
+                parallelized over DipolePairs with joblib.
+
+                Keeps same conventions as non-parallel version:
+                - DD_Coupling = 2π * RelaxParDipole_bIS
+                - uses SpectralDensity_Lb
+                - applies phase factor consistent with your label convention
+                - final scaling (-6/5)*0.5
+                """
+
+                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
+                DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
+
+                pairs = [
+                    (10, 10),              # m = 0 (SzSz part)
+                    (20, 30), (30, 20),     # m = 0 (flip-flop parts)
+                    (11, -11), (-11, 11),   # m = ±1
+                    (12, -12), (-12, 12),   # m = ±1
+                    (2, -2), (-2, 2),       # m = ±2
+                ]
+
+                def Phase(label):
+                    # matches your existing Hilbert Lindblad hetero block convention
+                    if label in (11, -11, 12, -12):  # |m|=1
+                        return -1.0
+                    return 1.0
+
+                def OnePairContribution(j, k, DDC):
+                    Rloc = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+                    for a_lbl, b_lbl in pairs:
+                        A, wA = self.Spherical_Tensor_P([j, k], 2, a_lbl, Sx, Sy, Sz, Sp, Sm)
+                        B, _  = self.Spherical_Tensor_P([j, k], 2, b_lbl, Sx, Sy, Sz, Sp, Sm)
+                        Jw = self.SpectralDensity_Lb(wA, self.RelaxParDipole_tau)
+                        Rloc += (DDC**2) * Phase(a_lbl) * Jw * self.Lindblad_Dissipator_Hilbert(A, B, rho)
+                    return Rloc
+
+                if self.ParallelEnabled():
+                    with self.Blas1ThreadCtx():
+                        parts = Parallel(n_jobs=-1, prefer="processes")(
+                            delayed(OnePairContribution)(j, k, DDC)
+                            for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling)
+                        )
+                    Rso = np.sum(parts, axis=0)
+                else:
+                    Rso = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+                    for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                        Rso += OnePairContribution(j, k, DDC)
+
+                Rso = Rso * (-6.0/5.0) * 0.5
+                return Rso
+
+            if Rprocess == "Auto-correlated Dipolar Homonuclear Parallel":
+                """
+                Homonuclear auto-correlated dipolar relaxation (Lindblad, Hilbert space),
+                parallelized over DipolePairs with joblib.
+
+                Keeps same conventions as non-parallel version:
+                - self.LarmorF[0] used as global ω0 (rad/s)
+                - DD_Coupling = 2π * RelaxParDipole_bIS
+                - uses SpectralDensity_Lb
+                - includes (-1)**m factor
+                - final scaling (-6/5)*0.5
+                """
+
+                Spin_INDEX_1, Spin_INDEX_2 = np.array(self.DipolePairs).T
+                DD_Coupling = 2.0 * np.pi * np.asarray(self.RelaxParDipole_bIS)
+
+                mvals = [-2, -1, 0, 1, 2]
+                w0 = self.LarmorF[0]
+
+                def OnePairContribution(j, k, DDC):
+                    Rloc = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+                    for m in mvals:
+                        Tm  = self.Spherical_Tensor([j, k], 2,  m, Sx, Sy, Sz, Sp, Sm)
+                        Tmn = self.Spherical_Tensor([j, k], 2, -m, Sx, Sy, Sz, Sp, Sm)
+
+                        w = m * w0
+                        Jw = self.SpectralDensity_Lb(w, self.RelaxParDipole_tau)
+
+                        Rloc += (DDC**2) * ((-1)**m) * Jw * self.Lindblad_Dissipator_Hilbert(Tm, Tmn, rho)
+                    return Rloc
+
+                if self.ParallelEnabled():
+                    with self.Blas1ThreadCtx():
+                        parts = Parallel(n_jobs=-1, prefer="processes")(
+                            delayed(OnePairContribution)(j, k, DDC)
+                            for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling)
+                        )
+                    Rso = np.sum(parts, axis=0)
+                else:
+                    Rso = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
+                    for j, k, DDC in zip(Spin_INDEX_1, Spin_INDEX_2, DD_Coupling):
+                        Rso += OnePairContribution(j, k, DDC)
+
+                Rso = Rso * (-6.0/5.0) * 0.5
+                return Rso
+        
+    def Blas1ThreadCtx(self):
+        """
+        Context manager to force BLAS/OpenMP-backed NumPy ops to 1 thread.
+        Prevents oversubscription when using joblib processes.
+        """
+        if HAVE_THREADPOOLCTL:
+            return threadpool_limits(limits=1)
+
+        class DummyCtx:
+            def __enter__(self): return None
+            def __exit__(self, *args): return False
+
+        return DummyCtx()
+
+    def ParallelEnabled(self):
+        """
+        Heuristic: only parallelize when there are enough dipole pairs to amortize overhead.
+        Adjust threshold to taste.
+        """
+        try:
+            return len(self.DipolePairs) >= 6
+        except Exception:
+            return False
+

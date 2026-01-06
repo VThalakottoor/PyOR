@@ -354,6 +354,8 @@ class MaserDataAnalyzer:
         plt.title("Frequency-Domain Spectrum")
         plt.xlabel("Frequency [Hz]")
         plt.ylabel("Magnitude" if self.abs_spectrum else "Complex Value")
+        plt.xlim(self.Xlimt)
+        plt.ylim(self.Ylimt)        
         plt.grid()
         plt.tight_layout()
         plt.show()
@@ -401,6 +403,8 @@ class MaserDataAnalyzer:
         plt.xlabel("Time (s)")
         plt.ylabel("Mz")
         plt.title("Mz Plots")
+        plt.xlim(self.Xlimt)
+        plt.ylim(self.Ylimt)        
         plt.legend()
         plt.grid(True)
 
