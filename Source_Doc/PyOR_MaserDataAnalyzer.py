@@ -449,6 +449,8 @@ class MaserDataAnalyzer:
         plt.xlabel("Time (s)")
         plt.ylabel("Mx")
         plt.title("Mx Plots")
+        plt.xlim(self.Xlimt)
+        plt.ylim(self.Ylimt)         
         plt.legend()
         plt.grid(True)
 

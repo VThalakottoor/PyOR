@@ -28,7 +28,7 @@ from mpl_toolkits.mplot3d import axes3d
 
 
 class Plotting:
-    def __init__(self, class_QS):
+    def __init__(self, class_QS=None):
         """
         Initialize the Plotting class with default parameters from a configuration object.
 
@@ -39,12 +39,23 @@ class Plotting:
         """
         self.class_QS = class_QS
 
-        self.PlotFigureSize = class_QS.PlotFigureSize
-        self.PlotFontSize = class_QS.PlotFontSize
-        self.PlotXlimt = class_QS.PlotXlimt
-        self.PlotYlimt = class_QS.PlotYlimt
-        self.PlotArrowlength = class_QS.PlotArrowlength
-        self.PlotLinwidth = class_QS.PlotLinwidth
+        if class_QS is not None:
+            # ---- Use parameters from class_QS ----
+            self.PlotFigureSize = class_QS.PlotFigureSize
+            self.PlotFontSize = class_QS.PlotFontSize
+            self.PlotXlimt = class_QS.PlotXlimt
+            self.PlotYlimt = class_QS.PlotYlimt
+            self.PlotArrowlength = class_QS.PlotArrowlength
+            self.PlotLinwidth = class_QS.PlotLinwidth
+        else:
+            # ---- Use defaults ----
+            self.PlotFigureSize = (8, 6)
+            self.PlotFontSize = 14
+            self.PlotXlimt = (0, 1)
+            self.PlotYlimt = (0, 1)
+            self.PlotArrowlength = 0.1
+            self.PlotLinwidth = 2.0
+
         self.fig_counter = 1
 
     def MatrixPlot(self, M, xlabel, ylabel, saveplt = False, savename= "plot"):
