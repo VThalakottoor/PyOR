@@ -24,6 +24,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 import matplotlib.cm as cm
 from matplotlib.widgets import Slider, SpanSelector
+from matplotlib.colors import Normalize
 from mpl_toolkits.mplot3d import axes3d
 
 
@@ -51,8 +52,8 @@ class Plotting:
             # ---- Use defaults ----
             self.PlotFigureSize = (8, 6)
             self.PlotFontSize = 14
-            self.PlotXlimt = (0, 1)
-            self.PlotYlimt = (0, 1)
+            self.PlotXlimt = (None, None)
+            self.PlotYlimt = (None, None)
             self.PlotArrowlength = 0.1
             self.PlotLinwidth = 2.0
 
@@ -119,8 +120,8 @@ class Plotting:
         cbaxes = fig.add_axes([0.85, 0.1, 0.03, 0.65])
         cbar = fig.colorbar(im, cax=cbaxes)
 
-        ax.set_title('T={:.3f}'.format(t[0]))
-        ax.set_xticklabels([''] + xlabel)
+        ax.set_title('T={:.3e}'.format(t[0]))
+        ax.set_xticklabels([''] + xlabel, rotation='vertical')
         ax.set_yticklabels([''] + ylabel)
 
         fig.subplots_adjust(left=0.25, bottom=0.25)
@@ -130,7 +131,7 @@ class Plotting:
         def update(val):
             index = int(index_slider.val)
             im.set_data(rho_t[index].real)
-            ax.set_title('T={:.3f}'.format(t[index]))
+            ax.set_title('T={:.3e}'.format(t[index]))
             cbar.update_normal(im)
             fig.canvas.draw_idle()
 
@@ -176,6 +177,102 @@ class Plotting:
 
         if saveplt:
             plt.savefig(savename + ".pdf", format='pdf')        
+        plt.show()
+
+
+    def MatrixPlot3D_slider(self, t, rho_t, xlabel, ylabel, cmap=cm.viridis):
+        """
+        3D bar plot of a time-dependent matrix with a slider (bars colored by value).
+
+        Parameters
+        ----------
+        t : ndarray
+            Array of time points (len(t),).
+        rho_t : ndarray
+            Array of matrices over time (len(t) x N x N).
+        xlabel : list of str
+            Labels for x-axis.
+        ylabel : list of str
+            Labels for y-axis.
+        cmap : matplotlib colormap
+            Colormap used to color bars by height/value.
+        """
+        plt.rcParams['figure.figsize'] = self.PlotFigureSize
+        plt.rcParams['font.size'] = self.PlotFontSize
+        rc('font', weight='bold')
+
+        # Use REAL part for plotting (match your other plots)
+        rho_real = np.real(rho_t)
+
+        # Global scaling so the colors are consistent for all slider positions
+        vmin = np.min(rho_real)
+        vmax = np.max(rho_real)
+        if np.isclose(vmin, vmax):
+            vmin -= 1e-12
+            vmax += 1e-12
+        norm = Normalize(vmin=vmin, vmax=vmax)
+
+        fig = plt.figure(self.fig_counter)
+        self.fig_counter += 1
+        fig.subplots_adjust(left=0.08, right=0.88, bottom=0.20, top=0.90)
+
+        ax = fig.add_subplot(111, projection="3d")
+
+        # Setup bar coordinates (constant for all frames)
+        num_rows, num_cols = rho_t[0].shape
+        xpos, ypos = np.meshgrid(np.arange(num_cols) + 0.25, np.arange(num_rows) + 0.25)
+        xpos = xpos.ravel()
+        ypos = ypos.ravel()
+        zpos = np.zeros_like(xpos)
+        dx = dy = 0.5 * np.ones_like(zpos)
+
+        # Colorbar (static)
+        sm = cm.ScalarMappable(norm=norm, cmap=cmap)
+        sm.set_array([])  # needed for older matplotlib
+        cax = fig.add_axes([0.90, 0.25, 0.02, 0.60])
+        fig.colorbar(sm, cax=cax)
+
+        def draw_bars(index: int):
+            ax.cla()
+
+            M = rho_real[index]
+            dz = M.ravel()
+
+            # color bars by value
+            colors = cmap(norm(dz))
+
+            ax.bar3d(xpos, ypos, zpos, dx, dy, dz, shade=True, color=colors, alpha=0.85)
+
+            ax.set_xticks(np.arange(0.5, num_cols, 1))
+            ax.set_yticks(np.arange(0.5, num_rows, 1))
+            ax.set_xticklabels(xlabel, rotation=90)
+            ax.set_yticklabels(ylabel)
+
+            ax.set_zlim(vmin, vmax)
+            ax.grid(True)
+            ax.view_init(elev=30, azim=-35)
+            ax.set_title(f"T={t[index]:.3e}")
+
+        # initial draw
+        draw_bars(0)
+
+        # Slider
+        ax_slider = fig.add_axes([0.15, 0.06, 0.70, 0.04])
+        index_slider = Slider(
+            ax=ax_slider,
+            label="Time Index",
+            valmin=0,
+            valmax=len(t) - 1,
+            valinit=0,
+            valfmt="%0.0f",
+        )
+
+        def update(val):
+            idx = int(index_slider.val)
+            draw_bars(idx)
+            fig.canvas.draw_idle()
+
+        index_slider.on_changed(update)
         plt.show()
 
     def Plotting(self, x, y, xlab, ylab, col, saveplt=False, savename= "plot"):

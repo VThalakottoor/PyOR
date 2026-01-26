@@ -202,6 +202,38 @@ class Hamiltonian:
 
         return QunObj(HzB1)
 
+    def Zeeman_B1_Select(self, Omega1, Omega1Phase, X):  
+        """
+        Constructs the B₁ Hamiltonian for RF excitation in the rotating frame.
+
+        Assumes a continuous wave RF field:
+            H_RF = ω₁ * [Sₓ cos(ϕ) + Sᵧ sin(ϕ)]
+
+        Parameters:
+        -----------
+        Omega1 : float
+            RF amplitude in Hz (nutation frequency).
+        Omega1Phase : float
+            RF phase in degrees.
+
+        Returns:
+        --------
+        QunObj
+            Time-independent B₁ Hamiltonian in rotating frame.
+        """
+        Sx = self.class_QS.Sx_
+        Sy = self.class_QS.Sy_ 
+
+        HzB1 = np.zeros((self.class_QS.Vdim, self.class_QS.Vdim), dtype=self.DTYPE_C)
+        omega1 = 2 * np.pi * Omega1
+        Omega1Phase = np.pi * Omega1Phase / 180.0  # convert degrees to radians
+
+        index = self.class_QS.SpinIndex[X]
+
+        HzB1 = omega1 * (Sx[index] * np.cos(Omega1Phase) + Sy[index] * np.sin(Omega1Phase))
+
+        return QunObj(HzB1)
+
     def Zeeman_B1_Offresonance(self, t, Omega1, Omega1freq, Omega1Phase):  
         """
         Constructs a time-dependent Zeeman Hamiltonian for an off-resonant RF field.
