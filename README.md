@@ -1,5 +1,8 @@
 # PyOR (Python on Resonance)
 **Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)**
+**Contributors**
+1. John Price (Example: COSY)
+2. 
 
 <img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_4.png" alt="PyOR logo" width="300">
 
