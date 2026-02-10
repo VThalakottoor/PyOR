@@ -1,0 +1,581 @@
+{
+ "cells": [
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# PyOR Quantum\n",
+    "## Author: Vineeth Thalakottoor\n",
+    "## Introduction to Quadrupole Hamiltonians"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Define the source path\n",
+    "SourcePath = '/media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/Source_Doc'\n",
+    "\n",
+    "# Add source path\n",
+    "import sys\n",
+    "sys.path.append(SourcePath)\n",
+    "\n",
+    "import numpy as np\n",
+    "# Import PyOR package\n",
+    "from PyOR_QuantumSystem import QuantumSystem as QunS\n",
+    "from PyOR_Hamiltonian import Hamiltonian\n",
+    "from PyOR_QuantumLibrary import QuantumLibrary\n",
+    "import PyOR_SphericalTensors as ST\n",
+    "import PyOR_Rotation as Rot\n",
+    "QLib = QuantumLibrary()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Define the spin system\n",
+    "Spin_list = {\"A\" : \"H2\"}\n",
+    "QS = QunS(Spin_list,PrintDefault=False)\n",
+    "\n",
+    "# initialize the system\n",
+    "QS.Initialize()"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Set parameters"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Rotating frame frequencies: {'A': -386011000.0}\n",
+      "Offset frequencies: {'A': 0.0}\n",
+      "Initial spin temperatures: {'A': 300.0}\n",
+      "Final spin temperatures: {'A': 300.0}\n",
+      "Radiation damping gain: {'A': 0}\n",
+      "Radiation damping phase: {'A': 0}\n",
+      "\n",
+      "Rprocess = Phenomenological\n",
+      "RelaxParDipole_tau = 0.0\n",
+      "DipolePairs = []\n",
+      "RelaxParDipole_bIS = []\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Master Equation\n",
+    "QS.PropagationSpace = \"Hilbert\"\n",
+    "QS.MasterEquation = \"Redfield\"\n",
+    "\n",
+    "# B0 Field in Tesla, Static Magnetic field (B0) along Z\n",
+    "QS.B0 = 9.4\n",
+    "\n",
+    "# Offset Frequency in rotating frame (Hz)\n",
+    "QS.OFFSET[\"A\"] = 0.0\n",
+    "\n",
+    "# Define initial and final Spin Temperature\n",
+    "QS.I_spintemp[\"A\"] = 300.0\n",
+    "QS.F_spintemp[\"A\"] = 300.0\n",
+    "\n",
+    "\n",
+    "# Relaxation Process\n",
+    "QS.Rprocess = \"Phenomenological\"\n",
+    "QS.R1 = 1\n",
+    "QS.R2 = 2\n",
+    "\n",
+    "QS.Update()"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Zeeman Hamiltonians"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Larmor Frequency in MHz:  [-61.43555874]\n"
+     ]
+    }
+   ],
+   "source": [
+    "# generate Larmor Frequencies\n",
+    "QS.print_Larmor = True\n",
+    "Ham = Hamiltonian(QS)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}-61435560.0110852 & 0 & 0\\\\0 & 0 & 0\\\\0 & 0 & 61435560.0110852\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[-61435560.0110852, 0,                0],\n",
+       "[                0, 0,                0],\n",
+       "[                0, 0, 61435560.0110852]])"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Lab Frame Hamiltonian\n",
+    "Hz_lab = Ham.Zeeman()\n",
+    "Hz_lab.Inverse2PI().matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}0 & 0 & 0\\\\0 & 0 & 0\\\\0 & 0 & 0\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[0, 0, 0],\n",
+       "[0, 0, 0],\n",
+       "[0, 0, 0]])"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Rotating Frame Hamiltonian\n",
+    "Hz = Ham.Zeeman_RotFrame()\n",
+    "Hz.Inverse2PI().matrix"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Quadrupole tensor PAF"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}-30.0 & 0 & 0\\\\0 & -20.0 & 0\\\\0 & 0 & 50.0\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[-30.0,     0,    0],\n",
+       "[    0, -20.0,    0],\n",
+       "[    0,     0, 50.0]])"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "QuadrupoleCoupling = 100 # Hz\n",
+    "eta = 0.2\n",
+    "\n",
+    "A = \"A\"\n",
+    "\n",
+    "IT_PAF = Ham.InteractionTensor_PAF_Quadrupole(A,QuadrupoleCoupling,eta)\n",
+    "IT_PAF.Inverse2PI().matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'Isotropic': 0.0, 'Anisotropy': 50.0, 'Asymmetry': 0.19999999999999998}"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "PAF_Decom = Ham.InteractionTensor_PAF_Decomposition(IT_PAF)\n",
+    "PAF_Decom"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Quadrupole tensor LAB"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}2.245 & 46.555 & 232.583\\\\46.555 & -108.719 & 84.653\\\\232.583 & 84.653 & 106.474\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[  2.245,   46.555, 232.583],\n",
+       "[ 46.555, -108.719,  84.653],\n",
+       "[232.583,   84.653, 106.474]])"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "phi,theta = 20.0,40.0\n",
+    "\n",
+    "IT_LAB = Ham.InteractionTensor_LAB(IT_PAF,phi,theta,0)\n",
+    "IT_LAB.Round(3).matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}0 & 0 & 0\\\\0 & 0 & 0\\\\0 & 0 & 0\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[0, 0, 0],\n",
+       "[0, 0, 0],\n",
+       "[0, 0, 0]])"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "LAB_Decom = Ham.InteractionTensor_LAB_Decomposition(IT_LAB)\n",
+    "LAB_Decom['Isotropic'].matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}0.357 & 7.409 & 37.017\\\\7.409 & -17.303 & 13.473\\\\37.017 & 13.473 & 16.946\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[ 0.357,   7.409, 37.017],\n",
+       "[ 7.409, -17.303, 13.473],\n",
+       "[37.017,  13.473, 16.946]])"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "LAB_Decom[\"Symmetric\"].Inverse2PI().Round(3).matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}0 & 0 & 0\\\\0 & 0 & 0\\\\0 & 0 & 0\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[0, 0, 0],\n",
+       "[0, 0, 0],\n",
+       "[0, 0, 0]])"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "LAB_Decom[\"Antisymmetric\"].Inverse2PI().Round(3).matrix"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Quadrupole Hamiltonian in Lab frame (Secular)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}8.715 & 0 & 0\\\\0 & -17.429 & 0\\\\0 & 0 & 8.715\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[8.715,       0,     0],\n",
+       "[    0, -17.429,     0],\n",
+       "[    0,       0, 8.715]])"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Hdd_LAB_Truncates = Ham.Interaction_Hamiltonian_LAB_Quadrupole_Secular(A, QuadrupoleCoupling, eta,theta,phi)\n",
+    "Hdd_LAB_Truncates.Inverse2PI().Round(3).matrix"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Quadrupole Hamiltonian in Lab frame (Cartesian, Euler rotation)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}8.715 & 27.447 - 1.461 i & 12.455 + 2.462 i\\\\27.447 + 1.461 i & -17.429 & -27.447 + 1.461 i\\\\12.455 - 2.462 i & -27.447 - 1.461 i & 8.715\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[           8.715,  27.447 - 1.461*I,  12.455 + 2.462*I],\n",
+       "[27.447 + 1.461*I,           -17.429, -27.447 + 1.461*I],\n",
+       "[12.455 - 2.462*I, -27.447 - 1.461*I,             8.715]])"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Hdd_LAB_Euler = Ham.Interaction_Hamiltonian_Catesian_Euler(A,IT_PAF,A,0,theta,phi)\n",
+    "Hdd_LAB_Euler.Inverse2PI().Round(3).matrix"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Quadrupole Hamiltonian in Lab frame (Cartesian, Wigner rotation)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}8.715 & 27.447 - 1.461 i & 12.455 + 2.462 i\\\\27.447 + 1.461 i & -17.429 & -27.447 + 1.461 i\\\\12.455 - 2.462 i & -27.447 - 1.461 i & 8.715\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[           8.715,  27.447 - 1.461*I,  12.455 + 2.462*I],\n",
+       "[27.447 + 1.461*I,           -17.429, -27.447 + 1.461*I],\n",
+       "[12.455 - 2.462*I, -27.447 - 1.461*I,             8.715]])"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Hdd_LAB_Wig = Ham.Interaction_Hamiltonian_Catesian_Wigner(A,IT_PAF,A,0,theta,phi)\n",
+    "Hdd_LAB_Wig.Inverse2PI().Round(3).matrix"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Quadrupole Hamiltonian in Lab frame (Spherical Tensors, Wigner Rotation)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}8.715 & 27.447 + 1.461 i & 12.455 - 2.462 i\\\\27.447 - 1.461 i & -17.429 & -27.447 - 1.461 i\\\\12.455 + 2.462 i & -27.447 + 1.461 i & 8.715\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[           8.715,  27.447 + 1.461*I,  12.455 - 2.462*I],\n",
+       "[27.447 - 1.461*I,           -17.429, -27.447 - 1.461*I],\n",
+       "[12.455 + 2.462*I, -27.447 + 1.461*I,             8.715]])"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Hdd_LAB_ST = Ham.Interaction_Hamiltonian_SphericalTensor(A,IT_PAF,A,\"spin-spin\",\"all\", 0,theta,phi)\n",
+    "Hdd_LAB_ST.Inverse2PI().Round(3).matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}8.715 & 0 & 0\\\\0 & -17.429 & 0\\\\0 & 0 & 8.715\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[8.715,       0,     0],\n",
+       "[    0, -17.429,     0],\n",
+       "[    0,       0, 8.715]])"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Hdd_LAB_ST = Ham.Interaction_Hamiltonian_SphericalTensor(A,IT_PAF,A,\"spin-spin\",\"secular\", 0,theta,phi)\n",
+    "Hdd_LAB_ST.Inverse2PI().Round(3).matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/latex": [
+       "$\\displaystyle \\left[\\begin{matrix}8.715 & 0 & 0\\\\0 & -17.429 & 0\\\\0 & 0 & 8.715\\end{matrix}\\right]$"
+      ],
+      "text/plain": [
+       "Matrix([\n",
+       "[8.715,       0,     0],\n",
+       "[    0, -17.429,     0],\n",
+       "[    0,       0, 8.715]])"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Hdd_LAB_ST = Ham.Interaction_Hamiltonian_SphericalTensor(A,IT_PAF,A,\"spin-spin\",\"secular + pseudosecular\", 0,theta,phi)\n",
+    "Hdd_LAB_ST.Inverse2PI().Round(3).matrix"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "base",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
