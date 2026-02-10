@@ -208,8 +208,11 @@ class QuantumSystem:
         self.RelaxParDipole_tau = 0.0
         self.RelaxParDipole_bIS = []
         self.Lindblad_Temp = None
+<<<<<<< HEAD
         self.uDissipator = None
         self.uDissipator_only_anticomm = False
+=======
+>>>>>>> 073632cc2e2799ec604ea5a48a1e813264ea6ff5
 
         # ----------------- ODE Solver -----------------
         self.PropagationMethod = "ODE Solver"
@@ -531,6 +534,7 @@ class QuantumSystem:
             setattr(self, f"{sdic}", PyOR_Particle.particle(sname))
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<<<<<<< HEAD
     # Initialize array
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
@@ -541,6 +545,8 @@ class QuantumSystem:
         return(QunObj(np.eye(X, dtype=self.DTYPE_C, order=self.ORDER_MEMORY)))
         
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+=======
+>>>>>>> 073632cc2e2799ec604ea5a48a1e813264ea6ff5
     # Spin Operators
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

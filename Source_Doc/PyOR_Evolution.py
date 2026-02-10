@@ -577,6 +577,7 @@ class Evolutions:
             for i in range(Npoints):
                 signal[i] = np.trace(detection.T @ rho_t[i])
             return t, signal   
+<<<<<<< HEAD
 
     def PartialTrace(self, rho, keep, Sdim = None):
         """
@@ -613,6 +614,9 @@ class Evolutions:
         final_shape = (np.prod(Sdim_new), np.prod(Sdim_new))
 
         return rho_new.reshape(final_shape)      
+=======
+       
+>>>>>>> 073632cc2e2799ec604ea5a48a1e813264ea6ff5
     
     def Convert_LrhoTO2Drho(self,Lrho): 
         """
