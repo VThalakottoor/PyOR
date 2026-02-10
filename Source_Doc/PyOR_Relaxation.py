@@ -956,7 +956,7 @@ class RelaxationProcess:
                 else:
                      for uconst, A, B in uDissipator:
                         Rso = Rso + uconst * (A.data @ rho @ B.data - 0.5 * self.class_COMM.AntiCommutator(B.data @ A.data, rho))                   
-                return Rso
+                return -1 * Rso
 
             if Rprocess == "Auto-correlated Dipolar Heteronuclear":
                 """
