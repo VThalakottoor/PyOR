@@ -532,7 +532,7 @@ class QuantumSystem:
             setattr(self, f"{sdic}", PyOR_Particle.particle(sname))
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-<<<<<<< HEAD
+
     # Initialize array
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
@@ -543,8 +543,6 @@ class QuantumSystem:
         return(QunObj(np.eye(X, dtype=self.DTYPE_C, order=self.ORDER_MEMORY)))
         
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-=======
->>>>>>> 073632cc2e2799ec604ea5a48a1e813264ea6ff5
     # Spin Operators
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

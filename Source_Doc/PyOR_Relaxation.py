@@ -75,11 +75,8 @@ class RelaxationProcess:
         self.R_Matrix = class_QS.R_Matrix  
         self.Nspins = class_QS.Nspins 
         self.SparseM = class_QS.SparseM
-<<<<<<< HEAD
         self.uDissipator = class_QS.uDissipator
         self.uDissipator_only_anticomm = class_QS.uDissipator_only_anticomm
-=======
->>>>>>> 073632cc2e2799ec604ea5a48a1e813264ea6ff5
 
     def Adjoint(self, A):
         """
@@ -459,12 +456,9 @@ class RelaxationProcess:
         Sp = self.class_QS.Sp_
         Sm = self.class_QS.Sm_
 
-<<<<<<< HEAD
         uDissipator = self.uDissipator
         uDissipator_only_anticomm = self.uDissipator_only_anticomm
 
-=======
->>>>>>> 073632cc2e2799ec604ea5a48a1e813264ea6ff5
         # ==================================================
         # Redfield Equation - Hilbert Space
         # ==================================================
@@ -953,7 +947,6 @@ class RelaxationProcess:
                 """
                 Rso = 2.0 * np.multiply(R_input,rho) 
                 return Rso
-<<<<<<< HEAD
             
             if Rprocess == "user Defined Dissipator":
                 Rso = np.zeros((self.Vdim, self.Vdim), dtype=np.cdouble)
@@ -964,8 +957,6 @@ class RelaxationProcess:
                      for uconst, A, B in uDissipator:
                         Rso = Rso + uconst * (A.data @ rho @ B.data - 0.5 * self.class_COMM.AntiCommutator(B.data @ A.data, rho))                   
                 return Rso
-=======
->>>>>>> 073632cc2e2799ec604ea5a48a1e813264ea6ff5
 
             if Rprocess == "Auto-correlated Dipolar Heteronuclear":
                 """
