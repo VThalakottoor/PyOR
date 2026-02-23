@@ -13,6 +13,7 @@ Description:
 
 Acknowledgements:
     John Price, Q Magnetics, suggestion on Dwell time.
+    Marta Stefańska, University of Basel, Biozentrum
 """
 
 
@@ -578,7 +579,7 @@ class Evolutions:
                 signal[i] = np.trace(detection.T @ rho_t[i])
             return t, signal   
 
-    def PartialTrace(self, rho, keep, Sdim = None):
+    def PartialTrace_(self, rho, keep, Sdim = None):
         """
         Compute the partial trace over specified subsystems of a density matrix.
 
@@ -613,7 +614,48 @@ class Evolutions:
         final_shape = (np.prod(Sdim_new), np.prod(Sdim_new))
 
         return rho_new.reshape(final_shape)      
-    
+
+    def PartialTrace(self, rho, keep, Sdim = None):
+        """
+        Compute the partial trace over specified subsystems of a density matrix.
+
+        Parameters
+        ----------
+        rho : QunObj
+            Density matrix.
+        keep : list of int
+            Indices of subsystems to retain.
+        Sdim : list of int, optional
+            Dimensions of subsystems (defaults to class_QS.Sdim).
+
+        Returns
+        -------
+        QunObj
+            Reduced density matrix after tracing out unlisted subsystems.
+
+        Bug fix by Marta Stefańska    
+        """
+
+        if Sdim is None:
+            Sdim = self.class_QS.Sdim.tolist()
+
+        SysInx = range(len(Sdim))
+        TraceInx = list(set(SysInx) - set(keep))
+
+        Sdim_current = list(Sdim)  # MODIFIED
+        rho_new = rho.copy()  # MODIFIED
+
+        for idx in sorted(TraceInx, reverse=True):
+            n_curr = len(Sdim_current)  # ADDED
+            rho_new = np.trace(rho_new.reshape(Sdim_current + Sdim_current),  # MODIFIED
+                               axis1=idx, axis2=idx + n_curr)  # MODIFIED
+            Sdim_current.pop(idx)  # ADDED
+
+        Sdim_new = [Sdim[j] for j in keep]
+        final_shape = (np.prod(Sdim_new), np.prod(Sdim_new))
+
+        return rho_new.reshape(final_shape)
+
     def Convert_LrhoTO2Drho(self,Lrho): 
         """
         Convert a Vector into a 2d Matrix
