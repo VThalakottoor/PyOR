@@ -1,15 +1,15 @@
+<img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_5.png" alt="PyOR logo" width="300">
+
 # PyOR (Python on Resonance)
 **Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)**
-
-## Contributors:
-1. John Price, Q Magnetics (Example: COSY)
-2. Marta Stefańska, University of Basel, Biozentrum (Example: Photo-CIDNP)
-
-<img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_4.png" alt="PyOR logo" width="300">
 
 ## For
 1. **Jean Jeener - My hero in NMR, whom I have never met.**
 2. **Gauri - My inner chaos, the birthplace of confusion, envy, and jealousy, the soul and catalyst of PyOR.**
+
+## Contributors:
+1. **John Price**, Q Magnetics (Example: COSY)
+2. **Marta Stefańska**, University of Basel, Biozentrum (Example: Photo-CIDNP)
 
 ## Motto
 **"Everybody can simulate Magnetic Resonance"**
