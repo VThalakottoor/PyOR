@@ -2,8 +2,8 @@
 **Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)**
 
 ## Contributors:
-1. John Price (Example: COSY)
-2. 
+1. John Price, Q Magnetics (Example: COSY)
+2. Marta Stefańska, University of Basel, Biozentrum (Example: Photo-CIDNP)
 
 <img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_4.png" alt="PyOR logo" width="300">
 
