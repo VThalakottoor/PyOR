@@ -1,4 +1,4 @@
-<img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_5.png" alt="PyOR logo" width="300">
+<img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_6.png" alt="PyOR logo" width="300">
 
 # PyOR (Python on Resonance)
 **Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)**
