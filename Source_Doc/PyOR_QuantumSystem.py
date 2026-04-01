@@ -254,6 +254,9 @@ class QuantumSystem:
         if PrintDefault:
             self._PrintSystemDefaults()
 
+        # ------ Initialize - Generate Spin Operators ------
+        self.Initialize()
+
     def _PrintSystemDefaults(self):
         """
         Internal helper method to print default settings for the initialized system.
@@ -443,6 +446,34 @@ class QuantumSystem:
         """
         self.SpinOperator(PrintDefault=False)
         self.ParticleParameters()
+        components = ["x", "y", "z", "p", "m"]
+        print("Spin Operators generated (Quantum Objects)")
+        print("=" * 30)
+        for key in self.SpinList:
+            labels = [f"{key}{c}" for c in components]
+            print(f"For particle {key}: {', '.join(labels)}")
+        print("\nTo see the matrix form use the attribute .matrix")
+
+    def Configure(self, Jcouplings=None, auto_update=True, **kwargs):
+        dict_params = ["OFFSET", "OMEGA_RF", "I_spintemp", "F_spintemp", "RD_xi", "RD_phase"]
+
+        for key, value in kwargs.items():
+            if not hasattr(self, key):
+                raise AttributeError(f"Unknown parameter: {key}")
+
+            if key in dict_params and isinstance(value, dict):
+                getattr(self, key).update(value)
+            else:
+                setattr(self, key, value)
+
+        if Jcouplings is not None:
+            for a, b, J in Jcouplings:
+                self.JcoupleValue(a, b, J)
+
+        if auto_update:
+            self.Update()
+
+        return self
 
     def Update(self):
         """
