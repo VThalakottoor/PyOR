@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="225mm"
+   height="150mm"
+   viewBox="0 0 225 150"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   sodipodi:docname="drawing.svg"
+   inkscape:export-filename="drawing.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.77949634"
+     inkscape:cx="393.84405"
+     inkscape:cy="280.3092"
+     inkscape:window-width="1600"
+     inkscape:window-height="863"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="Triangle"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135" />
+    </marker>
+    <rect
+       x="121.87357"
+       y="144.96539"
+       width="915.97607"
+       height="327.13431"
+       id="rect1" />
+    <rect
+       x="121.87357"
+       y="144.96539"
+       width="915.97607"
+       height="327.13431"
+       id="rect1-3" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3">
+      <g
+         id="g2"
+         transform="translate(-42.242156,3.840196)">
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,34.961143,-5.0914281)"
+           id="text1"
+           style="font-size:280px;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect1);display:inline;fill:#1e0c97;stroke-width:1.00157;stroke-dasharray:none"><tspan
+             x="121.87305"
+             y="375.46625"
+             id="tspan4"><tspan
+               style="font-weight:bold;font-size:253.333px;-inkscape-font-specification:'sans-serif Bold'"
+               id="tspan1">PyOR</tspan></tspan></text>
+        <path
+           style="fill:#1e0c97;fill-opacity:1;stroke:#1e0c97;stroke-width:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+           d="M 187.50516,47.00586 199.47751,32.856343"
+           id="path1"
+           sodipodi:nodetypes="cc" />
+        <path
+           style="fill:#1e0c97;fill-opacity:1;stroke:#1e0c97;stroke-width:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 152.24018,87.381712 C 141.0261,100.32228 141.0261,100.32228 141.0261,100.32228"
+           id="path10" />
+      </g>
+      <ellipse
+         style="fill:#1e0c97;fill-opacity:0.00919542;stroke:#1e0c97;stroke-width:2.096;stroke-dasharray:none"
+         id="path2"
+         cx="113.7658"
+         cy="73.923775"
+         rx="104.73727"
+         ry="67.295372" />
+    </g>
+  </g>
+</svg>
