@@ -3,10 +3,6 @@
 # PyOR (Python on Resonance)
 **Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)**
 
-## For
-1. **Jean Jeener - My hero in NMR, whom I have never met.**
-2. **Gauri - My inner chaos, the birthplace of confusion, envy, and jealousy, the soul and catalyst of PyOR.**
-
 ## Contributors:
 1. **John Price**, Q Magnetics (Example: COSY)
 2. **Marta Stefańska**, University of Basel, Biozentrum (Example: Photo-CIDNP)
@@ -31,16 +27,21 @@ Python On Resonance (PyOR) is a versatile magnetic resonance simulation package 
 
 Finally, watch out for numerical inaccuracies and potential errors in equations!
 
-## Requirments
-1. Anaconda (Python Distribution)
+## Requirements and installation
+1. Install Anaconda (Python Distribution)
 	https://www.anaconda.com/download
 	
-2. Visual Studio Code
+2. Install Visual Studio Code (VS code)
 	https://code.visualstudio.com/
 	
-3. Look the folder Python Conda Environment: 
-	- conda env create -f pyor_environment.yml (to install the conda environment)
+3. Download PyOR from GitHub: https://github.com/VThalakottoor/PyOR
+	
+4. Look inside the folder, Python Conda Environment and type the below line in the command terminal: 
+	- conda env create -f pyor_environment.yml (to install the conda environment, for the first time)
+	or
 	- conda env update -f pyor_environment.yml (to update the conda environment)
+    
+5. Try to run any Jupyter notebook file in the folder Examples using Visual Studio Code
   
 ## Prerequisite
 1. Basic knowledge of Python (Scipy, Numpy) and Object-oriented programming
