@@ -41,7 +41,53 @@ __all__ = [
 ]
 
 def info_():
+    # Logo
+    P = [
+    "*****",
+    "*   *",
+    "*****",
+    "*    ",
+    "*    ",
+    "     ",
+    "     "
+    ]
+
+    y = [
+    "      ",
+    "      ",
+    " *   *",
+    "  * * ",
+    "   *  ",
+    "  *   ",
+    " *    "
+    ]
+
+    O = [
+    "*****",
+    "*   *",
+    "*   *",
+    "*   *",
+    "*****",
+    "     ",
+    "     "
+    ]
+
+    R = [
+    "*****",
+    "*   *",
+    "*****",
+    "* *  ",
+    "*  * ",
+    "     ",
+    "     "
+    ]    
+    for i in range(7):
+        print(P[i], y[i], O[i], R[i])
     print("Welcome to Python On Resonance (PyOR)\n")
+    print("Author: Vineeth Thalakottoor, IE CNRS, LSDRM, CEA, Paris-Saclay\n")
+    print("Email: vineethfrancis.physics@gmail.com\n")
+    print('"Everybody can simulate Magnetic Resonance"\n')
+          
     print("Imported modules:\n")
 
     print("* QunS            (QuantumSystem from PyOR_QuantumSystem)")

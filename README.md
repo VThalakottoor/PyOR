@@ -1,7 +1,7 @@
 <img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_7.png" alt="PyOR logo" width="300">
 
 # PyOR (Python on Resonance)
-**Author: Vineeth Francis THALAKOTTOOR JOSE CHACKO (vineethfrancis.physics@gmail.com)**
+**Author: Vineeth Francis THALAKOTTOOR, IE CNRS, LSDRM, CEA, Paris-Saclay (vineethfrancis.physics@gmail.com)**
 
 ## Contributors:
 1. **John Price**, Q Magnetics (Example: COSY)
