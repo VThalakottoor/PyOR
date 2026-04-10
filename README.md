@@ -1,4 +1,4 @@
-<img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_7.png" alt="PyOR logo" width="300">
+<img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_8.png" alt="PyOR logo" width="300">
 
 # PyOR (Python on Resonance)
 **Author: Vineeth Francis THALAKOTTOOR, IE CNRS, LSDRM, CEA, Paris-Saclay (vineethfrancis.physics@gmail.com)**
@@ -37,9 +37,9 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 3. Download PyOR from GitHub: https://github.com/VThalakottoor/PyOR
 	
 4. Look inside the folder, Python Conda Environment and type the below line in the command terminal: 
-	- conda env create -f pyor_environment.yml (to install the conda environment, for the first time)
+	- **conda env create -f pyor_environment.yml** (to install the conda environment, for the first time)
 	or
-	- conda env update -f pyor_environment.yml (to update the conda environment)
+	- **conda env update -f pyor_environment.yml** (to update the conda environment)
     
 5. Try to run any Jupyter notebook file in the folder Examples using Visual Studio Code
   
