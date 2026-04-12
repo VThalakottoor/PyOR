@@ -1,0 +1,27 @@
+folder = /media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/PyOR/Examples/Nonlinear_NMR/Maser/1
+--------------
+Spin_list = {'A': 'H1', 'B': 'H1'}
+PropagationSpace = Hilbert
+MasterEquation = Redfield
+B0 = QS.B0 =1.390
+--------------
+OFFSET0 = {'A': 10.0, 'B': 45.0}
+Ispintemp = {'A': 0.001, 'B': 0.001}
+Fspintemp = {'A': -0.001, 'B': -0.001}
+Lindblad_Temp = -0.001
+Rprocess = Phenomenological
+RelaxParDipole_tau = 0.0
+DipolePairs = []
+RelaxParDipole_bIS = []
+Rdamping = True
+RD_xi = {'A': 20, 'B': 20}
+RD_phase = {'A': 0, 'B': 0}
+--------------
+--------------
+flip_angle1 = 179.0
+--------------
+AcqDT = 0.0001
+AcqAQ = 20.0
+OdeMethod = DOP853
+PropagationMethod = ODE Solver
+Simulation Time = 18.55273127555847

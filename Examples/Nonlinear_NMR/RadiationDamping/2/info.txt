@@ -1,0 +1,27 @@
+folder = /media/HD2/Vineeth/PostDoc_Simulations/Github/PyOR_V1/PyOR_Combined/PyOR/Examples/Nonlinear_NMR/RadiationDamping/2
+--------------
+Spin_list = {'A': 'H1'}
+PropagationSpace = Hilbert
+MasterEquation = Redfield
+B0 = QS.B0 =1.390
+--------------
+OFFSET0 = {'A': 10.0}
+Ispintemp = {'A': 0.001}
+Fspintemp = {'A': 300}
+Lindblad_Temp = 300
+Rprocess = Phenomenological
+RelaxParDipole_tau = 0.0
+DipolePairs = []
+RelaxParDipole_bIS = []
+Rdamping = True
+RD_xi = {'A': 20}
+RD_phase = {'A': 0}
+--------------
+--------------
+flip_angle1 = 179.0
+--------------
+AcqDT = 0.0001
+AcqAQ = 5.0
+OdeMethod = DOP853
+PropagationMethod = ODE Solver
+Simulation Time = 0.49578213691711426
