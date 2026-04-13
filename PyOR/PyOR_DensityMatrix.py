@@ -84,7 +84,7 @@ class DensityMatrix:
             return QunObj(rho_T)
 
         if self.class_QS.PropagationSpace == "Liouville":
-            return self.class_QS.Class_quantumlibrary.DMToVec(QunObj(rho_T)) 
+            return self.class_QS.QuantumLibrary.DMToVec(QunObj(rho_T)) 
         
     def EquilibriumDensityMatrix_Add_TotalHamiltonian(self, HQ, T, HT_approx=False):
         """
@@ -119,7 +119,7 @@ class DensityMatrix:
             return QunObj(rho_T)
 
         if self.class_QS.PropagationSpace == "Liouville":
-            return self.class_QS.Class_quantumlibrary.DMToVec(QunObj(rho_T))
+            return self.class_QS.QuantumLibrary.DMToVec(QunObj(rho_T))
 
     def InitialDensityMatrix(self, HT_approx=False):
         """Wrapper for equilibrium density matrix using initial temperatures."""
@@ -157,8 +157,8 @@ class DensityMatrix:
             return 100 * pol if PolPercentage else pol
         
         if self.class_QS.PropagationSpace == "Liouville":
-            rho = self.class_QS.Class_quantumlibrary.VecToDM(rhoQ, (self.class_QS.Vdim,self.class_QS.Vdim)).data
-            Sz = self.class_QS.Class_quantumlibrary.VecToDM(SzQ, (self.class_QS.Vdim,self.class_QS.Vdim)).data
+            rho = self.class_QS.QuantumLibrary.VecToDM(rhoQ, (self.class_QS.Vdim,self.class_QS.Vdim)).data
+            Sz = self.class_QS.QuantumLibrary.VecToDM(SzQ, (self.class_QS.Vdim,self.class_QS.Vdim)).data
             pol = -(1.0 / spinQ) * np.trace(rho @ Sz).real / np.trace(rho).real
             return 100 * pol if PolPercentage else pol            
 

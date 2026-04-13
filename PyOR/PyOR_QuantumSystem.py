@@ -25,6 +25,7 @@ try:
     from .PyOR_DensityMatrix import DensityMatrix  
     from .PyOR_QuantumLibrary import QuantumLibrary 
     from .PyOR_HardPulse import HardPulse
+    from .PyOR_Relaxation import RelaxationProcess
     from .PyOR_Evolution import Evolutions
     from .PyOR_Plotting import Plotting
     from . import PyOR_PhysicalConstants
@@ -40,6 +41,7 @@ except ImportError:
     from PyOR_DensityMatrix import DensityMatrix  
     from PyOR_QuantumLibrary import QuantumLibrary   
     from PyOR_HardPulse import HardPulse
+    from PyOR_Relaxation import RelaxationProcess
     from PyOR_Evolution import Evolutions
     from PyOR_Plotting import Plotting
     import PyOR_PhysicalConstants
@@ -488,8 +490,8 @@ class QuantumSystem:
         Useful after modifying B0, OMEGA_RF, OFFSET, etc.
         Recomputes internal attributes used in simulation and spin labels.
         """
-
-        self.Class_quantumlibrary = QuantumLibrary(self)
+        
+        self.QuantumLibrary = QuantumLibrary(self)
         self.Initialize()
 
         for i in self.SpinDic:
@@ -538,11 +540,12 @@ class QuantumSystem:
             self.Basis_SpinOperators_Hilbert_Logic = False
 
         # Calling other classes from other modules (testing)
-
+        
         self.Basis = Basis(self)
         self.Hamiltonian = Hamiltonian(self)
         self.DensityMatrix = DensityMatrix(self,self.Hamiltonian)
         self.HardPulse = HardPulse(self)
+        self.RelaxationProcess = RelaxationProcess(self)
         self.Evolutions = Evolutions(self,self.Hamiltonian)
         self.Plotting = Plotting(self)
         self.Spro = Spro
@@ -744,12 +747,19 @@ class QuantumSystem:
 
             # Assign individual spin operators as class attributes (e.g., Ix, Iy, Iz...)
             for idx, spin in enumerate(self.SpinDic):
-                setattr(self, f"{spin}x", self.Class_quantumlibrary.DMToVec(QunObj(Sx[idx], PrintDefault=PrintDefault)))
-                setattr(self, f"{spin}y", self.Class_quantumlibrary.DMToVec(QunObj(Sy[idx], PrintDefault=PrintDefault)))
-                setattr(self, f"{spin}z", self.Class_quantumlibrary.DMToVec(QunObj(Sz[idx], PrintDefault=PrintDefault)))
-                setattr(self, f"{spin}p", self.Class_quantumlibrary.DMToVec(QunObj(Sp[idx], PrintDefault=PrintDefault)))
-                setattr(self, f"{spin}m", self.Class_quantumlibrary.DMToVec(QunObj(Sm[idx], PrintDefault=PrintDefault)))
-                setattr(self, f"{spin}id", self.Class_quantumlibrary.DMToVec(QunObj(np.eye(self.Vdim), PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}x", QunObj(Sx[idx], PrintDefault=PrintDefault))
+                setattr(self, f"{spin}y", QunObj(Sy[idx], PrintDefault=PrintDefault))
+                setattr(self, f"{spin}z", QunObj(Sz[idx], PrintDefault=PrintDefault))
+                setattr(self, f"{spin}p", QunObj(Sp[idx], PrintDefault=PrintDefault))
+                setattr(self, f"{spin}m", QunObj(Sm[idx], PrintDefault=PrintDefault))
+                setattr(self, f"{spin}id", QunObj(np.eye(self.Vdim), PrintDefault=PrintDefault))            
+                
+                setattr(self, f"{spin}x_vec", self.QuantumLibrary.DMToVec(QunObj(Sx[idx], PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}y_vec", self.QuantumLibrary.DMToVec(QunObj(Sy[idx], PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}z_vec", self.QuantumLibrary.DMToVec(QunObj(Sz[idx], PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}p_vec", self.QuantumLibrary.DMToVec(QunObj(Sp[idx], PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}m_vec", self.QuantumLibrary.DMToVec(QunObj(Sm[idx], PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}id_vec", self.QuantumLibrary.DMToVec(QunObj(np.eye(self.Vdim), PrintDefault=PrintDefault)))
 
         self.SpinOperator_Sub(PrintDefault=PrintDefault)
 
@@ -780,12 +790,19 @@ class QuantumSystem:
                 Sp = Sx + 1j * Sy
                 Sm = Sx - 1j * Sy
 
-                setattr(self, f"{spin}x_sub", self.Class_quantumlibrary.DMToVec(QunObj(Sx, PrintDefault=PrintDefault)))
-                setattr(self, f"{spin}y_sub", self.Class_quantumlibrary.DMToVec(QunObj(Sy, PrintDefault=PrintDefault)))
-                setattr(self, f"{spin}z_sub", self.Class_quantumlibrary.DMToVec(QunObj(Sz, PrintDefault=PrintDefault)))
-                setattr(self, f"{spin}p_sub", self.Class_quantumlibrary.DMToVec(QunObj(Sp, PrintDefault=PrintDefault)))
-                setattr(self, f"{spin}m_sub", self.Class_quantumlibrary.DMToVec(QunObj(Sm, PrintDefault=PrintDefault)))
-                setattr(self, f"{spin}id_sub", self.Class_quantumlibrary.DMToVec(QunObj(np.eye(Sx.shape[0]), PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}x_sub", QunObj(Sx, PrintDefault=PrintDefault))
+                setattr(self, f"{spin}y_sub", QunObj(Sy, PrintDefault=PrintDefault))
+                setattr(self, f"{spin}z_sub", QunObj(Sz, PrintDefault=PrintDefault))
+                setattr(self, f"{spin}p_sub", QunObj(Sp, PrintDefault=PrintDefault))
+                setattr(self, f"{spin}m_sub", QunObj(Sm, PrintDefault=PrintDefault))
+                setattr(self, f"{spin}id_sub", QunObj(np.eye(Sx.shape[0]), PrintDefault=PrintDefault))
+                
+                setattr(self, f"{spin}x_sub_vec", self.QuantumLibrary.DMToVec(QunObj(Sx, PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}y_sub_vec", self.QuantumLibrary.DMToVec(QunObj(Sy, PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}z_sub_vec", self.QuantumLibrary.DMToVec(QunObj(Sz, PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}p_sub_vec", self.QuantumLibrary.DMToVec(QunObj(Sp, PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}m_sub_vec", self.QuantumLibrary.DMToVec(QunObj(Sm, PrintDefault=PrintDefault)))
+                setattr(self, f"{spin}id_sub_vec", self.QuantumLibrary.DMToVec(QunObj(np.eye(Sx.shape[0]), PrintDefault=PrintDefault)))
 
     def SpinOperator_SpinQunatulNumber_List(self, SpinQNlist):
         """
@@ -1234,16 +1251,16 @@ class QuantumSystem:
             U (ndarray): Unitary transformation matrix from Zeeman basis to PMZ basis.
         """
         # Get product operators in Zeeman basis
-        Z_B, dic_Zeeman, coh_Zeeman, coh_Zeeman_array = self.Class_basis.ProductOperators_Zeeman()
+        Z_B, dic_Zeeman, coh_Zeeman, coh_Zeeman_array = self.Basis.ProductOperators_Zeeman()
         
         # Get product operators in PMZ basis (with standard options)
         sort = 'negative to positive'
         Index = False
         Normal = True
-        PMZ_PMZ, coh_PMZ, dic_PMZ = self.Class_basis.ProductOperators_SpinHalf_PMZ(sort, Index, Normal)
+        PMZ_PMZ, coh_PMZ, dic_PMZ = self.Basis.ProductOperators_SpinHalf_PMZ(sort, Index, Normal)
         
         # Construct the unitary transformation matrix from Zeeman to PMZ basis
-        U = self.Class_basis.BasisChange_TransformationMatrix(Z_B, PMZ_PMZ)
+        U = self.Basis.BasisChange_TransformationMatrix(Z_B, PMZ_PMZ)
         
         return U
 

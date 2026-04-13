@@ -24,7 +24,9 @@ from .PyOR_HardPulse import HardPulse
 from .PyOR_Basis import Basis
 from .PyOR_Evolution import Evolutions
 from .PyOR_Plotting import Plotting
+from .PyOR_Relaxation import RelaxationProcess
 from . import PyOR_SignalProcessing as Spro
+from .PyOR_QuantumLibrary import QuantumLibrary
 
 # Public API
 __all__ = [
@@ -37,6 +39,8 @@ __all__ = [
     "Evolutions",
     "Plotting",
     "Spro",
+    "RelaxationProcess",
+    "QuantumLibrary",
     "info"
 ]
 
@@ -90,15 +94,17 @@ def info_():
           
     print("Imported modules:\n")
 
-    print("* QunS            (QuantumSystem from PyOR_QuantumSystem)")
-    print("\t** Hamiltonian     (from PyOR_Hamiltonian)")
-    print("\t** DensityMatrix   (from PyOR_DensityMatrix)")
-    print("\t** HardPulse       (from PyOR_HardPulse)")
-    print("\t** Basis           (from PyOR_Basis)")
-    print("\t** Evolutions      (from PyOR_Evolution)")
-    print("\t** Plotting        (from PyOR_Plotting)")
-    print("\t** Spro            (from PyOR_SignalProcessing)")
-    print("* QunObj          (from PyOR_QuantumObject)")
+    print("* QunS                   (QuantumSystem from PyOR_QuantumSystem)")
+    print("\t** Hamiltonian         (from PyOR_Hamiltonian)")
+    print("\t** DensityMatrix       (from PyOR_DensityMatrix)")
+    print("\t** HardPulse           (from PyOR_HardPulse)")
+    print("\t** Basis               (from PyOR_Basis)")
+    print("\t** RelaxationProcess   (from PyOR_Relaxation)")
+    print("\t** Evolutions          (from PyOR_Evolution)")
+    print("\t** Plotting            (from PyOR_Plotting)")
+    print("\t** Spro                (from PyOR_SignalProcessing)")
+    print("* QunObj                 (from PyOR_QuantumObject)")
+    print("* QuantumLibrary         (from PyOR_QuantumLibrary)")
 
     print('\nHow to start? Make a spin list like, Spin_list = {"A" : "H1", "B" : "H1"}')
     print('\nThen create an object, QS = QunS(Spin_list)')
