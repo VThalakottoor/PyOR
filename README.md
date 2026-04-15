@@ -5,6 +5,8 @@ Python On Resonance (PyOR) is a versatile magnetic resonance simulation package 
 
 Finally, watch out for numerical inaccuracies and potential errors in equations!
 
+**_“Ever tried, ever failed, no matter. Try again, fail again, fail better.” — Samuel Beckett_**
+
 # PyOR (Python on Resonance)
 **Author: Vineeth Francis THALAKOTTOOR, IE CNRS, LSDRM, CEA, Paris-Saclay (vineethfrancis.physics@gmail.com)**
 
@@ -19,7 +21,7 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 https://vthalakottoor.github.io/PyOR/ (A work in progress)
 
 ## How to cite and download PyOR
-Go to https://doi.org/10.5281/zenodo.15241169 and download any version, which will be stable. Do not download from GitHub, since I will be updating the examples and code.
+https://doi.org/10.5281/zenodo.15241169
 
 ## For tutorials in MARQUISE platform
 https://quantum-resonance.org/category/simulation/
@@ -32,4 +34,4 @@ https://youtu.be/S45ps8uQJcc
 
 2. Dr. Daniel Abergel (ENS)
 
-**_“Ever tried, ever failed, no matter. Try again, fail again, fail better.” — Samuel Beckett_**
+
