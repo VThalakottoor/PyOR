@@ -54,4 +54,4 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 
 2. Dr. Daniel Abergel (ENS)
 
-**_"She’s asking the same familiar questions, waiting in silence for answers. And in those silences, her loneliness feels too sharp, like it might slice her in half. It’s not loneliness for David or even Anthony. She’s not lonely for her old home or friends. She’s lonely for answers. Answers are the company she seeks." - Lisa Genova, Love Anthony._**
+**_“Ever tried, ever failed, no matter. Try again, fail again, fail better.” — Samuel Beckett_**
