@@ -127,7 +127,7 @@ class QuantumSystem:
         Many more attributes initialized for relaxation, plotting, acquisition, etc.
     """
 
-    def __init__(self, SpinList, PrintDefault=True):
+    def __init__(self, SpinList, PrintDefault=False):
 
         self.PrintDefault = PrintDefault
         
@@ -162,6 +162,17 @@ class QuantumSystem:
         self.L900 = 21.1416 # T
         self.L950 = 22.3160 # T
         self.L1000 = 23.4904 # T
+
+        # Physical Constants
+        self.pi = np.pi
+        self.pl = 6.626e-34 # Planck Constant; J s
+        self.hbar = 1.05457182e-34 # Planck Constant; J s rad^-1
+        self.ep0 = 8.854e-12 # Permitivity of free space; F m^-1
+        self.mu0 = 4 * np.pi * 1.0e-7 # Permeabiltiy of free space; N A^-2 or H m^-1
+        self.kb = 1.380649e-23 # Boltzmann Constant; J K^-1
+        self.bm = 9.2740100657e-24 # Bohr magneton; J T^-1
+        self.nm = 5.0507837393e-27 # Nuclear magneton; J T^-1
+        self.e = 1.602e-19 # Electric charge; A s
 
         # Default configuration messages
         if PrintDefault:
@@ -579,12 +590,23 @@ class QuantumSystem:
     # Initialize array
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
-    def Zeros(self,X):
-        return(QunObj(np.zeros(X, dtype=self.DTYPE_C, order=self.ORDER_MEMORY)))
+    def Zeros(self,X,QuantumObject=True):
+        if QuantumObject:
+            return(QunObj(np.zeros(X, dtype=self.DTYPE_C, order=self.ORDER_MEMORY)))
+        else:
+            return(np.zeros(X, dtype=self.DTYPE_C, order=self.ORDER_MEMORY))
 
-    def Eye(self,X):
-        return(QunObj(np.eye(X, dtype=self.DTYPE_C, order=self.ORDER_MEMORY)))
-        
+    def Eye(self,X,QuantumObject=True):
+        if QuantumObject:
+            return(QunObj(np.eye(X, dtype=self.DTYPE_C, order=self.ORDER_MEMORY)))
+        else:
+            return(np.eye(X, dtype=self.DTYPE_C, order=self.ORDER_MEMORY))
+    def Trace(self,X):
+        return np.trace(X)
+
+    def Array(self,X):
+        return np.array(X)     
+       
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     # Spin Operators
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
