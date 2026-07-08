@@ -20,6 +20,7 @@ Acknowledgement:
 
 
 import numpy as np
+import scipy as scp
 
 def WindowFunction(t, signal, LB):
     """
@@ -46,7 +47,7 @@ def WindowFunction(t, signal, LB):
     return signal * window
 
 
-def FourierTransform(signal, fs, zeropoints):
+def FourierTransform_(signal, fs, zeropoints):
     """
     Computes the Fourier Transform of a time-domain signal with optional zero filling.
 
@@ -70,10 +71,26 @@ def FourierTransform(signal, fs, zeropoints):
     spectrum : ndarray
         Complex frequency-domain representation of the input signal.
     """
-    signal[0] = signal[0]  # Placeholder to preserve first point (no effect)
+    signal[0] = signal[0]/2  # Placeholder to preserve first point (no effect)
     spectrum = np.fft.fft(signal, zeropoints * signal.shape[-1])
     spectrum = np.fft.fftshift(spectrum)
     freq = np.linspace(-fs / 2, fs / 2, spectrum.shape[-1])
+    #freq = np.fft.fftshift(np.fft.fftfreq(spectrum.shape[-1], d=1/fs))
+    return freq, spectrum
+
+def FourierTransform(signal, fs, zeropoints):
+    """
+    Computes the Fourier Transform of a time-domain signal with optional zero filling.
+    """
+
+    Nfft = zeropoints * len(signal)
+
+    spectrum = np.fft.fft(signal, Nfft)
+    spectrum = np.fft.fftshift(spectrum)
+
+    df = fs / Nfft
+    freq = (np.arange(Nfft) - Nfft // 2) * df
+
     return freq, spectrum
 
 def PhaseAdjust_FID(fid,PH0):
