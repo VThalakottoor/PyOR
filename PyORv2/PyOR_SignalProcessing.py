@@ -47,7 +47,7 @@ def WindowFunction(t, signal, LB):
     return signal * window
 
 
-def FourierTransform_(signal, fs, zeropoints):
+def FourierTransform_(signal, fs, zeropoints=1.0):
     """
     Computes the Fourier Transform of a time-domain signal with optional zero filling.
 
@@ -78,17 +78,19 @@ def FourierTransform_(signal, fs, zeropoints):
     #freq = np.fft.fftshift(np.fft.fftfreq(spectrum.shape[-1], d=1/fs))
     return freq, spectrum
 
-def FourierTransform(signal, fs, zeropoints):
+def FourierTransform(signal, fs, zeropoints=1.0):
     """
     Computes the Fourier Transform of a time-domain signal with optional zero filling.
     """
 
     Nfft = zeropoints * len(signal)
+    signal[0] = signal[0]/2
 
     spectrum = np.fft.fft(signal, Nfft)
     spectrum = np.fft.fftshift(spectrum)
 
     df = fs / Nfft
+
     freq = (np.arange(Nfft) - Nfft // 2) * df
 
     return freq, spectrum
