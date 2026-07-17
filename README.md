@@ -1,4 +1,5 @@
 # PyOR (Python on Resonance)
+**"In everlasting memories of Gauries."**
 
 <img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_8.png" alt="PyOR logo" width="300">
 
@@ -10,7 +11,7 @@ Finally, watch out for numerical inaccuracies and potential errors in equations!
 **_“Ever tried, ever failed, no matter. Try again, fail again, fail better.” — Samuel Beckett_**
 
 ## Author
-**Vineeth Francis THALAKOTTOOR, IE CNRS, LSDRM, CEA, Paris-Saclay (vineethfrancis.physics@gmail.com)**
+**Vineeth Francis THALAKOTTOOR, IE CNRS, LSDRM, CEA, Paris-Saclay (vineeth.thalakottoor@cea.fr)**
 
 ## Contributors:
 1. **John Price**, Q Magnetics (Example: COSY)
