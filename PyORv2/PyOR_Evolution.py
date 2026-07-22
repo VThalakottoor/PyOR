@@ -121,10 +121,12 @@ class Evolutions:
         Pmethod = self.PropagationMethod
         ode_method = self.OdeMethod
         dt = self.AcqDT
-        Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
-        #Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
+        #Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
+        #t = np.arange(Npoints) * dt # Vineeth
+        Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
+        t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
         self.Npoints = Npoints
-        t = np.arange(Npoints) * dt # Vineeth
+        
 
         Sx = self.class_QS.Sx_
         Sy = self.class_QS.Sy_ 
@@ -536,12 +538,12 @@ class Evolutions:
 
         dt = self.AcqDT
 
-        Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
-        t = np.arange(Npoints) * dt # Vineeth
-        #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+        #Npoints = int(self.AcqAQ/self.AcqDT) # Vineeth
+        #t = np.arange(Npoints) * dt # Vineeth
+        ##t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
 
-        #Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
-        #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+        Npoints = round(self.AcqAQ/self.AcqDT)+1 # John Price
+        t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
 
         detection = detectionQ.data
 

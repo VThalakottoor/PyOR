@@ -501,7 +501,7 @@ class QuantumSystem:
         Useful after modifying B0, OMEGA_RF, OFFSET, etc.
         Recomputes internal attributes used in simulation and spin labels.
         """
-        
+
         self.QuantumLibrary = QuantumLibrary(self)
         self.Initialize()
 
