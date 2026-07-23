@@ -93,7 +93,7 @@ def info_():
         print(P[i], y[i], O[i], R[i])
     print("Welcome to Python On Resonance (PyOR)\n")
     print("Author: Vineeth Thalakottoor, IE CNRS, LSDRM, CEA, Paris-Saclay\n")
-    print("Email: vineethfrancis.physics@gmail.com\n")
+    print("Email: vineeth.thalakottoor@cea.fr\n")
     print('"Everybody can simulate Magnetic Resonance"\n')
           
     print("Imported modules:\n")
