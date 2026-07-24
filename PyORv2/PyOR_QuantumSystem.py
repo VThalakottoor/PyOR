@@ -587,8 +587,17 @@ class QuantumSystem:
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    # Initialize array
+    # Numpy
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
+    def Sqrt(self,X):
+        return np.sqrt(X)
+
+    def Sum(self,X):
+        return np.sum(X)
+
+    def Abs(self,X):
+        return np.abs(X)
 
     def Zeros(self,X,QuantumObject=True):
         if QuantumObject:
@@ -601,12 +610,36 @@ class QuantumSystem:
             return(QunObj(np.eye(X, dtype=self.DTYPE_C, order=self.ORDER_MEMORY)))
         else:
             return(np.eye(X, dtype=self.DTYPE_C, order=self.ORDER_MEMORY))
+        
     def Trace(self,X):
         return np.trace(X)
 
     def Array(self,X):
         return np.array(X)     
-       
+
+    def Linspace(self, start, stop, num, endpoint=True, dtype=None, QuantumObject=True):
+        if dtype is None:
+            dtype = self.DTYPE_C
+
+        arr = np.linspace(start, stop, num=num, endpoint=endpoint, dtype=dtype)
+
+        if QuantumObject:
+            return QunObj(arr)
+        else:
+            return arr
+
+
+    def Arange(self, start, stop, step, dtype=None, QuantumObject=True):
+        if dtype is None:
+            dtype = self.DTYPE_C
+
+        arr = np.arange(start, stop, step, dtype=dtype)
+
+        if QuantumObject:
+            return QunObj(arr)
+        else:
+            return arr
+
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     # Spin Operators
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

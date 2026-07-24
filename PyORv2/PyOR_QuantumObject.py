@@ -21,6 +21,7 @@ Description:
 
 import numpy as np
 from numpy import linalg as lina
+import numbers
 
 import sympy as sp
 from sympy import * # Remove ??
@@ -418,7 +419,7 @@ class QunObj():
         ValueError or TypeError
             If dimensions are incompatible or type unsupported.
         """
-        if isinstance(other, (int, float, complex)):
+        if isinstance(other, numbers.Number) or np.isscalar(other):
             return QunObj(self.data * other)
         elif isinstance(other, QunObj):
             if self.shape[1] == other.shape[0]:
@@ -441,7 +442,7 @@ class QunObj():
         -------
         QunObj
         """
-        if isinstance(other, (int, float, complex)):
+        if isinstance(other, numbers.Number) or np.isscalar(other):
             return QunObj(self.data * other)
         else:
             return NotImplemented
