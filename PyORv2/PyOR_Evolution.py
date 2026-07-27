@@ -690,52 +690,6 @@ class Evolutions:
 
         return rho_new.reshape(final_shape)
 
-    def PartialTrace_Liouville(self, rho_L, keep, Sdim=None):
-        """
-        Partial trace of a Liouville-space density vector.
-        """
-
-        if Sdim is None:
-            Sdim = self.class_QS.Sdim.tolist()
-        else:
-            Sdim = list(Sdim)
-
-        if hasattr(rho_L, "data"):
-            rho_vec = np.asarray(rho_L.data)
-        else:
-            rho_vec = np.asarray(rho_L)
-
-        hilbert_dim = int(np.prod(Sdim))
-
-        if rho_vec.size != hilbert_dim**2:
-            raise ValueError(
-                f"Expected {hilbert_dim**2} Liouville-space elements, "
-                f"but received {rho_vec.size}."
-            )
-
-        # Liouville space -> Hilbert space
-        rho_matrix = rho_vec.reshape(
-            hilbert_dim,
-            hilbert_dim,
-            order="C"
-        )
-
-        # Perform the ordinary partial trace
-        rho_reduced = self.PartialTrace(
-            rho_matrix,
-            keep=keep,
-            Sdim=Sdim
-        )
-
-        # Hilbert space -> Liouville space
-        rho_reduced_L = rho_reduced.reshape(
-            rho_reduced.size,
-            1,
-            order="C"
-        )
-
-        return rho_reduced_L
-
     def Convert_LrhoTO2Drho_(self,Lrho): 
         """
         Convert a Vector into a 2d Matrix
