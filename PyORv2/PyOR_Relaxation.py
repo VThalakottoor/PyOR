@@ -827,6 +827,21 @@ class RelaxationProcess:
                 Rso = np.zeros((self.Ldim,self.Ldim),dtype=np.cdouble)
                 np.fill_diagonal(Rso, R1)      
 
+            if Rprocess == "user Defined Dissipator":
+
+                if self.SparseM:
+                    Rso = sparse.csc_matrix((self.Ldim, self.Ldim), dtype=np.cdouble)
+                else:
+                    Rso = np.zeros((self.Ldim, self.Ldim), dtype=np.cdouble)
+
+                for uconst, A, B in uDissipator:
+                    if uDissipator_only_anticomm:
+                        Rso = Rso + uconst * (-0.5 * self.class_COMM.AntiCommutationSuperoperator(B.data @ A.data))
+                    else:
+                        Rso = Rso + uconst * self.Lindblad_Dissipator(A.data, B.data)
+
+                return QunObj(-Rso)
+
             if Rprocess == "Auto-correlated Dipolar Heteronuclear":
                 """
                 Heteronuclear auto-correlated dipolar relaxation (Lindblad, Liouville space)

@@ -690,7 +690,53 @@ class Evolutions:
 
         return rho_new.reshape(final_shape)
 
-    def Convert_LrhoTO2Drho(self,Lrho): 
+    def PartialTrace_Liouville(self, rho_L, keep, Sdim=None):
+        """
+        Partial trace of a Liouville-space density vector.
+        """
+
+        if Sdim is None:
+            Sdim = self.class_QS.Sdim.tolist()
+        else:
+            Sdim = list(Sdim)
+
+        if hasattr(rho_L, "data"):
+            rho_vec = np.asarray(rho_L.data)
+        else:
+            rho_vec = np.asarray(rho_L)
+
+        hilbert_dim = int(np.prod(Sdim))
+
+        if rho_vec.size != hilbert_dim**2:
+            raise ValueError(
+                f"Expected {hilbert_dim**2} Liouville-space elements, "
+                f"but received {rho_vec.size}."
+            )
+
+        # Liouville space -> Hilbert space
+        rho_matrix = rho_vec.reshape(
+            hilbert_dim,
+            hilbert_dim,
+            order="C"
+        )
+
+        # Perform the ordinary partial trace
+        rho_reduced = self.PartialTrace(
+            rho_matrix,
+            keep=keep,
+            Sdim=Sdim
+        )
+
+        # Hilbert space -> Liouville space
+        rho_reduced_L = rho_reduced.reshape(
+            rho_reduced.size,
+            1,
+            order="C"
+        )
+
+        return rho_reduced_L
+
+    def Convert_LrhoTO2Drho_(self,Lrho): 
         """
         Convert a Vector into a 2d Matrix
         
@@ -703,6 +749,96 @@ class Evolutions:
         """
         
         return np.reshape(Lrho,(self.Vdim,self.Vdim))
+
+    def Convert_LrhoTO2Drho(self, Lrho):
+        """
+        Convert Liouville-space density vector(s) into Hilbert-space matrices.
+
+        Accepted shapes
+        ---------------
+        Single state:
+            (Ldim,)
+            (Ldim, 1)
+            (1, Ldim)
+
+        Multiple states:
+            (Npoints, Ldim)
+            (Ldim, Npoints)
+            (Npoints, Ldim, 1)
+            (Npoints, 1, Ldim)
+
+        Already converted:
+            (Npoints, Vdim, Vdim)
+        """
+
+        Lrho = np.asarray(Lrho)
+
+        Vdim = self.Vdim
+        Ldim = Vdim**2
+
+        # Single one-dimensional Liouville vector
+        if Lrho.ndim == 1:
+            if Lrho.size != Ldim:
+                raise ValueError(
+                    f"Expected {Ldim} elements, received {Lrho.size}."
+                )
+
+            return Lrho.reshape(Vdim, Vdim)
+
+        # Two-dimensional inputs
+        if Lrho.ndim == 2:
+
+            # Single column or row vector
+            if Lrho.shape in ((Ldim, 1), (1, Ldim)):
+                return Lrho.reshape(Vdim, Vdim)
+
+            # Each row is one Liouville vector
+            if Lrho.shape[1] == Ldim:
+                return Lrho.reshape(
+                    Lrho.shape[0],
+                    Vdim,
+                    Vdim
+                )
+
+            # Each column is one Liouville vector
+            if Lrho.shape[0] == Ldim:
+                return Lrho.T.reshape(
+                    Lrho.shape[1],
+                    Vdim,
+                    Vdim
+                )
+
+        # Three-dimensional inputs
+        if Lrho.ndim == 3:
+
+            # Already converted density-matrix trajectory
+            if Lrho.shape[-2:] == (Vdim, Vdim):
+                return Lrho
+
+            # Shape: (Npoints, Ldim, 1)
+            if Lrho.shape[1:] == (Ldim, 1):
+                return Lrho[:, :, 0].reshape(
+                    Lrho.shape[0],
+                    Vdim,
+                    Vdim
+                )
+
+            # Shape: (Npoints, 1, Ldim)
+            if Lrho.shape[1:] == (1, Ldim):
+                return Lrho[:, 0, :].reshape(
+                    Lrho.shape[0],
+                    Vdim,
+                    Vdim
+                )
+
+        raise ValueError(
+            "Unsupported Lrho shape. Expected one of: "
+            f"({Ldim},), ({Ldim}, 1), (1, {Ldim}), "
+            f"(Npoints, {Ldim}), ({Ldim}, Npoints), "
+            f"(Npoints, {Ldim}, 1), (Npoints, 1, {Ldim}), "
+            f"or (Npoints, {Vdim}, {Vdim}). "
+            f"Received {Lrho.shape}."
+        )
 
     def Commutator(self,A,B):
         """
