@@ -27,6 +27,9 @@ SPIN = {}
 # Electron
 SPIN["E"] = 1/2  # Electron
 
+# NV Center
+SPIN["NV1"] = 1 # Spin 1
+
 # --- Spin 1/2 Isotopes ---
 SPIN["H1"] = 1/2   # Hydrogen-1 / Proton
 SPIN["He3"] = 1/2  # Helium-3
