@@ -60,8 +60,9 @@ class Evolutions:
         self.Ldim = self.class_QS.Ldim
         self.ODE_atol = self.class_QS.ODE_atol
         self.ODE_rtol = self.class_QS.ODE_rtol
-        self.ShapeFunc = self.class_QS.ShapeFunc
+        self.ShapeFunc_or_Hamiltonian = self.class_QS.ShapeFunc_or_Hamiltonian
         self.Lindblad_Temp = self.class_QS.Lindblad_Temp
+        self.UserDefined_TimeDependentHamiltonian = self.class_QS.UserDefined_TimeDependentHamiltonian # User-defined function H(t)
 
 
     def Update(self):
@@ -79,15 +80,44 @@ class Evolutions:
         self.Ldim = self.class_QS.Ldim
         self.ODE_atol = self.class_QS.ODE_atol
         self.ODE_rtol = self.class_QS.ODE_rtol
-        self.ShapeFunc = self.class_QS.ShapeFunc
+        self.ShapeFunc_or_Hamiltonian = self.class_QS.ShapeFunc_or_Hamiltonian
         self.Lindblad_Temp = self.class_QS.Lindblad_Temp
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     # Time evolution of Density Matrix in Hilbert Space
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 
+    def Set_UserDefinedHamiltonian(self, H):
+        """
+        Store a user-defined time-dependent Hamiltonian function.
+
+        Parameters
+        ----------
+        H : callable
+            A function with the form
+
+                H(t)
+
+            where t is a scalar time and the returned object is either:
+
+            - a PyOR quantum object with a ``data`` attribute, or
+            - a NumPy-compatible square matrix.
+
+        Notes
+        -----
+        This method stores the function itself. It does not evaluate H(t)
+        until TimeDependent_Hamiltonian(t) is called.
+        """
+
+        if not callable(H):
+            raise TypeError(
+                "The user-defined Hamiltonian must be a callable "
+                "function with the form H(t)."
+            )
+
+        self.UserDefined_TimeDependentHamiltonian = H
         
-    def TimeDependent_Hamiltonian(self,t):
+    def TimeDependent_Hamiltonian_(self,t):
         """
         """
         
@@ -95,6 +125,48 @@ class Evolutions:
             return self.class_Ham.Zeeman_B1_Offresonance(t,self.ShapeParOmega,-1*self.ShapeParFreq,self.ShapeParPhase)
         if self.ShapeFunc == "Bruker":
             return self.class_Ham.Zeeman_B1_ShapedPulse(t,self.ShapeParOmega,-1*self.ShapeParFreq,self.ShapeParPhase)        
+
+    def TimeDependent_Hamiltonian(self, t):
+        """
+        Return the time-dependent Hamiltonian at time t.
+        """
+
+        if self.ShapeFunc_or_Hamiltonian == "Off Resonance":
+
+            H_t = self.class_Ham.Zeeman_B1_Offresonance(
+                t,
+                self.ShapeParOmega,
+                -self.ShapeParFreq,
+                self.ShapeParPhase,
+            )
+
+        elif self.ShapeFunc_or_Hamiltonian == "Bruker":
+
+            H_t = self.class_Ham.Zeeman_B1_ShapedPulse(
+                t,
+                self.ShapeParOmega,
+                -self.ShapeParFreq,
+                self.ShapeParPhase,
+            )
+
+        elif self.ShapeFunc_or_Hamiltonian == "User Defined Hamiltonian":
+
+            if self.UserDefined_TimeDependentHamiltonian is None:
+                raise ValueError(
+                    "No user-defined Hamiltonian has been set.\n"
+                    "Use Evolutions.Set_UserDefinedHamiltonian(H)."
+                )
+
+            H_t = self.UserDefined_TimeDependentHamiltonian(t)
+
+        else:
+            raise ValueError(f"Unknown ShapeFunc '{self.ShapeFunc}'.")
+
+        # Convert PyOR QuantumObject to numpy array
+        if hasattr(H_t, "data"):
+            H_t = H_t.data
+
+        return np.asarray(H_t, dtype=complex)
 
     def TimeDependent_Hamiltonian_Hilbert(self,t):
         """
@@ -259,6 +331,34 @@ class Evolutions:
                     Brd = self.class_NonL.Radiation_Damping(rho_temp)
                     Bdipole = self.class_NonL.DipoleShift(rho_temp)
                     H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
+                    rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
+                    return rhodot  
+                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
+                t, rho2d = rhoSol.t, rhoSol.y
+                for i in range(Npoints):          
+                    rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
+                    rho_t[i] = rho
+
+            if Pmethod == "ODE Solver ShapedPulse Lindblad":
+                """
+                Relaxation possible in Hilbert space by using solver for ODE. 
+                Integrators not supported: 'Radau' and LSODA
+                """
+                
+                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)       
+                #t = np.arange(Npoints) * dt # Vineeth                
+                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
+                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+
+                rhoi = rho.reshape(-1) + 0 * 1j
+                def rhoDOT(t,rho,Hamiltonian,Sx,Sy,Sz,Sp,Sm):                    
+                    rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
+                    rhodot = np.zeros((rhoi.shape[-1]))                       
+                    Rso_temp = self.class_Relax.Relaxation(rho_temp)
+                    Brd = self.class_NonL.Radiation_Damping(rho_temp)
+                    Bdipole = self.class_NonL.DipoleShift(rho_temp)
+                    H_shapePulse = self.TimeDependent_Hamiltonian(t)
+                    H = H_shapePulse + Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
                     rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
                     return rhodot  
                 rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)

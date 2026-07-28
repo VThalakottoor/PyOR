@@ -260,14 +260,16 @@ class QuantumSystem:
         self.Shift_para = 0.0
         self.Dipole_Shift = False
         self.SparseM = False
-        self.ShapeFunc = None
+        self.ShapeFunc_or_Hamiltonian = None
         self.ShapeParOmega = None
         self.ShapeParPhase = None
         self.ShapeParFreq = None
+        self.UserDefined_TimeDependentHamiltonian = None
         self.RowColOrder = 'C'
         self.DTYPE_C = np.csingle
         self.DTYPE_F = np.single
         self.ORDER_MEMORY = "C"
+        
 
         # ------ Optional Printouts ------
         if PrintDefault:
