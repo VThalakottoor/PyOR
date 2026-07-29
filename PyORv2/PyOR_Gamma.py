@@ -25,10 +25,10 @@ Reference:
 GAMMA = {}
 
 # Electron
-GAMMA["E"] = 1.7608597e11  # Electron
+GAMMA["E"] = -1.7608597e11  # Electron
 
 # NV Center
-GAMMA["NV1"] = 0.0  # Electron
+GAMMA["NV_E"] = -1.7608597e11  # Electron
 
 # --- Spin 1/2 Isotopes ---
 GAMMA["H1"] = 26.7522128e7   # Hydrogen-1 / Proton

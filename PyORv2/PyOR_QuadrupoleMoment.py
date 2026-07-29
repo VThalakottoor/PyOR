@@ -35,7 +35,7 @@ QUADRUPOLE = {}
 
 # Electron and common spin-1/2 nuclei
 QUADRUPOLE["E"] = 0.0         # Electron
-QUADRUPOLE["NV1"] = 0.0         # NV center
+QUADRUPOLE["NV_E"] = 0.0      # NV center
 QUADRUPOLE["H1"] = 0.0        # Hydrogen-1 / Proton
 QUADRUPOLE["C13"] = 0.0       # Carbon-13
 QUADRUPOLE["N15"] = 0.0       # Nitrogen-15

@@ -234,8 +234,8 @@ class QuantumSystem:
         # ----------------- ODE Solver -----------------
         self.PropagationMethod = "ODE Solver"
         self.OdeMethod = 'DOP853'
-        self.ODE_atol = 1.0e-12
-        self.ODE_rtol = 1.0e-12
+        self.ODE_atol = 1.0e-6 #1.0e-12 #RD
+        self.ODE_rtol = 1.0e-3 #1.0e-12 #RD
 
         # ----------------- Radiation Damping -----------------
         self.Rdamping = False

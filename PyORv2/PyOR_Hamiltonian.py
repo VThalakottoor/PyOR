@@ -112,6 +112,178 @@ class Hamiltonian:
         self.LarmorF = W0
         return W0
 
+    def EnergyLevel_TransitionFrequency_(self, HamiltonianQ, initial=0, final=1,
+                                        return_eigenvalues=False,
+                                        return_eigenvectors=False):
+        """
+        Calculate the transition frequency between two energy levels.
+
+        Parameters
+        ----------
+        HamiltonianQ : QuantumObject or ndarray
+            Hamiltonian matrix.
+        initial : int, default=0
+            Initial energy level index.
+        final : int, default=1
+            Final energy level index.
+        return_eigenvalues : bool, default=False
+            Return the sorted eigenvalues.
+        return_eigenvectors : bool, default=False
+            Return the corresponding eigenvectors.
+
+        Returns
+        -------
+        float
+            Transition frequency (Ef - Ei).
+
+        Optional
+        --------
+        eigenvalues : ndarray
+            Sorted eigenvalues.
+
+        eigenvectors : ndarray
+            Corresponding eigenvectors.
+        """
+
+        # Extract matrix
+        if hasattr(HamiltonianQ, "data"):
+            H = HamiltonianQ.data
+        else:
+            H = np.asarray(HamiltonianQ)
+
+        # Diagonalize
+        eigvals, eigvecs = np.linalg.eigh(H)
+
+        # Sort (eigh is already sorted, but make explicit)
+        idx = np.argsort(eigvals)
+        eigvals = eigvals[idx]
+        eigvecs = eigvecs[:, idx]
+
+        # Check indices
+        n = len(eigvals)
+        if not (0 <= initial < n):
+            raise IndexError(f"initial must be between 0 and {n-1}")
+        if not (0 <= final < n):
+            raise IndexError(f"final must be between 0 and {n-1}")
+
+        transition = eigvals[final] - eigvals[initial]
+
+        result = [transition]
+
+        if return_eigenvalues:
+            result.append(eigvals)
+
+        if return_eigenvectors:
+            result.append(eigvecs)
+
+        if len(result) == 1:
+            return result[0]
+
+        return tuple(result)
+
+    def EnergyLevel_TransitionFrequency(
+        self,
+        HamiltonianQ,
+        initial=0,
+        final=1,
+        return_eigenvalues=False,
+        return_eigenvectors=False,
+    ):
+        """
+        Calculate the transition frequency between two energy levels.
+
+        Parameters
+        ----------
+        HamiltonianQ : QuantumObject or ndarray
+            Hamiltonian matrix.
+        initial : int, default=0
+            Initial energy level index (lowest energy = 0).
+        final : int, default=1
+            Final energy level index.
+        return_eigenvalues : bool, default=False
+            If True, also return the eigenvalues sorted from
+            lowest to highest energy.
+        return_eigenvectors : bool, default=False
+            If True, also return the corresponding eigenvectors.
+            The i-th column corresponds to the i-th eigenvalue.
+
+        Returns
+        -------
+        float
+            Transition frequency = E_final - E_initial.
+
+        Optional
+        --------
+        eigenvalues : ndarray
+            Eigenvalues sorted in ascending (lowest-to-highest energy) order.
+
+        eigenvectors : ndarray
+            Eigenvectors arranged to correspond to the sorted eigenvalues.
+            Column i is the eigenvector associated with eigenvalues[i].
+        """
+
+        # Extract Hamiltonian matrix
+        if hasattr(HamiltonianQ, "data"):
+            H = HamiltonianQ.data
+        else:
+            H = np.asarray(HamiltonianQ)
+
+        # Diagonalize
+        eigvals, eigvecs = np.linalg.eigh(H)
+
+        # Explicitly sort from lowest to highest energy
+        order = np.argsort(eigvals)
+        eigvals = eigvals[order]
+        eigvecs = eigvecs[:, order]
+
+        # Validate indices
+        n = len(eigvals)
+        if not (0 <= initial < n):
+            raise IndexError(f"initial must be between 0 and {n-1}")
+        if not (0 <= final < n):
+            raise IndexError(f"final must be between 0 and {n-1}")
+
+        transition = eigvals[final] - eigvals[initial]
+
+        result = [transition]
+
+        if return_eigenvalues:
+            result.append(eigvals)
+
+        if return_eigenvectors:
+            result.append(eigvecs)
+
+        return result[0] if len(result) == 1 else tuple(result)
+
+    def ShiftHamiltonianToZero(self, H):
+        """
+        Shift the Hamiltonian so that the smallest diagonal element is zero.
+
+        Parameters
+        ----------
+        H : QuantumObject or ndarray
+            Hamiltonian matrix.
+
+        Returns
+        -------
+        QuantumObject or ndarray
+            Shifted Hamiltonian.
+        """
+
+        if hasattr(H, "data"):
+            H_data = H.data
+        else:
+            H_data = H
+
+        Emin = np.min(np.real(np.diag(H_data)))
+
+        H_new = H_data - Emin * np.eye(H_data.shape[0], dtype=complex)
+
+        if hasattr(H, "data"):
+            H_new = self.class_QS.QuantumObject(H_new)
+
+        return QunObj(H_new)
+
     def Zeeman(self):
         r"""
         Constructs the Zeeman Hamiltonian in the laboratory frame.
