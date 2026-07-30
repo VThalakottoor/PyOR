@@ -22,6 +22,8 @@ Reference:
     https://github.com/bennomeier/spindata/blob/master/spindata/gamma.py
 """
 
+import numpy as np
+
 GAMMA = {}
 
 # Electron
@@ -156,7 +158,7 @@ GAMMA["Lu176"] = 2.1684e7     # Lutetium-176
 GAMMA["U235"] = -0.52e7       # Uranium-235
 
 
-def gamma(value):
+def gamma_(value):
     """
     Returns the gyromagnetic ratio (γ) of a specified particle.
 
@@ -172,3 +174,51 @@ def gamma(value):
     """
     assert value in GAMMA, "particle not defined, add the gyromagnetic ratio yourself"
     return GAMMA[value]
+
+def gamma(value, unit=None):
+    """
+    Returns the gyromagnetic ratio (γ) of a specified particle.
+
+    Parameters
+    ----------
+    value : str
+        Particle symbol (e.g., "H1", "C13", "F19", "E").
+
+    unit : str, optional
+        Output unit.
+
+        Supported units
+        ---------------
+        None, "rad/s/T", "rad s^-1 T^-1"
+            Return γ in rad s^-1 T^-1 (default).
+
+        "MHz/T"
+            Return γ / (2π) in MHz T^-1.
+
+        "Hz/T"
+            Return γ / (2π) in Hz T^-1.
+
+    Returns
+    -------
+    float
+        Gyromagnetic ratio in the requested unit.
+    """
+    assert value in GAMMA, f"Particle '{value}' not defined."
+
+    g = GAMMA[value]
+
+    if unit is None or unit.lower() in ("rad/s/t", "rad s^-1 t^-1"):
+        return g
+
+    unit = unit.lower()
+
+    if unit == "hz/t":
+        return g / (2 * np.pi)
+
+    if unit == "mhz/t":
+        return g / (2 * np.pi * 1e6)
+
+    raise ValueError(
+        "Unsupported unit. Choose from: "
+        "None, 'rad/s/T', 'Hz/T', or 'MHz/T'."
+    )

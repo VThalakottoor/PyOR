@@ -280,9 +280,9 @@ class Hamiltonian:
         H_new = H_data - Emin * np.eye(H_data.shape[0], dtype=complex)
 
         if hasattr(H, "data"):
-            H_new = self.class_QS.QuantumObject(H_new)
+            H_new = QunObj(H_new)
 
-        return QunObj(H_new)
+        return H_new
 
     def Zeeman(self):
         r"""

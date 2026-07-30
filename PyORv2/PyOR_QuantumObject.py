@@ -346,6 +346,9 @@ class QunObj():
         else:
             raise ValueError("Basis transformation only supported for 'ket' and 'operator' types.")
 
+    def __neg__(self):
+        return QunObj(-self.data)
+
     def __add__(self, *others):
         """
         Add multiple QunObj instances element-wise.

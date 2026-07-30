@@ -642,6 +642,98 @@ class QuantumSystem:
         else:
             return arr
 
+    def Sin(self, X, unit="rad"):
+        if unit.lower() == "deg":
+            X = np.deg2rad(X)
+        return np.sin(X)
+
+    def Cos(self, X, unit="rad"):
+        if unit.lower() == "deg":
+            X = np.deg2rad(X)
+        return np.cos(X)
+
+    def Tan(self, X, unit="rad"):
+        if unit.lower() == "deg":
+            X = np.deg2rad(X)
+        return np.tan(X)
+
+    def ArcSin(self, X, unit="rad"):
+        result = np.arcsin(X)
+        if unit.lower() == "deg":
+            result = np.rad2deg(result)
+        return result
+
+    def ArcCos(self, X, unit="rad"):
+        result = np.arccos(X)
+        if unit.lower() == "deg":
+            result = np.rad2deg(result)
+        return result
+
+    def ArcTan(self, X, unit="rad"):
+        result = np.arctan(X)
+        if unit.lower() == "deg":
+            result = np.rad2deg(result)
+        return result
+
+    def ArcTan2(self, Y, X, unit="rad"):
+        result = np.arctan2(Y, X)
+        if unit.lower() == "deg":
+            result = np.rad2deg(result)
+        return result
+
+    def Sinh(self, X):
+        return np.sinh(X)
+
+    def Cosh(self, X):
+        return np.cosh(X)
+
+    def Tanh(self, X):
+        return np.tanh(X)
+
+    def ArcSinh(self, X):
+        return np.arcsinh(X)
+
+    def ArcCosh(self, X):
+        return np.arccosh(X)
+
+    def ArcTanh(self, X):
+        return np.arctanh(X)
+
+    def Exp(self, X):
+        return np.exp(X)
+
+    def Exp2(self, X):
+        return np.exp2(X)
+
+    def Log(self, X):
+        """Natural logarithm."""
+        return np.log(X)
+
+    def Log10(self, X):
+        return np.log10(X)
+
+    def Log2(self, X):
+        return np.log2(X)
+
+    def Log1p(self, X):
+        """Computes log(1+x) accurately for small x."""
+        return np.log1p(X)    
+
+    def Power(self, X, Y):
+        return np.power(X, Y)
+
+    def Square(self, X):
+        return np.square(X)
+
+    def Cube(self, X):
+        return np.power(X, 3)
+
+    def Deg2Rad(self, X):
+        return np.deg2rad(X)
+
+    def Rad2Deg(self, X):
+        return np.rad2deg(X)
+
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     # Spin Operators
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

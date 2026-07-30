@@ -570,6 +570,28 @@ class Evolutions:
                     rho = np.matmul(U,rho)
                     rho_t[i+1] = rho 
 
+            if Pmethod == "Relaxation ShapedPulse Lindblad":
+                rho_t = np.zeros(
+                    (Npoints, self.Ldim, 1),
+                    dtype=complex
+                )
+
+                rho_t[0] = rho
+
+                for i in range(Npoints - 1):
+
+                    # Evaluate the time-dependent Hamiltonian
+                    # at one scalar time point
+                    H_shapePulse = self.TimeDependent_Hamiltonian(t[i])
+
+                    U = expm(
+                        -1j * (Hamiltonian + H_shapePulse) * dt
+                        - Relaxation * dt
+                    )
+
+                    rho = U @ rho
+                    rho_t[i + 1] = rho
+
             if Pmethod == "Relaxation Lindblad Sparse":    
                 rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
                 #t = np.arange(Npoints) * dt # Vineeth
