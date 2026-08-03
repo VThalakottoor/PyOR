@@ -23,6 +23,7 @@ import re
 from scipy.linalg import expm
 from scipy.integrate import solve_ivp
 from scipy import sparse
+from scipy.sparse.linalg import expm_multiply
 
 from IPython.display import display, Latex, Math
 from sympy.physics.quantum.cg import CG
@@ -570,7 +571,7 @@ class Evolutions:
                     rho = np.matmul(U,rho)
                     rho_t[i+1] = rho 
 
-            if Pmethod == "Relaxation ShapedPulse Lindblad":
+            if Pmethod == "Relaxation ShapedPulse Lindblad_":
                 rho_t = np.zeros(
                     (Npoints, self.Ldim, 1),
                     dtype=complex
@@ -590,6 +591,31 @@ class Evolutions:
                     )
 
                     rho = U @ rho
+                    rho_t[i + 1] = rho
+
+            if Pmethod == "Relaxation ShapedPulse Lindblad":
+
+                rho_t = np.zeros(
+                    (Npoints, self.Ldim, 1),
+                    dtype=complex
+                )
+
+                rho_t[0] = rho
+
+                for i in range(Npoints - 1):
+
+                    # Evaluate the time-dependent Hamiltonian
+                    H_shapePulse = self.TimeDependent_Hamiltonian(t[i])
+
+                    # Generator for one time step
+                    A = (
+                        -1j * (Hamiltonian + H_shapePulse)
+                        - Relaxation
+                    ) * dt
+
+                    # Directly calculate exp(A) @ rho
+                    rho = expm_multiply(A, rho)
+
                     rho_t[i + 1] = rho
 
             if Pmethod == "Relaxation Lindblad Sparse":    
