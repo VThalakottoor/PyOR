@@ -838,6 +838,88 @@ class Evolutions:
 
         return rho_new.reshape(final_shape)
 
+    def PartialTrace_Vector(self, rho_vec, keep, Sdim=None):
+        """
+        Compute the partial trace directly on a vectorized density matrix.
+
+        Parameters
+        ----------
+        rho_vec : ndarray
+            Vectorized density matrix with shape (Ldim,),
+            (Ldim, 1), or (1, Ldim).
+
+        keep : list of int
+            Indices of subsystems to retain, using 0-based indexing.
+
+        Sdim : list of int, optional
+            Dimensions of the Hilbert-space subsystems.
+            Defaults to self.class_QS.Sdim.
+
+        Returns
+        -------
+        ndarray
+            Vectorized reduced density matrix with shape
+            (Ldim_reduced, 1).
+        """
+
+        if Sdim is None:
+            Sdim = self.class_QS.Sdim.tolist()
+
+        Sdim = list(Sdim)
+        keep = list(keep)
+
+        n_subsystems = len(Sdim)
+        Vdim = int(np.prod(Sdim))
+        Ldim = Vdim**2
+
+        rho_vec = np.asarray(rho_vec).reshape(-1)
+
+        if rho_vec.size != Ldim:
+            raise ValueError(
+                f"Input contains {rho_vec.size} elements, "
+                f"but expected {Ldim} for Sdim={Sdim}."
+            )
+
+        if len(set(keep)) != len(keep):
+            raise ValueError("The keep list contains duplicate indices.")
+
+        if not set(keep).issubset(range(n_subsystems)):
+            raise ValueError(
+                f"Invalid keep indices {keep} for {n_subsystems} subsystems."
+            )
+
+        # Directly reshape the Liouville vector into:
+        #
+        # ket indices: i0, i1, ..., iN
+        # bra indices: j0, j1, ..., jN
+        #
+        rho_tensor = rho_vec.reshape(Sdim + Sdim, order="C")
+
+        trace_indices = sorted(
+            set(range(n_subsystems)) - set(keep),
+            reverse=True
+        )
+
+        Sdim_current = Sdim.copy()
+
+        for idx in trace_indices:
+            n_current = len(Sdim_current)
+
+            rho_tensor = np.trace(
+                rho_tensor,
+                axis1=idx,
+                axis2=idx + n_current
+            )
+
+            Sdim_current.pop(idx)
+
+        Vdim_reduced = int(np.prod(Sdim_current))
+
+        return rho_tensor.reshape(
+            (Vdim_reduced**2, 1),
+            order="C"
+        )
+
     def Convert_LrhoTO2Drho_(self,Lrho): 
         """
         Convert a Vector into a 2d Matrix
