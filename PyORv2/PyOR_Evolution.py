@@ -920,6 +920,330 @@ class Evolutions:
             order="C"
         )
 
+    def PartialTrace_Vector_Future(self, state, keep, Sdim=None):
+        """
+        Partial trace for either:
+        1. pure state vector
+        2. vectorized density matrix
+
+        Returns a vectorized reduced density matrix.
+        """
+
+        if Sdim is None:
+            Sdim = self.class_QS.Sdim.tolist()
+
+        Sdim = list(Sdim)
+        keep = list(keep)
+
+        Vdim = int(np.prod(Sdim))
+        Ldim = Vdim**2
+
+        state = np.asarray(state).reshape(-1)
+
+        SysInx = range(len(Sdim))
+        TraceInx = sorted(
+            set(SysInx) - set(keep),
+            reverse=True
+        )
+
+        # ==========================================================
+        # PURE STATE VECTOR
+        # ==========================================================
+
+        if state.size == Vdim:
+
+            psi_tensor = state.reshape(Sdim, order="C")
+
+            trace_axes = sorted(
+                set(range(len(Sdim))) - set(keep)
+            )
+
+            rho_red = np.tensordot(
+                psi_tensor,
+                psi_tensor.conj(),
+                axes=(trace_axes, trace_axes)
+            )
+
+            Sdim_new = [Sdim[i] for i in keep]
+            Vdim_new = int(np.prod(Sdim_new))
+
+            return rho_red.reshape(
+                (Vdim_new**2, 1),
+                order="C"
+            )
+
+        # ==========================================================
+        # VECTORIZED DENSITY MATRIX
+        # ==========================================================
+
+        elif state.size == Ldim:
+
+            rho_tensor = state.reshape(
+                Sdim + Sdim,
+                order="C"
+            )
+
+            Sdim_current = Sdim.copy()
+
+            for idx in TraceInx:
+
+                n_current = len(Sdim_current)
+
+                rho_tensor = np.trace(
+                    rho_tensor,
+                    axis1=idx,
+                    axis2=idx + n_current
+                )
+
+                Sdim_current.pop(idx)
+
+            Vdim_new = int(np.prod(Sdim_current))
+
+            return rho_tensor.reshape(
+                (Vdim_new**2, 1),
+                order="C"
+            )
+
+        else:
+
+            raise ValueError(
+                f"Input size {state.size} is invalid. "
+                f"Expected {Vdim} for a pure state vector "
+                f"or {Ldim} for a vectorized density matrix."
+            )
+
+    def PartialTrace_Superoperator(self, keep, Sdim=None, QuantumObject=True):
+        """
+        Construct the partial-trace superoperator in Liouville space.
+
+        The superoperator Tr satisfies
+
+            vec(rho_reduced) = Tr @ vec(rho)
+
+        Parameters
+        ----------
+        keep : list of int
+            Indices of subsystems to retain.
+
+        Sdim : list of int, optional
+            Dimensions of the subsystems.
+            Defaults to self.class_QS.Sdim.
+
+        QuantumObject : bool, optional
+            If True, return QunObj.
+            If False, return NumPy array.
+
+        Returns
+        -------
+        QunObj or ndarray
+            Partial-trace superoperator with shape
+
+            (Ldim_reduced, Ldim_full)
+
+        Example
+        -------
+        For NH4 -> NH3:
+
+            Tr = QS.B.Evolutions.PartialTraceSuperoperator(
+                keep=[0, 1, 2, 3]
+            )
+
+        giving shape:
+
+            (256, 1024)
+        """
+
+        if Sdim is None:
+            Sdim = self.class_QS.Sdim.tolist()
+        else:
+            Sdim = list(Sdim)
+
+        # Full Hilbert-space dimension
+        D_in = int(np.prod(Sdim))
+
+        # Dimensions of retained subsystems
+        Sdim_out = [Sdim[i] for i in keep]
+
+        # Reduced Hilbert-space dimension
+        D_out = int(np.prod(Sdim_out))
+
+        # Liouville dimensions
+        Ldim_in = D_in ** 2
+        Ldim_out = D_out ** 2
+
+        # Use the same vectorization convention as PyOR
+        order = self.class_QS.RowColOrder
+
+        # Partial-trace superoperator
+        Tr = np.zeros(
+            (Ldim_out, Ldim_in),
+            dtype=self.class_QS.DTYPE_C,
+            order=self.class_QS.ORDER_MEMORY
+        )
+
+        # Apply PartialTrace to every Liouville basis vector
+        for k in range(Ldim_in):
+
+            # Liouville basis vector
+            e = np.zeros(
+                Ldim_in,
+                dtype=self.class_QS.DTYPE_C
+            )
+
+            e[k] = 1.0
+
+            # Convert Liouville vector -> matrix
+            rho = e.reshape(
+                D_in,
+                D_in,
+                order=order
+            )
+
+            # Existing PyOR partial trace
+            rho_red = self.PartialTrace(
+                rho,
+                keep=keep,
+                Sdim=Sdim
+            )
+
+            # Reduced density matrix -> Liouville vector
+            Tr[:, k] = rho_red.reshape(
+                -1,
+                order=order
+            )
+
+        if QuantumObject:
+            return QunObj(Tr)
+
+        return Tr
+
+    def Kronecker_Superoperator(self, rho_add, insert_at, Sdim=None, QuantumObject=True):
+        """
+        Construct a superoperator that inserts a new subsystem
+        with density matrix rho_add.
+
+        The superoperator K satisfies
+
+            vec(rho_new) = K @ vec(rho_old)
+
+        Parameters
+        ----------
+        rho_add : QunObj or ndarray
+            Density matrix of the subsystem being added.
+
+        insert_at : int
+            Position where the new subsystem is inserted.
+
+        Sdim : list of int, optional
+            Dimensions of the original system.
+            Defaults to self.class_QS.Sdim.
+
+        QuantumObject : bool, optional
+            If True, return QunObj.
+            If False, return ndarray.
+
+        Returns
+        -------
+        QunObj or ndarray
+            Kronecker-product superoperator.
+        """
+
+        if Sdim is None:
+            Sdim = list(self.class_QS.Sdim)
+        else:
+            Sdim = list(Sdim)
+
+        if hasattr(rho_add, "data"):
+            rho_add = rho_add.data
+
+        rho_add = np.asarray(rho_add)
+
+        D_in = int(np.prod(Sdim))
+
+        d_add = rho_add.shape[0]
+
+        Sdim_out = Sdim.copy()
+        Sdim_out.insert(insert_at, d_add)
+
+        D_out = int(np.prod(Sdim_out))
+
+        Ldim_in = D_in ** 2
+        Ldim_out = D_out ** 2
+
+        order = self.class_QS.RowColOrder
+
+        Kron = np.zeros(
+            (Ldim_out, Ldim_in),
+            dtype=self.class_QS.DTYPE_C
+        )
+
+        for k in range(Ldim_in):
+
+            # Liouville basis vector
+            e = np.zeros(
+                Ldim_in,
+                dtype=self.class_QS.DTYPE_C
+            )
+
+            e[k] = 1.0
+
+            # Vector -> operator
+            rho = e.reshape(
+                D_in,
+                D_in,
+                order=order
+            )
+
+            # Tensor representation of original operator
+            rho_tensor = rho.reshape(
+                Sdim + Sdim
+            )
+
+            # Add new subsystem
+            rho_new = np.tensordot(
+                rho_tensor,
+                rho_add,
+                axes=0
+            )
+
+            N = len(Sdim)
+
+            # Current ordering after tensordot:
+            #
+            # old ket axes,
+            # old bra axes,
+            # new ket,
+            # new bra
+
+            ket_axes = list(range(N))
+            bra_axes = list(range(N, 2 * N))
+
+            new_ket = 2 * N
+            new_bra = 2 * N + 1
+
+            ket_axes.insert(insert_at, new_ket)
+            bra_axes.insert(insert_at, new_bra)
+
+            rho_new = np.transpose(
+                rho_new,
+                ket_axes + bra_axes
+            )
+
+            rho_new = rho_new.reshape(
+                D_out,
+                D_out
+            )
+
+            Kron[:, k] = rho_new.reshape(
+                -1,
+                order=order
+            )
+
+        if QuantumObject:
+            return QunObj(Kron)
+
+        return Kron
+
     def Convert_LrhoTO2Drho_(self,Lrho): 
         """
         Convert a Vector into a 2d Matrix

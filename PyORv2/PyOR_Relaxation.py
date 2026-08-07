@@ -842,6 +842,24 @@ class RelaxationProcess:
 
                 return QunObj(-Rso)
 
+            if Rprocess == "Lindblad T1":
+
+                Rso = np.zeros((self.Ldim, self.Ldim), dtype=np.cdouble)
+                I_L = np.eye(self.Ldim, dtype=np.cdouble)
+
+                for i, spin in enumerate(self.class_QS.SpinDic):
+
+                    T1 = self.class_QS.Lindblad_T1[spin]
+
+                    Rso = Rso + (1.0 / T1) * (
+                        np.kron(Sx[i], Sx[i].T)
+                        + np.kron(Sy[i], Sy[i].T)
+                        + np.kron(Sz[i], Sz[i].T)
+                        - (3.0 / 4.0) * I_L
+                    )
+
+                return QunObj(Rso)
+
             if Rprocess == "Auto-correlated Dipolar Heteronuclear":
                 """
                 Heteronuclear auto-correlated dipolar relaxation (Lindblad, Liouville space)

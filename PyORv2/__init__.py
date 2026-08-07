@@ -17,6 +17,7 @@ Available modules:
 
 # Core imports
 from .PyOR_QuantumSystem import QuantumSystem as QunS
+from .PyOR_QuantumSystem import QuantumSystems
 from .PyOR_Hamiltonian import Hamiltonian
 from .PyOR_DensityMatrix import DensityMatrix
 from .PyOR_QuantumObject import QunObj
@@ -33,6 +34,7 @@ from .PyOR_QuantumLibrary import QuantumLibrary
 # Public API
 __all__ = [
     "QunS",
+    "QuantumSystems",
     "Hamiltonian",
     "DensityMatrix",
     "QunObj",
@@ -99,6 +101,7 @@ def info_():
     print("Imported modules:\n")
 
     print("* QunS                   (QuantumSystem from PyOR_QuantumSystem)")
+    print("* QuantumSystems         (QuantumSystems from PyOR_QuantumSystem - for multiple systems)")
     print("** Hamiltonian           (from PyOR_Hamiltonian)")
     print("** DensityMatrix         (from PyOR_DensityMatrix)")
     print("** HardPulse             (from PyOR_HardPulse)")

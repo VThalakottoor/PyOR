@@ -229,7 +229,7 @@ class QuantumSystem:
         self.Lindblad_Temp = None
         self.uDissipator = None
         self.uDissipator_only_anticomm = False
-
+        self.Lindblad_T1 = {key: 1.0 for key in self.SpinList}
 
         # ----------------- ODE Solver -----------------
         self.PropagationMethod = "ODE Solver"
@@ -733,6 +733,27 @@ class QuantumSystem:
 
     def Rad2Deg(self, X):
         return np.rad2deg(X)
+
+    def Block(self, arrays, QuantumObject=True):
+        """
+        Assemble arrays using NumPy block structure.
+
+        Works with 1D and 2D arrays and accepts QunObj inputs.
+        """
+
+        def GetData(x):
+            if isinstance(x, (list, tuple)):
+                return [GetData(i) for i in x]
+            if hasattr(x, "data"):
+                return x.data
+            return x
+
+        result = np.block(GetData(arrays))
+
+        if QuantumObject:
+            return QunObj(result)
+
+        return result
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     # Spin Operators
@@ -1414,3 +1435,201 @@ class QuantumSystem:
         return U
 
 
+class QuantumSystems:
+    """
+    Container for multiple independent quantum systems.
+
+    Each system is an independent QuantumSystem object
+    with its own Hilbert space, operators, Hamiltonian,
+    density matrix, relaxation and evolution objects.
+
+    Example
+    -------
+    QS = QuantumSystems(
+        {
+            "A": {
+                "N": "N15",
+                "H1": "H1",
+                "H2": "H1",
+                "H3": "H1",
+            }
+        },
+        {
+            "B": {
+                "N": "N15",
+                "H1": "H1",
+                "H2": "H1",
+                "H3": "H1",
+                "H4": "H1",
+            }
+        }
+    )
+    """
+
+    def __init__(self, *Systems, PrintDefault=False):
+
+        if len(Systems) == 0:
+            raise ValueError(
+                "At least one quantum system must be provided."
+            )
+
+        self.System = {}
+
+        for system_definition in Systems:
+
+            if not isinstance(system_definition, dict):
+                raise TypeError(
+                    "Each quantum system must be provided as a dictionary."
+                )
+
+            if len(system_definition) != 1:
+                raise ValueError(
+                    "Each system dictionary must contain exactly "
+                    "one system name."
+                )
+
+            # Example:
+            # {"A": {"N": "N15", "H1": "H1"}}
+            name, SpinList = next(iter(system_definition.items()))
+
+            if not isinstance(name, str):
+                raise TypeError(
+                    "Quantum system name must be a string."
+                )
+
+            if not isinstance(SpinList, dict):
+                raise TypeError(
+                    f"Spin list for system '{name}' must be a dictionary."
+                )
+
+            if name in self.System:
+                raise ValueError(
+                    f"Quantum system '{name}' already exists."
+                )
+
+            # Create a completely normal PyOR QuantumSystem
+            quantum_system = QuantumSystem(
+                SpinList,
+                PrintDefault=PrintDefault
+            )
+
+            self.System[name] = quantum_system
+
+            # Enables:
+            # QS.A
+            # QS.B
+            setattr(self, name, quantum_system)
+
+        self.Nsystems = len(self.System)
+
+    def __getitem__(self, name):
+        return self.System[name]        
+
+    def __len__(self):
+        return self.Nsystems    
+
+    def __iter__(self):
+        return iter(self.System)   
+
+    def Configure(self, auto_update=True, **kwargs):
+        """
+        Configure multiple independent quantum systems.
+
+        Common parameters are applied to every system.
+
+        Named dictionaries (A, B, ...) provide
+        system-specific overrides.
+
+        Example
+        -------
+        QS.Configure(
+            B0=9.4,
+            PropagationSpace="Hilbert",
+
+            A={
+                "OFFSET": {
+                    "N": 0.0,
+                    "H1": 10.0,
+                    "H2": 10.0,
+                    "H3": 10.0,
+                }
+            },
+
+            B={
+                "OFFSET": {
+                    "N": 0.0,
+                    "H1": 20.0,
+                    "H2": 20.0,
+                    "H3": 20.0,
+                    "H4": 20.0,
+                }
+            }
+        )
+        """
+
+        common_config = {}
+        system_config = {}
+
+        # Separate common parameters from
+        # system-specific parameters.
+        for key, value in kwargs.items():
+
+            if key in self.System:
+
+                if not isinstance(value, dict):
+                    raise TypeError(
+                        f"Configuration for system '{key}' "
+                        "must be a dictionary."
+                    )
+
+                system_config[key] = value
+
+            else:
+                common_config[key] = value
+
+        # Configure every system independently.
+        for name, system in self.System.items():
+
+            config = common_config.copy()
+
+            # Apply system-specific settings,
+            # overriding common settings.
+            if name in system_config:
+                config.update(system_config[name])
+
+            # Jcouplings must be passed separately because
+            # QuantumSystem.Configure() has it as an explicit argument.
+            Jcouplings = config.pop("Jcouplings", None)
+
+            system.Configure(
+                Jcouplings=Jcouplings,
+                auto_update=auto_update,
+                **config
+            )
+
+        return self    
+
+@property
+def Vdims(self):
+    return {
+        name: system.Vdim
+        for name, system in self.System.items()
+    }
+
+
+@property
+def Ldims(self):
+    return {
+        name: system.Ldim
+        for name, system in self.System.items()
+    }
+
+
+@property
+def Nspins_system(self):
+    return {
+        name: system.Nspins
+        for name, system in self.System.items()
+    }
+
+    
