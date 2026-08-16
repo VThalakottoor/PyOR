@@ -523,6 +523,61 @@ class Evolutions:
                     rho = np.matmul(U,rho)  
                     rho_t[i+1] = rho  
 
+            if Pmethod == "Unitary Propagator System":
+                """
+                Propagation of a combined/multi-system Liouville state.
+
+                The dimension is determined from the supplied state vector,
+                rather than self.Ldim.
+
+                The supplied HamiltonianQ is treated as the complete
+                Liouville-space generator:
+
+                    d(rho)/dt = L @ rho
+
+                Therefore:
+
+                    U = expm(L * dt)
+                """
+
+                # Combined system dimension
+                SystemDim = rho.shape[0]
+
+                # Check state-vector shape
+                if rho.ndim == 1:
+                    rho = rho.reshape(SystemDim, 1)
+
+                if rho.shape != (SystemDim, 1):
+                    raise ValueError(
+                        "For 'Unitary Propagator System', rho must have "
+                        f"shape ({SystemDim}, 1). Got {rho.shape}."
+                    )
+
+                # Check generator dimension
+                if Hamiltonian.shape != (SystemDim, SystemDim):
+                    raise ValueError(
+                        "System generator dimension does not match the state vector. "
+                        f"Generator shape = {Hamiltonian.shape}, "
+                        f"state shape = {rho.shape}."
+                    )
+
+                # Allocate using the COMBINED dimension
+                rho_t = np.zeros(
+                    (Npoints, SystemDim, 1),
+                    dtype=complex
+                )
+
+                rho_t[0] = rho
+
+                # HamiltonianQ is already the complete generator L
+                U = expm(Hamiltonian * dt)
+
+                for i in range(Npoints - 1):
+
+                    rho = U @ rho
+
+                    rho_t[i + 1] = rho
+
             if Pmethod == "Unitary Propagator Sparse":  
                 rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
                 #t = np.arange(Npoints) * dt # Vineeth
