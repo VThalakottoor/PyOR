@@ -130,137 +130,22 @@ class QuantumSystem:
     def __init__(self, SpinList, PrintDefault=False):
 
         self.PrintDefault = PrintDefault
+        
+        # Spin system definition
+        self.SpinList = SpinList
+        self.SpinDic = list(SpinList.keys())
+        self.SpinIndex = {value: index for index, value in enumerate(self.SpinDic)}
+        self.SpinName = np.array(list(SpinList.values()))
 
-        # ==========================================================
-        # Determine what kind of quantum system the user supplied
-        # ==========================================================
+        # Extract spin quantum numbers from names (e.g., '1H' -> 1/2)
+        SPINLIST = [PyOR_SpinQuantumNumber.spin(name) for name in self.SpinName]
+        self.slist = np.array(SPINLIST)
+        self.Nspins = len(self.slist)
 
-        if isinstance(SpinList, dict):
-
-            self.SystemType = "SpinSystem"
-
-        elif isinstance(SpinList, (tuple, list)):
-
-            self.SystemType = "ManifoldSystem"
-
-        else:
-
-            raise TypeError(
-                "QuantumSystem must be defined using either:\n"
-                "  dict  -> spin system\n"
-                "  tuple/list of dictionaries -> manifold system"
-            )
-
-        # ==========================================================
-        # Traditional PyOR spin system
-        # ==========================================================
-
-        if self.SystemType == "SpinSystem":
-
-            self.SpinList = SpinList
-
-            self.SpinDic = list(SpinList.keys())
-
-            self.SpinIndex = {
-                value: index
-                for index, value in enumerate(self.SpinDic)
-            }
-
-            self.SpinName = np.array(
-                list(SpinList.values())
-            )
-
-            SPINLIST = [
-                PyOR_SpinQuantumNumber.spin(name)
-                for name in self.SpinName
-            ]
-
-            self.slist = np.array(SPINLIST)
-
-            self.Nspins = len(self.slist)
-
-            self.Sdim = np.array([
-                int(2 * s + 1)
-                for s in self.slist
-            ])
-
-            self.Vdim = int(
-                np.prod(self.Sdim)
-            )
-
-        # ==========================================================
-        # Ground/excited-state manifold system
-        # ==========================================================
-
-        elif self.SystemType == "ManifoldSystem":
-
-            self.ManifoldList = SpinList
-
-            self.ManifoldDic = []
-
-            self.ManifoldIndex = {}
-
-            self.Flist = []
-
-            self.ManifoldDim = []
-
-            for i, manifold in enumerate(SpinList):
-
-                if len(manifold) != 1:
-
-                    raise ValueError(
-                        "Each manifold must contain exactly one label."
-                    )
-
-                name = list(manifold.keys())[0]
-
-                parameters = manifold[name]
-
-                if "F" not in parameters:
-
-                    raise ValueError(
-                        f"Manifold '{name}' requires F."
-                    )
-
-                F = parameters["F"]
-
-                dim = int(2 * F + 1)
-
-                self.ManifoldDic.append(name)
-
-                self.ManifoldIndex[name] = i
-
-                self.Flist.append(F)
-
-                self.ManifoldDim.append(dim)
-
-            self.Flist = np.asarray(
-                self.Flist,
-                dtype=float
-            )
-
-            self.ManifoldDim = np.asarray(
-                self.ManifoldDim,
-                dtype=int
-            )
-
-            self.Nmanifolds = len(
-                self.ManifoldDic
-            )
-
-            # IMPORTANT:
-            # manifolds are DIRECT SUM spaces
-            self.Vdim = int(
-                np.sum(self.ManifoldDim)
-            )
-
-        # ==========================================================
-        # Liouville-space dimension
-        # ==========================================================
-
+        # Hilbert space dimensions
+        self.Sdim = np.array([np.arange(-s, s + 1, 1).shape[-1] for s in self.slist])
+        self.Vdim = np.prod(self.Sdim)
         self.Ldim = self.Vdim ** 2
-
-        # 1.0/ (2 Pi)
         self.Inverse2PI = 1.0 / (2.0 * np.pi)
 
         # Proton Larmor Frequency
@@ -296,69 +181,13 @@ class QuantumSystem:
 
         # ----------------- Constants & Defaults -----------------
         self.hbarEQ1 = True
-        if self.SystemType == "SpinSystem":
-
-            self.Gamma = [
-                PyOR_Gamma.gamma(name)
-                for name in self.SpinName
-            ]
-
-        else:
-
-            self.Gamma = None
-
-        self.B0 = 9.4  # Tesla
-
-        if self.SystemType == "SpinSystem":
-
-            self.OMEGA_RF = {
-                key: 0
-                for key in self.SpinList
-            }
-
-            self.OFFSET = {
-                key: 0
-                for key in self.SpinList
-            }
-
-            self.LARMOR_F = {
-                key: 0
-                for key in self.SpinList
-            }
-
-            self.Jlist = np.zeros(
-                (
-                    self.Nspins,
-                    self.Nspins
-                )
-            )
-
-        elif self.SystemType == "ManifoldSystem":
-
-            self.OMEGA_RF = {
-                key: 0
-                for key in self.ManifoldDic
-            }
-
-            self.OFFSET = {
-                key: 0
-                for key in self.ManifoldDic
-            }
-
-            self.LARMOR_F = {
-                key: 0
-                for key in self.ManifoldDic
-            }
-
-            self.Jlist = np.zeros(
-                (
-                    self.Nmanifolds,
-                    self.Nmanifolds
-                )
-            )
-
+        self.Gamma = [PyOR_Gamma.gamma(name) for name in self.SpinName]
+        self.B0 = 9.4 # Tesla
+        self.OMEGA_RF = {key: 0 for key in self.SpinList}
+        self.OFFSET = {key: 0 for key in self.SpinList}
+        self.LARMOR_F = {key: 0 for key in self.SpinList}
         self.print_Larmor = True
-
+        self.Jlist = np.zeros((self.Nspins, self.Nspins))
         self.Dipole_Pairs = []
         self.Dipole_DipolarAlpabet = []
         self.DipoleAngle = []
@@ -375,23 +204,8 @@ class QuantumSystem:
         self.Basis_SpinOperators_TransformationMatrix_ZeemanToSingletTriplet = QunObj([[0, 1, 0, 0], [1/np.sqrt(2), 0, 1/np.sqrt(2),0], [-1/np.sqrt(2), 0, 1/np.sqrt(2),0], [0, 0, 0, 1]])
 
         # ----------------- Temperature -----------------
-
-        if self.SystemType == "SpinSystem":
-
-            self.I_spintemp = {
-                key: 300
-                for key in self.SpinList
-            }
-
-            self.F_spintemp = {
-                key: 300
-                for key in self.SpinList
-            }
-
-        elif self.SystemType == "ManifoldSystem":
-
-            self.I_spintemp = {}
-            self.F_spintemp = {}
+        self.I_spintemp = {key: 300 for key in self.SpinList} # Kelvin
+        self.F_spintemp = {key: 300 for key in self.SpinList} # Kelvin
 
         # ----------------- Propagation -----------------
         self.PropagationSpace = "Hilbert"
@@ -415,16 +229,7 @@ class QuantumSystem:
         self.Lindblad_Temp = None
         self.uDissipator = None
         self.uDissipator_only_anticomm = False
-        if self.SystemType == "SpinSystem":
-
-            self.Lindblad_T1 = {
-                key: 1.0
-                for key in self.SpinList
-            }
-
-        elif self.SystemType == "ManifoldSystem":
-
-            self.Lindblad_T1 = {}
+        self.Lindblad_T1 = {key: 1.0 for key in self.SpinList}
 
         # ----------------- ODE Solver -----------------
         self.PropagationMethod = "ODE Solver"
@@ -434,23 +239,8 @@ class QuantumSystem:
 
         # ----------------- Radiation Damping -----------------
         self.Rdamping = False
-
-        if self.SystemType == "SpinSystem":
-
-            self.RD_xi = {
-                key: 0
-                for key in self.SpinList
-            }
-
-            self.RD_phase = {
-                key: 0
-                for key in self.SpinList
-            }
-
-        elif self.SystemType == "ManifoldSystem":
-
-            self.RD_xi = {}
-            self.RD_phase = {}
+        self.RD_xi = {key: 0 for key in self.SpinList}
+        self.RD_phase = {key: 0 for key in self.SpinList}
 
         # ----------------- Noise -----------------
         self.NGaussian = False
@@ -669,7 +459,7 @@ class QuantumSystem:
     # Initialize spin operators and particles
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    def Initialize_(self):
+    def Initialize(self):
         """
         Initialize the quantum system:
         - Compute spin operators (Sx, Sy, Sz, etc.)
@@ -684,22 +474,6 @@ class QuantumSystem:
             labels = [f"{key}{c}" for c in components]
             print(f"For particle {key}: {', '.join(labels)}")
         print("\nTo see the matrix form use the attribute .matrix")
-
-    def Initialize(self):
-
-        if self.SystemType == "SpinSystem":
-
-            self.SpinOperator(
-                PrintDefault=False
-            )
-
-            self.ParticleParameters()
-
-        elif self.SystemType == "ManifoldSystem":
-
-            self.ManifoldOperator(
-                PrintDefault=False
-            )
 
     def Configure(self, Jcouplings=None, auto_update=True, **kwargs):
         dict_params = ["OFFSET", "OMEGA_RF", "I_spintemp", "F_spintemp", "RD_xi", "RD_phase"]
@@ -722,7 +496,7 @@ class QuantumSystem:
 
         return self
 
-    def Update_(self):
+    def Update(self):
         """
         Update system settings after parameter changes.
 
@@ -787,80 +561,6 @@ class QuantumSystem:
         self.RelaxationProcess = RelaxationProcess(self)
         self.Evolutions = Evolutions(self,self.Hamiltonian)
         self.Plotting = Plotting(self)
-        self.Spro = Spro
-
-    def Update(self):
-
-        self.QuantumLibrary = QuantumLibrary(self)
-
-        self.Initialize()
-
-        if self.SystemType == "SpinSystem":
-
-            for i in self.SpinDic:
-
-                self.OMEGA_RF[i] = (
-                    -1
-                    * self.Gamma[self.SpinIndex[i]]
-                    * self.B0
-                )
-
-            self.OmegaRF = [
-                self.OMEGA_RF[key]
-                for key in self.SpinList
-            ]
-
-            self.Offset = [
-                self.OFFSET[key]
-                for key in self.SpinList
-            ]
-
-            self.Ispintemp = [
-                self.I_spintemp[key]
-                for key in self.SpinList
-            ]
-
-            self.Fspintemp = [
-                self.F_spintemp[key]
-                for key in self.SpinList
-            ]
-
-            self.RDxi = [
-                self.RD_xi[key]
-                for key in self.SpinList
-            ]
-
-            self.RDphase = [
-                self.RD_phase[key]
-                for key in self.SpinList
-            ]
-
-            self.IndividualThermalDensityMatrix()
-
-        # ----------------------------------------------
-        # common PyOR modules
-        # ----------------------------------------------
-
-        self.Basis = Basis(self)
-
-        self.Hamiltonian = Hamiltonian(self)
-
-        self.DensityMatrix = DensityMatrix(
-            self,
-            self.Hamiltonian
-        )
-
-        self.HardPulse = HardPulse(self)
-
-        self.RelaxationProcess = RelaxationProcess(self)
-
-        self.Evolutions = Evolutions(
-            self,
-            self.Hamiltonian
-        )
-
-        self.Plotting = Plotting(self)
-
         self.Spro = Spro
 
     def JcoupleValue(self, x, y, value):
@@ -1734,514 +1434,6 @@ class QuantumSystem:
         
         return U
 
-    def ManifoldOperator(self, PrintDefault=False):
-
-        """
-        Generate angular momentum operators for
-        direct-sum quantum manifolds.
-
-        Example
-        -------
-
-        QuantumSystem(
-            (
-                {"g": {"F": 2}},
-                {"e": {"F": 3}}
-            )
-        )
-
-        gives
-
-            H = H_g ⊕ H_e
-
-        with dimensions
-
-            dim(g) = 5
-            dim(e) = 7
-            total Vdim = 12.
-        """
-
-        offset = 0
-
-        for name, F, dim in zip(
-            self.ManifoldDic,
-            self.Flist,
-            self.ManifoldDim
-        ):
-
-            # ------------------------------------------
-            # Single-manifold F operators
-            # ------------------------------------------
-
-            Fx_sub, Fy_sub, Fz_sub = \
-                self.SpinOperatorsSingleSpin(F)
-
-            Fp_sub = Fx_sub + 1j * Fy_sub
-
-            Fm_sub = Fx_sub - 1j * Fy_sub
-
-            # ------------------------------------------
-            # Embed into complete Hilbert space
-            # ------------------------------------------
-
-            Fx = np.zeros(
-                (self.Vdim, self.Vdim),
-                dtype=self.DTYPE_C
-            )
-
-            Fy = np.zeros(
-                (self.Vdim, self.Vdim),
-                dtype=self.DTYPE_C
-            )
-
-            Fz = np.zeros(
-                (self.Vdim, self.Vdim),
-                dtype=self.DTYPE_C
-            )
-
-            Fp = np.zeros(
-                (self.Vdim, self.Vdim),
-                dtype=self.DTYPE_C
-            )
-
-            Fm = np.zeros(
-                (self.Vdim, self.Vdim),
-                dtype=self.DTYPE_C
-            )
-
-            # ------------------------------------------
-            # Position occupied by this manifold
-            # ------------------------------------------
-
-            i0 = offset
-
-            i1 = offset + dim
-
-            Fx[i0:i1, i0:i1] = Fx_sub
-            Fy[i0:i1, i0:i1] = Fy_sub
-            Fz[i0:i1, i0:i1] = Fz_sub
-
-            Fp[i0:i1, i0:i1] = Fp_sub
-            Fm[i0:i1, i0:i1] = Fm_sub
-
-            # ------------------------------------------
-            # Manifold projector
-            # ------------------------------------------
-
-            P = np.zeros(
-                (self.Vdim, self.Vdim),
-                dtype=self.DTYPE_C
-            )
-
-            P[i0:i1, i0:i1] = np.eye(dim)
-
-            # ------------------------------------------
-            # Store operators
-            # ------------------------------------------
-
-            setattr(
-                self,
-                f"{name}x",
-                QunObj(Fx)
-            )
-
-            setattr(
-                self,
-                f"{name}y",
-                QunObj(Fy)
-            )
-
-            setattr(
-                self,
-                f"{name}z",
-                QunObj(Fz)
-            )
-
-            setattr(
-                self,
-                f"{name}p",
-                QunObj(Fp)
-            )
-
-            setattr(
-                self,
-                f"{name}m",
-                QunObj(Fm)
-            )
-
-            setattr(
-                self,
-                f"{name}id",
-                QunObj(P)
-            )
-
-            # ------------------------------------------
-            # Subspace versions
-            # ------------------------------------------
-
-            setattr(
-                self,
-                f"{name}x_sub",
-                QunObj(Fx_sub)
-            )
-
-            setattr(
-                self,
-                f"{name}y_sub",
-                QunObj(Fy_sub)
-            )
-
-            setattr(
-                self,
-                f"{name}z_sub",
-                QunObj(Fz_sub)
-            )
-
-            setattr(
-                self,
-                f"{name}p_sub",
-                QunObj(Fp_sub)
-            )
-
-            setattr(
-                self,
-                f"{name}m_sub",
-                QunObj(Fm_sub)
-            )
-
-            setattr(
-                self,
-                f"{name}id_sub",
-                QunObj(np.eye(dim))
-            )
-
-            offset += dim
-
-    def ManifoldStateIndex(self, manifold, m):
-
-        """
-        Return the full Hilbert-space index corresponding
-        to |manifold, m>.
-
-        Example
-        -------
-        For
-
-            g : F = 2
-            e : F = 3
-
-        ManifoldStateIndex("g",  2) -> 0
-        ManifoldStateIndex("g", -2) -> 4
-
-        ManifoldStateIndex("e",  3) -> 5
-        ManifoldStateIndex("e", -3) -> 11
-        """
-
-        if self.SystemType != "ManifoldSystem":
-
-            raise TypeError(
-                "ManifoldStateIndex is only available "
-                "for manifold systems."
-            )
-
-        if manifold not in self.ManifoldDic:
-
-            raise ValueError(
-                f"Unknown manifold '{manifold}'. "
-                f"Available manifolds: {self.ManifoldDic}"
-            )
-
-        # Find manifold
-        manifold_index = self.ManifoldIndex[manifold]
-
-        F = self.Flist[manifold_index]
-
-        # Magnetic quantum numbers
-        m_values = np.arange(
-            F,
-            -F - 1,
-            -1
-        )
-
-        # Find local index corresponding to m
-        index = np.where(
-            np.isclose(
-                m_values,
-                m,
-                atol=1.0e-10
-            )
-        )[0]
-
-        if index.size == 0:
-
-            raise ValueError(
-                f"m = {m} is not allowed for "
-                f"{manifold} with F = {F}. "
-                f"Allowed values are {m_values}."
-            )
-
-        local_index = index[0]
-
-        # Starting position of this manifold
-        offset = int(
-            np.sum(
-                self.ManifoldDim[:manifold_index]
-            )
-        )
-
-        return offset + local_index
-
-    def TransitionOperator(
-        self,
-        initial_manifold,
-        initial_m,
-        final_manifold,
-        final_m,
-        QuantumObject=True
-    ):
-
-        """
-        Construct a transition operator between two
-        manifold states.
-
-        The operator is
-
-            |final, final_m><initial, initial_m|
-
-        Example
-        -------
-
-        T = QS.TransitionOperator(
-            "g", 0,
-            "e", 1
-        )
-
-        gives
-
-            |e,1><g,0|
-        """
-
-        if self.SystemType != "ManifoldSystem":
-
-            raise TypeError(
-                "TransitionOperator is only available "
-                "for manifold systems."
-            )
-
-        # ----------------------------------------
-        # Full Hilbert-space state indices
-        # ----------------------------------------
-
-        i = self.ManifoldStateIndex(
-            initial_manifold,
-            initial_m
-        )
-
-        f = self.ManifoldStateIndex(
-            final_manifold,
-            final_m
-        )
-
-        # ----------------------------------------
-        # Transition matrix
-        #
-        # |f><i|
-        # ----------------------------------------
-
-        T = np.zeros(
-            (self.Vdim, self.Vdim),
-            dtype=self.DTYPE_C,
-            order=self.ORDER_MEMORY
-        )
-
-        T[f, i] = 1.0
-
-        if QuantumObject:
-
-            return QunObj(T)
-
-        else:
-
-            return T
-
-    def OpticalTransitionOperator(
-        self,
-        initial_manifold,
-        final_manifold,
-        q,
-        QuantumObject=True
-    ):
-
-        """
-        Construct a spherical electric-dipole transition
-        operator between two angular-momentum manifolds.
-
-        Parameters
-        ----------
-        initial_manifold : str
-            Initial manifold, e.g. "g".
-
-        final_manifold : str
-            Final manifold, e.g. "e".
-
-        q : int
-            Polarization component:
-
-                q = -1  -> sigma-
-                q =  0  -> pi
-                q = +1  -> sigma+
-
-        QuantumObject : bool
-            Return QunObj if True.
-
-        Returns
-        -------
-        QunObj or ndarray
-
-            D_q = sum C(Fg,mg;1,q|Fe,me)
-                        |Fe,me><Fg,mg|
-
-        Notes
-        -----
-        The reduced dipole matrix element is not included.
-        Only the angular Clebsch-Gordan coefficient
-        is included.
-        """
-
-        if self.SystemType != "ManifoldSystem":
-
-            raise TypeError(
-                "OpticalTransitionOperator is only "
-                "available for manifold systems."
-            )
-
-        if q not in (-1, 0, 1):
-
-            raise ValueError(
-                "q must be -1, 0, or +1."
-            )
-
-        # ----------------------------------------
-        # Get F values
-        # ----------------------------------------
-
-        i_index = self.ManifoldIndex[
-            initial_manifold
-        ]
-
-        f_index = self.ManifoldIndex[
-            final_manifold
-        ]
-
-        Fi = self.Flist[i_index]
-
-        Ff = self.Flist[f_index]
-
-        # ----------------------------------------
-        # Magnetic quantum numbers
-        # ----------------------------------------
-
-        mi_values = np.arange(
-            Fi,
-            -Fi - 1,
-            -1
-        )
-
-        mf_values = np.arange(
-            Ff,
-            -Ff - 1,
-            -1
-        )
-
-        # ----------------------------------------
-        # Empty full-system transition operator
-        # ----------------------------------------
-
-        Dq = np.zeros(
-            (self.Vdim, self.Vdim),
-            dtype=self.DTYPE_C,
-            order=self.ORDER_MEMORY
-        )
-
-        # ----------------------------------------
-        # SymPy angular momentum values
-        # ----------------------------------------
-
-        Fi_sp = sp.Rational(str(Fi))
-        Ff_sp = sp.Rational(str(Ff))
-        q_sp = sp.Rational(q)
-
-        # ----------------------------------------
-        # Construct
-        #
-        # D_q =
-        #
-        # sum CG(Fi,mi; 1,q | Ff,mf)
-        #       |Ff,mf><Fi,mi|
-        # ----------------------------------------
-
-        for mi in mi_values:
-
-            # Selection rule
-            mf = mi + q
-
-            # Check that mf exists in final manifold
-            if not np.any(
-                np.isclose(
-                    mf_values,
-                    mf,
-                    atol=1.0e-10
-                )
-            ):
-
-                continue
-
-            mi_sp = sp.Rational(str(mi))
-            mf_sp = sp.Rational(str(mf))
-
-            # Clebsch-Gordan coefficient
-            CG_value = CG(
-                Fi_sp,
-                mi_sp,
-                1,
-                q_sp,
-                Ff_sp,
-                mf_sp
-            ).doit()
-
-            CG_value = complex(
-                CG_value.evalf()
-            )
-
-            # Ignore forbidden transitions
-            if np.isclose(
-                abs(CG_value),
-                0.0
-            ):
-
-                continue
-
-            # Full Hilbert-space indices
-            i = self.ManifoldStateIndex(
-                initial_manifold,
-                mi
-            )
-
-            f = self.ManifoldStateIndex(
-                final_manifold,
-                mf
-            )
-
-            # |f><i|
-            Dq[f, i] = CG_value
-
-        if QuantumObject:
-
-            return QunObj(Dq)
-
-        else:
-
-            return Dq
 
 class QuantumSystems:
     """
@@ -2305,10 +1497,9 @@ class QuantumSystems:
                     "Quantum system name must be a string."
                 )
 
-            if not isinstance(SpinList, (dict, tuple, list)):
+            if not isinstance(SpinList, dict):
                 raise TypeError(
-                    f"System '{name}' must be defined using "
-                    "a dictionary, tuple, or list."
+                    f"Spin list for system '{name}' must be a dictionary."
                 )
 
             if name in self.System:
