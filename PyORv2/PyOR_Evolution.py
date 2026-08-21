@@ -118,15 +118,6 @@ class Evolutions:
 
         self.UserDefined_TimeDependentHamiltonian = H
         
-    def TimeDependent_Hamiltonian_(self,t):
-        """
-        """
-        
-        if self.ShapeFunc == "Off Resonance":
-            return self.class_Ham.Zeeman_B1_Offresonance(t,self.ShapeParOmega,-1*self.ShapeParFreq,self.ShapeParPhase)
-        if self.ShapeFunc == "Bruker":
-            return self.class_Ham.Zeeman_B1_ShapedPulse(t,self.ShapeParOmega,-1*self.ShapeParFreq,self.ShapeParPhase)        
-
     def TimeDependent_Hamiltonian(self, t):
         """
         Return the time-dependent Hamiltonian at time t.
@@ -161,7 +152,9 @@ class Evolutions:
             H_t = self.UserDefined_TimeDependentHamiltonian(t)
 
         else:
-            raise ValueError(f"Unknown ShapeFunc '{self.ShapeFunc}'.")
+            raise ValueError(
+                f"Unknown ShapeFunc_or_Hamiltonian '{self.ShapeFunc_or_Hamiltonian}'."
+            )
 
         # Convert PyOR QuantumObject to numpy array
         if hasattr(H_t, "data"):
@@ -189,7 +182,17 @@ class Evolutions:
         """
         return np.linspace(0,DT*(NPOINTS-1),NPOINTS,endpoint=True)
 
-    def Evolution(self,rhoQ,rhoeqQ,HamiltonianQ,RelaxationQ=None,HamiltonianArray=None):
+    def Evolution(self, rhoQ, rhoeqQ, HamiltonianQ, RelaxationQ=None, HamiltonianArray=None, CompleteGenerator=False):
+        """
+        Evolve a state in Schrodinger, Hilbert, or Liouville space.
+
+        Parameters
+        ----------
+        CompleteGenerator : bool, optional
+            Liouville space only. Set True when HamiltonianQ is already the
+            complete generator L of d(rho)/dt = L @ rho, for example for a
+            combined/multi-system model. Default is False.
+        """
 
         Pmethod = self.PropagationMethod
         ode_method = self.OdeMethod
@@ -217,17 +220,23 @@ class Evolutions:
         else:
             rho = rhoQ
 
-        Hamiltonian = np.array(HamiltonianQ.data)
+        if hasattr(HamiltonianQ, 'data'):
+            Hamiltonian = np.asarray(HamiltonianQ.data)
+        else:
+            Hamiltonian = np.asarray(HamiltonianQ)
 
         if RelaxationQ is not None:
-            Relaxation = np.array(RelaxationQ.data)
+            if hasattr(RelaxationQ, 'data'):
+                Relaxation = np.asarray(RelaxationQ.data)
+            else:
+                Relaxation = np.asarray(RelaxationQ)
         else:
-            Relaxation = np.zeros_like(Hamiltonian)  # Ensures Relaxation is always defined
+            Relaxation = None
 
 
         if self.PropagationSpace == "Schrodinger":
             if Pmethod == "Unitary Propagator":
-                vec_ = rhoQ.data
+                vec_ = rho
                 vec_t = [vec_]
                 #t = np.arange(Npoints) * dt # Vineeth
                 #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
@@ -239,8 +248,8 @@ class Evolutions:
                     vec_ = np.matmul(U,vec_)
                     vec_t.append(vec_)
 
-            if Pmethod == "ODE Solver":
-                vec_ = rhoQ.data
+            elif Pmethod == "ODE Solver":
+                vec_ = rho
                 vec_t = []
 
                 #t = np.arange(Npoints) * dt # Vineeth
@@ -251,6 +260,10 @@ class Evolutions:
 
                 def vecDOT(t, Lvec, Hamiltonian):
                     return -1j * Hamiltonian @ Lvec  # No need for redundant reshaping
+
+                print("ODE method                    =", ode_method)
+                print("ODE absolute tolerance (atol) =", self.ODE_atol)
+                print("ODE relative tolerance (rtol) =", self.ODE_rtol)
             
                 vecSol = solve_ivp(vecDOT,[0,dt*(Npoints-1)],Lvec,method=self.OdeMethod,t_eval=t,args=(Hamiltonian,), atol = self.ODE_atol, rtol = self.ODE_rtol)   
                 t, vec_sol = vecSol.t, vecSol.y
@@ -258,310 +271,397 @@ class Evolutions:
                 for i in range(Npoints):
                     vec_t.append(np.reshape(vec_sol[:,i],(vec_.shape[0],1)))
 
+            else:
+                raise ValueError(
+                    "Unknown Schrodinger-space propagation method: "
+                    f"'{Pmethod}'.\n"
+                    "Use 'Unitary Propagator' or 'ODE Solver'."
+                )
+
             return t, vec_t
 
-
         if self.PropagationSpace == "Hilbert":
-            
-            if Pmethod == "Unitary Propagator":    
-                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)
-                #t = np.arange(Npoints) * dt # Vineeth
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
 
-                U = expm(-1j * Hamiltonian * dt)
-                rho_t[0] = rho
-                for i in range(Npoints-1):
-                    rho = np.matmul(U,np.matmul(rho,U.T.conj()))
-                    rho_t[i+1] = rho   
+            # ============================================================
+            # 1. UNITARY PROPAGATOR
+            # ============================================================
 
-            if Pmethod == "Unitary Propagator Time Dependent":    
-                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)
-                #t = np.arange(Npoints) * dt # Vineeth
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+            if Pmethod == "Unitary Propagator":
+
+                rho_t = np.zeros(
+                    (Npoints, self.Vdim, self.Vdim),
+                    dtype=complex
+                )
 
                 rho_t[0] = rho
-                for i in range(Npoints-1):
-                    U = expm(-1j * (Hamiltonian + HamiltonianArray[i]) * dt)
-                    rho = np.matmul(U,np.matmul(rho,U.T.conj()))
-                    rho_t[i+1] = rho
 
-            if Pmethod == "ODE Solver":
-                """
-                Relaxation possible in Hilbert space by using solver for ODE. 
-                Integrators not supported: 'Radau' and LSODA
-                """
-                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex) 
-                #t = np.arange(Npoints) * dt # Vineeth                      
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) #Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+                if HamiltonianArray is not None and len(HamiltonianArray) < (Npoints - 1):
+                    raise ValueError(
+                        f"HamiltonianArray must contain at least {Npoints - 1} time-step matrices. "
+                        f"Received {len(HamiltonianArray)}."
+                    )
 
-                rhoi = rho.reshape(-1) + 0 * 1j
-                def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
-                    rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
-                    rhodot = np.zeros((rhoi.shape[-1]))
-                    Rso_temp = self.class_Relax.Relaxation(rho_temp-rhoeq)
-                    Brd = self.class_NonL.Radiation_Damping(rho_temp)
-                    Bdipole = self.class_NonL.DipoleShift(rho_temp)
-                    H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
-                    rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
-                    return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
+                HasTimeDependentHamiltonian = (
+                    HamiltonianArray is not None
+                    or self.ShapeFunc_or_Hamiltonian in (
+                        "Off Resonance",
+                        "Bruker",
+                        "User Defined Hamiltonian"
+                    )
+                )
+
+                if not HasTimeDependentHamiltonian:
+
+                    U = expm(-1j * Hamiltonian * dt)
+
+                    for i in range(Npoints - 1):
+                        rho = U @ rho @ U.conj().T
+                        rho_t[i + 1] = rho
+
+                else:
+
+                    for i in range(Npoints - 1):
+
+                        if HamiltonianArray is not None:
+                            H = Hamiltonian + HamiltonianArray[i]
+                        else:
+                            H = Hamiltonian + self.TimeDependent_Hamiltonian(t[i])
+
+                        U = expm(-1j * H * dt)
+                        rho = U @ rho @ U.conj().T
+                        rho_t[i + 1] = rho
+
+            # ============================================================
+            # 2. ODE SOLVER
+            # ============================================================
+
+            elif Pmethod == "ODE Solver":
+
+                """
+                General Hilbert-space ODE solver.
+
+                Automatically handles:
+
+                - Redfield master equation
+                - Lindblad master equation
+                - Phenomenological relaxation
+                - Phenomenological relaxation matrix
+                - Radiation damping
+                - Dipolar shift
+                - Time-dependent / shaped-pulse Hamiltonian
+                """
+
+                rho_t = np.zeros(
+                    (Npoints, self.Vdim, self.Vdim),
+                    dtype=complex
+                )
+
+                # Convert density matrix to vector for solve_ivp
+                rhoi = rho.reshape(-1) + 0j
+
+
+                # ========================================================
+                # Differential equation
+                # ========================================================
+
+                def rhoDOT(
+                    t,
+                    rho,
+                    rhoeq,
+                    Hamiltonian,
+                    Sx,
+                    Sy,
+                    Sz,
+                    Sp,
+                    Sm
+                ):
+
+                    # ----------------------------------------------------
+                    # Convert vector back to density matrix
+                    # ----------------------------------------------------
+
+                    rho_temp = np.reshape(
+                        rho,
+                        (self.Vdim, self.Vdim)
+                    )
+
+
+                    # ====================================================
+                    # RELAXATION
+                    # ====================================================
+
+                    # ----------------------------------------------------
+                    # Lindblad master equation
+                    #
+                    # Relaxation acts directly on rho
+                    # ----------------------------------------------------
+
+                    if self.class_Relax.MasterEquation == "Lindblad":
+
+                        # Lindblad relaxation acts directly on rho.
+                        Rso_temp = self.class_Relax.Relaxation(
+                            rho_temp
+                        )
+
+                    else:
+
+                        # Redfield / phenomenological relaxation acts on
+                        # the deviation from equilibrium. The relaxation
+                        # process is selected through QS.Configure(...).
+                        Rso_temp = self.class_Relax.Relaxation(
+                            rho_temp - rhoeq
+                        )
+
+
+                    # ====================================================
+                    # NONLINEAR TERMS
+                    # ====================================================
+
+                    # Radiation damping field
+                    Brd = self.class_NonL.Radiation_Damping(
+                        rho_temp
+                    )
+
+                    # Dipolar field shift
+                    Bdipole = self.class_NonL.DipoleShift(
+                        rho_temp
+                    )
+
+
+                    # ====================================================
+                    # HAMILTONIAN
+                    # ====================================================
+
+                    H = (
+                        Hamiltonian
+                        + np.sum(Sx, axis=0) * Brd.real
+                        + np.sum(Sy, axis=0) * Brd.imag
+                        + np.sum(Sz, axis=0) * Bdipole
+                    )
+
+
+                    # ====================================================
+                    # TIME-DEPENDENT HAMILTONIAN
+                    # ====================================================
+
+                    if self.ShapeFunc_or_Hamiltonian in (
+                        "Off Resonance",
+                        "Bruker",
+                        "User Defined Hamiltonian"
+                    ):
+
+                        H_shapePulse = self.TimeDependent_Hamiltonian(t)
+
+                        H = H + H_shapePulse
+
+
+                    # ====================================================
+                    # LIOUVILLE-von NEUMANN EQUATION
+                    # ====================================================
+
+                    rhodot = (
+                        -1j * self.Commutator(H, rho_temp)
+                        - Rso_temp
+                    )
+
+                    return rhodot.reshape(-1)
+
+
+                # ========================================================
+                # SOLVE DIFFERENTIAL EQUATION
+                # ========================================================
+
+                print("ODE method                    =", ode_method)
+                print("ODE absolute tolerance (atol) =", self.ODE_atol)
+                print("ODE relative tolerance (rtol) =", self.ODE_rtol)
+
+                rhoSol = solve_ivp(
+                    rhoDOT,
+                    [0, dt * (Npoints - 1)],
+                    rhoi,
+                    method=ode_method,
+                    t_eval=t,
+                    args=(
+                        rhoeq,
+                        Hamiltonian,
+                        Sx,
+                        Sy,
+                        Sz,
+                        Sp,
+                        Sm
+                    ),
+                    atol=self.ODE_atol,
+                    rtol=self.ODE_rtol
+                )
+
+
+                # ========================================================
+                # CONVERT SOLUTION BACK TO DENSITY MATRICES
+                # ========================================================
+
                 t, rho2d = rhoSol.t, rhoSol.y
-                for i in range(Npoints):          
-                    rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
-                    rho_t[i] = rho	            
 
-            if Pmethod == "ODE Solver Lindblad":
-                """
-                Relaxation possible in Hilbert space by using solver for ODE. 
-                Integrators not supported: 'Radau' and LSODA
-                """
-                
-                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)       
-                #t = np.arange(Npoints) * dt # Vineeth                
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+                for i in range(Npoints):
 
-                rhoi = rho.reshape(-1) + 0 * 1j
-                def rhoDOT(t,rho,Hamiltonian,Sx,Sy,Sz,Sp,Sm):                    
-                    rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
-                    rhodot = np.zeros((rhoi.shape[-1]))                       
-                    Rso_temp = self.class_Relax.Relaxation(rho_temp)
-                    Brd = self.class_NonL.Radiation_Damping(rho_temp)
-                    Bdipole = self.class_NonL.DipoleShift(rho_temp)
-                    H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
-                    rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
-                    return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
-                t, rho2d = rhoSol.t, rhoSol.y
-                for i in range(Npoints):          
-                    rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
+                    rho = np.reshape(
+                        rho2d[:, i],
+                        (self.Vdim, self.Vdim)
+                    )
+
                     rho_t[i] = rho
 
-            if Pmethod == "ODE Solver ShapedPulse Lindblad":
-                """
-                Relaxation possible in Hilbert space by using solver for ODE. 
-                Integrators not supported: 'Radau' and LSODA
-                """
-                
-                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)       
-                #t = np.arange(Npoints) * dt # Vineeth                
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
 
-                rhoi = rho.reshape(-1) + 0 * 1j
-                def rhoDOT(t,rho,Hamiltonian,Sx,Sy,Sz,Sp,Sm):                    
-                    rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
-                    rhodot = np.zeros((rhoi.shape[-1]))                       
-                    Rso_temp = self.class_Relax.Relaxation(rho_temp)
-                    Brd = self.class_NonL.Radiation_Damping(rho_temp)
-                    Bdipole = self.class_NonL.DipoleShift(rho_temp)
-                    H_shapePulse = self.TimeDependent_Hamiltonian(t)
-                    H = H_shapePulse + Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
-                    rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
-                    return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
-                t, rho2d = rhoSol.t, rhoSol.y
-                for i in range(Npoints):          
-                    rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
-                    rho_t[i] = rho
+            # ============================================================
+            # UNKNOWN PROPAGATION METHOD
+            # ============================================================
 
-            if Pmethod == "ODE Solver ShapedPulse":
-                """
-                Relaxation possible in Hilbert space by using solver for ODE. 
-                Integrators not supported: 'Radau' and LSODA
-                """
-                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)   
-                #t = np.arange(Npoints) * dt # Vineeth                    
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True)
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+            else:
 
-                rhoi = rho.reshape(-1) + 0 * 1j
-                def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
-                    rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
-                    rhodot = np.zeros((rhoi.shape[-1]))
-                    Rso_temp = self.class_Relax.Relaxation(rho_temp-rhoeq)
-                    Brd = self.class_NonL.Radiation_Damping(rho_temp)
-                    #Bdipole = self.class_NonL.DipoleShift(rho_temp)
-                    H_shapePulse = self.TimeDependent_Hamiltonian(t)
-                    #H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole + H_shapePulse 
-                    H = H_shapePulse + Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag
-                    rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
-                    return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
-                t, rho2d = rhoSol.t, rhoSol.y
-                for i in range(Npoints):          
-                    rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
-                    rho_t[i] = rho
+                raise ValueError(
+                    "Unknown Hilbert-space propagation method: "
+                    f"'{Pmethod}'.\n"
+                    "Use 'Unitary Propagator' or 'ODE Solver'."
+                )
 
-            if Pmethod == "ODE Solver Relaxation and Phenomenological":
-                """
-                Relaxation possible in Hilbert space by using solver for ODE. 
-                Integrators not supported: 'Radau' and LSODA
-                """
-                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)     
-                #t = np.arange(Npoints) * dt # Vineeth                  
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
-
-                rhoi = rho.reshape(-1) + 0 * 1j
-                def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
-                    rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
-                    rhodot = np.zeros((rhoi.shape[-1]))
-                    Rprocess2 = "Phenomenological Matrix"
-                    Rso_temp = self.class_Relax.Relaxation(rho_temp-rhoeq) + self.class_Relax.Relaxation(rho_temp-rhoeq,Rprocess2)
-                    Brd = self.class_NonL.Radiation_Damping(rho_temp)
-                    Bdipole = self.class_NonL.DipoleShift(rho_temp)
-                    H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
-                    rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
-                    return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
-                t, rho2d = rhoSol.t, rhoSol.y
-                for i in range(Npoints):          
-                    rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
-                    rho_t[i] = rho
-
-            if Pmethod == "ODE Solver Lindblad Relaxation and Phenomenological":
-                """
-                Relaxation possible in Hilbert space by using solver for ODE. 
-                Integrators not supported: 'Radau' and LSODA
-                """
-                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex)     
-                #t = np.arange(Npoints) * dt # Vineeth                  
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
-
-                rhoi = rho.reshape(-1) + 0 * 1j
-                def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
-                    rho_temp = np.reshape(rho,(self.Vdim,self.Vdim))
-                    rhodot = np.zeros((rhoi.shape[-1]))
-
-                    Rprocess2 = "Phenomenological Matrix"
-                    Rso_temp = self.class_Relax.Relaxation(rho_temp) + self.class_Relax.Relaxation(rho_temp,Rprocess2)
-                    Brd = self.class_NonL.Radiation_Damping(rho_temp)
-                    Bdipole = self.class_NonL.DipoleShift(rho_temp)
-                    H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag  + np.sum(Sz,axis=0) * Bdipole     
-                    rhodot = (-1j * self.Commutator(H,rho_temp) - Rso_temp).reshape(-1)        
-                    return rhodot  
-                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rhoi,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
-                t, rho2d = rhoSol.t, rhoSol.y
-                for i in range(Npoints):          
-                    rho = np.reshape(rho2d[:,i],(self.Vdim,self.Vdim))
-                    rho_t[i] = rho
-
-            if Pmethod == "ODE Solver Stiff RealIntegrator": 
-                """
-                Relaxation possible in Hilbert space by using solver for ODE. 
-                Integrators not supported: Nill
-                Remarks: 
-                """
-                rho_t = np.zeros((Npoints,self.Vdim,self.Vdim),dtype=complex) 
-                #t = np.arange(Npoints) * dt # Vineeth                      
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
-
-                rhoi = (rho.reshape(-1))
-                rho_RI = np.zeros((2*rhoi.shape[-1]))
-                rho_RI[0::2] = rhoi.real
-                rho_RI[1::2] = rhoi.imag
-                
-                def rhoDOT(t,rho,rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm):
-                    rho = np.reshape(rho[0::2] + 1j * rho[1::2],(self.Vdim,self.Vdim))
-                    rhodot = np.zeros((2*rhoi.shape[-1]))
-                    Rso = self.class_Relax.Relaxation(rho-rhoeq)
-                    Brd = self.class_NonL.Radiation_Damping(rho)                 
-                    H = Hamiltonian + np.sum(Sx,axis=0) * Brd.real + np.sum(Sy,axis=0) * Brd.imag        
-                    rhodot[0::2] = (-1j * self.Commutator(H,rho) - Rso).reshape(-1).real  
-                    rhodot[1::2] = (-1j * self.Commutator(H,rho) - Rso).reshape(-1).imag     
-                    return rhodot 
-                
-                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],rho_RI,method=ode_method,t_eval=t,args=(rhoeq,Hamiltonian,Sx,Sy,Sz,Sp,Sm), atol = self.ODE_atol, rtol = self.ODE_rtol)
-
-                t, rho2d = rhoSol.t, rhoSol.y
-                rho2d_R =  rho2d[0::2]
-                rho2d_I =  rho2d[1::2]
-                
-                for i in range(Npoints):          
-                    rho_R = np.reshape(rho2d_R[:,i],(self.Vdim,self.Vdim))
-                    rho_I = np.reshape(rho2d_I[:,i],(self.Vdim,self.Vdim))
-                    rho_t[i] = rho_R + 1j * rho_I
-                                                                                
             return t, rho_t
         
         if self.PropagationSpace == "Liouville":
             """
-            Evolution of density vector
-            INPUT
-            -----
-            Lrho         : intial state vector
-            Lrhoeq       : equlibrium state vector
-            LHamiltonian : Hamiltonian of evolution
-            RsuperOP     : Relaxation Superoperator
-            dt          : time step
-            Npoints     : number of time points
-            method      : "unitary propagator"  Propagate the hamiltonian by unitary matrix (exp(-j H dt))
-                        "Relaxation"          Propagate the hamiltonian by unitary matrix with relaxation included
-                        : "solve ivp" solve the Liouville with differential equation solver (relaxation included)
+            Evolution in Liouville space.
 
-            OUTPUT     
-            ------
-            t       : time
-            Lrho     : array of final density state vector     
-            """  
+            Only two propagation methods are used:
 
-            if Pmethod == "Unitary Propagator":    
-                rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                #t = np.arange(Npoints) * dt # Vineeth
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+                "Unitary Propagator"
+                "ODE Solver"
 
-                U = expm(-1j * Hamiltonian * dt)
-                rho_t[0] = rho
-                for i in range(Npoints-1):
-                    rho = np.matmul(U,rho)  
-                    rho_t[i+1] = rho  
+            The selected master equation, relaxation process,
+            sparse/dense matrices and time-dependent Hamiltonian
+            are handled automatically.
+            """
 
-            if Pmethod == "Unitary Propagator System":
-                """
-                Propagation of a combined/multi-system Liouville state.
+            # ============================================================
+            # Basic dimensions
+            # ============================================================
 
-                The dimension is determined from the supplied state vector,
-                rather than self.Ldim.
+            SystemDim = rho.shape[0]
 
-                The supplied HamiltonianQ is treated as the complete
-                Liouville-space generator:
+            # Make sure rho is a column vector
+            if rho.ndim == 1:
+                rho = rho.reshape(SystemDim, 1)
 
-                    d(rho)/dt = L @ rho
+            # Make sure rhoeq is also a column vector
+            if rhoeq is not None and rhoeq.ndim == 1:
+                rhoeq = rhoeq.reshape(SystemDim, 1)
 
-                Therefore:
 
-                    U = expm(L * dt)
-                """
+            # ============================================================
+            # Determine system type
+            # ============================================================
 
-                # Combined system dimension
-                SystemDim = rho.shape[0]
+            # Normal PyOR Liouville evolution uses the usual
+            # -1j * Hamiltonian convention.
+            #
+            # For a combined/multi-system model, set CompleteGenerator=True.
+            # In that case HamiltonianQ is interpreted as the COMPLETE generator L:
+            #
+            #       d(rho)/dt = L @ rho
+            #
+            # and PyOR must NOT multiply it by -1j again.
+            CombinedSystem = bool(CompleteGenerator)
+            NormalSystem = not CombinedSystem
 
-                # Check state-vector shape
-                if rho.ndim == 1:
-                    rho = rho.reshape(SystemDim, 1)
+            if NormalSystem and SystemDim != self.Ldim:
+                raise ValueError(
+                    f"Liouville state dimension is {SystemDim}, but the native PyOR "
+                    f"Liouville dimension is {self.Ldim}. If HamiltonianQ is an already "
+                    "assembled complete generator for a combined/multi-system model, "
+                    "call Evolution(..., CompleteGenerator=True)."
+                )
 
-                if rho.shape != (SystemDim, 1):
-                    raise ValueError(
-                        "For 'Unitary Propagator System', rho must have "
-                        f"shape ({SystemDim}, 1). Got {rho.shape}."
-                    )
 
-                # Check generator dimension
-                if Hamiltonian.shape != (SystemDim, SystemDim):
-                    raise ValueError(
-                        "System generator dimension does not match the state vector. "
-                        f"Generator shape = {Hamiltonian.shape}, "
-                        f"state shape = {rho.shape}."
-                    )
+            # ============================================================
+            # Determine master equation
+            # ============================================================
 
-                # Allocate using the COMBINED dimension
+            Lindblad = (
+                self.class_Relax.MasterEquation == "Lindblad"
+            )
+
+
+            # ============================================================
+            # Determine whether relaxation is present
+            # ============================================================
+
+            HasRelaxation = RelaxationQ is not None
+
+
+            # ============================================================
+            # Determine whether a time-dependent Hamiltonian exists
+            # ============================================================
+
+            if HamiltonianArray is not None and len(HamiltonianArray) < (Npoints - 1):
+                raise ValueError(
+                    f"HamiltonianArray must contain at least {Npoints - 1} time-step matrices. "
+                    f"Received {len(HamiltonianArray)}."
+                )
+
+
+            HasTimeDependentHamiltonian = (
+
+                HamiltonianArray is not None
+
+                or
+
+                getattr(
+                    self,
+                    "ShapeFunc_or_Hamiltonian",
+                    None
+                ) in (
+                    "Off Resonance",
+                    "Bruker",
+                    "User Defined Hamiltonian"
+                )
+            )
+
+
+            # ============================================================
+            # Function for obtaining H(t)
+            # ============================================================
+
+            def GetHamiltonian(ti, i=None):
+
+                H = Hamiltonian
+
+                # Hamiltonian supplied as an array
+                if HamiltonianArray is not None:
+
+                    if i is None:
+                        i = int(np.clip(np.searchsorted(t, ti, side="right") - 1, 0, len(HamiltonianArray) - 1))
+
+                    H = H + HamiltonianArray[i]
+
+                # Hamiltonian supplied as a function
+                elif getattr(
+                    self,
+                    "ShapeFunc_or_Hamiltonian",
+                    None
+                ) in (
+                    "Off Resonance",
+                    "Bruker",
+                    "User Defined Hamiltonian"
+                ):
+
+                    H = H + self.TimeDependent_Hamiltonian(ti)
+
+                return H
+
+
+            # ============================================================
+            # 1. UNITARY PROPAGATOR
+            # ============================================================
+
+            if Pmethod == "Unitary Propagator":
+
                 rho_t = np.zeros(
                     (Npoints, SystemDim, 1),
                     dtype=complex
@@ -569,173 +669,587 @@ class Evolutions:
 
                 rho_t[0] = rho
 
-                # HamiltonianQ is already the complete generator L
-                U = expm(Hamiltonian * dt)
 
-                for i in range(Npoints - 1):
+                # ========================================================
+                # COMBINED / MULTI-SYSTEM
+                # ========================================================
+                #
+                # For the combined system, Hamiltonian is already the
+                # complete generator:
+                #
+                #       dρ/dt = L ρ
+                #
+                # therefore:
+                #
+                #       U = exp(L dt)
+                #
+                # NOT exp(-i L dt)
+                # ========================================================
 
-                    rho = U @ rho
+                if CombinedSystem:
 
-                    rho_t[i + 1] = rho
+                    if RelaxationQ is not None:
+                        raise ValueError(
+                            "For a combined/multi-system Liouville state, HamiltonianQ "
+                            "is treated as the complete generator L. Pass relaxation "
+                            "inside that generator and use RelaxationQ=None."
+                        )
 
-            if Pmethod == "Unitary Propagator Sparse":  
-                rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                #t = np.arange(Npoints) * dt # Vineeth
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+                    # Check generator dimension
+                    if Hamiltonian.shape != (
+                        SystemDim,
+                        SystemDim
+                    ):
 
-                U = sparse.linalg.expm(-1j * Hamiltonian * dt) # LHamiltonian is sparse matrix
-                rho_t[0] = rho
-                for i in range(Npoints-1):
-                    rho = U.dot(rho)  
-                    rho_t[i+1] = rho
-            
-            if Pmethod == "Relaxation":    
-                rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                #t = np.arange(Npoints) * dt # Vineeth
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+                        raise ValueError(
+                            "Combined-system generator dimension "
+                            "does not match the state vector.\n"
+                            f"Generator shape = {Hamiltonian.shape}\n"
+                            f"State shape = {rho.shape}"
+                        )
 
-                U = expm(-1j * Hamiltonian * dt - Relaxation * dt)
-                rho_t[0] = rho
-                for i in range(Npoints-1):
-                    rho = np.matmul(U,rho - rhoeq) + rhoeq
-                    rho_t[i+1] = rho        
 
-            if Pmethod == "Relaxation Sparse":   
-                rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                #t = np.arange(Npoints) * dt # Vineeth
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+                    # ----------------------------------------------------
+                    # Time-independent generator
+                    # ----------------------------------------------------
 
-                U = sparse.linalg.expm(-1j * Hamiltonian * dt - Relaxation * dt) # LHamiltonian and RsuperOP are sparse matrix 
-                rho_t[0] = rho          
-                for i in range(Npoints-1):
-                    rho = U.dot(rho - rhoeq) + rhoeq
-                    rho_t[i+1] = rho
+                    if not HasTimeDependentHamiltonian:
 
-            if Pmethod == "Relaxation Lindblad":    
-                rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                #t = np.arange(Npoints) * dt # Vineeth
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
+                        U = expm(
+                            Hamiltonian * dt
+                        )
 
-                U = expm(-1j * Hamiltonian * dt - Relaxation * dt)
-                rho_t[0] = rho
-                for i in range(Npoints-1):
-                    rho = np.matmul(U,rho)
-                    rho_t[i+1] = rho 
+                        for i in range(Npoints - 1):
 
-            if Pmethod == "Relaxation ShapedPulse Lindblad_":
+                            rho = U @ rho
+
+                            rho_t[i + 1] = rho
+
+
+                    # ----------------------------------------------------
+                    # Time-dependent generator
+                    # ----------------------------------------------------
+
+                    else:
+
+                        for i in range(Npoints - 1):
+
+                            L = GetHamiltonian(
+                                t[i],
+                                i
+                            )
+
+                            rho = expm_multiply(
+                                L * dt,
+                                rho
+                            )
+
+                            rho_t[i + 1] = rho
+
+
+                # ========================================================
+                # NORMAL PyOR LIOUVILLE SYSTEM
+                # ========================================================
+
+                else:
+
+                    # ====================================================
+                    # No relaxation
+                    # ====================================================
+
+                    if not HasRelaxation:
+
+                        # ------------------------------------------------
+                        # Time-independent Hamiltonian
+                        # ------------------------------------------------
+
+                        if not HasTimeDependentHamiltonian:
+
+                            # Sparse Hamiltonian
+                            if sparse.issparse(Hamiltonian):
+
+                                U = sparse.linalg.expm(
+                                    -1j * Hamiltonian * dt
+                                )
+
+                            # Dense Hamiltonian
+                            else:
+
+                                U = expm(
+                                    -1j * Hamiltonian * dt
+                                )
+
+
+                            for i in range(Npoints - 1):
+
+                                rho = U @ rho
+
+                                rho_t[i + 1] = rho
+
+
+                        # ------------------------------------------------
+                        # Time-dependent Hamiltonian
+                        # ------------------------------------------------
+
+                        else:
+
+                            for i in range(Npoints - 1):
+
+                                H = GetHamiltonian(
+                                    t[i],
+                                    i
+                                )
+
+                                A = -1j * H * dt
+
+                                rho = expm_multiply(
+                                    A,
+                                    rho
+                                )
+
+                                rho_t[i + 1] = rho
+
+
+                    # ====================================================
+                    # Relaxation present
+                    # ====================================================
+
+                    else:
+
+                        # ------------------------------------------------
+                        # Time-independent Hamiltonian + relaxation
+                        # ------------------------------------------------
+
+                        if not HasTimeDependentHamiltonian:
+
+                            A = (
+                                -1j * Hamiltonian
+                                - Relaxation
+                            ) * dt
+
+
+                            # Sparse matrix
+                            if sparse.issparse(A):
+
+                                U = sparse.linalg.expm(A)
+
+                            # Dense matrix
+                            else:
+
+                                U = expm(A)
+
+
+                            # --------------------------------------------
+                            # Lindblad
+                            #
+                            #     rho(t+dt) = U rho(t)
+                            # --------------------------------------------
+
+                            if Lindblad:
+
+                                for i in range(Npoints - 1):
+
+                                    rho = U @ rho
+
+                                    rho_t[i + 1] = rho
+
+
+                            # --------------------------------------------
+                            # Redfield / equilibrium relaxation
+                            #
+                            # rho(t+dt)
+                            # =
+                            # U [rho(t)-rhoeq] + rhoeq
+                            # --------------------------------------------
+
+                            else:
+
+                                for i in range(Npoints - 1):
+
+                                    rho = (
+                                        U @ (rho - rhoeq)
+                                        + rhoeq
+                                    )
+
+                                    rho_t[i + 1] = rho
+
+
+                        # ------------------------------------------------
+                        # Time-dependent Hamiltonian + relaxation
+                        # ------------------------------------------------
+
+                        else:
+
+                            for i in range(Npoints - 1):
+
+                                H = GetHamiltonian(
+                                    t[i],
+                                    i
+                                )
+
+                                A = (
+                                    -1j * H
+                                    - Relaxation
+                                ) * dt
+
+
+                                # ----------------------------------------
+                                # Lindblad
+                                # ----------------------------------------
+
+                                if Lindblad:
+
+                                    rho = expm_multiply(
+                                        A,
+                                        rho
+                                    )
+
+
+                                # ----------------------------------------
+                                # Redfield
+                                # ----------------------------------------
+
+                                else:
+
+                                    rho = (
+                                        expm_multiply(
+                                            A,
+                                            rho - rhoeq
+                                        )
+                                        + rhoeq
+                                    )
+
+
+                                rho_t[i + 1] = rho
+
+
+            # ============================================================
+            # 2. ODE SOLVER
+            # ============================================================
+
+            elif Pmethod == "ODE Solver":
+
                 rho_t = np.zeros(
-                    (Npoints, self.Ldim, 1),
+                    (Npoints, SystemDim, 1),
                     dtype=complex
                 )
 
-                rho_t[0] = rho
+                print("ODE method                    =", ode_method)
+                print("ODE absolute tolerance (atol) =", self.ODE_atol)
+                print("ODE relative tolerance (rtol) =", self.ODE_rtol)
 
-                for i in range(Npoints - 1):
 
-                    # Evaluate the time-dependent Hamiltonian
-                    # at one scalar time point
-                    H_shapePulse = self.TimeDependent_Hamiltonian(t[i])
+                # ========================================================
+                # Convert column vector to 1D vector for solve_ivp
+                # ========================================================
 
-                    U = expm(
-                        -1j * (Hamiltonian + H_shapePulse) * dt
-                        - Relaxation * dt
+                Lrho = rho.reshape(SystemDim) + 0j
+
+                if rhoeq is not None:
+
+                    Lrhoeq = rhoeq.reshape(SystemDim)
+
+                else:
+
+                    Lrhoeq = np.zeros(
+                        SystemDim,
+                        dtype=complex
                     )
 
-                    rho = U @ rho
-                    rho_t[i + 1] = rho
 
-            if Pmethod == "Relaxation ShapedPulse Lindblad":
+                # ========================================================
+                # COMBINED / MULTI-SYSTEM ODE
+                # ========================================================
 
-                rho_t = np.zeros(
-                    (Npoints, self.Ldim, 1),
-                    dtype=complex
+                if CombinedSystem:
+
+                    if RelaxationQ is not None:
+                        raise ValueError(
+                            "For a combined/multi-system Liouville state, HamiltonianQ "
+                            "is treated as the complete generator L. Pass relaxation "
+                            "inside that generator and use RelaxationQ=None."
+                        )
+
+                    def rhoDOT(ti, Lrho):
+
+                        # Base generator
+                        L = Hamiltonian
+
+
+                        # -----------------------------------------------
+                        # Hamiltonian array
+                        # -----------------------------------------------
+
+                        if HamiltonianArray is not None:
+
+                            index = np.searchsorted(
+                                t,
+                                ti
+                            )
+
+                            index = min(
+                                index,
+                                len(HamiltonianArray) - 1
+                            )
+
+                            L = (
+                                L
+                                + HamiltonianArray[index]
+                            )
+
+
+                        # -----------------------------------------------
+                        # User-defined time-dependent generator
+                        # -----------------------------------------------
+
+                        elif getattr(
+                            self,
+                            "ShapeFunc_or_Hamiltonian",
+                            None
+                        ) in (
+                            "Off Resonance",
+                            "Bruker",
+                            "User Defined Hamiltonian"
+                        ):
+
+                            L = (
+                                L
+                                + self.TimeDependent_Hamiltonian(ti)
+                            )
+
+
+                        # Complete generator already supplied
+                        rhodot = L @ Lrho
+
+                        return np.asarray(
+                            rhodot
+                        ).reshape(-1)
+
+
+                    rhoSol = solve_ivp(
+
+                        rhoDOT,
+
+                        [
+                            0,
+                            dt * (Npoints - 1)
+                        ],
+
+                        Lrho,
+
+                        method=ode_method,
+
+                        t_eval=t,
+
+                        atol=self.ODE_atol,
+
+                        rtol=self.ODE_rtol
+                    )
+
+
+                # ========================================================
+                # NORMAL PyOR LIOUVILLE ODE
+                # ========================================================
+
+                else:
+
+                    def rhoDOT(
+                        ti,
+                        Lrho,
+                        LHamiltonian,
+                        RsuperOP,
+                        Lrhoeq,
+                        Sx,
+                        Sy
+                    ):
+
+                        # ================================================
+                        # Convert Liouville vector to density matrix
+                        # ================================================
+
+                        rho_temp = self.Convert_LrhoTO2Drho(
+                            Lrho
+                        )
+
+
+                        # ================================================
+                        # Radiation damping
+                        # ================================================
+
+                        Brd = self.class_NonL.Radiation_Damping(
+                            rho_temp
+                        )
+
+
+                        # ================================================
+                        # Hamiltonian
+                        # ================================================
+
+                        LH = (
+                            LHamiltonian
+                            + self.CommutationSuperoperator(
+                                np.sum(Sx, axis=0)
+                                * Brd.real
+                            )
+                            + self.CommutationSuperoperator(
+                                np.sum(Sy, axis=0)
+                                * Brd.imag
+                            )
+                        )
+
+
+                        # ================================================
+                        # Time-dependent Hamiltonian
+                        # ================================================
+
+                        if HamiltonianArray is not None:
+
+                            index = np.searchsorted(
+                                t,
+                                ti
+                            )
+
+                            index = min(
+                                index,
+                                len(HamiltonianArray) - 1
+                            )
+
+                            LH = (
+                                LH
+                                + HamiltonianArray[index]
+                            )
+
+
+                        elif getattr(
+                            self,
+                            "ShapeFunc_or_Hamiltonian",
+                            None
+                        ) in (
+                            "Off Resonance",
+                            "Bruker",
+                            "User Defined Hamiltonian"
+                        ):
+
+                            LH = (
+                                LH
+                                + self.TimeDependent_Hamiltonian(ti)
+                            )
+
+
+                        # ================================================
+                        # No relaxation
+                        # ================================================
+
+                        if RsuperOP is None:
+
+                            rhodot = (
+                                -1j * LH @ Lrho
+                            )
+
+
+                        # ================================================
+                        # Lindblad relaxation
+                        #
+                        #     dρ/dt = -i Lρ - Rρ
+                        # ================================================
+
+                        elif Lindblad:
+
+                            rhodot = (
+                                -1j * LH @ Lrho
+                                - RsuperOP @ Lrho
+                            )
+
+
+                        # ================================================
+                        # Redfield relaxation
+                        #
+                        # dρ/dt =
+                        #
+                        # -i Lρ
+                        #
+                        # -R(ρ-rhoeq)
+                        # ================================================
+
+                        else:
+
+                            rhodot = (
+                                -1j * LH @ Lrho
+                                - RsuperOP @ (
+                                    Lrho - Lrhoeq
+                                )
+                            )
+
+
+                        return np.asarray(
+                            rhodot
+                        ).reshape(-1)
+
+
+                    # ====================================================
+                    # Solve ODE
+                    # ====================================================
+
+                    rhoSol = solve_ivp(
+
+                        rhoDOT,
+
+                        [
+                            0,
+                            dt * (Npoints - 1)
+                        ],
+
+                        Lrho,
+
+                        method=ode_method,
+
+                        t_eval=t,
+
+                        args=(
+                            Hamiltonian,
+                            Relaxation,
+                            Lrhoeq,
+                            Sx,
+                            Sy
+                        ),
+
+                        atol=self.ODE_atol,
+
+                        rtol=self.ODE_rtol
+                    )
+
+
+                # ========================================================
+                # Store solution
+                # ========================================================
+
+                t, rho_sol = (
+                    rhoSol.t,
+                    rhoSol.y
                 )
 
-                rho_t[0] = rho
+                for i in range(len(t)):
 
-                for i in range(Npoints - 1):
+                    rho_t[i] = np.reshape(
+                        rho_sol[:, i],
+                        (SystemDim, 1)
+                    )
 
-                    # Evaluate the time-dependent Hamiltonian
-                    H_shapePulse = self.TimeDependent_Hamiltonian(t[i])
 
-                    # Generator for one time step
-                    A = (
-                        -1j * (Hamiltonian + H_shapePulse)
-                        - Relaxation
-                    ) * dt
+            # ============================================================
+            # Invalid method
+            # ============================================================
 
-                    # Directly calculate exp(A) @ rho
-                    rho = expm_multiply(A, rho)
+            else:
 
-                    rho_t[i + 1] = rho
+                raise ValueError(
+                    "Unknown Liouville-space propagation method: "
+                    f"'{Pmethod}'.\n"
+                    "Use 'Unitary Propagator' or 'ODE Solver'."
+                )
 
-            if Pmethod == "Relaxation Lindblad Sparse":    
-                rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex)
-                #t = np.arange(Npoints) * dt # Vineeth
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
 
-                U = sparse.linalg.expm(-1j * Hamiltonian * dt - Relaxation * dt) # LHamiltonian and RsuperOP are sparse matrix
-                rho_t[0] = rho
-                for i in range(Npoints-1):
-                    rho = np.matmul(U,rho)
-                    rho_t[i+1] = rho 
-
-            if Pmethod == "ODE Solver":
-                """
-                Reference: Equation 47, A liouville space formulation of wangsness-bloch-redfield theory of nuclear spin relaxation suitable for machine computation. I. fundamental aspects, Slawomir Szymanski et.al., https://doi.org/10.1016/0022-2364(86)90334-3
-                """
-                rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex) 
-                #t = np.arange(Npoints) * dt # Vineeth
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
-
-                Lrho = np.reshape(rho,rho.shape[0]) + 0 * 1j            
-                Lrhoeq = np.reshape(rhoeq,rhoeq.shape[0])
-                
-                def rhoDOT(t,Lrho,LHamiltonian,RsuperOP,Lrhoeq,Sx,Sy):
-                    Brd = self.class_NonL.Radiation_Damping(self.Convert_LrhoTO2Drho(Lrho))
-                    LH = LHamiltonian + self.CommutationSuperoperator(np.sum(Sx,axis=0) * Brd.real)  + self.CommutationSuperoperator(np.sum(Sy,axis=0) * Brd.imag)
-                    rhodot = np.zeros((self.Ldim),dtype=complex)
-                    rhodot = -1j * np.matmul(LH,Lrho) - np.matmul(RsuperOP,Lrho-Lrhoeq)
-                    rhodot = np.reshape(rhodot,rhodot.shape[0])
-                    return rhodot
-                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],Lrho,method=ode_method,t_eval=t,args=(Hamiltonian,Relaxation,Lrhoeq,Sx,Sy), atol = self.ODE_atol, rtol = self.ODE_rtol)   
-                t, rho_sol = rhoSol.t, rhoSol.y
-                print(rho_sol.shape)
-                for i in range(Npoints):
-                    rho_t[i] = np.reshape(rho_sol[:,i],(self.Ldim,1))
-
-            if Pmethod == "ODE Solver Lindblad":
-                """
-                Reference: Equation 47, A liouville space formulation of wangsness-bloch-redfield theory of nuclear spin relaxation suitable for machine computation. I. fundamental aspects, Slawomir Szymanski et.al., https://doi.org/10.1016/0022-2364(86)90334-3
-                """
-                rho_t = np.zeros((Npoints,self.Ldim,1),dtype=complex) 
-                #t = np.arange(Npoints) * dt # Vineeth
-                #t = np.linspace(0,dt*Npoints,Npoints,endpoint=True) # Vineeth
-                #t = np.linspace(0,dt*(Npoints-1),Npoints,endpoint=True) # John Price
-
-                Lrho = np.reshape(rho,rho.shape[0]) + 0 * 1j            
-                Lrhoeq = np.reshape(rhoeq,rhoeq.shape[0])
-                
-                def rhoDOT(t,Lrho,LHamiltonian,RsuperOP,Sx,Sy):
-                    Brd = self.class_NonL.Radiation_Damping(self.Convert_LrhoTO2Drho(Lrho))
-                    LH = LHamiltonian + self.CommutationSuperoperator(np.sum(Sx,axis=0) * Brd.real)  + self.CommutationSuperoperator(np.sum(Sy,axis=0) * Brd.imag)
-                    rhodot = np.zeros((self.Ldim),dtype=complex)
-                    rhodot = -1j * np.matmul(LH,Lrho) - np.matmul(RsuperOP,Lrho)
-                    rhodot = np.reshape(rhodot,rhodot.shape[0])
-                    return rhodot
-                rhoSol = solve_ivp(rhoDOT,[0,dt*(Npoints-1)],Lrho,method=ode_method,t_eval=t,args=(Hamiltonian,Relaxation,Sx,Sy), atol = self.ODE_atol, rtol = self.ODE_rtol)   
-                t, rho_sol = rhoSol.t, rhoSol.y
-                print(rho_sol.shape)
-                for i in range(Npoints):
-                    rho_t[i] = np.reshape(rho_sol[:,i],(self.Ldim,1))
-
-            return t, rho_t 
+            return t, rho_t
             
     def Expectation(self,rho_t,detectionQ, tolerance=1.0e-14):
 
