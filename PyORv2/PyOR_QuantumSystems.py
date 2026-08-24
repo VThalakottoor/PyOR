@@ -752,6 +752,195 @@ class QuantumSystems:
 
         return QunObj(P) if QuantumObject else P
 
+    def ManifoldSubsystemTransition(
+        self,
+        Manifold,
+        Subsystem,
+        Initial,
+        Final,
+        Rate=None,
+        QuantumObject=True
+    ):
+        """
+        Construct a transition acting only on one subsystem inside a manifold,
+        while leaving all other subsystems unchanged.
+
+        For example, in an ES manifold
+
+            {"B1": "NV_Half", "B2": "NV_One"}
+
+        the call
+
+            QS.ManifoldSubsystemTransition(
+                Manifold="ES",
+                Subsystem="B1",
+                Initial=+0.5,
+                Final=-0.5
+            )
+
+        constructs
+
+            |-1/2><+1/2| ⊗ I_B2
+
+        in the local ES space and embeds it into the complete manifold space.
+
+        If Rate is provided, the returned operator is
+
+            sqrt(Rate) * |Final><Initial| ⊗ I_other
+
+        Parameters
+        ----------
+        Manifold : str
+            Name of the manifold, e.g. "ES".
+
+        Subsystem : str
+            Name of the subsystem that undergoes the transition.
+
+        Initial : float
+            Initial magnetic quantum number of the subsystem.
+
+        Final : float
+            Final magnetic quantum number of the subsystem.
+
+        Rate : float, optional
+            Transition rate in s^-1. If given, multiplies the operator
+            by sqrt(Rate).
+
+        QuantumObject : bool, optional
+            Return QunObj when True.
+
+        Returns
+        -------
+        QunObj or ndarray
+            Transition operator embedded in the complete manifold Hilbert space.
+        """
+
+        self._CheckManifold(Manifold)
+
+        system = self.System[Manifold]
+
+        if Subsystem not in system.SpinDic:
+            raise KeyError(
+                f"Unknown subsystem '{Subsystem}' in manifold '{Manifold}'. "
+                f"Available subsystems: {list(system.SpinDic)}"
+            )
+
+        quantum_numbers = self.ManifoldQuantumNumbers(Manifold)
+
+        allowed = quantum_numbers[Subsystem]
+
+        initial_matches = [
+            i
+            for i, value in enumerate(allowed)
+            if np.isclose(
+                float(Initial),
+                value,
+                atol=1.0e-8,
+                rtol=0.0
+            )
+        ]
+
+        final_matches = [
+            i
+            for i, value in enumerate(allowed)
+            if np.isclose(
+                float(Final),
+                value,
+                atol=1.0e-8,
+                rtol=0.0
+            )
+        ]
+
+        if len(initial_matches) == 0:
+            raise ValueError(
+                f"Invalid Initial={Initial} for subsystem '{Subsystem}'. "
+                f"Allowed values: {allowed}"
+            )
+
+        if len(final_matches) == 0:
+            raise ValueError(
+                f"Invalid Final={Final} for subsystem '{Subsystem}'. "
+                f"Allowed values: {allowed}"
+            )
+
+        initial_index = initial_matches[0]
+        final_index = final_matches[0]
+
+        # Local transition operator for the selected subsystem:
+        #
+        #     |Final><Initial|
+        #
+        subsystem_dim = len(allowed)
+
+        T_subsystem = np.zeros(
+            (subsystem_dim, subsystem_dim),
+            dtype=np.complex64
+        )
+
+        T_subsystem[
+            final_index,
+            initial_index
+        ] = 1.0
+
+        # Build the full local manifold operator.
+        #
+        # Selected subsystem:
+        #     |Final><Initial|
+        #
+        # Every other subsystem:
+        #     Identity
+        #
+        local_operator = None
+
+        for spin in system.SpinDic:
+
+            dim = len(
+                quantum_numbers[spin]
+            )
+
+            if spin == Subsystem:
+                operator = T_subsystem
+            else:
+                operator = np.eye(
+                    dim,
+                    dtype=np.complex64
+                )
+
+            if local_operator is None:
+                local_operator = operator
+            else:
+                local_operator = np.kron(
+                    local_operator,
+                    operator
+                )
+
+        # Optional Lindblad-rate prefactor.
+        if Rate is not None:
+
+            if not np.isscalar(Rate):
+                raise TypeError(
+                    "Rate must be a scalar."
+                )
+
+            Rate = float(Rate)
+
+            if Rate < 0:
+                raise ValueError(
+                    "Transition rate must be non-negative."
+                )
+
+            local_operator = (
+                np.sqrt(Rate)
+                * local_operator
+            )
+
+        # Embed local manifold operator into the complete
+        # direct-sum Hilbert space.
+        return self.EmbedOperator(
+            local_operator,
+            Manifold,
+            QuantumObject=QuantumObject
+        )
 
     def TransitionState(
         self,
