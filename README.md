@@ -1,5 +1,5 @@
 # PyOR (Python on Resonance)
-**_"In everlasting memories of Gauries."_**
+**_"In everlasting memory of Gauri, who led me from untruth to Truth, from darkness to Light, and from death to Immortality."_**
 
 <img src="https://github.com/VThalakottoor/PyOR/blob/main/logo/PyOR_logo_8.png" alt="PyOR logo" width="300">
 
