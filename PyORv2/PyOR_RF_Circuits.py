@@ -681,116 +681,127 @@ class RFCircuit:
         f,s=self._result()
         export_touchstone(filename,f,s,self.z0)
 
-    def Plot_Circuit(self, *, figsize=(15,5), xlim=None, ylim=None, show=True):
+    def Plot_Circuit(self, *, figsize=(18,7), xlim=None, ylim=None, show=True,
+                     font_size=12, node_font_size=10, title_font_size=18):
+        """Draw a spaced circuit with bold component and node labels."""
+        self.circuit_font_size = font_size
+        self.circuit_node_font_size = node_font_size
         self.figure=plt.figure(figsize=figsize)
         self.Draw_Circuit()
         ax = self.figure.axes[0]
+        ax.set_title(self.title.strip() or "Untitled circuit", fontsize=title_font_size,
+                     fontweight="bold", pad=26)
+        for text in ax.texts:
+            text.set_fontweight("bold")
+            text.set_fontsize(max(text.get_fontsize(), node_font_size))
+        self.figure.tight_layout(pad=2)
         if xlim is not None: ax.set_xlim(xlim)
         if ylim is not None: ax.set_ylim(ylim)
         if show: self.Show()
-        return self.figure.axes[0]
+        if not show:
+            return ax
 
     def Draw_Qucs_Schematic(self, ax):
-        """Draw the uploaded balanced series-trap topology and four ports."""
-        needed={"C1_HM","C2_HT","C_trap1","L_trap1","C_Balance",
-                "L_Sample","H_Balance","LH_trap","CH_trap","C2","C1"}
-        if not needed.issubset({e.name for e in self.elements}) or len(self.ports)!=4:
-            ax.axis("off")
-            ax.text(.5,.5,"Four-port Qucs layout applies to the balanced series-trap project",
-                    ha="center",va="center",transform=ax.transAxes)
-            return
-        items={e.name:e for e in self.elements}
-        ink="black"
-        junction_color="#c24b24"
+        """Draw the balanced circuit with separate lanes for labels and branches."""
+        items = {e.name: e for e in self.elements}
+        ink = "black"
+        fs = getattr(self, "circuit_font_size", 12)
+        ns = getattr(self, "circuit_node_font_size", 10)
+
         def wire(x1,y1,x2,y2):
-            ax.plot((x1,x2),(y1,y2),color=ink,lw=1.7)
-        def dot(x,y): ax.plot(x,y,"o",color=junction_color,ms=5.5,zorder=6)
-        def terminal(x,y): ax.plot(x,y,"o",color=ink,ms=3.5,zorder=5)
+            ax.plot((x1,x2),(y1,y2),color=ink,lw=1.8)
+
+        def dot(x,y):
+            ax.plot(x,y,"o",color="#c24b24",ms=6,zorder=6)
+
+        def terminal(x,y):
+            ax.plot(x,y,"o",color=ink,ms=4,zorder=5)
+
+        def label(x,y,text,ha="center",va="center",size=None):
+            ax.text(x,y,text,ha=ha,va=va,fontsize=fs if size is None else size,
+                    fontweight="bold",color=ink,zorder=7)
+
+        def component_label(name,x,y,ha="center",va="center"):
+            label(x,y,f"{name}\n{component_value(items[name])}",ha,va)
+
         def ground(x,y):
-            for dy,width in ((0,.20),(-.075,.13),(-.15,.06)):
+            for dy,width in ((0,.25),(-.09,.17),(-.18,.08)):
                 wire(x-width,y+dy,x+width,y+dy)
-        def cap(x,y,horizontal,name,above=True):
+            label(x,y-.32,GROUND,va="top",size=ns)
+
+        def cap(x,y,horizontal,name,lx,ly,ha="center",va="center"):
             if horizontal:
-                wire(x-.38,y,x-.075,y);wire(x+.075,y,x+.38,y)
-                wire(x-.075,y-.17,x-.075,y+.17)
-                wire(x+.075,y-.17,x+.075,y+.17)
-                terminal(x-.38,y);terminal(x+.38,y)
-                ax.text(x,y+.30 if above else y-.29,
-                        f"{name}  {component_value(items[name])}",
-                        ha="center",va="bottom" if above else "top",fontsize=7.5)
+                wire(x-.46,y,x-.09,y);wire(x+.09,y,x+.46,y)
+                wire(x-.09,y-.23,x-.09,y+.23)
+                wire(x+.09,y-.23,x+.09,y+.23)
+                terminal(x-.46,y);terminal(x+.46,y)
             else:
-                wire(x,y+.32,x,y+.07);wire(x,y-.07,x,y-.32)
-                wire(x-.17,y+.07,x+.17,y+.07)
-                wire(x-.17,y-.07,x+.17,y-.07)
-                terminal(x,y+.32);terminal(x,y-.32)
-                if name=="H_Balance":
-                    ax.text(x,-1.67,f"{name}  {component_value(items[name])}",
-                            ha="center",va="top",fontsize=7)
-                else:
-                    left_label=name=="C2_HT"
-                    ax.text(x-.22 if left_label else x+.22,y,
-                            f"{name}  {component_value(items[name])}",
-                            ha="right" if left_label else "left",va="center",fontsize=7)
-        def coil(x,y,horizontal,name,above=True):
-            t=np.linspace(-1,1,90)
+                wire(x,y+.43,x,y+.09);wire(x,y-.09,x,y-.43)
+                wire(x-.23,y+.09,x+.23,y+.09)
+                wire(x-.23,y-.09,x+.23,y-.09)
+                terminal(x,y+.43);terminal(x,y-.43)
+            component_label(name,lx,ly,ha,va)
+
+        def coil(x,y,horizontal,name,lx,ly,ha="center",va="center"):
+            t=np.linspace(-1,1,100)
             if horizontal:
-                wire(x-.45,y,x-.32,y);wire(x+.32,y,x+.45,y)
-                ax.plot(x+.32*t,y+.11*np.sin(5*np.pi*(t+1)),color=ink,lw=1.5)
-                terminal(x-.45,y);terminal(x+.45,y)
-                ax.text(x,y+(.56 if name=="L_Sample" else .27) if above else y-.26,
-                        f"{name}  {component_value(items[name])}",ha="center",
-                        va="bottom" if above else "top",fontsize=7.5)
+                wire(x-.56,y,x-.40,y);wire(x+.40,y,x+.56,y)
+                ax.plot(x+.40*t,y+.16*np.sin(5*np.pi*(t+1)),color=ink,lw=1.8)
+                terminal(x-.56,y);terminal(x+.56,y)
             else:
-                wire(x,y+.39,x,y+.31);wire(x,y-.31,x,y-.39)
-                ax.plot(x+.11*np.sin(5*np.pi*(t+1)),y+.31*t,color=ink,lw=1.5)
-                terminal(x,y+.39);terminal(x,y-.39)
-                ax.text(x+.2,y,f"{name}  {component_value(items[name])}",
-                        ha="left",va="center",fontsize=7)
-        def port(x,y,label,horizontal=True):
-            ax.add_patch(Circle((x,y),.13,fill=False,lw=1.5,edgecolor=ink))
-            ax.text(x,y,"P",ha="center",va="center",fontsize=7,color=ink)
-            ax.text(x,y-.20 if horizontal else y-.62,label,
-                    ha="center",va="top",fontsize=7.3)
-        # Main rail from the proton side to the carbon side.
-        wire(.75,0,1.20,0);cap(1.55,0,True,"C1_HM");wire(1.93,0,3.15,0)
-        wire(3.15,0,4.38,0);cap(4.75,0,True,"C_Balance")
-        wire(5.13,0,5.55,0);coil(6.0,0,True,"L_Sample")
-        wire(6.45,0,7.18,0);wire(7.18,0,7.55,0)
-        wire(7.55,0,7.55,.39);wire(7.55,.39,7.87,.39)
-        coil(8.28,.39,True,"LH_trap");wire(8.73,.39,9.23,.39)
-        wire(7.55,0,7.55,-.39);wire(7.55,-.39,7.89,-.39)
-        cap(8.27,-.39,True,"CH_trap",False);wire(8.65,-.39,9.23,-.39)
-        wire(9.23,-.39,9.23,.39);wire(9.23,0,10.28,0)
-        wire(10.28,0,10.75,0);cap(11.13,0,True,"C1")
-        wire(11.51,0,12.45,0)
-        # Four independently terminated Qucs ports, two at each signal node.
-        port(.50,0,self.port_labels[0]);wire(.63,0,.75,0)
-        port(12.70,0,self.port_labels[1]);wire(12.45,0,12.57,0)
-        for px,label in ((.92,self.port_labels[3]),(12.05,self.port_labels[2])):
-            dot(px,0);wire(px,0,px,-.75);port(px,-.88,label,False)
-            wire(px,-1.01,px,-1.14);ground(px,-1.14)
-        # Shunt matching branches and the series trap to ground.
-        for bx,cy,name in ((3.15,-.61,"C2_HT"),(7.18,-.61,"H_Balance"),
-                            (10.28,-.61,"C2")):
-            dot(bx,0);wire(bx,0,bx,cy+.32);cap(bx,cy,False,name)
-            wire(bx,cy-.32,bx,-1.37);ground(bx,-1.37)
-        dot(4.02,0);wire(4.02,0,4.02,-.28)
-        cap(4.02,-.60,False,"C_trap1")
-        wire(4.02,-.92,4.02,-1.05)
-        coil(4.02,-1.44,False,"L_trap1")
-        wire(4.02,-1.83,4.02,-1.98);ground(4.02,-1.98)
-        for xnode in (1.15,3.15,4.02,5.55,7.18,7.55,9.23,10.28,12.05):
-            dot(xnode,0)
-        for node,x,y in ((self.ports[0],1.15,.16),("J1",3.65,.16),
-                         ("J2",4.02,-1.0),("J3",5.55,.16),
-                         ("J4",7.18,.16),("J5",10.28,.16),(self.ports[1],12.05,.16)):
-            ax.text(x,y,node,ha="center" if node!="J2" else "right",
-                    va="bottom",fontsize=7,color=ink,
-                    bbox=dict(facecolor="white",edgecolor="none",pad=.6))
-        for x,y in ((.92,-1.32),(3.15,-1.55),(4.02,-2.16),
-                    (7.18,-1.55),(10.28,-1.55),(12.05,-1.32)):
-            ax.text(x,y,GROUND,ha="center",va="top",fontsize=7,color=ink)
-        ax.set(xlim=(.1,13.2),ylim=(-2.25,.88),aspect="equal")
+                wire(x,y+.56,x,y+.42);wire(x,y-.42,x,y-.56)
+                ax.plot(x+.16*np.sin(5*np.pi*(t+1)),y+.42*t,color=ink,lw=1.8)
+                terminal(x,y+.56);terminal(x,y-.56)
+            component_label(name,lx,ly,ha,va)
+
+        def port(x,y,index,side=False):
+            ax.add_patch(Circle((x,y),.18,facecolor="white",edgecolor=ink,lw=1.8,zorder=4))
+            label(x,y,"P",size=ns)
+            label(x-.36 if side else x,y if side else y-.40,
+                  self.port_labels[index],ha="right" if side else "center",
+                  va="center" if side else "top",size=ns)
+
+        # Horizontal signal rail, with space between the two shunt branches.
+        port(.60,0,0);wire(.78,0,1.4,0)
+        wire(1.4,0,1.94,0);cap(2.40,0,True,"C1_HM",2.40,.70,va="bottom")
+        wire(2.86,0,4.20,0);wire(4.20,0,5.90,0);wire(5.90,0,6.64,0)
+        cap(7.10,0,True,"C_Balance",7.10,.70,va="bottom")
+        wire(7.56,0,8.0,0);wire(8.0,0,8.44,0)
+        coil(9.0,0,True,"L_Sample",9.0,.70,va="bottom")
+        wire(9.56,0,10.60,0);wire(10.60,0,11.10,0)
+        # Parallel trap uses a higher and lower horizontal lane.
+        wire(11.10,0,11.10,.60);wire(11.10,.60,11.64,.60)
+        coil(12.20,.60,True,"LH_trap",12.20,1.22,va="bottom")
+        wire(12.76,.60,13.30,.60)
+        wire(11.10,0,11.10,-.60);wire(11.10,-.60,11.74,-.60)
+        cap(12.20,-.60,True,"CH_trap",12.20,-1.12,va="top")
+        wire(12.66,-.60,13.30,-.60);wire(13.30,-.60,13.30,.60)
+        wire(13.30,0,14.50,0);wire(14.50,0,15.54,0)
+        cap(16.0,0,True,"C1",16.0,.70,va="bottom")
+        wire(16.46,0,17.20,0);wire(17.20,0,17.62,0);port(17.80,0,1)
+        # Shared ports and their grounded reference terminals.
+        for x,index in ((1.10,3),(17.20,2)):
+            dot(x,0);wire(x,0,x,-2.22);port(x,-2.40,index,side=True)
+            wire(x,-2.58,x,-3.10);ground(x,-3.10)
+        # Shunt capacitors: labels sit beside the symbols, away from wires.
+        for x,name,lx,ha in ((4.20,"C2_HT",3.55,"right"),
+                            (10.60,"H_Balance",9.95,"right"),
+                            (14.50,"C2",15.15,"left")):
+            dot(x,0);wire(x,0,x,-1.27)
+            cap(x,-1.70,False,name,lx,-1.70,ha=ha)
+            wire(x,-2.13,x,-3.10);ground(x,-3.10)
+        dot(5.90,0);wire(5.90,0,5.90,-1.07)
+        cap(5.90,-1.50,False,"C_trap1",6.55,-1.50,ha="left")
+        wire(5.90,-1.93,5.90,-2.54)
+        coil(5.90,-3.10,False,"L_trap1",6.55,-3.10,ha="left")
+        wire(5.90,-3.66,5.90,-4.15);ground(5.90,-4.15)
+        for x in (1.4,8.0,10.60,11.10,13.30,14.50,17.20):
+            dot(x,0)
+        for node,x in ((self.ports[0],1.40),("J1",5.1),("J3",8.0),
+                       ("J4",10.60),("J5",14.50),(self.ports[1],17.20)):
+            label(x,.24,node,va="bottom",size=ns)
+        label(5.55,-2.25,"J2",ha="right",size=ns)
+        ax.set(xlim=(-.15,18.5),ylim=(-4.9,2.1),aspect="equal")
         ax.axis("off")
 
     def Draw_Circuit(self):
@@ -891,9 +902,9 @@ class RFCircuit:
             side = label_side
             label_x,label_y=mx+nx*.6*side,my+ny*.6*side
             horizontal=abs(dx)>abs(dy)
-            ax.text(label_x,label_y,f"{e.name} = {component_value(e)}",
+            ax.text(label_x,label_y,f"{e.name}\n{component_value(e)}",
                     ha="center" if horizontal else ("left" if label_x>mx else "right"),
-                    va="center",fontsize=8,
+                    va="center",fontsize=getattr(self,"circuit_font_size",12),
                     bbox=dict(facecolor="white",edgecolor="none",pad=1))
 
         # Route every connection on horizontal and vertical tracks. Parallel
