@@ -13,6 +13,8 @@ Available modules:
 - Evolutions
 - Plotting
 - Spro (Signal Processing)
+- RFCircuit (RF circuit simulation)
+- Element (RF component definition)
 """
 
 # Core imports
@@ -30,6 +32,7 @@ from . import PyOR_SignalProcessing as Spro
 from .PyOR_PhysicalConstants import constants
 from .PyOR_Gamma import gamma
 from .PyOR_QuantumLibrary import QuantumLibrary
+from .PyOR_RF_Circuits import RFCircuit, Element
 
 # Public API
 __all__ = [
@@ -47,6 +50,8 @@ __all__ = [
     "gamma",
     "RelaxationProcess",
     "QuantumLibrary",
+    "RFCircuit",
+    "Element",    
     "info"
 ]
 
@@ -94,6 +99,7 @@ def info_():
     for i in range(7):
         print(P[i], y[i], O[i], R[i])
     print("Welcome to Python On Resonance (PyOR)\n")
+    print('"In everlasting memory of Gauri, who led me from untruth to Truth, from darkness to Light, and from death to Immortality."\n')
     print("Author: Vineeth Thalakottoor, IE CNRS, LSDRM, CEA, Paris-Saclay\n")
     print("Email: vineeth.thalakottoor@cea.fr\n")
     print('"Everybody can simulate Magnetic Resonance"\n')
@@ -114,7 +120,9 @@ def info_():
     print("** gamma                 (from PyOR_Gamma)")
     print("* QunObj                 (from PyOR_QuantumObject)")
     print("* QuantumLibrary         (from PyOR_QuantumLibrary)")
-
+    print("* RFCircuit              (from PyOR_RF_Circuits - RF circuit simulation)")
+    print("* Element                (from PyOR_RF_Circuits - RF component definition)")
+    
     print('\nHow to start?')
     print('\nMake a spin list like, Spin_list = {"A" : "H1", "B" : "H1"}')
     print('\nThen create an object, QS = QunS(Spin_list)')
