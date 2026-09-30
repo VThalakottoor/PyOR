@@ -200,7 +200,7 @@ def s_parameters(frequency, elements, port_nodes, z0=50):
         raise ValueError("Could not convert circuit admittance to S-parameters") from exc
 
 
-def smith_grid(ax, z0=50):
+def smith_grid(ax, z0=50, *, impedance_labels=True):
     """Impedance Smith grid; plotted coordinates are reflection coefficients."""
     ax.add_patch(Circle((0, 0), 1, fill=False, lw=1.3, color="0.3"))
     x = np.linspace(-30, 30, 700)
@@ -212,20 +212,21 @@ def smith_grid(ax, z0=50):
         for sign in (-1, 1):
             gamma = (resistance + 1j*sign*reactance - 1) / (resistance + 1j*sign*reactance + 1)
             ax.plot(gamma.real, gamma.imag, color="0.86", lw=.7)
-    # The coordinates are Γ (unitless); labels inside the chart show Z in Ω.
-    for r in (0, .2, .5, 1, 2, 5):
-        gx=(r-1)/(r+1)
-        ax.text(gx,-.045,f"{r*z0:g}",ha="center",va="top",fontsize=7,color="0.35",
-                bbox=dict(facecolor="white",edgecolor="none",pad=.3))
-    for xreact in (.5, 1, 2):
-        for sign in (-1, 1):
-            z=.15+1j*sign*xreact
-            gamma=(z-1)/(z+1)
-            ax.text(gamma.real,gamma.imag,f"{sign*xreact*z0:+g}j Ω",
-                    ha="center",va="bottom" if sign>0 else "top",fontsize=6.5,
-                    color="0.43",bbox=dict(facecolor="white",edgecolor="none",pad=.2))
-    ax.text(.035,.055,f"{z0:g} + j0 Ω",color="#a33a1b",fontsize=8,
-            bbox=dict(facecolor="white",edgecolor="none",pad=1))
+    if impedance_labels:
+        # The coordinates are Γ (unitless); labels inside the chart show Z in Ω.
+        for r in (0, .2, .5, 1, 2, 5):
+            gx=(r-1)/(r+1)
+            ax.text(gx,-.045,f"{r*z0:g}",ha="center",va="top",fontsize=7,color="0.35",
+                    bbox=dict(facecolor="white",edgecolor="none",pad=.3))
+        for xreact in (.5, 1, 2):
+            for sign in (-1, 1):
+                z=.15+1j*sign*xreact
+                gamma=(z-1)/(z+1)
+                ax.text(gamma.real,gamma.imag,f"{sign*xreact*z0:+g}j Ω",
+                        ha="center",va="bottom" if sign>0 else "top",fontsize=6.5,
+                        color="0.43",bbox=dict(facecolor="white",edgecolor="none",pad=.2))
+        ax.text(.035,.055,f"{z0:g} + j0 Ω",color="#a33a1b",fontsize=8,
+                bbox=dict(facecolor="white",edgecolor="none",pad=1))
     ax.set(xlim=(-1.1, 1.1), ylim=(-1.1, 1.1), aspect="equal",
            xlabel="Real part of Γ = Sii (unitless)",
            ylabel="Imaginary part of Γ = Sii (unitless)",
@@ -635,21 +636,37 @@ class RFCircuit:
         if show: self.Show()
         return ax
 
-    def Plot_Smith(self, port=1, *, ax=None, xlim=None, ylim=None, show=True):
-        f,s=self._result()
-        if not 1 <= port <= len(self.ports):
-            raise ValueError("Unknown port number")
+    def Plot_Smith(self, trace="S11", *, ax=None, xlim=None, ylim=None, show=True):
+        """Plot a complex Sij trace; impedance labels apply only to Sii."""
+        if not isinstance(trace, str):
+            raise ValueError("Use a trace name such as S11 or S14")
+        trace = trace.strip().upper()
+        match = re.fullmatch(r"S([1-9])([1-9])", trace)
+        if not match:
+            raise ValueError("Use a trace name such as S11 or S14")
+        i, j = int(match[1])-1, int(match[2])-1
+        if i >= len(self.ports) or j >= len(self.ports):
+            raise ValueError(f"Unknown trace {trace}")
+        f, s = self._result()
+        reflection = i == j
         if ax is None:
-            _,ax=plt.subplots(figsize=(7,7))
-        smith_grid(ax,self.z0)
-        gamma=s[:,port-1,port-1]
-        ax.plot(gamma.real,gamma.imag,label=f"S{port}{port}")
-        best=np.argmin(abs(gamma))
-        ax.plot(gamma[best].real,gamma[best].imag,"o",color="#c24b24")
-        z=self.Input_Impedance(port)[best]
-        ax.text(.02,.02,f"Closest match: {f[best]/1e6:.6g} MHz\n"
-                     f"Zin={z.real:.4g}{z.imag:+.4g}j Ω",
-                transform=ax.transAxes,fontsize=8,
+            _, ax = plt.subplots(figsize=(7,7))
+        smith_grid(ax, self.z0, impedance_labels=reflection)
+        value = s[:,i,j]
+        ax.plot(value.real, value.imag, label=trace)
+        best = int(np.argmin(abs(value)))
+        ax.plot(value[best].real, value[best].imag, "o", color="#c24b24")
+        if reflection:
+            z = self.Input_Impedance(i+1)[best]
+            annotation = (f"Closest match: {f[best]/1e6:.6g} MHz\n"
+                          f"Zin={z.real:.4g}{z.imag:+.4g}j Ω")
+            title = f"{trace} Smith chart; impedance labels in Ω; Z0 = {self.z0:g} Ω"
+        else:
+            annotation = f"Minimum |{trace}|: {f[best]/1e6:.6g} MHz"
+            title = f"{trace} transmission on Smith grid; dimensionless S-parameter"
+        ax.set(xlabel=f"Real({trace}) (unitless)",
+               ylabel=f"Imag({trace}) (unitless)", title=title)
+        ax.text(.02,.02,annotation, transform=ax.transAxes,fontsize=8,
                 bbox=dict(facecolor="white",edgecolor=".8",pad=4))
         ax.legend(loc="upper right")
         if xlim is not None: ax.set_xlim(xlim)
