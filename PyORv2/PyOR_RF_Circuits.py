@@ -402,7 +402,7 @@ def read_project(data):
 class RFCircuit:
     """Ideal RLC network with a Jupyter-friendly simulation and plotting API."""
 
-    def __init__(self, elements, ports, z0=50.0, title="RF circuit", layout=None):
+    def __init__(self, elements, ports, z0=50.0, title="RF circuit", layout=None, *, verbose=True):
         self.elements = list(elements)
         # Separate physical port labels from electrical connection nodes.
         # Legacy node-only lists retain their original ordering and loading.
@@ -433,7 +433,18 @@ class RFCircuit:
         self.frequency = None
         self.s = None
         self.figure = None
+        self.verbose = bool(verbose)
         validate_network(self.elements, self.ports)
+        if self.verbose:
+            self.Print_Info()
+
+    def Print_Info(self):
+        """Print the circuit title, physical ports, nodes and reference impedance."""
+        print(self.title)
+        for number, (label, node) in enumerate(self.port_definitions, start=1):
+            print(f"Port {number} ({label}) -> node {node}; reference node {GROUND}")
+        print("All electrical nodes:", self.nodes)
+        print("Reference impedance:", self.z0, "Ω")
 
     @property
     def port_nodes(self):
@@ -447,12 +458,12 @@ class RFCircuit:
                     *(node for e in self.elements for node in (e.node_a, e.node_b))]))
 
     @classmethod
-    def From_Json(cls, filename):
+    def From_Json(cls, filename, *, verbose=True):
         """Load circuit parameters; equivalent to Load_Parameters."""
-        return cls.Load_Parameters(filename)
+        return cls.Load_Parameters(filename, verbose=verbose)
 
     @classmethod
-    def Load_Parameters(cls, filename):
+    def Load_Parameters(cls, filename, *, verbose=True):
         """Create a circuit from saved parameters or a legacy Studio project."""
         data = json.loads(Path(filename).read_text(encoding="utf-8"))
         if not isinstance(data, dict):
@@ -466,7 +477,7 @@ class RFCircuit:
                             for item in data["components"]]
                 ports = [(item["label"], item["node"]) for item in data["ports"]]
                 circuit = cls(elements, ports, data["z0"], data.get("title", "RF circuit"),
-                              data.get("layout", {}))
+                              data.get("layout", {}), verbose=verbose)
                 settings = data.get("sweep", {})
                 if not isinstance(settings, dict):
                     raise ValueError("Saved sweep must be an object")
@@ -476,7 +487,7 @@ class RFCircuit:
                 raise ValueError(f"Invalid RF parameter file: {error}") from error
         elements, ports, settings = read_project(data)
         circuit = cls(elements, ports, parse_value(settings["z0"]),
-                      data.get("title", "RF circuit"), data.get("layout", {}))
+                      data.get("title", "RF circuit"), data.get("layout", {}), verbose=verbose)
         circuit.settings = settings
         return circuit
 
@@ -528,6 +539,8 @@ class RFCircuit:
             frequency, s, _ = refine_qucs_sweep(frequency, s, self.elements,
                                                  self.ports, self.z0)
         self.frequency, self.s = frequency, s
+        if self.verbose:
+            print(f"{len(frequency):,} frequency samples; S shape = {s.shape}")
         return frequency, s
 
     def _result(self):
@@ -572,7 +585,8 @@ class RFCircuit:
             raise ValueError("Unknown port number")
         return port_input_impedance(s, self.z0, port-1)
 
-    def Plot_Sparameter(self, traces=("S11",), *, phase=False, ax=None, xlim=None, ylim=None):
+    def Plot_Sparameter(self, traces=("S11",), *, phase=False, ax=None, xlim=None, ylim=None,
+                        show=True):
         f,s = self._result()
         if isinstance(traces, str):
             traces = (traces,)
@@ -594,10 +608,11 @@ class RFCircuit:
         ax.grid(alpha=.3);ax.legend()
         if xlim is not None: ax.set_xlim(xlim)
         if ylim is not None: ax.set_ylim(ylim)
+        if show: self.Show()
         return ax
 
     def Plot_Impedance(self, port=1, *, absolute=False, ax=None, xlim=None,
-                       ylim=None, ylim_real=None, ylim_imag=None):
+                       ylim=None, ylim_real=None, ylim_imag=None, show=True):
         f,_ = self._result()
         z = self.Input_Impedance(port)
         if ax is None:
@@ -617,9 +632,10 @@ class RFCircuit:
             if ylim is not None: axis.set_ylim(ylim)
         if ylim_real is not None: ax[0].set_ylim(ylim_real)
         if ylim_imag is not None: ax[1].set_ylim(ylim_imag)
+        if show: self.Show()
         return ax
 
-    def Plot_Smith(self, port=1, *, ax=None, xlim=None, ylim=None):
+    def Plot_Smith(self, port=1, *, ax=None, xlim=None, ylim=None, show=True):
         f,s=self._result()
         if not 1 <= port <= len(self.ports):
             raise ValueError("Unknown port number")
@@ -638,9 +654,10 @@ class RFCircuit:
         ax.legend(loc="upper right")
         if xlim is not None: ax.set_xlim(xlim)
         if ylim is not None: ax.set_ylim(ylim)
+        if show: self.Show()
         return ax
 
-    def Plot_Time(self, trace="S21", *, ax=None, xlim=None, ylim=None):
+    def Plot_Time(self, trace="S21", *, ax=None, xlim=None, ylim=None, show=True):
         f,s=self._result()
         match=re.fullmatch(r"S(\d+)(\d+)",trace.upper())
         if not match:
@@ -657,18 +674,20 @@ class RFCircuit:
         ax.grid(alpha=.3)
         if xlim is not None: ax.set_xlim(xlim)
         if ylim is not None: ax.set_ylim(ylim)
+        if show: self.Show()
         return ax
 
     def Export_Touchstone(self, filename):
         f,s=self._result()
         export_touchstone(filename,f,s,self.z0)
 
-    def Plot_Circuit(self, *, figsize=(15,5), xlim=None, ylim=None):
+    def Plot_Circuit(self, *, figsize=(15,5), xlim=None, ylim=None, show=True):
         self.figure=plt.figure(figsize=figsize)
         self.Draw_Circuit()
         ax = self.figure.axes[0]
         if xlim is not None: ax.set_xlim(xlim)
         if ylim is not None: ax.set_ylim(ylim)
+        if show: self.Show()
         return self.figure.axes[0]
 
     def Draw_Qucs_Schematic(self, ax):
