@@ -149,8 +149,8 @@ def validate_network(elements, port_nodes):
 def s_parameters(frequency, elements, port_nodes, z0=50):
     """Nodal analysis with independent port terminations, even on shared nodes."""
     f = np.asarray(frequency, dtype=float)
-    if f.ndim != 1 or len(f) < 3 or np.any(f <= 0) or not np.all(np.isfinite(f)):
-        raise ValueError("Use at least three positive frequency samples")
+    if f.ndim != 1 or len(f) < 1 or np.any(f <= 0) or not np.all(np.isfinite(f)):
+        raise ValueError("Use at least one positive frequency sample")
     if z0 <= 0 or not np.isfinite(z0):
         raise ValueError("Z0 must be positive")
     elements = [Element.From_SI(e.name,e.kind,normalize_node(e.node_a),normalize_node(e.node_b),e.value,
@@ -684,14 +684,68 @@ class RFCircuit:
         if show: self.Show()
         return ax
 
+    def _level_crossings(self, trace, window, *, relative=False):
+        """Find -3 dB crossings in MHz and refine them by circuit evaluation."""
+        f, s = self._result()
+        i, j = int(trace[1])-1, int(trace[2])-1
+        low, high = np.asarray(window, dtype=float)*1e6
+        mask = (f > low) & (f < high)
+        frequencies = np.r_[low, f[mask], high]
+        endpoints = s_parameters(np.array([low, high]), self.elements, self.ports, self.z0)
+        values = np.r_[endpoints[0,i,j], s[mask,i,j], endpoints[1,i,j]]
+        db = 20*np.log10(np.maximum(abs(values), 1e-300))
+        target = float(np.max(db)-3 if relative else -3)
+        difference = db-target
+        roots = []
+
+        def Magnitude(hz):
+            value = s_parameters(np.array([hz]), self.elements, self.ports, self.z0)[0,i,j]
+            return float(20*np.log10(max(abs(value), 1e-300)))
+
+        for index in range(len(frequencies)-1):
+            a, b = frequencies[index:index+2]
+            da, db_value = difference[index:index+2]
+            if da == 0:
+                roots.append(float(a/1e6))
+            if da*db_value < 0:
+                # Bisection evaluates S at each candidate frequency directly.
+                for iteration in range(60):
+                    middle = (a+b)/2
+                    dm = Magnitude(middle)-target
+                    if abs(dm) < 1e-8 or b-a < 1e-4:
+                        break
+                    if da*dm <= 0:
+                        b = middle
+                    else:
+                        a, da = middle, dm
+                roots.append(float(middle/1e6))
+        if difference[-1] == 0:
+            roots.append(float(high/1e6))
+        roots = sorted(set(roots))
+        if len(roots) > 2:
+            # Prefer the two crossings around the deepest notch or highest peak.
+            if difference[0] >= 0 and difference[-1] >= 0:
+                center = frequencies[int(np.argmin(difference))]/1e6
+            else:
+                center = frequencies[int(np.argmax(difference))]/1e6
+            left = [root for root in roots if root < center]
+            right = [root for root in roots if root > center]
+            roots = [left[-1], right[0]] if left and right else [roots[0], roots[-1]]
+        return roots, target
+
     def Plot_Interactive(self, traces=("S14", "S23", "S21", "S12"), *,
                          xlim=None, ylim=(-160, 5), component_limits=None,
-                         points=1001, refine=True):
+                         points=1001, refine=True, markers=None):
         """Display Jupyter sliders for component tuning and plot limits.
 
         Component ranges are (min, max[, step]) in each element's display
         unit. Defaults span 50 to 150 percent of the initial value. Changes
         update this circuit and its simulation; Reset restores initial values.
+        The level button finds absolute -3 dB crossings or 3 dB below the
+        peak within the visible frequency window.
+        Two marker sliders report magnitude (dB), unwrapped phase (degrees)
+        and input impedance (ohms). Marker frequencies are in MHz. Impedance
+        comes from Spp at the selected trace's output port. Transmission Sij is never converted to input impedance.
         A running Jupyter kernel and ipywidgets are required.
         """
         try:
@@ -723,6 +777,13 @@ class RFCircuit:
         ylim = (-160, 5) if ylim is None else tuple(ylim)
         if len(ylim) != 2 or not np.all(np.isfinite(ylim)) or ylim[0] >= ylim[1]:
             raise ValueError("Use increasing finite magnitude limits, in dB")
+        if markers is None:
+            markers = (xlim[0]+(xlim[1]-xlim[0])*.25,
+                       xlim[0]+(xlim[1]-xlim[0])*.75)
+        markers = tuple(markers)
+        if (len(markers) != 2 or not np.all(np.isfinite(markers)) or
+            any(not xlim[0] <= value <= xlim[1] for value in markers)):
+            raise ValueError("Use two marker frequencies inside xlim, in MHz")
         component_limits = {} if component_limits is None else dict(component_limits)
         unknown = set(component_limits) - {e.name for e in self.elements}
         if unknown:
@@ -756,10 +817,28 @@ class RFCircuit:
             min=min(-200, ylim[0]), max=max(10, ylim[1]), step=1,
             description="Magnitude (dB)", continuous_update=False, style=style, layout=layout)
         auto_control = widgets.Checkbox(value=automatic, description="Automatic dB limits")
+        marker_controls = [widgets.FloatSlider(value=value, min=xlim[0], max=xlim[1],
+            step=(xlim[1]-xlim[0])/10000, description=f"Marker {index} (MHz)",
+            readout_format=".6f", continuous_update=False, style=style, layout=layout)
+            for index, value in enumerate(markers, start=1)]
+        level_reference = widgets.Dropdown(
+            options=[("Absolute -3 dB", False), ("3 dB below peak in window", True)],
+            value=False, description="Level reference", style=style, layout=layout)
+        level_button = widgets.Button(description="Set markers to -3 dB",
+                                      layout=widgets.Layout(width="200px"))
         reset_button = widgets.Button(description="Reset")
         status = widgets.Label()
         output = widgets.Output()
         state = {"busy": False, "fig": None, "error": None}
+
+        def Sync_Markers(window):
+            for control in marker_controls:
+                # Expand before moving a marker, then restrict to the new window.
+                control.min = min(control.min, window[0])
+                control.max = max(control.max, window[1])
+                control.value = min(max(control.value, window[0]), window[1])
+                control.min, control.max = window
+                control.step = (window[1]-window[0])/10000
 
         def Update(change=None, *, simulate=False):
             if state["busy"]:
@@ -779,7 +858,8 @@ class RFCircuit:
                                   logarithmic=logarithmic, refine=refine)
                 trace = trace_control.value
                 window = frequency_control.value
-                fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+                Sync_Markers(window)
+                fig, axes = plt.subplots(1, 3, figsize=(18, 6.5))
                 state["fig"] = fig
                 self.Plot_Sparameter(trace, ax=axes[0], xlim=window,
                     ylim=None if auto_control.value else magnitude_control.value, show=False)
@@ -789,6 +869,54 @@ class RFCircuit:
                 axes[1].set_title(f"{trace} phase")
                 axes[2].set_title(f"{trace} Smith chart" if trace[1] == trace[2]
                                   else f"{trace} transmission on Smith grid")
+                # Evaluate the circuit at the marker frequencies directly, so
+                # narrow resonances do not depend on sweep interpolation.
+                marker_frequencies = np.array([control.value for control in marker_controls])
+                marker_s = s_parameters(marker_frequencies*1e6,
+                                        self.elements, self.ports, self.z0)
+                i, j = int(trace[1])-1, int(trace[2])-1
+                port = i+1
+                marker_values = marker_s[:,i,j]
+                marker_db = 20*np.log10(np.maximum(abs(marker_values), 1e-300))
+                sampled_phase = np.unwrap(np.angle(self.s[:,i,j]))*180/np.pi
+                phase_reference = np.interp(marker_frequencies*1e6,
+                                             self.frequency, sampled_phase)
+                marker_phase = np.angle(marker_values)*180/np.pi
+                marker_phase += 360*np.round((phase_reference-marker_phase)/360)
+                gamma = marker_s[:,port-1,port-1]
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    marker_z = self.z0*(1+gamma)/(1-gamma)
+                marker_results = []
+                for index, (mhz, db, phase, value, z) in enumerate(zip(
+                    marker_frequencies, marker_db, marker_phase, marker_values, marker_z), start=1):
+                    color = ("#b22222", "#176b35")[index-1]
+                    symbol = ("o", "s")[index-1]
+                    for axis, ordinate in ((axes[0], db), (axes[1], phase)):
+                        axis.axvline(mhz, color=color, ls="--", lw=.9, alpha=.7)
+                        axis.plot(mhz, ordinate, marker=symbol, color=color,
+                                  ls="none", label=f"M{index}", zorder=6)
+                    axes[2].plot(value.real, value.imag, marker=symbol, color=color,
+                                 ls="none", label=f"M{index}", zorder=6)
+                    position = -.23-(index-1)*.09
+                    common = f"M{index}: {mhz:.6f} MHz"
+                    axes[0].text(.01, position, f"{common}; {db:.6g} dB",
+                                 transform=axes[0].transAxes, color=color, fontsize=10)
+                    axes[1].text(.01, position, f"{common}; {phase:.6g} degrees",
+                                 transform=axes[1].transAxes, color=color, fontsize=10)
+                    impedance_text = (f"{z.real:.6g} {z.imag:+.6g}j Ω"
+                                      if np.isfinite(z) else "infinite impedance (open circuit)")
+                    axes[2].text(.01, position, f"M{index}: R+jX = {impedance_text}",
+                                 transform=axes[2].transAxes, color=color, fontsize=10)
+                    marker_results.append(dict(marker=index, frequency_MHz=float(mhz),
+                        trace=trace, magnitude_dB=float(db), phase_degrees=float(phase),
+                        impedance_port=port, impedance_trace=f"S{port}{port}",
+                        impedance_ohm=complex(z)))
+                axes[2].text(.01, -.42,
+                    f"Zin at {self.port_labels[port-1]} from S{port}{port}; other ports at {self.z0:g} Ω",
+                    transform=axes[2].transAxes, fontsize=9)
+                for axis in axes:
+                    axis.legend(loc="upper right", fontsize=9)
+                state["markers"] = marker_results
                 fig.suptitle(self.title, fontweight="bold")
                 fig.tight_layout()
                 with output:
@@ -813,6 +941,32 @@ class RFCircuit:
         def Tune(change):
             Update(change, simulate=True)
 
+        def Set_Level_Markers(button):
+            if state["busy"]:
+                return
+            try:
+                roots, target = self._level_crossings(trace_control.value,
+                    frequency_control.value, relative=level_reference.value)
+                if not roots:
+                    status.value = (f"No {target:.6g} dB crossing in this frequency window. "
+                                    "Try a wider window or 3 dB below peak.")
+                    return
+                state["busy"] = True
+                try:
+                    for control, frequency in zip(marker_controls, roots):
+                        control.value = frequency
+                finally:
+                    state["busy"] = False
+                Update()
+                if state["error"] is None:
+                    state["level_target_dB"] = target
+                    status.value = (f"Markers at {target:.6g} dB; separation "
+                                    f"{abs(roots[-1]-roots[0]):.6g} MHz" if len(roots) == 2
+                                    else f"One {target:.6g} dB crossing: M1 updated; M2 unchanged")
+            except Exception as error:
+                state["busy"] = False
+                status.value = f"Could not set level markers: {error}"
+
         def Reset(button):
             state["busy"] = True
             try:
@@ -822,24 +976,33 @@ class RFCircuit:
                 magnitude_control.value = ylim
                 auto_control.value = automatic
                 trace_control.value = traces[0]
+                level_reference.value = False
+                Sync_Markers(xlim)
+                for control, value in zip(marker_controls, markers):
+                    control.value = value
             finally:
                 state["busy"] = False
             Update(simulate=True)
 
         for slider in sliders:
             slider.observe(Tune, names="value")
-        for control in (trace_control, frequency_control, magnitude_control, auto_control):
+        for control in (trace_control, frequency_control, magnitude_control, auto_control,
+                        *marker_controls):
             control.observe(Update, names="value")
         reset_button.on_click(Reset)
+        level_button.on_click(Set_Level_Markers)
         tuning = widgets.Accordion(children=[widgets.VBox(sliders)])
         tuning.set_title(0, "Component values")
         tuning.selected_index = None
         panel = widgets.VBox([widgets.HBox([trace_control, reset_button]),
-            frequency_control, magnitude_control, auto_control, tuning, status, output])
+            frequency_control, magnitude_control, auto_control,
+            *marker_controls, level_reference, level_button, tuning, status, output])
         # Retain controls so advanced notebook users can access their values.
         panel.rf_controls = dict(trace=trace_control, frequency=frequency_control,
             magnitude=magnitude_control, automatic=auto_control,
             components=dict(zip((e.name for e in self.elements), sliders)),
+            marker1=marker_controls[0], marker2=marker_controls[1],
+            level_reference=level_reference, level_button=level_button,
             reset=reset_button, status=status)
         panel.rf_state = state
         display(panel)
