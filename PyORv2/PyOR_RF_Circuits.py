@@ -6,7 +6,7 @@ Author: Vineeth Francis Thalakottoor Jose Chacko
 Email: vineethfrancis.physics@gmail.com
 
 Description:
-    This file contains the classes `RFCircuit` and `Element`.
+    This file contains the classes `RFCircuit`, `Element` and `TransmissionLine`.
 """
 
 import csv
@@ -18,17 +18,21 @@ from types import SimpleNamespace
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle
+from matplotlib.patches import Circle, Ellipse
 
-__all__ = ["Element", "RFCircuit"]
+__all__ = ["Element", "TransmissionLine", "CoaxialLine", "RFCircuit"]
 
 
 PREFIX = {"": 1, "k": 1e3, "M": 1e6, "G": 1e9,
           "m": 1e-3, "u": 1e-6, "µ": 1e-6, "n": 1e-9, "p": 1e-12, "f": 1e-15}
 GROUND = "P0"
+LIGHT_SPEED = 299792458.0
+LENGTH_UNITS = {"mm": 1e-3, "cm": 1e-2, "m": 1.0}
+
 UNIT_SCALE = {"Ω": 1, "kΩ": 1e3, "MΩ": 1e6,
               "pH": 1e-12, "nH": 1e-9, "µH": 1e-6, "mH": 1e-3, "H": 1,
               "fF": 1e-15, "pF": 1e-12, "nF": 1e-9, "µF": 1e-6, "mF": 1e-3, "F": 1}
+UNIT_SCALE.update(LENGTH_UNITS)
 KIND_UNITS = {"R": ("Ω", "kΩ", "MΩ"),
               "L": ("pH", "nH", "µH", "mH", "H"),
               "C": ("fF", "pF", "nF", "µF", "mF", "F")}
@@ -40,12 +44,48 @@ def normalize_node(node):
 
 
 def component_value(e):
+    if isinstance(e, TransmissionLine):
+        return (f"{e.value/UNIT_SCALE[e.display_unit]:.5g} {e.display_unit}; {e.z0:g} Ω\n"
+                f"VF={e.velocity_factor:.4g}; er={e.epsilon_r:.4g}")
     units = KIND_UNITS[e.kind]
     if e.display_unit in units:
         unit = e.display_unit
     else:
         unit = next((u for u in reversed(units) if e.value >= UNIT_SCALE[u]), units[0])
     return f"{e.value/UNIT_SCALE[unit]:.5g} {unit}"
+
+
+def _draw_coax_symbol(ax, mx, my, ux, uy, half, *, color="black", font_size=10):
+    """Cylinder shield with a through conductor and a separate P0 bond."""
+    nx, ny = -uy, ux
+    radius = .22
+    body_half = half*.76
+    angle = np.degrees(np.arctan2(uy, ux))
+    # The signal conductor passes through the cylinder and extends at both ends.
+    ax.plot([mx-ux*half,mx+ux*half], [my-uy*half,my+uy*half],
+            color=color,lw=1.6,zorder=3)
+    for side in (-1,1):
+        ax.plot([mx-ux*body_half+nx*radius*side,mx+ux*body_half+nx*radius*side],
+                [my-uy*body_half+ny*radius*side,my+uy*body_half+ny*radius*side],
+                color=color,lw=1.6,zorder=4)
+    for end in (-1,1):
+        ax.add_patch(Ellipse((mx+ux*body_half*end,my+uy*body_half*end),
+            width=min(.16,half*.4),height=2*radius,angle=angle,
+            fill=False,edgecolor=color,lw=1.6,zorder=4))
+    if abs(ux) >= abs(uy):
+        # Connect the middle of the outer shell, separately from the signal.
+        sx, sy = mx, my-radius
+        gx, gy = sx, sy-.55
+        ax.plot([sx,gx],[sy,gy],color=color,lw=1.4)
+    else:
+        sx, sy = mx+radius, my
+        gx, gy = sx+.60, sy-.45
+        ax.plot([sx,gx,gx],[sy,sy,gy],color=color,lw=1.4)
+    ax.plot(sx,sy,"o",color=color,ms=3.7,zorder=5)
+    for offset,width in ((0,.23),(-.09,.16),(-.18,.08)):
+        ax.plot([gx-width,gx+width],[gy+offset,gy+offset],color=color,lw=1.4)
+    ax.text(gx,gy-.30,GROUND,ha="center",va="top",fontsize=font_size,
+            color=color,fontweight="bold")
 
 
 def parse_value(text):
@@ -72,6 +112,15 @@ class Element:
     value: float
     display_unit: str = ""
 
+    def __new__(cls, name, kind, node_a, node_b, value, unit="", **line_parameters):
+        """Use Element(..., 'TL', ...) for a uniform transmission line/coax."""
+        if str(kind).strip().upper() in ("TL", "COAX"):
+            return TransmissionLine(name, node_a, node_b, value,
+                                    str(unit).strip() or "m", **line_parameters)
+        if line_parameters:
+            raise TypeError("Extra line parameters apply only to kind TL or COAX")
+        return object.__new__(cls)
+
     def __init__(self, name, kind, node_a, node_b, value, unit=""):
         """Define a component with an explicit unit, e.g. value=0.3045, unit='pF'.
 
@@ -82,7 +131,7 @@ class Element:
         self.kind = str(kind).strip().upper()
         self.node_a, self.node_b = normalize_node(node_a), normalize_node(node_b)
         if self.kind not in KIND_UNITS:
-            raise ValueError("Component kind must be R, L or C")
+            raise ValueError("Component kind must be R, L, C, TL or COAX")
         unit = str(unit).strip().replace("μ", "µ")
         unit = {"ohm":"Ω", "Ohm":"Ω", "ohms":"Ω", "uH":"µH", "uF":"µF"}.get(unit,unit)
         if unit and unit not in KIND_UNITS[self.kind]:
@@ -104,6 +153,158 @@ class Element:
         return element
 
 
+class TransmissionLine:
+    """Uniform TEM line or coax with a common ground/shield reference P0.
+
+    Length uses mm, cm or m. Supply epsilon_r OR velocity_factor; the
+    other is derived assuming relative permeability one. Characteristic
+    impedance is real and attenuation in dB/m is constant with frequency.
+    """
+    kind = "TL"
+
+    def __init__(self, name, node_a, node_b, length, unit="m", *, z0=50,
+                 epsilon_r=None, velocity_factor=None, attenuation_db_per_m=0):
+        self.name = str(name).strip()
+        self.node_a, self.node_b = normalize_node(node_a), normalize_node(node_b)
+        self.display_unit = str(unit).strip()
+        if self.display_unit not in LENGTH_UNITS:
+            raise ValueError("Line length unit must be mm, cm or m")
+        if epsilon_r is not None and velocity_factor is not None:
+            raise ValueError("Supply epsilon_r or velocity_factor, not both")
+        if epsilon_r is not None and (not np.isfinite(float(epsilon_r)) or float(epsilon_r) < 1):
+            raise ValueError("Relative dielectric constant must be finite and >= 1")
+        self.value = float(length)*LENGTH_UNITS[self.display_unit]
+        self.z0 = float(z0)
+        self.velocity_factor = (float(velocity_factor) if velocity_factor is not None
+                                else 1/np.sqrt(float(epsilon_r)) if epsilon_r is not None else 1.0)
+        self.attenuation_db_per_m = float(attenuation_db_per_m)
+        self.Validate()
+
+    @property
+    def length(self):
+        """Physical length in metres."""
+        return self.value
+
+    @length.setter
+    def length(self, value):
+        self.value = float(value)
+
+    @property
+    def epsilon_r(self):
+        return 1/self.velocity_factor**2
+
+    @epsilon_r.setter
+    def epsilon_r(self, value):
+        value = float(value)
+        if not np.isfinite(value) or value < 1:
+            raise ValueError("Relative dielectric constant must be finite and >= 1")
+        self.velocity_factor = 1/np.sqrt(value)
+
+    @property
+    def velocity(self):
+        """Propagation velocity in metres per second."""
+        return LIGHT_SPEED*self.velocity_factor
+
+    def Validate(self):
+        if not self.name or not self.node_a or not self.node_b or self.node_a == self.node_b:
+            raise ValueError("Use a line name and two distinct endpoint nodes")
+        if (not np.all(np.isfinite([self.value, self.z0, self.velocity_factor,
+                                   self.attenuation_db_per_m])) or self.value <= 0 or
+            self.z0 <= 0 or not 0 < self.velocity_factor <= 1 or self.attenuation_db_per_m < 0):
+            raise ValueError("Line length and Z0 must be positive; 0 < VF <= 1; loss >= 0")
+
+    def Delay(self):
+        """One-way propagation delay in seconds."""
+        self.Validate()
+        return self.length/self.velocity
+
+    def Electrical_Length(self, frequency, unit="MHz"):
+        """Electrical length in degrees at the given frequency."""
+        scales = {"Hz":1, "kHz":1e3, "MHz":1e6, "GHz":1e9}
+        if unit not in scales:
+            raise ValueError("Frequency unit must be Hz, kHz, MHz or GHz")
+        f = np.asarray(frequency, dtype=float)*scales[unit]
+        if np.any(f <= 0) or not np.all(np.isfinite(f)):
+            raise ValueError("Frequency must be positive and finite")
+        return 360*f*self.Delay()
+
+    def _parameters(self):
+        return dict(name=self.name, kind="TL", node_a=self.node_a, node_b=self.node_b,
+                    value=self.value/LENGTH_UNITS[self.display_unit], unit=self.display_unit,
+                    z0=self.z0, velocity_factor=self.velocity_factor,
+                    attenuation_db_per_m=self.attenuation_db_per_m)
+
+
+CoaxialLine = TransmissionLine
+
+
+def _load_component(item):
+    if item["kind"] == "TL":
+        return TransmissionLine(item["name"], item["node_a"], item["node_b"],
+            item["value"], item["unit"], z0=item["z0"],
+            velocity_factor=item["velocity_factor"],
+            attenuation_db_per_m=item.get("attenuation_db_per_m", 0))
+    return Element(item["name"], item["kind"], item["node_a"], item["node_b"],
+                   item["value"], item["unit"])
+
+
+def _line_s_parameters(frequency, elements, port_nodes, z0):
+    """Modified nodal line equations remain finite at half-wave lengths."""
+    f = np.asarray(frequency, dtype=float)
+    nodes = list(dict.fromkeys([*port_nodes, *(node for e in elements
+                         for node in (e.node_a, e.node_b) if node != GROUND)]))
+    index = {node:i for i,node in enumerate(nodes)}
+    lines = [e for e in elements if isinstance(e, TransmissionLine)]
+    n = len(nodes)
+    size = n+2*len(lines)
+    matrix = np.zeros((len(f), size, size), dtype=complex)
+    incidence = np.zeros((size, len(port_nodes)), dtype=complex)
+    for j,node in enumerate(port_nodes):
+        incidence[index[node],j] = 1
+    matrix += incidence @ incidence.T/z0
+    omega = 2*np.pi*f
+    for e in elements:
+        if isinstance(e, TransmissionLine):
+            continue
+        branch = ({"R":lambda:np.full(len(f),1/e.value),
+                   "C":lambda:1j*omega*e.value,
+                   "L":lambda:1/(1j*omega*e.value)})[e.kind]()
+        a, b = index.get(e.node_a), index.get(e.node_b)
+        if a is not None: matrix[:,a,a] += branch
+        if b is not None: matrix[:,b,b] += branch
+        if a is not None and b is not None:
+            matrix[:,a,b] -= branch
+            matrix[:,b,a] -= branch
+    for k,line in enumerate(lines):
+        a, b = index.get(line.node_a), index.get(line.node_b)
+        ia, ib = n+2*k, n+2*k+1
+        propagation = (line.attenuation_db_per_m*np.log(10)/20+
+                       1j*omega/line.velocity)*line.length
+        if np.any(propagation.real > 300):
+            raise ValueError("Line attenuation is too large for this model")
+        A = np.cosh(propagation)
+        B = line.z0*np.sinh(propagation)
+        C = np.sinh(propagation)/line.z0
+        # Currents at both terminals point into the line.
+        # Va - A Vb + B Ib = 0; Ia - C Vb + A Ib = 0.
+        if a is not None:
+            matrix[:,a,ia] += 1
+            matrix[:,ia,a] += 1
+        if b is not None:
+            matrix[:,b,ib] += 1
+            matrix[:,ia,b] -= A
+            matrix[:,ib,b] -= C
+        matrix[:,ia,ib] += B
+        matrix[:,ib,ia] += 1
+        matrix[:,ib,ib] += A
+    drives = np.broadcast_to(incidence, (len(f), *incidence.shape))
+    try:
+        solution = np.linalg.solve(matrix, drives)
+    except np.linalg.LinAlgError as error:
+        raise ValueError("Line circuit is singular; check nodes and connections") from error
+    return 2/z0*(incidence.T @ solution)-np.eye(len(port_nodes),dtype=complex)
+
+
 def validate_network(elements, port_nodes):
     if len(port_nodes) < 1:
         raise ValueError("Add at least one port")
@@ -115,7 +316,9 @@ def validate_network(elements, port_nodes):
     if len(names) != len(set(names)):
         raise ValueError("Component names must be unique")
     for e in elements:
-        if e.kind not in ("R", "L", "C") or e.node_a == e.node_b:
+        if isinstance(e, TransmissionLine):
+            e.Validate()
+        if e.kind not in ("R", "L", "C", "TL") or e.node_a == e.node_b:
             raise ValueError(f"Check the type and endpoints of {e.name}")
         if not e.node_a or not e.node_b or e.value <= 0 or not np.isfinite(e.value):
             raise ValueError(f"Check the nodes and value of {e.name}")
@@ -153,10 +356,13 @@ def s_parameters(frequency, elements, port_nodes, z0=50):
         raise ValueError("Use at least one positive frequency sample")
     if z0 <= 0 or not np.isfinite(z0):
         raise ValueError("Z0 must be positive")
-    elements = [Element.From_SI(e.name,e.kind,normalize_node(e.node_a),normalize_node(e.node_b),e.value,
-                        e.display_unit) for e in elements]
+    elements = [e if isinstance(e, TransmissionLine) else
+                Element.From_SI(e.name,e.kind,normalize_node(e.node_a),normalize_node(e.node_b),e.value,
+                               e.display_unit) for e in elements]
     port_nodes = [normalize_node(n) for n in port_nodes]
     validate_network(elements, port_nodes)
+    if any(isinstance(e, TransmissionLine) for e in elements):
+        return _line_s_parameters(f, elements, port_nodes, z0)
     boundary = list(dict.fromkeys(port_nodes))
     nodes = boundary + sorted({n for e in elements
                                        for n in (e.node_a, e.node_b)
@@ -401,7 +607,7 @@ def read_project(data):
 
 
 class RFCircuit:
-    """Ideal RLC network with a Jupyter-friendly simulation and plotting API."""
+    """RLC and uniform transmission-line networks for Jupyter notebooks."""
 
     def __init__(self, elements, ports, z0=50.0, title="RF circuit", layout=None, *, verbose=True):
         self.elements = list(elements)
@@ -473,9 +679,7 @@ class RFCircuit:
             if data.get("version") != 1:
                 raise ValueError("Unsupported RF parameter file version")
             try:
-                elements = [Element(item["name"], item["kind"], item["node_a"],
-                            item["node_b"], item["value"], item["unit"])
-                            for item in data["components"]]
+                elements = [_load_component(item) for item in data["components"]]
                 ports = [(item["label"], item["node"]) for item in data["ports"]]
                 circuit = cls(elements, ports, data["z0"], data.get("title", "RF circuit"),
                               data.get("layout", {}), verbose=verbose)
@@ -496,6 +700,9 @@ class RFCircuit:
         """Save component values/units, named ports, title, layout and sweep to JSON."""
         components = []
         for element in self.elements:
+            if isinstance(element, TransmissionLine):
+                components.append(element._parameters())
+                continue
             unit = element.display_unit or {"R":"Ω", "L":"H", "C":"F"}[element.kind]
             components.append(dict(name=element.name, kind=element.kind,
                               node_a=element.node_a, node_b=element.node_b,
@@ -601,14 +808,17 @@ class RFCircuit:
             if not (0 <= i < len(self.ports) and 0 <= j < len(self.ports)):
                 raise ValueError(f"Unknown trace {trace}")
             value=s[:,i,j]
-            ordinate=(np.unwrap(np.angle(value))*180/np.pi if phase else
+            ordinate=(np.angle(value, deg=True) if phase else
                       20*np.log10(np.maximum(abs(value),1e-300)))
             ax.plot(f/1e6,ordinate,label=trace.upper())
         ax.set(xlabel="Frequency (MHz)",ylabel="Phase (degrees)" if phase else "Magnitude (dB)",
                title=self.title)
         ax.grid(alpha=.3);ax.legend()
         if xlim is not None: ax.set_xlim(xlim)
-        if ylim is not None: ax.set_ylim(ylim)
+        if phase:
+            ax.set_ylim((-180, 180) if ylim is None else ylim)
+        elif ylim is not None:
+            ax.set_ylim(ylim)
         if show: self.Show()
         return ax
 
@@ -743,7 +953,7 @@ class RFCircuit:
         update this circuit and its simulation; Reset restores initial values.
         The level button finds absolute -3 dB crossings or 3 dB below the
         peak within the visible frequency window.
-        Two marker sliders report magnitude (dB), unwrapped phase (degrees)
+        Two marker sliders report magnitude (dB), phase wrapped to -180 through 180 degrees
         and input impedance (ohms). Marker frequencies are in MHz. Impedance
         comes from Spp at the selected trace's output port. Transmission Sij is never converted to input impedance.
         A running Jupyter kernel and ipywidgets are required.
@@ -793,6 +1003,7 @@ class RFCircuit:
         initial = [e.value for e in self.elements]
         sliders = []
         scales = []
+        line_controls = {}
         for element in self.elements:
             unit = element.display_unit or {"R":"Ω", "L":"H", "C":"F"}[element.kind]
             scale = UNIT_SCALE[unit]
@@ -809,6 +1020,20 @@ class RFCircuit:
                 step=step, description=f"{element.name} ({unit})", readout_format=".6g",
                 continuous_update=False, style=style, layout=layout))
             scales.append(scale)
+            if isinstance(element, TransmissionLine):
+                max_er = max(25, element.epsilon_r*1.5)
+                def Field(value, minimum, maximum, description):
+                    return widgets.FloatSlider(value=value, min=minimum, max=maximum,
+                        step=(maximum-minimum)/500, description=description,
+                        readout_format=".6g", continuous_update=False, style=style, layout=layout)
+                line_controls[element.name] = dict(length=sliders[-1],
+                    z0=Field(element.z0,element.z0*.5,element.z0*1.5,f"{element.name} Z0 (Ω)"),
+                    velocity_factor=Field(element.velocity_factor,1/np.sqrt(max_er),1,f"{element.name} VF"),
+                    epsilon_r=Field(element.epsilon_r,1,max_er,f"{element.name} epsilon_r"),
+                    attenuation_db_per_m=Field(element.attenuation_db_per_m,0,
+                        max(2,element.attenuation_db_per_m*2),f"{element.name} loss (dB/m)"))
+        line_initial = {e.name:(e.z0,e.velocity_factor,e.attenuation_db_per_m)
+                        for e in self.elements if isinstance(e,TransmissionLine)}
         trace_control = widgets.Dropdown(options=traces, value=traces[0], description="Trace")
         frequency_control = widgets.FloatRangeSlider(value=xlim, min=lo, max=hi,
             step=(hi-lo)/10000, description="Frequency (MHz)", readout_format=".3f",
@@ -846,6 +1071,8 @@ class RFCircuit:
             state["busy"] = True
             status.value = "Updating..."
             old_values = [e.value for e in self.elements]
+            old_lines = {e.name:(e.z0,e.velocity_factor,e.attenuation_db_per_m)
+                         for e in self.elements if isinstance(e,TransmissionLine)}
             old_frequency, old_s = self.frequency, self.s
             old_settings = dict(getattr(self, "settings", {}))
             previous_verbose = self.verbose
@@ -853,6 +1080,10 @@ class RFCircuit:
                 if simulate or self.s is None:
                     for element, slider, scale in zip(self.elements, sliders, scales):
                         element.value = slider.value*scale
+                        if isinstance(element, TransmissionLine):
+                            controls = line_controls[element.name]
+                            for field in ("z0", "velocity_factor", "attenuation_db_per_m"):
+                                setattr(element, field, controls[field].value)
                     self.verbose = False
                     self.Simulate(start=start, stop=stop, points=int(points),
                                   logarithmic=logarithmic, refine=refine)
@@ -878,11 +1109,7 @@ class RFCircuit:
                 port = i+1
                 marker_values = marker_s[:,i,j]
                 marker_db = 20*np.log10(np.maximum(abs(marker_values), 1e-300))
-                sampled_phase = np.unwrap(np.angle(self.s[:,i,j]))*180/np.pi
-                phase_reference = np.interp(marker_frequencies*1e6,
-                                             self.frequency, sampled_phase)
-                marker_phase = np.angle(marker_values)*180/np.pi
-                marker_phase += 360*np.round((phase_reference-marker_phase)/360)
+                marker_phase = np.angle(marker_values, deg=True)
                 gamma = marker_s[:,port-1,port-1]
                 with np.errstate(divide="ignore", invalid="ignore"):
                     marker_z = self.z0*(1+gamma)/(1-gamma)
@@ -890,7 +1117,7 @@ class RFCircuit:
                 for index, (mhz, db, phase, value, z) in enumerate(zip(
                     marker_frequencies, marker_db, marker_phase, marker_values, marker_z), start=1):
                     color = ("#b22222", "#176b35")[index-1]
-                    symbol = ("o", "s")[index-1]
+                    symbol = "s"
                     for axis, ordinate in ((axes[0], db), (axes[1], phase)):
                         axis.axvline(mhz, color=color, ls="--", lw=.9, alpha=.7)
                         axis.plot(mhz, ordinate, marker=symbol, color=color,
@@ -929,6 +1156,8 @@ class RFCircuit:
             except Exception as error:
                 for element, value in zip(self.elements, old_values):
                     element.value = value
+                    if isinstance(element, TransmissionLine):
+                        element.z0, element.velocity_factor, element.attenuation_db_per_m = old_lines[element.name]
                 self.frequency, self.s, self.settings = old_frequency, old_s, old_settings
                 if state["fig"] is not None:
                     plt.close(state["fig"])
@@ -972,6 +1201,12 @@ class RFCircuit:
             try:
                 for slider, value, scale in zip(sliders, initial, scales):
                     slider.value = value/scale
+                for name, (zc, vf, loss) in line_initial.items():
+                    controls = line_controls[name]
+                    controls["z0"].value = zc
+                    controls["velocity_factor"].value = vf
+                    controls["epsilon_r"].value = 1/vf**2
+                    controls["attenuation_db_per_m"].value = loss
                 frequency_control.value = xlim
                 magnitude_control.value = ylim
                 auto_control.value = automatic
@@ -986,12 +1221,36 @@ class RFCircuit:
 
         for slider in sliders:
             slider.observe(Tune, names="value")
+        def Tune_Line(change):
+            if state["busy"]:
+                return
+            for controls in line_controls.values():
+                vf, er = controls["velocity_factor"], controls["epsilon_r"]
+                if change["owner"] is vf or change["owner"] is er:
+                    state["busy"] = True
+                    try:
+                        if change["owner"] is vf: er.value = 1/vf.value**2
+                        else: vf.value = 1/np.sqrt(er.value)
+                    finally:
+                        state["busy"] = False
+                    break
+            Tune(change)
+
+        for controls in line_controls.values():
+            for field in ("z0", "velocity_factor", "epsilon_r", "attenuation_db_per_m"):
+                controls[field].observe(Tune_Line, names="value")
         for control in (trace_control, frequency_control, magnitude_control, auto_control,
                         *marker_controls):
             control.observe(Update, names="value")
         reset_button.on_click(Reset)
         level_button.on_click(Set_Level_Markers)
-        tuning = widgets.Accordion(children=[widgets.VBox(sliders)])
+        tuning_controls = []
+        for element, slider in zip(self.elements, sliders):
+            tuning_controls.append(slider)
+            if isinstance(element, TransmissionLine):
+                tuning_controls.extend(line_controls[element.name][field] for field in
+                    ("z0", "velocity_factor", "epsilon_r", "attenuation_db_per_m"))
+        tuning = widgets.Accordion(children=[widgets.VBox(tuning_controls)])
         tuning.set_title(0, "Component values")
         tuning.selected_index = None
         panel = widgets.VBox([widgets.HBox([trace_control, reset_button]),
@@ -1001,6 +1260,7 @@ class RFCircuit:
         panel.rf_controls = dict(trace=trace_control, frequency=frequency_control,
             magnitude=magnitude_control, automatic=auto_control,
             components=dict(zip((e.name for e in self.elements), sliders)),
+            transmission_lines=line_controls,
             marker1=marker_controls[0], marker2=marker_controls[1],
             level_reference=level_reference, level_button=level_button,
             reset=reset_button, status=status)
@@ -1055,7 +1315,7 @@ class RFCircuit:
         if not show:
             return ax
 
-    def Draw_Qucs_Schematic(self, ax):
+    def Draw_Qucs_Schematic(self, ax, feed_line=None):
         """Draw the balanced circuit with separate lanes for labels and branches."""
         items = {e.name: e for e in self.elements}
         ink = "black"
@@ -1116,7 +1376,13 @@ class RFCircuit:
                   va="center" if side else "top",size=ns)
 
         # Horizontal signal rail, with space between the two shunt branches.
-        port(.60,0,0);wire(.78,0,1.4,0)
+        if feed_line is None:
+            port(.60,0,0);wire(.78,0,1.4,0)
+        else:
+            port(-3.40,0,0);wire(-3.22,0,-1.80,0)
+            _draw_coax_symbol(ax,-1.10,0,1,0,.70,color=ink,font_size=ns)
+            terminal(-1.80,0);terminal(-.40,0);wire(-.40,0,1.40,0)
+            component_label(feed_line.name,-1.10,.70,va="bottom")
         wire(1.4,0,1.94,0);cap(2.40,0,True,"C1_HM",2.40,.70,va="bottom")
         wire(2.86,0,4.20,0);wire(4.20,0,5.90,0);wire(5.90,0,6.64,0)
         cap(7.10,0,True,"C_Balance",7.10,.70,va="bottom")
@@ -1134,7 +1400,7 @@ class RFCircuit:
         cap(16.0,0,True,"C1",16.0,.70,va="bottom")
         wire(16.46,0,17.20,0);wire(17.20,0,17.62,0);port(17.80,0,1)
         # Shared ports and their grounded reference terminals.
-        for x,index in ((1.10,3),(17.20,2)):
+        for x,index in ((1.10 if feed_line is None else -3.00,3),(17.20,2)):
             dot(x,0);wire(x,0,x,-2.22);port(x,-2.40,index,side=True)
             wire(x,-2.58,x,-3.10);ground(x,-3.10)
         # Shunt capacitors: labels sit beside the symbols, away from wires.
@@ -1151,25 +1417,35 @@ class RFCircuit:
         wire(5.90,-3.66,5.90,-4.15);ground(5.90,-4.15)
         for x in (1.4,8.0,10.60,11.10,13.30,14.50,17.20):
             dot(x,0)
-        for node,x in ((self.ports[0],1.40),("J1",5.1),("J3",8.0),
+        core_left = (self.ports[0] if feed_line is None else
+                     feed_line.node_b if feed_line.node_a == self.ports[0] else feed_line.node_a)
+        if feed_line is not None:
+            label(-3.00,.24,self.ports[0],va="bottom",size=ns)
+        for node,x in ((core_left,1.40),("J1",5.1),("J3",8.0),
                        ("J4",10.60),("J5",14.50),(self.ports[1],17.20)):
             label(x,.24,node,va="bottom",size=ns)
         label(5.55,-2.25,"J2",ha="right",size=ns)
-        ax.set(xlim=(-.15,18.5),ylim=(-4.9,2.1),aspect="equal")
+        ax.set(xlim=(-.15 if feed_line is None else -4.50,18.5),
+               ylim=(-4.9,2.1),aspect="equal")
         ax.axis("off")
 
     def Draw_Circuit(self):
         ax = self.figure.add_subplot(111)
         left_node = self.ports[0]
         right_node = self.ports[1] if len(self.ports) > 1 else None
+        feed_lines = [e for e in self.elements if isinstance(e,TransmissionLine)
+                      and left_node in (e.node_a,e.node_b) and GROUND not in (e.node_a,e.node_b)]
+        feed_line = feed_lines[0] if len(feed_lines) == 1 else None
+        core_left = (left_node if feed_line is None else
+                     feed_line.node_b if feed_line.node_a == left_node else feed_line.node_a)
         expected={
-            "C1_HM":(left_node,"J1"), "C2_HT":("J1",GROUND),
+            "C1_HM":(core_left,"J1"), "C2_HT":("J1",GROUND),
             "C_trap1":("J1","J2"), "L_trap1":("J2",GROUND),
             "C_Balance":("J1","J3"), "L_Sample":("J3","J4"),
             "H_Balance":("J4",GROUND), "LH_trap":("J4","J5"),
             "CH_trap":("J4","J5"), "C2":("J5",GROUND),
             "C1":("J5",right_node)}
-        actual={e.name: {e.node_a,e.node_b} for e in self.elements}
+        actual={e.name: {e.node_a,e.node_b} for e in self.elements if e is not feed_line}
         kinds={e.name:e.kind for e in self.elements}
         inductors={"L_trap1","L_Sample","LH_trap"}
         if (len(self.ports)==4 and self.ports==[left_node,right_node,right_node,left_node] and
@@ -1177,7 +1453,7 @@ class RFCircuit:
             all(actual.get(name)==set(nodes) and
                 kinds[name]==("L" if name in inductors else "C")
                 for name,nodes in expected.items())):
-            self.Draw_Qucs_Schematic(ax)
+            self.Draw_Qucs_Schematic(ax,feed_line=feed_line)
             ax.set_title(self.circuit_title.get().strip() or "Untitled circuit",pad=24)
             return
         ax.set(title=self.circuit_title.get().strip() or "Untitled circuit", aspect="equal")
@@ -1239,6 +1515,9 @@ class RFCircuit:
                             color=color,lw=2.2)
                 ax.plot([left[0],mx-ux*gap],[left[1],my-uy*gap],color=color,lw=1.6)
                 ax.plot([mx+ux*gap,right[0]],[my+uy*gap,right[1]],color=color,lw=1.6)
+            elif e.kind == "TL":
+                _draw_coax_symbol(ax,mx,my,ux,uy,half,color=color,
+                                  font_size=getattr(self,"circuit_node_font_size",10))
             elif e.kind == "R":
                 # Conventional zigzag resistor, oriented along its wire.
                 steps = [(-1,0),(-.8,.18),(-.6,-.18),(-.4,.18),
@@ -1254,7 +1533,8 @@ class RFCircuit:
             ax.plot(left[0],left[1],"o",color=color,ms=3.7,zorder=5)
             ax.plot(right[0],right[1],"o",color=color,ms=3.7,zorder=5)
             side = label_side
-            label_x,label_y=mx+nx*.6*side,my+ny*.6*side
+            label_offset = 1.05 if e.kind == "TL" else .6
+            label_x,label_y=mx+nx*label_offset*side,my+ny*label_offset*side
             horizontal=abs(dx)>abs(dy)
             ax.text(label_x,label_y,f"{e.name}\n{component_value(e)}",
                     ha="center" if horizontal else ("left" if label_x>mx else "right"),
