@@ -56,34 +56,38 @@ def component_value(e):
 
 
 def _draw_coax_symbol(ax, mx, my, ux, uy, half, *, color="black", font_size=10):
-    """Cylinder shield with a through conductor and a separate P0 bond."""
+    """Rounded coaxial shield, circular input face and separate P0 bond."""
     nx, ny = -uy, ux
-    radius = .22
-    body_half = half*.76
-    angle = np.degrees(np.arctan2(uy, ux))
-    # The signal conductor passes through the cylinder and extends at both ends.
-    ax.plot([mx-ux*half,mx+ux*half], [my-uy*half,my+uy*half],
-            color=color,lw=1.6,zorder=3)
-    for side in (-1,1):
-        ax.plot([mx-ux*body_half+nx*radius*side,mx+ux*body_half+nx*radius*side],
-                [my-uy*body_half+ny*radius*side,my+uy*body_half+ny*radius*side],
-                color=color,lw=1.6,zorder=4)
-    for end in (-1,1):
-        ax.add_patch(Ellipse((mx+ux*body_half*end,my+uy*body_half*end),
-            width=min(.16,half*.4),height=2*radius,angle=angle,
-            fill=False,edgecolor=color,lw=1.6,zorder=4))
+    radius = min(.22, half*.28)
+    body_half = half*.55
+
+    def draw(local_x, local_y, **options):
+        local_x = np.asarray(local_x)
+        local_y = np.asarray(local_y)
+        ax.plot(mx+ux*local_x+nx*local_y,
+                my+uy*local_x+ny*local_y, color=color, **options)
+
+    # Straight shell edges and a rounded far end.
+    for side in (-1, 1):
+        draw([-body_half, body_half], [side*radius, side*radius], lw=1.6)
+    theta = np.linspace(-np.pi/2, np.pi/2, 65)
+    draw(body_half+radius*np.cos(theta), radius*np.sin(theta), lw=1.6)
+    # The front face is circular, as in the supplied symbol.
+    theta = np.linspace(0, 2*np.pi, 129)
+    draw(-body_half+radius*np.cos(theta), radius*np.sin(theta), lw=1.6)
+    # Exposed signal leads; the conductor inside the shield is hidden.
+    draw([-half, -body_half], [0, 0], lw=1.6)
+    draw([body_half+radius, half], [0, 0], lw=1.6)
     if abs(ux) >= abs(uy):
-        # Connect the middle of the outer shell, separately from the signal.
         sx, sy = mx, my-radius
         gx, gy = sx, sy-.55
-        ax.plot([sx,gx],[sy,gy],color=color,lw=1.4)
+        ax.plot([sx,gx], [sy,gy], color=color, lw=1.4)
     else:
         sx, sy = mx+radius, my
         gx, gy = sx+.60, sy-.45
-        ax.plot([sx,gx,gx],[sy,sy,gy],color=color,lw=1.4)
-    ax.plot(sx,sy,"o",color=color,ms=3.7,zorder=5)
-    for offset,width in ((0,.23),(-.09,.16),(-.18,.08)):
-        ax.plot([gx-width,gx+width],[gy+offset,gy+offset],color=color,lw=1.4)
+        ax.plot([sx,gx,gx], [sy,sy,gy], color=color, lw=1.4)
+    for offset, width in ((0,.23), (-.09,.16), (-.18,.08)):
+        ax.plot([gx-width,gx+width], [gy+offset,gy+offset], color=color, lw=1.4)
     ax.text(gx,gy-.30,GROUND,ha="center",va="top",fontsize=font_size,
             color=color,fontweight="bold")
 
@@ -1456,155 +1460,137 @@ class RFCircuit:
             self.Draw_Qucs_Schematic(ax,feed_line=feed_line)
             ax.set_title(self.circuit_title.get().strip() or "Untitled circuit",pad=24)
             return
-        ax.set(title=self.circuit_title.get().strip() or "Untitled circuit", aspect="equal")
+        self.Draw_Spaced_Schematic(ax)
+
+    def Draw_Spaced_Schematic(self, ax):
+        """Use a verified topology layout or separated, electrically labeled branches."""
+        import textwrap
+        fs = getattr(self, "circuit_font_size", 12)
+        ns = getattr(self, "circuit_node_font_size", 10)
+        size_scale = max(1, fs/12, ns/10)
+        ink = "black"
+        items = {e.name:e for e in self.elements}
+        ax.set_aspect("equal")
         ax.axis("off")
-        color = "black"
-        junction_color = "#c24b24"
-        internal = sorted({v for e in self.elements for v in (e.node_a,e.node_b)
-                           if v != GROUND and v not in self.ports})
-        if len(self.ports) == 1:
-            # Put a one-port ladder on a horizontal signal rail. Each shunt
-            # component gets its own vertical branch beneath its node.
-            positions = {self.ports[0]: (0.0, 2.5)}
-            queue = [self.ports[0]]
-            while queue:
-                node = queue.pop(0)
-                neighbors = sorted({other for e in self.elements
-                                    for other in ((e.node_b,) if e.node_a == node else
-                                                  (e.node_a,) if e.node_b == node else ())
-                                    if other != GROUND and other not in positions})
-                for other in neighbors:
-                    positions[other] = (5.2 * len(positions), 2.5)
-                    queue.append(other)
-            for other in internal:
-                if other not in positions:
-                    positions[other] = (5.2 * len(positions), 2.5)
-        else:
-            unique_ports = list(dict.fromkeys(self.ports))
-            positions = {node: (i*5.2-(len(unique_ports)-1)*2.6, 3.2)
-                         for i,node in enumerate(unique_ports)}
-            for i,node in enumerate(internal):
-                positions[node] = (i*5.2-(len(internal)-1)*2.6, -1.3)
-            # A three-way splitter reads as a T: side ports on the junction
-            # rail and its middle port above the junction.
-            if len(unique_ports)==3 and len(internal)==1:
-                positions[unique_ports[0]]=(positions[unique_ports[0]][0],-1.3)
-                positions[unique_ports[2]]=(positions[unique_ports[2]][0],-1.3)
-        positions.update({node:tuple(self.layout_positions[node]) for node in positions
-                          if node in self.layout_positions})
 
-        def component(e, p1, p2, label_side=1):
-            x1,y1 = p1; x2,y2 = p2
-            dx,dy = x2-x1,y2-y1
-            length = np.hypot(dx,dy)
-            if length < .1:
-                return
-            ux,uy = dx/length,dy/length
-            nx,ny = -uy,ux
-            mx,my = (x1+x2)/2,(y1+y2)/2
-            half = min(.43, length*.24)
-            left = (mx-ux*half,my-uy*half)
-            right = (mx+ux*half,my+uy*half)
-            ax.plot([x1,left[0]],[y1,left[1]],color=color,lw=1.6)
-            ax.plot([right[0],x2],[right[1],y2],color=color,lw=1.6)
-            if e.kind == "C":
-                gap = min(.09,half*.3)
+        def wire(a, b):
+            ax.plot([a[0],b[0]], [a[1],b[1]], color=ink, lw=1.6)
+
+        def ground(x, y):
+            for offset,width in ((0,.28),(-.10,.19),(-.20,.09)):
+                wire((x-width,y+offset),(x+width,y+offset))
+            ax.text(x,y-.38,GROUND,ha="center",va="top",fontsize=ns)
+
+        def part(e, a, b, side=1):
+            x1,y1=a; x2,y2=b
+            dx,dy=x2-x1,y2-y1
+            length=np.hypot(dx,dy)
+            if length <= 0 or (abs(dx)>1e-9 and abs(dy)>1e-9):
+                raise ValueError("Schematic components require a nonzero orthogonal segment")
+            ux,uy=dx/length,dy/length
+            nx,ny=-uy,ux
+            mx,my=(x1+x2)/2,(y1+y2)/2
+            half=min(.5,length*.25)
+            left=(mx-ux*half,my-uy*half)
+            right=(mx+ux*half,my+uy*half)
+            wire(a,left);wire(right,b)
+            if e.kind=="C":
+                gap=.09
                 for offset in (-gap,gap):
-                    cx,cy = mx+ux*offset,my+uy*offset
-                    ax.plot([cx-nx*.24,cx+nx*.24],[cy-ny*.24,cy+ny*.24],
-                            color=color,lw=2.2)
-                ax.plot([left[0],mx-ux*gap],[left[1],my-uy*gap],color=color,lw=1.6)
-                ax.plot([mx+ux*gap,right[0]],[my+uy*gap,right[1]],color=color,lw=1.6)
-            elif e.kind == "TL":
-                _draw_coax_symbol(ax,mx,my,ux,uy,half,color=color,
-                                  font_size=getattr(self,"circuit_node_font_size",10))
-            elif e.kind == "R":
-                # Conventional zigzag resistor, oriented along its wire.
-                steps = [(-1,0),(-.8,.18),(-.6,-.18),(-.4,.18),
-                         (-.2,-.18),(0,.18),(.2,-.18),(.4,.18),
-                         (.6,-.18),(.8,.18),(1,0)]
-                ax.plot([mx+ux*half*t+nx*v for t,v in steps],
-                        [my+uy*half*t+ny*v for t,v in steps],color=color,lw=1.6)
+                    cx,cy=mx+ux*offset,my+uy*offset
+                    wire((cx-nx*.25,cy-ny*.25),(cx+nx*.25,cy+ny*.25))
+                wire(left,(mx-ux*gap,my-uy*gap))
+                wire((mx+ux*gap,my+uy*gap),right)
+            elif e.kind=="TL":
+                _draw_coax_symbol(ax,mx,my,ux,uy,half,font_size=ns)
             else:
-                t=np.linspace(-1,1,80)
-                coil=np.sin(4*np.pi*(t+1))* .17
-                ax.plot(mx+ux*half*t+nx*coil,my+uy*half*t+ny*coil,color=color,lw=1.6)
-            # Black dots mark the two wire-to-component terminals.
-            ax.plot(left[0],left[1],"o",color=color,ms=3.7,zorder=5)
-            ax.plot(right[0],right[1],"o",color=color,ms=3.7,zorder=5)
-            side = label_side
-            label_offset = 1.05 if e.kind == "TL" else .6
-            label_x,label_y=mx+nx*label_offset*side,my+ny*label_offset*side
+                t=np.linspace(-1,1,81) if e.kind=="L" else np.linspace(-1,1,11)
+                v=(.18*np.sin(4*np.pi*(t+1)) if e.kind=="L" else
+                   np.array([0,.18,-.18,.18,-.18,.18,-.18,.18,-.18,.18,0]))
+                ax.plot(mx+ux*half*t+nx*v,my+uy*half*t+ny*v,color=ink,lw=1.6)
+            for point in (left,right):
+                ax.plot(*point,"o",color=ink,ms=3.7,zorder=5)
+            offset=1.15 if e.kind=="TL" else .8
+            tx,ty=mx+side*nx*offset,my+side*ny*offset
             horizontal=abs(dx)>abs(dy)
-            ax.text(label_x,label_y,f"{e.name}\n{component_value(e)}",
-                    ha="center" if horizontal else ("left" if label_x>mx else "right"),
-                    va="center",fontsize=getattr(self,"circuit_font_size",12),
-                    bbox=dict(facecolor="white",edgecolor="none",pad=1))
+            ax.text(tx,ty,textwrap.fill(e.name, width=18)+f"\n{component_value(e)}",fontsize=fs,
+                    ha="center" if horizontal else ("left" if tx>mx else "right"),
+                    va="center",bbox=dict(facecolor="white",edgecolor="none",pad=1))
 
-        # Route every connection on horizontal and vertical tracks. Parallel
-        # elements get separate tracks while each symbol stays on one axis.
-        groups = {}
-        for e in self.elements:
-            if GROUND not in (e.node_a,e.node_b):
-                groups.setdefault(tuple(sorted((e.node_a,e.node_b))),[]).append(e)
-        for (a,b),group in groups.items():
-            xa,ya=positions[a]; xb,yb=positions[b]
-            dx,dy=xb-xa,yb-ya
-            horizontal=abs(dx)>=abs(dy)
-            for i,e in enumerate(group):
-                offset=(i-(len(group)-1)/2)*1.55
-                if horizontal:
-                    lane=(ya+yb)/2+offset
-                    pa,pb=(xa,lane),(xb,lane)
-                    ax.plot([xa,xa],[ya,lane],color=color,lw=1.6)
-                    ax.plot([xb,xb],[lane,yb],color=color,lw=1.6)
+        expected={
+            "L1":("J1","J2"),"L2":("J1","J3"),"L3":("J2","J4"),
+            "L4":("J3","J5"),"L5":("J4","J6"),"L6":("N2","J7"),
+            "C1":("J1","J2"),"C2":("J3",GROUND),"C3":("J4","N1"),
+            "C4":("N1",GROUND),"C5":("J6",GROUND),"C6":("J5",GROUND),
+            "C7":("J7","J5"),"C8":("N2","J7"),"C9":("J7",GROUND),
+            "C10":("N1",GROUND),"C11":("N2",GROUND),"C12":("J5",GROUND),
+            "C13":("J6",GROUND),"C14":("J3",GROUND),"C15":("J4",GROUND),
+            "R1":("J1",GROUND),"R2":("J2",GROUND)}
+        is_b1=(len(items)==len(self.elements)==len(expected) and
+               all(name in items and items[name].kind==name[0] and
+                   {items[name].node_a,items[name].node_b}==set(nodes)
+                   for name,nodes in expected.items()) and self.ports==["N1","N2"])
+        if is_b1:
+            width,height=self.figure.get_size_inches()
+            self.figure.set_size_inches(max(width,20*size_scale),max(height,10*size_scale))
+            # Reserve separate lanes for each shunt, series part and its label.
+            pos={"J1":(0,12),"J2":(14,12),"J3":(0,6),"J4":(14,6),
+                 "J5":(0,0),"J6":(14,0),"J7":(-7,0),"N2":(-14,0),"N1":(21,6)}
+            for name in ("L1","L2","L3","L4","L5","C3","C7"):
+                a,b=expected[name];part(items[name],pos[a],pos[b])
+            for name,y in (("C1",10.5),("L6",0),("C8",1.8)):
+                a,b=expected[name];xa,ya=pos[a];xb,yb=pos[b]
+                wire((xa,ya),(xa,y));wire((xb,y),(xb,yb))
+                part(items[name],(xa,y),(xb,y),side=1 if name!="L6" else -1)
+            for name,x,side in (("C2",-3,-1),("C14",3,1),("C15",11,-1),
+                               ("C4",20,-1),("C10",24,1),
+                               ("C6",-2.5,-1),("C12",2.5,1),
+                               ("C5",11.5,-1),("C13",16.5,1),
+                               ("C9",-7,-1),("C11",-14,-1)):
+                node=expected[name][0];sx,sy=pos[node]
+                wire((sx,sy),(x,sy));part(items[name],(x,sy),(x,sy-3.4),side=side)
+                ground(x,sy-3.4)
+            for name,x in (("R1",-5),("R2",19)):
+                node=expected[name][0];start=pos[node];end=(x,12)
+                part(items[name],start,end,side=1 if x>start[0] else -1)
+                wire(end,(x,11.3));ground(x,11.3)
+            for node,(x,y) in pos.items():
+                ax.plot(x,y,"o",color="#c24b24",ms=6,zorder=6)
+                ax.text(x+.18,y+.25,node,fontsize=ns,ha="left",va="bottom")
+            for label,node in self.port_definitions:
+                x,y=pos[node]
+                # Place ports above the feed so they cannot cover a component.
+                wire((x,y),(x,y+2.7))
+                ax.add_patch(Circle((x,y+3),.3,facecolor="white",edgecolor=ink,lw=1.6))
+                ax.text(x,y+3,label,ha="center",va="center",fontsize=ns)
+            ax.set_xlim(-18,28);ax.set_ylim(-5.3,14.5)
+            return
+
+        # General fallback: separate branch cells, connected by named nets.
+        # Equal node labels denote the same electrical node throughout the sheet.
+        # This avoids ambiguous wire crossings and shared drawing lanes.
+        count=len(self.elements)
+        columns=min(3,max(1,count))
+        rows=(count+columns-1)//columns
+        cell_width,cell_height=10.5,5.5
+        for i,e in enumerate(self.elements):
+            column,row=i%columns,i//columns
+            cx=column*cell_width;cy=-row*cell_height
+            part(e,(cx-2.5,cy),(cx+2.5,cy))
+            for x,node in ((cx-2.5,e.node_a),(cx+2.5,e.node_b)):
+                ax.plot(x,cy,"o",color="#c24b24" if node!=GROUND else ink,ms=5,zorder=6)
+                if node==GROUND:
+                    wire((x,cy),(x,cy-.55));ground(x,cy-.55)
                 else:
-                    lane=(xa+xb)/2+offset
-                    pa,pb=(lane,ya),(lane,yb)
-                    ax.plot([xa,lane],[ya,ya],color=color,lw=1.6)
-                    ax.plot([lane,xb],[yb,yb],color=color,lw=1.6)
-                # Put labels outside parallel tracks, away from their symbols.
-                normal_sign = (1 if xb > xa else -1) if horizontal else (-1 if yb > ya else 1)
-                outward = 1 if offset >= 0 else -1
-                component(e,pa,pb,label_side=outward*normal_sign)
-
-        # Ground is a common electrical node, but shunt parts have distinct
-        # ground symbols at their own x coordinates in a conventional drawing.
-        grounded = {}
-        for e in self.elements:
-            if GROUND in (e.node_a,e.node_b):
-                node = e.node_b if e.node_a == GROUND else e.node_a
-                grounded.setdefault(node,[]).append(e)
-        ground_x = []
-        for node,group in grounded.items():
-            x,y = positions[node]
-            for i,e in enumerate(group):
-                branch_x = x + (i-(len(group)-1)/2)*1.65
-                if branch_x != x:
-                    ax.plot([x,branch_x],[y,y],color=color,lw=1.6)
-                gy = y-3.2
-                component(e,(branch_x,y),(branch_x,gy),label_side=-1)
-                for offset,width in ((0,.32),(-.09,.22),(-.18,.11)):
-                    ax.plot([branch_x-width,branch_x+width],[gy+offset,gy+offset],
-                            color=color,lw=1.4)
-                ground_x.append(branch_x)
-                ax.text(branch_x,gy-.35,GROUND,ha="center",va="top",fontsize=8)
-
-        for node in dict.fromkeys(self.ports):
-            x,y = positions[node]
-            labels = ", ".join(self.port_labels[i] for i,p in enumerate(self.ports) if p == node)
-            ax.add_patch(Circle((x,y),.28,facecolor="white",
-                                edgecolor=color,lw=1.6,zorder=3))
-            ax.text(x,y,"P",ha="center",va="center",fontsize=9,zorder=4)
-            ax.text(x,y+.39,f"{labels} · {node}",ha="center",va="bottom",fontsize=8,
-                    bbox=dict(facecolor="white",edgecolor="none",pad=1),zorder=4)
-        for node in internal:
-            x,y=positions[node]
-            ax.plot(x,y,"o",color=junction_color,ms=8,zorder=6)
-            ax.text(x+.2,y+.2,node,ha="left",va="bottom",fontsize=9)
-        all_x=[v[0] for v in positions.values()]+ground_x
-        all_y=[v[1] for v in positions.values()]
-        ax.set(xlim=(min(all_x)-2.0,max(all_x)+2.0),
-               ylim=(min(all_y)-4.2 if grounded else min(all_y)-1.5,
-                     max(all_y)+1.5))
-        self.figure.tight_layout()
+                    labels=[label for label,pnode in self.port_definitions if pnode==node]
+                    text=node+(" / "+", ".join(labels) if labels else "")
+                    ax.text(x,cy-.45,textwrap.fill(text,width=16),ha="center",va="top",fontsize=ns)
+        footer_y=-(rows-1)*cell_height-2.5
+        ax.text((columns-1)*cell_width/2,footer_y,
+                "Equal node labels are electrically connected; P0 is ground.",
+                ha="center",va="top",fontsize=ns)
+        ax.set_xlim(-4.5,(columns-1)*cell_width+4.5)
+        ax.set_ylim(footer_y-1,2.5)
+        # Grow the figure with the number of components to preserve text space.
+        width,height=self.figure.get_size_inches()
+        self.figure.set_size_inches(max(width,columns*6*size_scale),max(height,(rows*2.8+1.5)*size_scale))

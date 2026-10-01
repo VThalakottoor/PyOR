@@ -1,0 +1,293 @@
+{
+  "format": "pyor-rf-parameters",
+  "version": 1,
+  "title": "Double-tuned 1H/2H circuit - Figure B1",
+  "z0": 50,
+  "ports": [
+    {
+      "label": "P1",
+      "node": "N1"
+    },
+    {
+      "label": "P2",
+      "node": "N2"
+    }
+  ],
+  "components": [
+    {
+      "name": "L1",
+      "kind": "L",
+      "node_a": "J1",
+      "node_b": "J2",
+      "value": 15,
+      "unit": "nH",
+      "paper_quality_factor": 400,
+      "paper_q_reference_frequency_Hz": 500000000.0
+    },
+    {
+      "name": "L2",
+      "kind": "L",
+      "node_a": "J1",
+      "node_b": "J3",
+      "value": 13,
+      "unit": "nH",
+      "paper_quality_factor": 400,
+      "paper_q_reference_frequency_Hz": 500000000.0
+    },
+    {
+      "name": "L3",
+      "kind": "L",
+      "node_a": "J2",
+      "node_b": "J4",
+      "value": 13,
+      "unit": "nH",
+      "paper_quality_factor": 400,
+      "paper_q_reference_frequency_Hz": 500000000.0
+    },
+    {
+      "name": "L4",
+      "kind": "L",
+      "node_a": "J3",
+      "node_b": "J5",
+      "value": 90,
+      "unit": "nH",
+      "paper_quality_factor": 400,
+      "paper_q_reference_frequency_Hz": 500000000.0
+    },
+    {
+      "name": "L5",
+      "kind": "L",
+      "node_a": "J4",
+      "node_b": "J6",
+      "value": 90,
+      "unit": "nH",
+      "paper_quality_factor": 400,
+      "paper_q_reference_frequency_Hz": 500000000.0
+    },
+    {
+      "name": "L6",
+      "kind": "L",
+      "node_a": "N2",
+      "node_b": "J7",
+      "value": 15,
+      "unit": "nH",
+      "paper_quality_factor": 400,
+      "paper_q_reference_frequency_Hz": 500000000.0
+    },
+    {
+      "name": "C1",
+      "kind": "C",
+      "node_a": "J1",
+      "node_b": "J2",
+      "value": 4.705,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C2",
+      "kind": "C",
+      "node_a": "J3",
+      "node_b": "P0",
+      "value": 2.96,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C3",
+      "kind": "C",
+      "node_a": "J4",
+      "node_b": "N1",
+      "value": 2.98,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C4",
+      "kind": "C",
+      "node_a": "N1",
+      "node_b": "P0",
+      "value": 32.87,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C5",
+      "kind": "C",
+      "node_a": "J6",
+      "node_b": "P0",
+      "value": 35.5,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C6",
+      "kind": "C",
+      "node_a": "J5",
+      "node_b": "P0",
+      "value": 35.2,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C7",
+      "kind": "C",
+      "node_a": "J7",
+      "node_b": "J5",
+      "value": 4.993,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C8",
+      "kind": "C",
+      "node_a": "N2",
+      "node_b": "J7",
+      "value": 4.08,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C9",
+      "kind": "C",
+      "node_a": "J7",
+      "node_b": "P0",
+      "value": 1,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C10",
+      "kind": "C",
+      "node_a": "N1",
+      "node_b": "P0",
+      "value": 1,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C11",
+      "kind": "C",
+      "node_a": "N2",
+      "node_b": "P0",
+      "value": 1,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C12",
+      "kind": "C",
+      "node_a": "J5",
+      "node_b": "P0",
+      "value": 1,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C13",
+      "kind": "C",
+      "node_a": "J6",
+      "node_b": "P0",
+      "value": 1,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C14",
+      "kind": "C",
+      "node_a": "J3",
+      "node_b": "P0",
+      "value": 1,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "C15",
+      "kind": "C",
+      "node_a": "J4",
+      "node_b": "P0",
+      "value": 1,
+      "unit": "pF",
+      "paper_quality_factor": 2000
+    },
+    {
+      "name": "R1",
+      "kind": "R",
+      "node_a": "J1",
+      "node_b": "P0",
+      "value": 1000000000.0,
+      "unit": "ohm"
+    },
+    {
+      "name": "R2",
+      "kind": "R",
+      "node_a": "J2",
+      "node_b": "P0",
+      "value": 1000000000.0,
+      "unit": "ohm"
+    }
+  ],
+  "layout": {
+    "J1": [
+      0,
+      10
+    ],
+    "J2": [
+      12,
+      10
+    ],
+    "J3": [
+      0,
+      5
+    ],
+    "J4": [
+      12,
+      5
+    ],
+    "J5": [
+      0,
+      0
+    ],
+    "J6": [
+      12,
+      0
+    ],
+    "J7": [
+      -6,
+      0
+    ],
+    "N1": [
+      18,
+      5
+    ],
+    "N2": [
+      -12,
+      0
+    ]
+  },
+  "sweep": {
+    "start": 40000000.0,
+    "stop": 550000000.0,
+    "points": 10001,
+    "log": false,
+    "refine": true
+  },
+  "source": {
+    "author": "A. P. Zens",
+    "journal": "Journal of Magnetic Resonance",
+    "volume": 316,
+    "year": 2020,
+    "article": "106741",
+    "doi": "10.1016/j.jmr.2020.106741",
+    "schematic": "Figure B1, PDF page 11",
+    "values": "Table B1, PDF page 14"
+  },
+  "modeling_notes": [
+    "P0 is the common ground and reference for both ports.",
+    "P1 is the high-frequency port (paper: 500 MHz); P2 is the low-frequency port (paper: 76.8 MHz).",
+    "The internal ACVS (1 V in the paper) is suppressed for passive S-parameter analysis: its ideal zero-voltage branch is a short. L1 and C1 therefore connect between J1 and J2.",
+    "C9 through C15 are stray capacitors, each 1 pF. Table B1 repeats C10; only one C10 is present in Figure B1.",
+    "paper_quality_factor and paper_q_reference_frequency_Hz preserve source information only; PyOR_RF_Circuits_v1_15 does not apply capacitor or inductor Q losses.",
+    "The supplied circuit uses ideal inductors and capacitors plus the explicit R1 and R2. It does not reproduce the finite-Q simulation quantitatively.",
+    "The saved sweep is a chosen analysis range covering both paper frequencies, not a sweep specified in Table B1."
+  ]
+}
