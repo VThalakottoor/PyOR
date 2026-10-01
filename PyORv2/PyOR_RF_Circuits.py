@@ -636,7 +636,8 @@ class RFCircuit:
         if show: self.Show()
         return ax
 
-    def Plot_Smith(self, trace="S11", *, ax=None, xlim=None, ylim=None, show=True):
+    def Plot_Smith(self, trace="S11", *, ax=None, xlim=None, ylim=None,
+                   frequency_limits=None, show=True):
         """Plot a complex Sij trace; impedance labels apply only to Sii."""
         if not isinstance(trace, str):
             raise ValueError("Use a trace name such as S11 or S14")
@@ -648,21 +649,30 @@ class RFCircuit:
         if i >= len(self.ports) or j >= len(self.ports):
             raise ValueError(f"Unknown trace {trace}")
         f, s = self._result()
+        indices = np.arange(len(f))
+        if frequency_limits is not None:
+            low, high = map(float, frequency_limits)
+            if not np.isfinite(low) or not np.isfinite(high) or low >= high:
+                raise ValueError("Use increasing finite frequency limits in MHz")
+            indices = np.flatnonzero((f/1e6 >= low) & (f/1e6 <= high))
+            if not len(indices):
+                raise ValueError("No simulation samples inside the selected frequency window")
         reflection = i == j
         if ax is None:
             _, ax = plt.subplots(figsize=(7,7))
         smith_grid(ax, self.z0, impedance_labels=reflection)
-        value = s[:,i,j]
+        value = s[indices,i,j]
         ax.plot(value.real, value.imag, label=trace)
         best = int(np.argmin(abs(value)))
+        sample = indices[best]
         ax.plot(value[best].real, value[best].imag, "o", color="#c24b24")
         if reflection:
-            z = self.Input_Impedance(i+1)[best]
-            annotation = (f"Closest match: {f[best]/1e6:.6g} MHz\n"
+            z = self.Input_Impedance(i+1)[sample]
+            annotation = (f"Closest match: {f[sample]/1e6:.6g} MHz\n"
                           f"Zin={z.real:.4g}{z.imag:+.4g}j Ω")
             title = f"{trace} Smith chart; impedance labels in Ω; Z0 = {self.z0:g} Ω"
         else:
-            annotation = f"Minimum |{trace}|: {f[best]/1e6:.6g} MHz"
+            annotation = f"Minimum |{trace}|: {f[sample]/1e6:.6g} MHz"
             title = f"{trace} transmission on Smith grid; dimensionless S-parameter"
         ax.set(xlabel=f"Real({trace}) (unitless)",
                ylabel=f"Imag({trace}) (unitless)", title=title)
@@ -673,6 +683,170 @@ class RFCircuit:
         if ylim is not None: ax.set_ylim(ylim)
         if show: self.Show()
         return ax
+
+    def Plot_Interactive(self, traces=("S14", "S23", "S21", "S12"), *,
+                         xlim=None, ylim=(-160, 5), component_limits=None,
+                         points=1001, refine=True):
+        """Display Jupyter sliders for component tuning and plot limits.
+
+        Component ranges are (min, max[, step]) in each element's display
+        unit. Defaults span 50 to 150 percent of the initial value. Changes
+        update this circuit and its simulation; Reset restores initial values.
+        A running Jupyter kernel and ipywidgets are required.
+        """
+        try:
+            import ipywidgets as widgets
+            from IPython.display import display
+        except ImportError as error:
+            raise ImportError("Install widgets in a notebook cell with "
+                              "%pip install ipywidgets, then restart the kernel") from error
+        if isinstance(traces, str):
+            traces = (traces,)
+        traces = tuple(dict.fromkeys(str(t).strip().upper() for t in traces))
+        if not traces:
+            raise ValueError("Select at least one S-parameter trace")
+        for trace in traces:
+            match = re.fullmatch(r"S([1-9])([1-9])", trace)
+            if not match or max(int(match[1]), int(match[2])) > len(self.ports):
+                raise ValueError(f"Unknown trace {trace}")
+        if int(points) != points or points < 3:
+            raise ValueError("Use at least 3 simulation points")
+        saved = dict(getattr(self, "settings", {}))
+        start = parse_value(saved.get("start", "100MHz"))
+        stop = parse_value(saved.get("stop", "550MHz"))
+        logarithmic = bool(saved.get("log", True))
+        lo, hi = start/1e6, stop/1e6
+        xlim = (lo, hi) if xlim is None else tuple(xlim)
+        if not lo <= xlim[0] < xlim[1] <= hi:
+            raise ValueError("Frequency limits must lie inside the sweep, in MHz")
+        automatic = ylim is None
+        ylim = (-160, 5) if ylim is None else tuple(ylim)
+        if len(ylim) != 2 or not np.all(np.isfinite(ylim)) or ylim[0] >= ylim[1]:
+            raise ValueError("Use increasing finite magnitude limits, in dB")
+        component_limits = {} if component_limits is None else dict(component_limits)
+        unknown = set(component_limits) - {e.name for e in self.elements}
+        if unknown:
+            raise ValueError(f"Unknown component names: {sorted(unknown)}")
+        style = {"description_width": "180px"}
+        layout = widgets.Layout(width="95%")
+        initial = [e.value for e in self.elements]
+        sliders = []
+        scales = []
+        for element in self.elements:
+            unit = element.display_unit or {"R":"Ω", "L":"H", "C":"F"}[element.kind]
+            scale = UNIT_SCALE[unit]
+            value = element.value/scale
+            bounds = component_limits.get(element.name, (value*.5, value*1.5))
+            if len(bounds) not in (2, 3):
+                raise ValueError("Component ranges need min, max and optional step")
+            minimum, maximum = map(float, bounds[:2])
+            step = float(bounds[2]) if len(bounds) == 3 else (maximum-minimum)/200
+            if (not np.all(np.isfinite([minimum, maximum, step])) or
+                not 0 < minimum <= value <= maximum or minimum >= maximum or step <= 0):
+                raise ValueError(f"Invalid slider range for {element.name}")
+            sliders.append(widgets.FloatSlider(value=value, min=minimum, max=maximum,
+                step=step, description=f"{element.name} ({unit})", readout_format=".6g",
+                continuous_update=False, style=style, layout=layout))
+            scales.append(scale)
+        trace_control = widgets.Dropdown(options=traces, value=traces[0], description="Trace")
+        frequency_control = widgets.FloatRangeSlider(value=xlim, min=lo, max=hi,
+            step=(hi-lo)/10000, description="Frequency (MHz)", readout_format=".3f",
+            continuous_update=False, style=style, layout=layout)
+        magnitude_control = widgets.FloatRangeSlider(value=ylim,
+            min=min(-200, ylim[0]), max=max(10, ylim[1]), step=1,
+            description="Magnitude (dB)", continuous_update=False, style=style, layout=layout)
+        auto_control = widgets.Checkbox(value=automatic, description="Automatic dB limits")
+        reset_button = widgets.Button(description="Reset")
+        status = widgets.Label()
+        output = widgets.Output()
+        state = {"busy": False, "fig": None, "error": None}
+
+        def Update(change=None, *, simulate=False):
+            if state["busy"]:
+                return
+            state["busy"] = True
+            status.value = "Updating..."
+            old_values = [e.value for e in self.elements]
+            old_frequency, old_s = self.frequency, self.s
+            old_settings = dict(getattr(self, "settings", {}))
+            previous_verbose = self.verbose
+            try:
+                if simulate or self.s is None:
+                    for element, slider, scale in zip(self.elements, sliders, scales):
+                        element.value = slider.value*scale
+                    self.verbose = False
+                    self.Simulate(start=start, stop=stop, points=int(points),
+                                  logarithmic=logarithmic, refine=refine)
+                trace = trace_control.value
+                window = frequency_control.value
+                fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+                state["fig"] = fig
+                self.Plot_Sparameter(trace, ax=axes[0], xlim=window,
+                    ylim=None if auto_control.value else magnitude_control.value, show=False)
+                self.Plot_Sparameter(trace, phase=True, ax=axes[1], xlim=window, show=False)
+                self.Plot_Smith(trace, ax=axes[2], frequency_limits=window, show=False)
+                axes[0].set_title(f"{trace} magnitude")
+                axes[1].set_title(f"{trace} phase")
+                axes[2].set_title(f"{trace} Smith chart" if trace[1] == trace[2]
+                                  else f"{trace} transmission on Smith grid")
+                fig.suptitle(self.title, fontweight="bold")
+                fig.tight_layout()
+                with output:
+                    output.clear_output(wait=True)
+                    display(fig)
+                plt.close(fig)
+                state["error"] = None
+                status.value = (f"{len(self.frequency):,} samples; "
+                                "component values are stored in circuit")
+            except Exception as error:
+                for element, value in zip(self.elements, old_values):
+                    element.value = value
+                self.frequency, self.s, self.settings = old_frequency, old_s, old_settings
+                if state["fig"] is not None:
+                    plt.close(state["fig"])
+                state["error"] = error
+                status.value = f"Update failed: {error}"
+            finally:
+                self.verbose = previous_verbose
+                state["busy"] = False
+
+        def Tune(change):
+            Update(change, simulate=True)
+
+        def Reset(button):
+            state["busy"] = True
+            try:
+                for slider, value, scale in zip(sliders, initial, scales):
+                    slider.value = value/scale
+                frequency_control.value = xlim
+                magnitude_control.value = ylim
+                auto_control.value = automatic
+                trace_control.value = traces[0]
+            finally:
+                state["busy"] = False
+            Update(simulate=True)
+
+        for slider in sliders:
+            slider.observe(Tune, names="value")
+        for control in (trace_control, frequency_control, magnitude_control, auto_control):
+            control.observe(Update, names="value")
+        reset_button.on_click(Reset)
+        tuning = widgets.Accordion(children=[widgets.VBox(sliders)])
+        tuning.set_title(0, "Component values")
+        tuning.selected_index = None
+        panel = widgets.VBox([widgets.HBox([trace_control, reset_button]),
+            frequency_control, magnitude_control, auto_control, tuning, status, output])
+        # Retain controls so advanced notebook users can access their values.
+        panel.rf_controls = dict(trace=trace_control, frequency=frequency_control,
+            magnitude=magnitude_control, automatic=auto_control,
+            components=dict(zip((e.name for e in self.elements), sliders)),
+            reset=reset_button, status=status)
+        panel.rf_state = state
+        display(panel)
+        Update(simulate=True)
+        if state["error"] is not None:
+            raise state["error"]
+        return panel
 
     def Plot_Time(self, trace="S21", *, ax=None, xlim=None, ylim=None, show=True):
         f,s=self._result()
